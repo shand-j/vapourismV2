@@ -15,7 +15,7 @@ Every push to the repository automatically runs:
 
 ### GitHub Secrets Configuration
 Ensure the following secret is configured in your GitHub repository:
-- `OXYGEN_DEPLOYMENT_TOKEN_1000039061` - Token for deploying to Shopify Oxygen
+- `OXYGEN_DEPLOYMENT_TOKEN_1000063397` - Token for deploying to Shopify Oxygen
 
 **To verify:** Go to GitHub repository → Settings → Secrets and variables → Actions
 

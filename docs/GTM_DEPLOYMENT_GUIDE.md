@@ -5,6 +5,14 @@ This guide provides step-by-step instructions for deploying VapourismV2 to produ
 
 ## Prerequisites
 
+### Automated CI Testing
+Every push to the repository automatically runs:
+- ✅ **Unit Tests** - 77 tests validate core functionality
+- ✅ **Type Checking** - TypeScript compilation verification
+- ✅ **Deployment Gate** - Deployment only proceeds if tests pass
+
+**To verify CI status:** Go to GitHub repository → Actions tab → Check workflow runs
+
 ### GitHub Secrets Configuration
 Ensure the following secret is configured in your GitHub repository:
 - `OXYGEN_DEPLOYMENT_TOKEN_1000039061` - Token for deploying to Shopify Oxygen
@@ -89,15 +97,29 @@ npm run build
 
 ### 2. Deploy to Production
 
-**Option A: Automatic Deployment (Recommended)**
-- Push to the `main` branch or configured deployment branch
-- GitHub Actions will automatically build and deploy to Oxygen
-- Monitor the GitHub Actions workflow for deployment status
+**Option A: Automatic Deployment via CI/CD (Recommended)**
+1. Push to the `main` branch or configured deployment branch
+2. GitHub Actions automatically:
+   - Runs unit tests (77 tests)
+   - Performs TypeScript type checking
+   - Deploys to Oxygen only if all tests pass
+3. Monitor workflow: GitHub repository → Actions tab
+4. Deployment typically completes in 5-10 minutes
+
+**CI Pipeline Flow:**
+```
+Push to branch → Install dependencies → Run tests → Type check → Deploy to Oxygen
+                                           ↓ (if tests fail)
+                                    ❌ Deployment blocked
+```
 
 **Option B: Manual Deployment**
 ```bash
 # Ensure you're on the correct branch
 git checkout main
+
+# Run tests locally first
+npm test
 
 # Deploy using Shopify CLI
 npx shopify hydrogen deploy

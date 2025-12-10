@@ -22,7 +22,7 @@ ENABLE_BRAND_ASSETS="true"
 node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 ```
 
-### 2. Deploy to Production (Auto via GitHub)
+### 2. Deploy to Production (Auto via GitHub CI)
 
 **Method 1: Push to Main Branch (Recommended)**
 ```bash
@@ -30,10 +30,21 @@ git checkout main
 git merge copilot/start-implementation-vapourism-v2
 git push origin main
 ```
-→ GitHub Actions will automatically deploy to Oxygen
+
+**What happens automatically:**
+1. ✅ GitHub Actions runs 77 unit tests
+2. ✅ TypeScript type checking
+3. ✅ Deploys to Oxygen (only if tests pass)
+4. ⏱️ Total time: ~5-10 minutes
+
+**Monitor deployment:** GitHub repo → Actions tab
 
 **Method 2: Manual Deployment via CLI**
 ```bash
+# Run tests first
+npm test
+
+# Then deploy
 npx shopify hydrogen deploy
 ```
 
@@ -83,6 +94,7 @@ Visit these URLs and verify:
 - [ ] SESSION_SECRET is secure (32+ chars)
 - [ ] Shopify Admin token has correct permissions
 - [ ] GitHub Actions workflow has deployment token
+- [ ] **CI tests passing (check Actions tab)**
 - [ ] Collections created in Shopify Admin
 - [ ] Products have proper tags
 - [ ] Team knows rollback procedure

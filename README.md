@@ -1,11 +1,18 @@
-# Vapourism V2 — Onboarding & Local Dev
+# Vapourism V2 — Shopify-Native Hydrogen Storefront
 
-Welcome to Vapourism V2 — the Shopify-native Hydrogen refactor of the Vapourism storefront. This repo was created by copying the previous `/v2` folder, so Hydrogen may not be fully initialised on a fresh checkout. This README explains the developer setup, local Hydrogen initialization, and test workflows.
+Welcome to Vapourism V2 — the Shopify-native Hydrogen refactor of the Vapourism storefront. This version uses Shopify's native search and collections navigation with no legacy Algolia dependencies.
 
-## Quick summary
-- Framework: Shopify Hydrogen (Hydrogen 2025.1.4)
-- Runtime target: Shopify Oxygen (Cloudflare Workers)
-- Language: TypeScript + React (Remix)
+## 🚀 Quick Start for GTM Deployment
+
+**For production deployment instructions, see:**
+- **[GTM Deployment Guide](./docs/GTM_DEPLOYMENT_GUIDE.md)** - Step-by-step production deployment
+- **[Deployment Plan](./docs/migration-notes/deployment-plan.md)** - Detailed rollout strategy and monitoring
+
+## Project Overview
+- **Framework:** Shopify Hydrogen 2025.1.4
+- **Runtime:** Shopify Oxygen (Cloudflare Workers)
+- **Language:** TypeScript + React (Remix)
+- **Architecture:** V2 with Shopify-native search and collections navigation
 
 ## Requirements
 - Node.js >= 18 (matching the repo `engines`)
@@ -64,13 +71,18 @@ Note: if Hydrogen's CLI commands fail because your local environment does not ha
 ## Environment variables
 Important variables are defined and used across the V2 project. A minimal list appears in `.env.example` below; copy to `.env` and provide real values as needed for local development and CI.
 
+**Production deployment:** See [GTM Deployment Guide](./docs/GTM_DEPLOYMENT_GUIDE.md) for production environment setup.
+
 Key variables you may want to set locally:
-- SESSION_SECRET — session encryption for the app
-- PUBLIC_ALGOLIA_APP_ID / PUBLIC_ALGOLIA_SEARCH_API_KEY / PUBLIC_ALGOLIA_INDEX_NAME — only used if legacy Algolia features are enabled
-- USE_SHOPIFY_SEARCH, SHOPIFY_SEARCH_ROLLOUT — control the V2 Shopify-native predictive search rollout
-- COLLECTIONS_NAV_ROLLOUT — config for collections-based navigation rollout
-- ENABLE_BRAND_ASSETS — toggle brand media packs
- - AGEVERIF_CREATE_CUSTOMER — if `true` the server may create a Shopify Customer from a guest order email when a customer resource is missing (use with caution)
+- `SESSION_SECRET` — session encryption for the app (required)
+- `PUBLIC_STORE_DOMAIN` — Your Shopify store domain
+- `PRIVATE_SHOPIFY_ADMIN_TOKEN` — Admin API access token
+- `USE_SHOPIFY_SEARCH`, `SHOPIFY_SEARCH_ROLLOUT` — Control V2 Shopify-native predictive search rollout
+- `COLLECTIONS_NAV_ROLLOUT` — Config for collections-based navigation rollout
+- `ENABLE_BRAND_ASSETS` — Toggle brand media packs
+- `AGEVERIF_CREATE_CUSTOMER` — If `true` the server may create a Shopify Customer from a guest order email when a customer resource is missing (use with caution)
+
+**Note:** Legacy Algolia environment variables have been removed in V2.
 
 Admin client adapter
 - The V2 codebase includes a small admin client adapter at `app/lib/admin-client.ts`. It will try to use the official `@shopify/shopify-api` SDK when available in a Node environment (helpful for local scripts or non-edge backends) and will automatically fall back to a lightweight fetch-based implementation when the SDK is not present (edge-compatible for Oxygen). Install the SDK locally only when you need it:

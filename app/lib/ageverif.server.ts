@@ -373,6 +373,26 @@ export async function persistVerificationEvidence(opts: {
   // Build the verification data JSON
   const metafieldKey = resolved.merged.AGE_VERIF_METAFIELD_KEY || 'age_verification';
   const namespace = resolved.merged.AGE_VERIF_METAFIELD_NAMESPACE || 'custom';
+  
+  // Check if customer already has the metafield
+  const fullyQualifiedKey = `${namespace}.${metafieldKey}`;
+  const checkQuery = `query getCustomer($id:ID!){ node(id:$id){ ... on Customer { id tags metafields(first:1, keys: ["${fullyQualifiedKey}"]) { edges { node { key value } } } } } }`;
+  let alreadyExists = false;
+  
+  try {
+    const checkResult = await adminGraphQL(checkQuery, { id: customerGid }, resolved.merged);
+    const mf = checkResult?.data?.node?.metafields?.edges?.[0]?.node;
+    if (mf?.value) {
+      console.log('Customer already has age verification metafield');
+      alreadyExists = true;
+      // Return early - customer is already verified
+      return { created: false, existed: true, target: 'customer' };
+    }
+  } catch (err) {
+    console.log('Error checking existing metafield:', err);
+    // Continue with creation if check fails
+  }
+  
   const verificationData = {
     verified: true,
     uid: opts.verification.uid,

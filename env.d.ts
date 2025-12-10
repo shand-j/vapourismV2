@@ -25,9 +25,6 @@ declare global {
     // Admin tokens (private) — allow spaces to access them via context.env in Oxygen/MiniOxygen
     PRIVATE_SHOPIFY_ADMIN_TOKEN?: string;
     SHOPIFY_ADMIN_TOKEN?: string;
-    PUBLIC_ALGOLIA_APP_ID?: string;
-    PUBLIC_ALGOLIA_SEARCH_API_KEY?: string;
-    PUBLIC_ALGOLIA_INDEX_NAME?: string;
     USE_SHOPIFY_SEARCH?: string;
     SHOPIFY_SEARCH_ROLLOUT?: string;
     COLLECTIONS_NAV_ROLLOUT?: string;

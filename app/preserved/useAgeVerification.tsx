@@ -1,0 +1,367 @@
+import { useState, useEffect, useCallback } from 'react';
+import { getClientScriptSrc, CALLBACK_ONLOAD, CALLBACK_ONREADY, CALLBACK_ONSUCCESS, CALLBACK_ONERROR } from '~/lib/ageverif.client';
+
+// AgeVerif type can be defined or imported as needed
+interface AgeVerif {
+  start: (opts?: any) => Promise<any>;
+  clear: () => void;
+  destroy: () => void;
+  on: (event: string, callback: (...args: any[]) => void) => void;
+  off: (event: string, callback: (...args: any[]) => void) => void;
+}
+
+declare global {
+  interface Window {
+    ageverif?: AgeVerif;
+    ageverifLoaded?: (args: { verified: boolean }) => void;
+    ageverifSuccess?: () => void;
+    ageverifError?: (error: any) => void;
+  }
+}
+
+const AGEVERIF_TEST_KEY = 'test-key-for-development';
+const AGEVERIF_LIVE_KEY = undefined;
+const AGEVERIF_KEY = process.env.NODE_ENV === 'production' ? AGEVERIF_LIVE_KEY || AGEVERIF_TEST_KEY : AGEVERIF_TEST_KEY;
+
+interface UseAgeVerifProps {
+  onSuccess?: () => void;
+  onError?: (error: any) => void;
+}
+
+export function useAgeVerif({ onSuccess, onError }: UseAgeVerifProps = {}) {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+  const [ageverif, setAgeverif] = useState<AgeVerif | null>(null);
+  const [lastError, setLastError] = useState<any>(null);
+  const [pendingResult, setPendingResult] = useState<{resolve: (value: any) => void, reject: (reason: any) => void} | null>(null);
+  // Keep a ref to the current pending resolver so event listeners always
+  // see the latest resolver without needing to re-register handlers.
+  const pendingRef = (globalThis as any).__ageverif_pending_ref || { current: null };
+  // Ensure it's stored globally for HMR stability across module reloads
+  (globalThis as any).__ageverif_pending_ref = pendingRef;
+
+  useEffect(() => {
+    if (isLoaded || typeof window === 'undefined') return;
+
+    // Install global shims that the external checker may call. These shims
+    // dispatch CustomEvents so the hook can update React state in a controlled way.
+    // dispatch CustomEvents so the hook can update React state in a controlled way.
+    const dispatchEvent = (name: string, detail?: any) => {
+      try {
+        window.dispatchEvent(new CustomEvent(name, { detail }));
+      } catch (e) {
+        // ignore
+      }
+    };
+
+    // Install global callback shims that the external checker can call via query params
+    (window as any)[CALLBACK_ONLOAD] = (args: { verified: boolean }) => dispatchEvent('ageverif:loaded', args);
+    (window as any)[CALLBACK_ONREADY] = (args?: any) => dispatchEvent('ageverif:ready', args);
+    (window as any)[CALLBACK_ONSUCCESS] = (result?: any) => dispatchEvent('ageverif:success', result);
+    (window as any)[CALLBACK_ONERROR] = (error: any) => dispatchEvent('ageverif:error', error);
+
+    const onLoaded = (e: any) => {
+      const verified = e?.detail?.verified ?? false;
+      setIsLoaded(true);
+      setIsVerified(verified);
+      setAgeverif((window as any).ageverif || null);
+    };
+    const onReady = (e: any) => {
+      setIsLoaded(true);
+      setAgeverif((window as any).ageverif || null);
+    };
+    const onSuccessEvt = (e: any) => {
+      const raw = e?.detail ?? null;
+      // Normalise the shape returned by the external checker. The checker
+      // frequently emits { verification: { uid, token, assuranceLevel, ... } }
+      // so callers expect a top-level `verified` flag and easy access to `token`.
+      const normalized = raw && raw.verification ? {
+        // mark verified explicitly
+        verified: true,
+        // spread verification payload (uid, assuranceLevel, ageThreshold, token...)
+        ...raw.verification,
+        // ensure token is accessible at top-level if present
+        token: raw.verification.token ?? raw.token ?? undefined,
+      } : {
+        // fallback: preserve raw shape but ensure verified flag if present
+        verified: !!(raw && (raw.verified === true)),
+        ...raw,
+      };
+
+      setIsVerified(true);
+      // Dev-only logging to aid debugging in the browser console. Log both the
+      // original event detail and the normalized payload so callers and QA can
+      // verify what the checker provided and what the hook resolves with.
+      try {
+        // eslint-disable-next-line no-console
+        console.error('[ageverif] success event raw:', raw, 'normalized:', normalized);
+      } catch (e) {
+        // ignore logging failures
+      }
+
+      // Also add a lightweight on-page debug panel so QA can see the
+      // verification payload without opening DevTools. This is temporary
+      // and non-invasive: it creates a `pre` with id `ageverif-debug`.
+      try {
+        const elId = 'ageverif-debug';
+        let panel = document.getElementById(elId) as HTMLPreElement | null;
+        if (!panel) {
+          panel = document.createElement('pre');
+          panel.id = elId;
+          panel.style.position = 'fixed';
+          panel.style.right = '12px';
+          panel.style.bottom = '12px';
+          panel.style.zIndex = '2147483647';
+          panel.style.maxWidth = '40%';
+          panel.style.maxHeight = '40%';
+          panel.style.overflow = 'auto';
+          panel.style.background = 'rgba(0,0,0,0.85)';
+          panel.style.color = '#e6fffa';
+          panel.style.fontSize = '12px';
+          panel.style.padding = '8px';
+          panel.style.borderRadius = '6px';
+          panel.style.whiteSpace = 'pre-wrap';
+          document.body.appendChild(panel);
+        }
+        try {
+          panel.textContent = JSON.stringify({ raw, normalized }, null, 2);
+        } catch (e) {
+          panel.textContent = String(raw);
+        }
+      } catch (e) {
+        // Best-effort debug panel; ignore if DOM unavailable
+      }
+      const resolver = pendingRef.current ?? pendingResult;
+      if (resolver) {
+        try {
+          resolver.resolve(normalized);
+        } catch (err) {
+          // ignore resolve errors
+        }
+        pendingRef.current = null;
+        setPendingResult(null);
+      }
+      onSuccess?.();
+      return normalized;
+    };
+    const onErrorEvt = (e: any) => {
+      setLastError(e?.detail);
+      const resolver = pendingRef.current ?? pendingResult;
+      if (resolver) {
+        try {
+          resolver.reject(e?.detail);
+        } catch (err) {
+          // ignore
+        }
+        pendingRef.current = null;
+        setPendingResult(null);
+      }
+      onError?.(e?.detail);
+    };
+
+    // Listen for both the prefixed events (our shim) and the
+    // unprefixed events some checker builds emit (e.g. `success`, `ready`).
+    // This increases resilience against third-party build differences.
+    window.addEventListener('ageverif:loaded', onLoaded as EventListener);
+    window.addEventListener('loaded', onLoaded as EventListener);
+    window.addEventListener('ageverif:ready', onReady as EventListener);
+    window.addEventListener('ready', onReady as EventListener);
+    window.addEventListener('ageverif:success', onSuccessEvt as EventListener);
+    window.addEventListener('success', onSuccessEvt as EventListener);
+    window.addEventListener('ageverif:error', onErrorEvt as EventListener);
+    window.addEventListener('error', onErrorEvt as EventListener);
+    const script = document.createElement('script');
+    // Use canonical checker URL built from helper (includes key and callback query params)
+    const src = getClientScriptSrc();
+    script.src = src;
+    // Dev-only visibility: log resolved src/key to help troubleshoot invalid key issues
+    try {
+      if (typeof window !== 'undefined' && (window as any).console) {
+        // eslint-disable-next-line no-console
+        console.error('[ageverif] loading script:', src);
+        const match = /[?&]key=([^&]+)/.exec(src || '') || null;
+        // eslint-disable-next-line no-console
+        console.error('[ageverif] resolved key:', match ? decodeURIComponent(match[1]) : '(none)');
+        // also expose the script src to the on-page debug panel (best-effort)
+        try {
+          const elId = 'ageverif-debug';
+          let panel = document.getElementById(elId) as HTMLPreElement | null;
+          if (!panel) {
+            panel = document.createElement('pre');
+            panel.id = elId;
+            panel.style.position = 'fixed';
+            panel.style.right = '12px';
+            panel.style.bottom = '12px';
+            panel.style.zIndex = '2147483647';
+            panel.style.maxWidth = '40%';
+            panel.style.maxHeight = '40%';
+            panel.style.overflow = 'auto';
+            panel.style.background = 'rgba(0,0,0,0.85)';
+            panel.style.color = '#e6fffa';
+            panel.style.fontSize = '12px';
+            panel.style.padding = '8px';
+            panel.style.borderRadius = '6px';
+            panel.style.whiteSpace = 'pre-wrap';
+            document.body.appendChild(panel);
+          }
+          panel.textContent = `script: ${src}`;
+        } catch (e) {
+          // ignore
+        }
+      }
+    } catch (e) {
+      // ignore logging failures
+    }
+    // mark as async
+    script.async = true;
+    // If the external script doesn't call our global shims immediately,
+    // capture any attached `window.ageverif` on load and poll briefly
+    // so startVerification can use the instance.
+    let pollInterval: number | null = null;
+    script.onload = () => {
+      setIsLoaded(true);
+      const av = (window as any).ageverif || null;
+      setAgeverif(av);
+      if (!av) {
+        // Poll for a short period (10s max) for the client to attach
+        let attempts = 0;
+        pollInterval = window.setInterval(() => {
+          const maybe = (window as any).ageverif;
+          if (maybe) {
+            setAgeverif(maybe);
+            if (pollInterval) {
+              clearInterval(pollInterval);
+              pollInterval = null;
+            }
+          } else if (++attempts > 40) {
+            // give up after ~10s
+            if (pollInterval) {
+              clearInterval(pollInterval);
+              pollInterval = null;
+            }
+          }
+        }, 250);
+      }
+    };
+    script.onerror = () => {
+      setIsLoaded(true);
+      setIsVerified(false);
+    };
+    document.head.appendChild(script);
+    const loadTimeout = setTimeout(() => {
+      if (!isLoaded) {
+        setIsLoaded(true);
+        setIsVerified(false);
+      }
+    }, 10000);
+    return () => {
+      clearTimeout(loadTimeout);
+      // clear poll if present
+      if (typeof pollInterval === 'number' && pollInterval) {
+        clearInterval(pollInterval);
+        pollInterval = null;
+      }
+        const existingScript = document.querySelector(`script[src="${getClientScriptSrc()}"]`);
+      if (existingScript) {
+        document.head.removeChild(existingScript);
+      }
+          delete (window as any)[CALLBACK_ONLOAD];
+          delete (window as any)[CALLBACK_ONREADY];
+          delete (window as any)[CALLBACK_ONSUCCESS];
+          delete (window as any)[CALLBACK_ONERROR];
+        window.removeEventListener('ageverif:loaded', onLoaded as EventListener);
+        window.removeEventListener('loaded', onLoaded as EventListener);
+        window.removeEventListener('ageverif:ready', onReady as EventListener);
+        window.removeEventListener('ready', onReady as EventListener);
+        window.removeEventListener('ageverif:success', onSuccessEvt as EventListener);
+        window.removeEventListener('success', onSuccessEvt as EventListener);
+        window.removeEventListener('ageverif:error', onErrorEvt as EventListener);
+        window.removeEventListener('error', onErrorEvt as EventListener);
+    };
+  }, [onSuccess, onError, isLoaded]);
+
+  const startVerification = useCallback(async (opts?: any) => {
+    // If the script hasn't finished loading yet, wait up to a short timeout.
+    const maxWait = 10000; // ms
+    const interval = 200; // ms
+
+    let av: AgeVerif | null = ageverif;
+
+    if (!av) {
+      let waited = 0;
+      // quick synchronous check first
+      av = (window as any).ageverif || null;
+      while (!av && waited < maxWait) {
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise((res) => setTimeout(res, interval));
+        waited += interval;
+        av = (window as any).ageverif || null;
+        if (av) break;
+      }
+      // ensure isLoaded flag when we observed the script or timed out
+      if (!isLoaded) setIsLoaded(true);
+    }
+
+    if (!av || typeof av.start !== 'function') {
+      const err = new Error('AgeVerif client not available or missing start()');
+      setLastError(err);
+      onError?.(err);
+      throw err;
+    }
+
+    try {
+      if (pendingResult) {
+        throw new Error('Verification already in progress');
+      }
+      const resultPromise = new Promise((resolve, reject) => {
+        const r = { resolve, reject };
+        setPendingResult(r);
+        pendingRef.current = r;
+        // safety timeout to avoid hanging indefinitely
+        const t = window.setTimeout(() => {
+          try {
+            r.reject(new Error('AgeVerif timeout'));
+          } catch (err) {
+            // ignore
+          }
+          if (pendingRef.current === r) pendingRef.current = null;
+          setPendingResult(null);
+        }, 30000);
+        // wrap resolve/reject to clear timer
+        const origResolve = r.resolve;
+        const origReject = r.reject;
+        r.resolve = (v: any) => { clearTimeout(t); origResolve(v); };
+        r.reject = (e: any) => { clearTimeout(t); origReject(e); };
+        // write back updated r with wrapped functions
+        pendingRef.current = r;
+        setPendingResult(r);
+      });
+      av.start(opts);
+      const result = await resultPromise;
+      if (result && (result as any).verified) {
+        setIsVerified(true);
+        onSuccess?.();
+      }
+      try {
+        // eslint-disable-next-line no-console
+        console.log('[ageverif] startVerification resolved:', result);
+      } catch (e) {
+        // ignore
+      }
+      // keep stored instance in React state
+      setAgeverif(av);
+      return result as any;
+    } catch (error) {
+      setLastError(error);
+      onError?.(error);
+      throw error;
+    }
+  }, [isLoaded, ageverif, onSuccess, onError]);
+
+  return {
+    isLoaded,
+    isVerified,
+    lastError,
+    startVerification,
+  };
+}

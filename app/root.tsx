@@ -1,0 +1,629 @@
+import {useEffect, useState, type ReactNode, lazy, Suspense} from 'react';
+import {
+  json,
+  type LinksFunction,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+} from '@shopify/remix-oxygen';
+import {
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useLoaderData,
+  useRouteError,
+  isRouteErrorResponse,
+  Link,
+  useLocation,
+} from '@remix-run/react';
+import {useNonce} from '@shopify/hydrogen';
+import {ClientOnly} from './components/ClientOnly';
+import {MegaMenu, MobileMenu} from './components/navigation/MegaMenu';
+import {ShopifySearch} from './components/search/ShopifySearch';
+
+// Lazy load components that might use Headless UI
+const LazyCartDrawer = lazy(() => import('./components/cart/CartDrawer').then(m => ({default: m.CartDrawer})));
+const LazyInitialAgeVerificationModal = lazy(() => import('./components/compliance/InitialAgeVerificationModal').then(m => ({default: m.InitialAgeVerificationModal})));
+import {cn} from './lib/utils';
+import type {CartApiQueryFragment} from 'storefrontapi.generated';
+import './styles/globals.css';
+
+const SHOP_INFO_QUERY = `#graphql
+  query ShopInfo {
+    shop {
+      name
+      description
+      primaryDomain {
+        url
+      }
+    }
+  }
+` as const;
+
+export const links: LinksFunction = () => [
+  {rel: 'preconnect', href: 'https://cdn.shopify.com'},
+  {rel: 'preconnect', href: 'https://fonts.googleapis.com'},
+  {rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous'},
+  {rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'},
+  {rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png'},
+  {rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png'},
+  {rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png'},
+  {rel: 'manifest', href: '/site.webmanifest'},
+];
+
+export const meta: MetaFunction = () => [
+  {title: 'Vapourism | Premium Vaping Products & E-Liquids UK'},
+  {
+    name: 'description',
+    content:
+      'Shop premium vaping products, e-liquids, and accessories at Vapourism. Fast UK delivery, expert curation, and unbeatable prices on reusables, kits, and flavours.',
+  },
+  {name: 'theme-color', content: '#8b5cf6'},
+  {name: 'msapplication-TileColor', content: '#8b5cf6'},
+];
+
+interface LoaderData {
+  shop: {
+    name: string;
+    description?: string | null;
+    primaryDomain?: {
+      url: string;
+    } | null;
+  } | null;
+  env: Record<string, string | undefined>;
+  cart: CartApiQueryFragment | null;
+}
+
+export async function loader({context}: LoaderFunctionArgs) {
+  // Some dev SSR paths may call loaders before Hydrogen's context is attached.
+  // Be defensive: if `context` or `context.storefront` is missing, return
+  // sensible defaults so the app can render in dev without blowing up.
+  const storefront = context?.storefront ?? null;
+  const env = context?.env ?? (process.env as Record<string, string | undefined>);
+  const hydrogenCart = context?.cart ?? { get: async () => null };
+
+  let shop = null;
+  let cart = null;
+
+  if (storefront) {
+    const result = await Promise.all([
+      // SHOP_INFO_QUERY may fail when storefront is unavailable; only call when present
+      storefront.query(SHOP_INFO_QUERY),
+      hydrogenCart.get(),
+    ]);
+
+    shop = result[0]?.shop ?? null;
+    cart = result[1] ?? null;
+  }
+
+  return json<LoaderData>({
+    shop: shop ?? null,
+    env: {
+      PUBLIC_STORE_DOMAIN: env?.PUBLIC_STORE_DOMAIN,
+      USE_SHOPIFY_SEARCH: env.USE_SHOPIFY_SEARCH,
+      SHOPIFY_SEARCH_ROLLOUT: env.SHOPIFY_SEARCH_ROLLOUT,
+      COLLECTIONS_NAV_ROLLOUT: env.COLLECTIONS_NAV_ROLLOUT,
+      // Expose AgeVerif public keys to the client via window.ENV
+      AGEVERIF_PUBLIC_KEY: env?.AGEVERIF_PUBLIC_KEY || env?.PUBLIC_AGEVERIF_KEY,
+      PUBLIC_AGEVERIF_KEY: env?.PUBLIC_AGEVERIF_KEY || env?.AGEVERIF_PUBLIC_KEY,
+    },
+    cart: cart ?? null,
+  });
+}
+
+export default function App() {
+  const nonce = useNonce();
+  const data = useLoaderData<typeof loader>();
+  const location = useLocation();
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
+  const [cartSnapshot, setCartSnapshot] = useState<CartApiQueryFragment | null>(data.cart ?? null);
+  const [isAgeGateActive, setIsAgeGateActive] = useState(false);
+
+  useEffect(() => {
+    setCartSnapshot(data.cart ?? null);
+  }, [data.cart]);
+
+  const shopName = data.shop?.name ?? 'Vapourism';
+  
+  // Build canonical URL from current path (without query params for cleaner canonicals)
+  const siteUrl = data.shop?.primaryDomain?.url || 'https://vapourism.co.uk';
+  const canonicalUrl = `${siteUrl.replace(/\/$/, '')}${location.pathname}`;
+
+  return (
+    <html lang="en-GB">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <link rel="canonical" href={canonicalUrl} />
+        <Meta />
+        <Links />
+      </head>
+      <body className="bg-white text-slate-900 antialiased">
+        {isAgeGateActive && (
+          <div className="pointer-events-none fixed inset-0 z-[30] bg-white/40 backdrop-blur-[3px]" aria-hidden />
+        )}
+        <div className={cn('relative flex min-h-screen flex-col transition duration-300 ease-out')}>
+          <SiteHeader
+            shopName={shopName}
+            isMobileNavOpen={isMobileNavOpen}
+            onToggleMobileNav={(open) => setIsMobileNavOpen(open)}
+            onCartToggle={() => setIsCartDrawerOpen(true)}
+            cartCount={cartSnapshot?.totalQuantity ?? 0}
+          />
+
+          <ClientOnly fallback={null}>
+            {() => (
+              <MobileMenu
+                isOpen={isMobileNavOpen}
+                onClose={() => setIsMobileNavOpen(false)}
+              />
+            )}
+          </ClientOnly>
+
+          <main className="relative flex-1 bg-slate-50">
+            <div
+              className="pointer-events-none absolute inset-0 -z-10"
+              aria-hidden
+              style={{
+                backgroundImage:
+                  'radial-gradient(circle at top, rgba(167, 139, 250, 0.18), transparent 55%), radial-gradient(circle at bottom, rgba(56, 189, 248, 0.15), transparent 50%)',
+              }}
+            />
+            <div className="relative z-10">
+              <Outlet />
+            </div>
+          </main>
+
+          <GlobalPerksRail />
+
+          <SiteFooter shopName={shopName} description={data.shop?.description} />
+        </div>
+
+        <ClientOnly fallback={null}>
+          {() => (
+            <Suspense fallback={null}>
+              <LazyCartDrawer
+                isOpen={isCartDrawerOpen}
+                onClose={() => setIsCartDrawerOpen(false)}
+                fallbackCart={cartSnapshot}
+                onCartUpdate={setCartSnapshot}
+              />
+            </Suspense>
+          )}
+        </ClientOnly>
+
+        <ClientOnly fallback={null}>
+          {() => (
+            <Suspense fallback={null}>
+              <LazyInitialAgeVerificationModal onVisibilityChange={setIsAgeGateActive} />
+            </Suspense>
+          )}
+        </ClientOnly>
+
+        {/* Inline window.ENV assignment — DO NOT add nonce here. Some HMR / client-side
+            scripts are injected without nonce and React warns about mismatches when
+            the server includes a nonce attribute on a script node. To avoid noisy
+            hydration warnings in dev, keep this script without nonce. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.ENV = ${JSON.stringify(data.env ?? {})};`,
+          }}
+        />
+        <ScrollRestoration />
+        <Scripts nonce={nonce} />
+      </body>
+    </html>
+  );
+}
+
+function SiteHeader({
+  shopName,
+  isMobileNavOpen,
+  onToggleMobileNav,
+  onCartToggle,
+  cartCount,
+}: {
+  shopName: string;
+  isMobileNavOpen: boolean;
+  onToggleMobileNav: (open: boolean) => void;
+  onCartToggle: () => void;
+  cartCount: number;
+}) {
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+
+  return (
+    <header className="sticky top-0 z-50 border-b border-white/30 bg-white/85 shadow-[0_25px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl">
+      <div className="bg-slate-950 text-xs text-white">
+        <div className="mx-auto flex w-full max-w-[1920px] flex-wrap items-center justify-center gap-3 px-6 py-2 text-center">
+          <span className="flex items-center gap-1 text-emerald-300">
+            <span className="h-2 w-2 rounded-full bg-emerald-400" aria-hidden /> Free UK delivery £50+
+          </span>
+          <span className="hidden text-white/60 sm:inline">•</span>
+          <span className="font-semibold uppercase tracking-[0.35em] text-white/80">Order by 1pm for same-day dispatch</span>
+        </div>
+      </div>
+
+      <div className="mx-auto w-full max-w-[1920px] px-6">
+        <div className="flex flex-wrap items-center gap-4 py-4 lg:flex-nowrap">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm lg:hidden"
+              onClick={() => onToggleMobileNav(!isMobileNavOpen)}
+              aria-label="Toggle navigation"
+            >
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+
+            <Link to="/" className="flex items-center gap-3 text-2xl font-semibold tracking-tight text-slate-900">
+              <span className="text-gradient">{shopName}</span>
+            </Link>
+          </div>
+
+          {/* Desktop Mega Menu */}
+          <div className="hidden flex-1 lg:block">
+            <MegaMenu />
+          </div>
+
+          <div className="ml-auto flex items-center gap-3">
+            <div className="hidden min-w-[240px] max-w-sm lg:block">
+              <ShopifySearch placeholder="Search flavours, kits, or brands" showQuickQueries={false} />
+            </div>
+            <HeaderIconButton
+              label="Toggle search"
+              className="lg:hidden"
+              onClick={() => setIsMobileSearchOpen((open) => !open)}
+            >
+              <MagnifierIcon />
+            </HeaderIconButton>
+            <HeaderIconButton to="/account" label="Account">
+              <UserIcon />
+            </HeaderIconButton>
+            <HeaderIconButton label="Cart" onClick={onCartToggle}>
+              <span className="relative inline-flex">
+                <CartIcon />
+                {cartCount > 0 && (
+                  <span className="absolute -right-1.5 -top-1 rounded-full bg-rose-500 px-1.5 text-[10px] font-semibold leading-4 text-white">
+                    {cartCount > 99 ? '99+' : cartCount}
+                  </span>
+                )}
+              </span>
+            </HeaderIconButton>
+          </div>
+        </div>
+
+        {isMobileSearchOpen && (
+          <div className="pb-4 lg:hidden">
+            <ShopifySearch placeholder="Search flavours, kits, or brands" showQuickQueries={false} />
+          </div>
+        )}
+      </div>
+    </header>
+  );
+}
+
+function GlobalPerksRail() {
+  const perks = [
+    {
+      title: 'Free next-day delivery',
+      description: 'On all orders over £50 across mainland UK.',
+      icon: (
+        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M3 7h13v10a1 1 0 01-1 1H4a1 1 0 01-1-1V7zm13 0h3.5a1 1 0 01.948.684l1.5 4.5A1 1 0 0121 13h-5"
+          />
+          <circle cx="7.5" cy="17.5" r="1.5" />
+          <circle cx="17" cy="17.5" r="1.5" />
+        </svg>
+      ),
+    },
+    {
+      title: '30-day returns',
+      description: 'Hassle-free exchanges on unopened products.',
+      icon: (
+        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4 4h9a4 4 0 014 4v0" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M20 20h-9a4 4 0 01-4-4V7.5M20 20l-4-4m4 4l-4 4"
+          />
+        </svg>
+      ),
+    },
+    {
+      title: 'Expert support',
+      description: 'Real humans who vape—available 7 days a week.',
+      icon: (
+        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 12a5 5 0 100-10 5 5 0 000 10z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3 21a9 9 0 0118 0" />
+        </svg>
+      ),
+    },
+  ];
+
+  return (
+    <section className="border-y border-slate-200 bg-white">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8 md:flex-row md:items-center md:justify-between">
+        {perks.map((perk) => (
+          <div key={perk.title} className="flex flex-1 items-start gap-4">
+            <div className="rounded-2xl bg-slate-100 p-3 text-slate-700">{perk.icon}</div>
+            <div>
+              <p className="text-sm font-semibold text-slate-900">{perk.title}</p>
+              <p className="text-sm text-slate-600">{perk.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+interface HeaderIconButtonProps {
+  to?: string;
+  label: string;
+  children: ReactNode;
+  className?: string;
+  onClick?: () => void;
+}
+
+function HeaderIconButton({to, label, children, className, onClick}: HeaderIconButtonProps) {
+  const mergedClassName = [
+    'inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white/80 text-slate-600 shadow-sm transition hover:border-slate-300 hover:text-slate-900',
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  if (to) {
+    return (
+      <Link to={to} aria-label={label} className={mergedClassName}>
+        {children}
+      </Link>
+    );
+  }
+
+  return (
+    <button type="button" aria-label={label} onClick={onClick} className={mergedClassName}>
+      {children}
+    </button>
+  );
+}
+
+const MagnifierIcon = () => (
+  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+    <circle cx="11" cy="11" r="7" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 16.5L21 21" />
+  </svg>
+);
+
+const UserIcon = () => (
+  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 12a5 5 0 100-10 5 5 0 000 10z" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3 21a9 9 0 0118 0" />
+  </svg>
+);
+
+const CartIcon = () => (
+  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M3 3h2l.4 2M7 13h10l3-8H6.4M7 13L5.4 5M7 13l-2 9h14M10 21a1 1 0 11-2 0 1 1 0 012 0zm8 0a1 1 0 11-2 0 1 1 0 012 0z"
+    />
+  </svg>
+);
+
+function SiteFooter({
+  shopName,
+  description,
+}: {
+  shopName: string;
+  description?: string | null;
+}) {
+  return (
+    <footer className="bg-gray-900 text-white mt-16">
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Company Info */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">{shopName}</h3>
+            <p className="text-gray-300 mb-4">
+              {description || 'Your trusted UK vaping retailer offering premium e-liquids, devices, and accessories.'}
+            </p>
+            <div className="flex space-x-4">
+              <button className="text-gray-400 hover:text-white transition-colors" aria-label="Facebook">
+                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+              </button>
+              <button className="text-gray-400 hover:text-white transition-colors" aria-label="Instagram">
+                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12.017 0C8.396 0 7.996.014 6.79.067 5.584.12 4.775.302 4.084.605c-.713.309-1.317.905-1.626 1.618C2.15 3.536 1.968 4.345 1.915 5.551c-.053 1.206-.067 1.606-.067 5.227s.014 4.021.067 5.227c.053 1.206.235 2.015.528 2.706.309.713.905 1.317 1.618 1.626.691.293 1.5.475 2.706.528 1.206.053 1.606.067 5.227.067s4.021-.014 5.227-.067c1.206-.053 2.015-.235 2.706-.528.713-.309 1.317-.905 1.626-1.618.293-.691.475-1.5.528-2.706.053-1.206.067-1.606.067-5.227s-.014-4.021-.067-5.227c-.053-1.206-.235-2.015-.528-2.706-.309-.713-.905-1.317-1.618-1.626C19.464.302 18.655.12 17.449.067 16.243.014 15.843 0 12.222 0h-.205c-.001 0-.003 0-.004 0zm.195 2.509c4.378 0 4.778.016 6.468.096 1.562.075 2.403.332 2.978.696.631.4 1.142.935 1.542 1.566.364.575.621 1.416.696 2.978.08 1.69.096 2.09.096 6.468s-.016 4.778-.096 6.468c-.075 1.562-.332 2.403-.696 2.978-.4.631-.935 1.142-1.566 1.542-.575.364-1.416.621-2.978.696-1.69.08-2.09.096-6.468.096s-4.778-.016-6.468-.096c-1.562-.075-2.403-.332-2.978-.696-.631-.4-1.142-.935-1.542-1.566-.364-.575-.621-1.416-.696-2.978-.08-1.69-.096-2.09-.096-6.468s.016-4.778.096-6.468c.075-1.562.332-2.403.696-2.978.4-.631.935-1.142 1.566-1.542.575-.364 1.416-.621 2.978-.696 1.69-.08 2.09-.096 6.468-.096zm0 2.474c-4.511 0-8.166.034-8.166 8.166s3.655 8.166 8.166 8.166 8.166-3.655 8.166-8.166S16.703 5.749 12.212 5.749zm0 13.332c-2.942 0-5.332-2.39-5.332-5.332s2.39-5.332 5.332-5.332 5.332 2.39 5.332 5.332-2.39 5.332-5.332 5.332zm8.474-13.662c-1.055 0-1.91.855-1.91 1.91s.855 1.91 1.91 1.91 1.91-.855 1.91-1.91-.855-1.91-1.91-1.91z"/>
+                </svg>
+              </button>
+              <button className="text-gray-400 hover:text-white transition-colors" aria-label="Twitter">
+                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Shopping Links */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Shopping</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/search?tag=disposable" className="text-gray-300 hover:text-white transition-colors">
+                  Reusables
+                </Link>
+              </li>
+              <li>
+                <Link to="/search?tag=e-liquid" className="text-gray-300 hover:text-white transition-colors">
+                  E-Liquids
+                </Link>
+              </li>
+              <li>
+                <Link to="/search?tag=device" className="text-gray-300 hover:text-white transition-colors">
+                  Devices
+                </Link>
+              </li>
+              <li>
+                <Link to="/search?tag=accessory" className="text-gray-300 hover:text-white transition-colors">
+                  Accessories
+                </Link>
+              </li>
+              <li>
+                <Link to="/search" className="text-gray-300 hover:text-white transition-colors">
+                  All Products
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Customer Service */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Customer Service</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/policies/delivery-information" className="text-gray-300 hover:text-white transition-colors">
+                  Delivery Information
+                </Link>
+              </li>
+              <li>
+                <Link to="/policies/returns-policy" className="text-gray-300 hover:text-white transition-colors">
+                  Returns & Refunds
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="text-gray-300 hover:text-white transition-colors">
+                  Contact Us
+                </Link>
+              </li>
+              <li>
+                <Link to="/faq" className="text-gray-300 hover:text-white transition-colors">
+                  FAQ
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Policies */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Legal</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/policies/terms-of-service" className="text-gray-300 hover:text-white transition-colors">
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link to="/policies/privacy-policy" className="text-gray-300 hover:text-white transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/policies/cookie-policy" className="text-gray-300 hover:text-white transition-colors">
+                  Cookie Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/age-verification" className="text-gray-300 hover:text-white transition-colors">
+                  Age Verification
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Delivery Information Section */}
+        <div className="border-t border-gray-800 mt-8 pt-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-400 mb-2">FREE</div>
+              <div className="text-sm text-gray-300">Delivery on orders over £25</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-blue-400 mb-2">1-2 Days</div>
+              <div className="text-sm text-gray-300">Express delivery available</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-purple-400 mb-2">14 Days</div>
+              <div className="text-sm text-gray-300">Free returns policy</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Newsletter Signup */}
+        <div className="border-t border-gray-800 mt-8 pt-8">
+          <div className="max-w-md mx-auto text-center">
+            <h3 className="text-lg font-semibold mb-4">Stay Updated</h3>
+            <p className="text-gray-300 mb-4">Subscribe to our newsletter for the latest products and offers</p>
+            <div className="flex">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-l-md focus:outline-none focus:border-blue-500 text-white placeholder-gray-400"
+              />
+              <button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-r-md transition-colors font-semibold">
+                Subscribe
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+          <div className="text-gray-400 text-sm mb-4 md:mb-0">
+            © {new Date().getFullYear()} {shopName}. All rights reserved.
+          </div>
+          <div className="flex items-center space-x-4 text-sm text-gray-400">
+            <span>Company Number: GB 504 6116 26</span>
+            <span>•</span>
+            <span>VAT Number: GB 123 4567 89</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  const isRouteError = isRouteErrorResponse(error);
+
+  return (
+    <html lang="en-GB">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Error | Vapourism</title>
+      </head>
+      <body className="flex min-h-screen flex-col bg-white text-gray-900">
+        <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-center px-4 text-center">
+          <h1 className="text-4xl font-bold">
+            {isRouteError ? error.status : 'Unexpected error'}
+          </h1>
+          <p className="mt-4 text-gray-600">
+            {isRouteError ? error.data : (error as Error)?.message ?? 'Something went wrong.'}
+          </p>
+          <Link
+            to="/"
+            className="mt-8 inline-flex items-center rounded-md bg-purple-600 px-6 py-3 font-semibold text-white hover:bg-purple-700"
+          >
+            Back to safety
+          </Link>
+        </div>
+        <Scripts />
+      </body>
+    </html>
+  );
+}

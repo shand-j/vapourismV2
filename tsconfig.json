@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["app/*"]
+    },
+    "types": [
+      "@shopify/oxygen-workers-types",
+      "@remix-run/server-runtime",
+      "vite/client"
+    ]
+  },
+  "include": [
+    "app",
+    "server.ts",
+    "env.d.ts",
+    "vite.config.ts",
+    "tailwind.config.js",
+    "tests",
+    "vitest.config.ts",
+    ".graphqlrc.ts"
+  ]
+}

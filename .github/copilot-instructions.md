@@ -133,7 +133,9 @@ Note: Algolia environment variables and client keys are deprecated in V2 — Alg
 
 ### Deployment
 - **Platform**: Shopify Oxygen (Cloudflare Workers runtime)
-- **CI/CD**: `.github/workflows/oxygen-deployment-1000039061.yml`
+- **CI/CD**: `.github/workflows/oxygen-deployment.yml`
+- **Strategy**: `main` branch deploys to production, all other branches deploy to preview
+- **Storefront ID**: 1000063397
 - **Build**: Vite produces Oxygen-compatible worker bundle
 
 ## Component Patterns

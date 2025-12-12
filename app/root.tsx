@@ -21,6 +21,7 @@ import {useNonce} from '@shopify/hydrogen';
 import {ClientOnly} from './components/ClientOnly';
 import {MegaMenu, MobileMenu} from './components/navigation/MegaMenu';
 import {ShopifySearch} from './components/search/ShopifySearch';
+import {CookieConsent} from './components/CookieConsent';
 
 // Lazy load components that might use Headless UI
 const LazyCartDrawer = lazy(() => import('./components/cart/CartDrawer').then(m => ({default: m.CartDrawer})));
@@ -107,6 +108,8 @@ export async function loader({context}: LoaderFunctionArgs) {
       // Expose AgeVerif public keys to the client via window.ENV
       AGEVERIF_PUBLIC_KEY: env?.AGEVERIF_PUBLIC_KEY || env?.PUBLIC_AGEVERIF_KEY,
       PUBLIC_AGEVERIF_KEY: env?.PUBLIC_AGEVERIF_KEY || env?.AGEVERIF_PUBLIC_KEY,
+      // GA4 Measurement ID for analytics
+      GA4_MEASUREMENT_ID: env?.GA4_MEASUREMENT_ID,
     },
     cart: cart ?? null,
   });
@@ -130,6 +133,9 @@ export default function App() {
   // Build canonical URL from current path (without query params for cleaner canonicals)
   const siteUrl = data.shop?.primaryDomain?.url || 'https://vapourism.co.uk';
   const canonicalUrl = `${siteUrl.replace(/\/$/, '')}${location.pathname}`;
+  
+  // GA4 Measurement ID
+  const ga4MeasurementId = data.env?.GA4_MEASUREMENT_ID;
 
   return (
     <html lang="en-GB">
@@ -139,6 +145,39 @@ export default function App() {
         <link rel="canonical" href={canonicalUrl} />
         <Meta />
         <Links />
+        
+        {/* Google Analytics 4 - with consent mode defaulting to denied */}
+        {ga4MeasurementId && (
+          <>
+            <script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${ga4MeasurementId}`}
+            />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  
+                  // Default consent to denied - will be updated by CookieConsent
+                  gtag('consent', 'default', {
+                    'analytics_storage': 'denied',
+                    'ad_storage': 'denied',
+                    'ad_user_data': 'denied',
+                    'ad_personalization': 'denied',
+                    'wait_for_update': 500
+                  });
+                  
+                  gtag('js', new Date());
+                  gtag('config', '${ga4MeasurementId}', {
+                    page_path: window.location.pathname,
+                    anonymize_ip: true
+                  });
+                `,
+              }}
+            />
+          </>
+        )}
       </head>
       <body className="bg-white text-slate-900 antialiased">
         {isAgeGateActive && (
@@ -200,6 +239,11 @@ export default function App() {
               <LazyInitialAgeVerificationModal onVisibilityChange={setIsAgeGateActive} />
             </Suspense>
           )}
+        </ClientOnly>
+
+        {/* Cookie Consent Banner - GDPR compliance */}
+        <ClientOnly fallback={null}>
+          {() => <CookieConsent />}
         </ClientOnly>
 
         {/* Inline window.ENV assignment — DO NOT add nonce here. Some HMR / client-side

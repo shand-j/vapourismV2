@@ -6,9 +6,37 @@ This document outlines the strategy for deploying V2 architecture changes to pro
 ## Pre-Deployment Checklist
 
 ### 1. Environment Configuration
-- [ ] Set `USE_SHOPIFY_SEARCH=true` in Oxygen environment variables
-- [ ] Verify `SESSION_SECRET` is configured
-- [ ] Confirm Shopify Storefront API credentials are valid
+
+**Required Environment Variables:**
+- [ ] `SESSION_SECRET` - Secure random string for session encryption (required)
+- [ ] `PUBLIC_STORE_DOMAIN` - Your Shopify store domain (e.g., your-store.myshopify.com)
+- [ ] `PRIVATE_SHOPIFY_ADMIN_TOKEN` or `SHOPIFY_ADMIN_TOKEN` - Admin API access token
+- [ ] `USE_SHOPIFY_SEARCH=true` - Enable Shopify-native search
+- [ ] `SHOPIFY_SEARCH_ROLLOUT=100` - Full rollout percentage (0-100)
+- [ ] `COLLECTIONS_NAV_ROLLOUT=100` - Collections navigation rollout (0-100)
+- [ ] `ENABLE_BRAND_ASSETS=true` - Enable brand media packs on PDPs
+
+**Optional Environment Variables:**
+- [ ] `PUBLIC_CHECKOUT_DOMAIN` - Custom checkout domain (if different from store domain)
+- [ ] `AGEVERIF_PUBLIC_KEY` - JWT public key for AgeVerif integration
+- [ ] `AGEVERIF_WEBHOOK_SECRET` - HMAC secret for AgeVerif webhooks
+- [ ] `AGE_VERIF_METAFIELD_NAMESPACE` - Metafield namespace (default: vapourism)
+- [ ] `AGE_VERIF_METAFIELD_KEY` - Metafield key (default: age_verification)
+- [ ] `AGEVERIF_CREATE_CUSTOMER=false` - Auto-create customer from guest orders
+- [ ] `AGEVERIF_DEBUG=false` - Enable debug logging
+
+**Oxygen Environment Setup:**
+```bash
+# Set environment variables in Oxygen dashboard or via CLI
+oxygen env set SESSION_SECRET "your-secure-random-string"
+oxygen env set PUBLIC_STORE_DOMAIN "your-store.myshopify.com"
+oxygen env set PRIVATE_SHOPIFY_ADMIN_TOKEN "shpat_xxxxx"
+oxygen env set USE_SHOPIFY_SEARCH "true"
+oxygen env set SHOPIFY_SEARCH_ROLLOUT "100"
+oxygen env set COLLECTIONS_NAV_ROLLOUT "100"
+oxygen env set ENABLE_BRAND_ASSETS "true"
+```
+
 - [ ] Test Oxygen runtime compatibility (no Node.js APIs used)
 
 ### 2. Shopify Admin Setup
@@ -27,10 +55,12 @@ This document outlines the strategy for deploying V2 architecture changes to pro
 - [ ] Security scanning (CodeQL) passed
 
 ### 4. Performance Baselines
-- [ ] Measure current Algolia search latency
+- [ ] Measure current Shopify search latency
 - [ ] Measure current page load times
 - [ ] Document Core Web Vitals (LCP, FID, CLS)
 - [ ] Establish acceptable performance thresholds
+
+**Note:** Legacy Algolia has been removed from V2. All search functionality now uses Shopify Storefront API.
 
 ## Phased Rollout Strategy
 
@@ -64,128 +94,88 @@ This document outlines the strategy for deploying V2 architecture changes to pro
 
 ---
 
-### Phase 2: Feature Flag Rollout - Search (Week 2)
-**Goal:** Enable Shopify search for 10% of production traffic
+### Phase 2: GTM Production Deployment
+**Goal:** Deploy V2 with full Shopify-native search and collections navigation
+
+**Status:** ✅ Legacy Algolia removed - V2 is Shopify-native only
 
 **Implementation:**
 ```typescript
-// In v2/app/lib/shopify-search.ts
-export function useShopifySearch(env?: any): boolean {
-  const rolloutPercent = parseFloat(env?.SHOPIFY_SEARCH_ROLLOUT || '10');
-  const userRandom = Math.random() * 100;
-  
-  if (userRandom < rolloutPercent) {
-    return true; // Use Shopify search
-  }
-  return false; // Use Algolia fallback
-}
+// Environment variables for full production deployment
+USE_SHOPIFY_SEARCH=true
+SHOPIFY_SEARCH_ROLLOUT=100  // 100% of traffic
+COLLECTIONS_NAV_ROLLOUT=100  // 100% of traffic
+ENABLE_BRAND_ASSETS=true
 ```
+
+**Pre-Deployment Verification:**
+- Verify all environment variables are set in Oxygen
+- Confirm Shopify collections are created and populated
+- Test search functionality on staging
+- Validate brand media packs are loading correctly
+- Run full regression test suite
 
 **Monitoring:**
 - Track search query success rates
 - Monitor search latency (p50, p95, p99)
 - Watch for error rates
-- Collect user feedback
+- Monitor conversion rates
+- Track Core Web Vitals
 
 **Success Criteria:**
 - Search success rate > 98%
 - p95 latency < 500ms
 - Error rate < 0.5%
-- No user complaints
+- Core Web Vitals in "Good" range
+- No increase in cart abandonment
 
-**Rollback:** Set `SHOPIFY_SEARCH_ROLLOUT=0` in Oxygen env vars
+**Rollback:** Revert deployment via Oxygen dashboard if critical issues detected
 
 ---
 
-### Phase 3: Feature Flag Rollout - Collections Navigation (Week 3)
-**Goal:** Enable collections-based navigation for 25% of traffic
+### Phase 3: Post-Launch Monitoring (Week 1-2)
+**Goal:** Monitor production performance and user experience
 
-**Implementation:**
-```typescript
-// In v2/app/routes/_index.tsx
-export function useCollectionsNav(env?: any): boolean {
-  const rolloutPercent = parseFloat(env?.COLLECTIONS_NAV_ROLLOUT || '25');
-  const userRandom = Math.random() * 100;
-  
-  return userRandom < rolloutPercent;
-}
-```
+**Key Metrics:**
+- Search performance (latency, success rate, zero-results)
+- Navigation metrics (CTR, page load times)
+- Business metrics (conversion rate, AOV, cart abandonment)
+- Error rates and logs
+- Core Web Vitals (LCP, FID, CLS)
+- User feedback and support tickets
 
-**Monitoring:**
-- Track navigation click-through rates
-- Monitor collection page load times
-- Watch for 404 errors (redirect failures)
-- Measure conversion rates
+**Daily Actions:**
+- Review error logs for patterns
+- Monitor conversion funnel
+- Check search analytics in GA4
+- Track any 404 errors or broken redirects
+- Review user feedback and complaints
 
 **Success Criteria:**
-- Navigation CTR maintains or improves baseline
-- Collection page p95 load < 2s
-- 404 rate < 0.1%
-- Conversion rate within 5% of baseline
-
-**Rollback:** Set `COLLECTIONS_NAV_ROLLOUT=0`
+- All metrics within expected ranges
+- No critical bugs reported
+- User feedback positive
+- Conversion rate stable or improved
 
 ---
 
-### Phase 4: Full Search Rollout (Week 4)
-**Goal:** 100% Shopify search, remove Algolia
+### Phase 4: Optimization Phase (Week 3-4)
+**Goal:** Fine-tune performance and user experience based on production data
 
-**Steps:**
-1. Set `SHOPIFY_SEARCH_ROLLOUT=100`
-2. Monitor for 48 hours
-3. If stable, remove Algolia dependencies:
-   - `npm uninstall algoliasearch react-instantsearch`
-   - Delete `app/lib/algolia.ts`
-   - Delete `app/components/AlgoliaHeaderSearch.tsx`
-4. Deploy cleanup changes
+**Potential Optimizations:**
+- Adjust search ranking algorithms if needed
+- Optimize collection page performance
+- Fine-tune brand media pack loading
+- Improve cache strategies
+- Update product tags for better search results
 
-**Success Criteria:**
-- No increase in error rates
-- Search metrics maintain Phase 2 levels
-- User feedback remains positive
-
-**Rollback:** 
-1. Redeploy previous version with Algolia
-2. Set `SHOPIFY_SEARCH_ROLLOUT=0`
-3. Investigate issues before retry
+**Actions:**
+- Analyze search query data for gaps
+- Review slow-loading pages
+- Optimize image loading strategies
+- Consider A/B testing opportunities
 
 ---
-
-### Phase 5: Full Collections Navigation (Week 5)
-**Goal:** 100% collections navigation, remove category-mapping
-
-**Steps:**
-1. Set `COLLECTIONS_NAV_ROLLOUT=100`
-2. Monitor for 48 hours
-3. If stable, remove legacy code:
-   - Delete `app/lib/category-mapping.ts`
-   - Update header component to remove legacy nav
-4. Deploy cleanup changes
-
-**Success Criteria:**
-- Navigation metrics maintain Phase 3 levels
-- No increase in bounce rate
-- SEO traffic stable or improved
-
-**Rollback:**
-1. Redeploy previous version with category-mapping
-2. Set `COLLECTIONS_NAV_ROLLOUT=0`
-3. Investigate redirect issues
-
----
-
-### Phase 6: Brand Media Pack Rollout (Week 6)
-**Goal:** Display brand assets on product pages
-
-**Implementation:**
-- Brand assets load for brands with media packs (currently 2)
-- Lazy loading prevents performance impact
-- Graceful fallbacks for brands without assets
-
-**Monitoring:**
-- Measure PDP (Product Detail Page) load times
-- Track image load failures
-- Monitor conversion rates on pages with/without brand assets
 
 **Success Criteria:**
 - PDP load time increase < 200ms
@@ -209,32 +199,36 @@ export function useCollectionsNav(env?: any): boolean {
 
 **Alternative - Feature Flag Disable:**
 ```bash
-# Disable Shopify search
+# Disable Shopify search (fallback to basic search)
 oxygen env set SHOPIFY_SEARCH_ROLLOUT 0
 
-# Disable collections navigation
+# Disable collections navigation (fallback to basic nav)
 oxygen env set COLLECTIONS_NAV_ROLLOUT 0
+
+# Disable brand assets
+oxygen env set ENABLE_BRAND_ASSETS false
 ```
+
+**Note:** V2 is fully Shopify-native with no legacy Algolia fallback. Emergency rollback should revert to the last stable deployment.
 
 ### Partial Rollback (Feature-Specific)
 **Use when:** One feature is problematic, others are stable
 
 **Search Issues:**
-- Set `SHOPIFY_SEARCH_ROLLOUT=0`
-- Monitor Algolia fallback performance
-- Fix search issues offline
-- Re-enable with lower percentage
+- Set `SHOPIFY_SEARCH_ROLLOUT=0` to disable advanced search features
+- Investigate and fix issues in staging
+- Re-enable gradually
 
 **Navigation Issues:**
-- Set `COLLECTIONS_NAV_ROLLOUT=0`
-- Verify legacy URLs working
+- Set `COLLECTIONS_NAV_ROLLOUT=0` to simplify navigation
+- Verify collection redirects are working
 - Fix collection setup in Shopify admin
 - Re-enable gradually
 
 **Brand Assets Issues:**
-- Remove `<BrandSection>` component temporarily
-- Fix manifest or image loading
-- Redeploy with fixes
+- Set `ENABLE_BRAND_ASSETS=false` temporarily
+- Fix manifest or image loading issues
+- Re-enable after verification
 
 ---
 

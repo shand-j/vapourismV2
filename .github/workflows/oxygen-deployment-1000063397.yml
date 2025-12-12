@@ -1,5 +1,5 @@
-name: Deploy to Oxygen
-on: [push, workflow_dispatch, pull_request]
+name: Storefront 1000063397
+on: [push]
 
 permissions:
   contents: read
@@ -35,8 +35,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Branch Based deployment logic applied in hydrogen
-      - name: Deploy
+      - name: Build and Publish to Oxygen
         run: npx shopify hydrogen deploy
         env:
           SHOPIFY_HYDROGEN_DEPLOYMENT_TOKEN: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_1000063397 }}

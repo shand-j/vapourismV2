@@ -203,7 +203,7 @@ const SEARCH_QUERY = `#graphql
  * @param storefront - Hydrogen Storefront client
  * @param query - Search query string
  * @param limit - Maximum results per type (default: 10)
- * @param types - Types to search (default: [PRODUCT, COLLECTION])
+ * @param types - Types to search (default: [PRODUCT] - collections not used)
  * @returns Predictive search results
  */
 export async function predictiveSearch(

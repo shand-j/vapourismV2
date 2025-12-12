@@ -69,10 +69,10 @@ export function SearchResults({
         </p>
         <div className="mt-6">
           <Link
-            to="/collections"
+            to="/search"
             className="inline-flex items-center gap-2 rounded-full gradient-brand px-6 py-3 text-sm font-semibold text-white shadow-md"
           >
-            Browse Collections
+            Browse All Products
           </Link>
         </div>
       </div>

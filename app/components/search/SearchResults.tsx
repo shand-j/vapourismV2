@@ -65,7 +65,7 @@ export function SearchResults({
           }
         </p>
         <p className="mt-2 text-xs text-slate-400">
-          Try different keywords, check your spelling, or browse our collections
+          Try different keywords, check your spelling, or browse by category
         </p>
         <div className="mt-6">
           <Link

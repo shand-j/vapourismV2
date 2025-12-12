@@ -93,9 +93,8 @@ export async function loader({
     sitemaps.push(`  <sitemap><loc>${baseUrl}/sitemap/products/${i}.xml</loc></sitemap>`);
   }
   
-  // Add collections and pages sitemaps
+  // Add pages sitemap (collections not used - tag-based navigation only)
   sitemaps.push(
-    `  <sitemap><loc>${baseUrl}/sitemap/collections/1.xml</loc></sitemap>`,
     `  <sitemap><loc>${baseUrl}/sitemap/pages/1.xml</loc></sitemap>`
   );
 

@@ -103,7 +103,6 @@ export async function loader({context}: LoaderFunctionArgs) {
       PUBLIC_STORE_DOMAIN: env?.PUBLIC_STORE_DOMAIN,
       USE_SHOPIFY_SEARCH: env.USE_SHOPIFY_SEARCH,
       SHOPIFY_SEARCH_ROLLOUT: env.SHOPIFY_SEARCH_ROLLOUT,
-      COLLECTIONS_NAV_ROLLOUT: env.COLLECTIONS_NAV_ROLLOUT,
       // Expose AgeVerif public keys to the client via window.ENV
       AGEVERIF_PUBLIC_KEY: env?.['AGEVERIF_PUBLIC_KEY'] || env?.['PUBLIC_AGEVERIF_KEY'],
       PUBLIC_AGEVERIF_KEY: env?.['PUBLIC_AGEVERIF_KEY'] || env?.['AGEVERIF_PUBLIC_KEY'],

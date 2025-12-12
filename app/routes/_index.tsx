@@ -217,8 +217,59 @@ export default function IndexRoute() {
 
   const brandPlaceholders = [1, 2, 3];
 
+  // Organization schema for rich results
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Vapourism',
+    url: 'https://www.vapourism.co.uk',
+    logo: 'https://www.vapourism.co.uk/vapourism-logo.png',
+    description: 'Premium vaping essentials with trusted age verification and next-day UK delivery.',
+    address: {
+      '@type': 'PostalAddress',
+      addressCountry: 'GB',
+      addressRegion: 'West Sussex',
+    },
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'customer service',
+      email: 'support@vapourism.co.uk',
+    },
+    sameAs: [
+      'https://www.facebook.com/vapourism',
+      'https://www.instagram.com/vapourism',
+      'https://twitter.com/vapourism',
+    ],
+  };
+
+  // WebSite schema with SearchAction for sitelinks searchbox
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Vapourism',
+    url: 'https://www.vapourism.co.uk',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: 'https://www.vapourism.co.uk/search?q={search_term_string}',
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  };
+
   return (
     <div className="bg-gradient-to-b from-slate-50 via-white to-white">
+      {/* Organization and WebSite structured data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{__html: JSON.stringify(organizationSchema)}}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{__html: JSON.stringify(websiteSchema)}}
+      />
+
       {/* Hero Section with integrated Flavour Lab / Device Studio */}
       <section className="relative overflow-hidden bg-gradient-to-br from-white via-slate-50 to-blue-50 text-slate-900">
         <div className="container-custom py-12 lg:py-20">

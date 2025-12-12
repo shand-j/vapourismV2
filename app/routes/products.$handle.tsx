@@ -12,6 +12,7 @@ import {getBrandAssets} from '../lib/brand-assets';
 import {BrandSection} from '../components/brand/BrandSection';
 import {SEOAutomationService} from '../preserved/seo-automation';
 import {cn} from '../lib/utils';
+import {trackViewItem, trackAddToCart, shopifyProductToGA4Item} from '../lib/analytics';
 
 /**
  * UK VAT rate (20%)
@@ -208,6 +209,23 @@ export default function ProductPage() {
     () => variantNodes.find((variant) => variant.id === selectedVariantId) ?? firstVariant,
     [variantNodes, selectedVariantId, firstVariant],
   );
+  
+  // GA4: Track product view on page load
+  useEffect(() => {
+    const price = Number.parseFloat(product.priceRange.minVariantPrice.amount);
+    trackViewItem({
+      currency: product.priceRange.minVariantPrice.currencyCode || 'GBP',
+      value: price,
+      items: [shopifyProductToGA4Item({
+        id: product.id,
+        title: product.title,
+        vendor: product.vendor,
+        productType: product.productType,
+        price: product.priceRange.minVariantPrice,
+      })],
+    });
+  }, [product.id, product.title, product.vendor, product.productType, product.priceRange.minVariantPrice]);
+  
   const normalizedFeaturedImage = normalizeImage(product.featuredImage);
   const galleryImages = useMemo(
     () => product.images.edges.map(({node}: (typeof product.images.edges)[number]) => normalizeImage(node)).filter(Boolean) as ImageLike[],
@@ -328,6 +346,22 @@ export default function ProductPage() {
         setSyncedQuantity(quantity);
       }
       setConfirmationStatus('added');
+      
+      // GA4: Track add to cart event
+      const price = Number.parseFloat(selectedVariant?.price.amount ?? product.priceRange.minVariantPrice.amount);
+      trackAddToCart({
+        currency: selectedVariant?.price.currencyCode ?? 'GBP',
+        value: price * (serverQuantity ?? quantity),
+        items: [shopifyProductToGA4Item({
+          id: selectedVariant?.id ?? product.id,
+          title: product.title,
+          vendor: product.vendor,
+          productType: product.productType,
+          price: selectedVariant?.price ?? product.priceRange.minVariantPrice,
+          variantTitle: selectedVariant?.title,
+          quantity: serverQuantity ?? quantity,
+        })],
+      });
     } else if (status === 'updated') {
       if (typeof serverQuantity === 'number') {
         setSyncedQuantity(serverQuantity);
@@ -336,7 +370,7 @@ export default function ProductPage() {
     } else if (status === 'error') {
       setConfirmationStatus('error');
     }
-  }, [cartFetcher.state, cartFetcher.data, quantity]);
+  }, [cartFetcher.state, cartFetcher.data, quantity, selectedVariant, product]);
 
   const isSubmittingToCart = cartFetcher.state !== 'idle';
   const confirmationCopy = confirmationStatus === 'added'
@@ -347,8 +381,73 @@ export default function ProductPage() {
     ? 'Cart error — please retry'
     : null;
 
+  // Generate JSON-LD structured data for the product
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.title,
+    description: product.description,
+    image: product.featuredImage?.url,
+    brand: {
+      '@type': 'Brand',
+      name: product.vendor,
+    },
+    sku: selectedVariant?.id?.replace('gid://shopify/ProductVariant/', '') ?? product.id.replace('gid://shopify/Product/', ''),
+    offers: {
+      '@type': 'Offer',
+      url: `https://vapourism.co.uk/products/${product.handle}`,
+      priceCurrency: selectedVariant?.price.currencyCode ?? 'GBP',
+      price: selectedVariant?.price.amount ?? product.priceRange.minVariantPrice.amount,
+      availability: product.availableForSale 
+        ? 'https://schema.org/InStock' 
+        : 'https://schema.org/OutOfStock',
+      itemCondition: 'https://schema.org/NewCondition',
+      seller: {
+        '@type': 'Organization',
+        name: 'Vapourism',
+      },
+    },
+    category: product.productType || 'Vaping Products',
+  };
+
+  // Generate breadcrumb schema
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://vapourism.co.uk',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Products',
+        item: 'https://vapourism.co.uk/search',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: product.title,
+        item: `https://vapourism.co.uk/products/${product.handle}`,
+      },
+    ],
+  };
+
   return (
     <div className="bg-gradient-to-b from-white via-slate-50 to-white">
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{__html: JSON.stringify(productSchema)}}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{__html: JSON.stringify(breadcrumbSchema)}}
+      />
+      
       <div className="container-custom py-10 lg:py-16">
         {/* Breadcrumbs */}
         <nav className="mb-8 text-sm text-slate-500">
@@ -691,7 +790,7 @@ export async function action({request, context}: ActionFunctionArgs) {
 }
 
 // SEO Meta Tags
-export const meta = ({data}: {data: any}) => {
+export const meta = ({data}: {data: {product: typeof import('storefrontapi.generated').ProductFragment; metaDescription: string; keywords: string[]} | null}) => {
   if (!data || !data.product) {
     return [
       {title: 'Product Not Found | Vapourism'},
@@ -699,6 +798,8 @@ export const meta = ({data}: {data: any}) => {
   }
 
   const {product, metaDescription, keywords} = data;
+  const productUrl = `https://vapourism.co.uk/products/${product.handle}`;
+  const price = product.priceRange.minVariantPrice;
 
   return [
     {
@@ -712,6 +813,7 @@ export const meta = ({data}: {data: any}) => {
       name: 'keywords',
       content: keywords.join(', '),
     },
+    // Open Graph tags
     {
       property: 'og:title',
       content: product.title,
@@ -723,6 +825,18 @@ export const meta = ({data}: {data: any}) => {
     {
       property: 'og:type',
       content: 'product',
+    },
+    {
+      property: 'og:url',
+      content: productUrl,
+    },
+    {
+      property: 'og:site_name',
+      content: 'Vapourism',
+    },
+    {
+      property: 'og:locale',
+      content: 'en_GB',
     },
     ...(product.featuredImage ? [
       {
@@ -737,14 +851,57 @@ export const meta = ({data}: {data: any}) => {
         property: 'og:image:height',
         content: product.featuredImage.height?.toString(),
       },
+      {
+        property: 'og:image:alt',
+        content: product.featuredImage.altText || product.title,
+      },
     ] : []),
     {
       property: 'product:price:amount',
-      content: product.priceRange.minVariantPrice.amount,
+      content: price.amount,
     },
     {
       property: 'product:price:currency',
-      content: product.priceRange.minVariantPrice.currencyCode,
+      content: price.currencyCode,
     },
+    {
+      property: 'product:availability',
+      content: product.availableForSale ? 'in stock' : 'out of stock',
+    },
+    {
+      property: 'product:condition',
+      content: 'new',
+    },
+    {
+      property: 'product:brand',
+      content: product.vendor,
+    },
+    // Twitter Card tags
+    {
+      name: 'twitter:card',
+      content: 'summary_large_image',
+    },
+    {
+      name: 'twitter:site',
+      content: '@vapourismuk',
+    },
+    {
+      name: 'twitter:title',
+      content: product.title,
+    },
+    {
+      name: 'twitter:description',
+      content: metaDescription,
+    },
+    ...(product.featuredImage ? [
+      {
+        name: 'twitter:image',
+        content: product.featuredImage.url,
+      },
+      {
+        name: 'twitter:image:alt',
+        content: product.featuredImage.altText || product.title,
+      },
+    ] : []),
   ];
 };

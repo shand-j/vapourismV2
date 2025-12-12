@@ -35,6 +35,8 @@ declare global {
     AGEVERIF_PUBLIC_KEY?: string;
     AGE_VERIF_METAFIELD_NAMESPACE?: string;
     AGE_VERIF_METAFIELD_KEY?: string;
+    // Analytics
+    GA4_MEASUREMENT_ID?: string;
   }
 }
 

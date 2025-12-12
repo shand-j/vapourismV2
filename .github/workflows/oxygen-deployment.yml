@@ -1,4 +1,4 @@
-name: Storefront 1000039061
+name: Deploy to Oxygen
 on: [push]
 
 permissions:
@@ -35,7 +35,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build and Publish to Oxygen
-        run: npx shopify hydrogen deploy
+      # Production deployment for main branch
+      - name: Deploy to Production
+        if: github.ref == 'refs/heads/main'
+        run: npx shopify hydrogen deploy --env production
         env:
-          SHOPIFY_HYDROGEN_DEPLOYMENT_TOKEN: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_1000039061 }}
+          SHOPIFY_HYDROGEN_DEPLOYMENT_TOKEN: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_1000063397 }}
+
+      # Preview deployment for all other branches
+      - name: Deploy to Preview
+        if: github.ref != 'refs/heads/main'
+        run: npx shopify hydrogen deploy --env preview
+        env:
+          SHOPIFY_HYDROGEN_DEPLOYMENT_TOKEN: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_1000063397 }}

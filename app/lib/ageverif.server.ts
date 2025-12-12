@@ -340,10 +340,12 @@ export async function persistVerificationEvidence(opts: {
   console.log('Options:', { orderNumber: opts.orderNumber, customerId: opts.customerId, customerNumericId: opts.customerNumericId, source: opts.source, verification: { uid: opts.verification.uid, assuranceLevel: opts.verification.assuranceLevel } });
   const resolved = resolveRuntimeEnv(env);
   const domain = resolved.merged.PUBLIC_STORE_DOMAIN ?? resolved.merged.PUBLIC_STORE ?? resolved.merged.VITE_PUBLIC_STORE_DOMAIN;
-  const token = resolved.merged.SHOPIFY_ADMIN_TOKEN ?? resolved.merged.VITE_SHOPIFY_ADMIN_TOKEN;
+  // Check both PRIVATE_SHOPIFY_ADMIN_TOKEN (Oxygen convention) and SHOPIFY_ADMIN_TOKEN (legacy)
+  const token = resolved.merged.PRIVATE_SHOPIFY_ADMIN_TOKEN ?? resolved.merged.SHOPIFY_ADMIN_TOKEN ?? resolved.merged.VITE_SHOPIFY_ADMIN_TOKEN;
   if (!domain || !token) {
     console.log('ERROR: Missing Shopify admin credentials in persistVerificationEvidence. Sources:', resolved.sources);
     console.log('Persist resolved keys count:', Object.keys(resolved.merged).length);
+    console.log('PRIVATE_SHOPIFY_ADMIN_TOKEN:', resolved.merged.PRIVATE_SHOPIFY_ADMIN_TOKEN ? 'SET' : 'NOT SET');
     return { created: false, target: 'none' };
   }
 

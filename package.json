@@ -40,12 +40,7 @@
     "@remix-run/server-runtime": "^2.16.1",
     "@shopify/hydrogen": "2025.1.4",
     "@shopify/remix-oxygen": "^2.0.12",
-<<<<<<< HEAD
-    "@shopify/shopify-api": "^12.2.0",
-    "algoliasearch": "^5.34.1",
-=======
     "@shopify/shopify-api": "^4.0.0",
->>>>>>> main
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.5",

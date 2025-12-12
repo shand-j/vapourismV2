@@ -89,47 +89,14 @@ export function useAgeVerif({ onSuccess, onError }: UseAgeVerifProps = {}) {
       };
 
       setIsVerified(true);
-      // Dev-only logging to aid debugging in the browser console. Log both the
-      // original event detail and the normalized payload so callers and QA can
-      // verify what the checker provided and what the hook resolves with.
-      try {
-        // eslint-disable-next-line no-console
-        console.error('[ageverif] success event raw:', raw, 'normalized:', normalized);
-      } catch (e) {
-        // ignore logging failures
-      }
-
-      // Also add a lightweight on-page debug panel so QA can see the
-      // verification payload without opening DevTools. This is temporary
-      // and non-invasive: it creates a `pre` with id `ageverif-debug`.
-      try {
-        const elId = 'ageverif-debug';
-        let panel = document.getElementById(elId) as HTMLPreElement | null;
-        if (!panel) {
-          panel = document.createElement('pre');
-          panel.id = elId;
-          panel.style.position = 'fixed';
-          panel.style.right = '12px';
-          panel.style.bottom = '12px';
-          panel.style.zIndex = '2147483647';
-          panel.style.maxWidth = '40%';
-          panel.style.maxHeight = '40%';
-          panel.style.overflow = 'auto';
-          panel.style.background = 'rgba(0,0,0,0.85)';
-          panel.style.color = '#e6fffa';
-          panel.style.fontSize = '12px';
-          panel.style.padding = '8px';
-          panel.style.borderRadius = '6px';
-          panel.style.whiteSpace = 'pre-wrap';
-          document.body.appendChild(panel);
-        }
+      // Dev-only logging
+      if (process.env.NODE_ENV === 'development') {
         try {
-          panel.textContent = JSON.stringify({ raw, normalized }, null, 2);
+          // eslint-disable-next-line no-console
+          console.log('[ageverif] success event raw:', raw, 'normalized:', normalized);
         } catch (e) {
-          panel.textContent = String(raw);
+          // ignore logging failures
         }
-      } catch (e) {
-        // Best-effort debug panel; ignore if DOM unavailable
       }
       const resolver = pendingRef.current ?? pendingResult;
       if (resolver) {
@@ -174,43 +141,14 @@ export function useAgeVerif({ onSuccess, onError }: UseAgeVerifProps = {}) {
     // Use canonical checker URL built from helper (includes key and callback query params)
     const src = getClientScriptSrc();
     script.src = src;
-    // Dev-only visibility: log resolved src/key to help troubleshoot invalid key issues
-    try {
-      if (typeof window !== 'undefined' && (window as any).console) {
+    // Dev-only logging
+    if (process.env.NODE_ENV === 'development') {
+      try {
         // eslint-disable-next-line no-console
-        console.error('[ageverif] loading script:', src);
-        const match = /[?&]key=([^&]+)/.exec(src || '') || null;
-        // eslint-disable-next-line no-console
-        console.error('[ageverif] resolved key:', match ? decodeURIComponent(match[1]) : '(none)');
-        // also expose the script src to the on-page debug panel (best-effort)
-        try {
-          const elId = 'ageverif-debug';
-          let panel = document.getElementById(elId) as HTMLPreElement | null;
-          if (!panel) {
-            panel = document.createElement('pre');
-            panel.id = elId;
-            panel.style.position = 'fixed';
-            panel.style.right = '12px';
-            panel.style.bottom = '12px';
-            panel.style.zIndex = '2147483647';
-            panel.style.maxWidth = '40%';
-            panel.style.maxHeight = '40%';
-            panel.style.overflow = 'auto';
-            panel.style.background = 'rgba(0,0,0,0.85)';
-            panel.style.color = '#e6fffa';
-            panel.style.fontSize = '12px';
-            panel.style.padding = '8px';
-            panel.style.borderRadius = '6px';
-            panel.style.whiteSpace = 'pre-wrap';
-            document.body.appendChild(panel);
-          }
-          panel.textContent = `script: ${src}`;
-        } catch (e) {
-          // ignore
-        }
+        console.log('[ageverif] loading script:', src);
+      } catch (e) {
+        // ignore logging failures
       }
-    } catch (e) {
-      // ignore logging failures
     }
     // mark as async
     script.async = true;

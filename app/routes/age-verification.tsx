@@ -111,15 +111,16 @@ export default function AgeVerificationPage() {
       });
 
       if (!verifyRes.ok) {
-        navigate(`/age-verification/retry?order=${encodeURIComponent(order ?? '')}&error=${encodeURIComponent(String(await verifyRes.text()))}`);
+        const errorText = await verifyRes.text();
+        console.error('Verify API returned error:', verifyRes.status, errorText);
+        navigate(`/age-verification/retry?order=${encodeURIComponent(order ?? '')}&error=${encodeURIComponent(errorText)}`);
         return;
       }
 
       const verifyJson = await verifyRes.json();
       if (verifyJson?.ok) {
-        // API now returns `customerGid` and `customerNumericId` when available
-        const cid = verifyJson.customerGid ?? verifyJson.customerId ?? verifyJson.customerNumericId ?? undefined;
-        setVerificationResult({ success: true, customerId: cid });
+        // Redirect to success page with order context
+        navigate(`/age-verification/success?order=${encodeURIComponent(order ?? '')}`);
       } else {
         setVerificationResult({ success: false });
       }

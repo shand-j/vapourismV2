@@ -32,14 +32,15 @@ export default {
       const url = new URL(request.url);
       if (url.pathname.startsWith('/age-verification')) {
         // Relax CSP for AgeVerif pages to allow checker scripts, frames and stats endpoints.
+        // Also allow Google Tag Manager for analytics.
         const defaultSrc = `default-src 'self' https://cdn.shopify.com https://shopify.com https://cdn.ageverif.com https://www.ageverif.com 'unsafe-inline';`;
-        const scriptSrc = `script-src 'self' https://cdn.shopify.com https://shopify.com https://cdn.ageverif.com https://www.ageverif.com;`;
-        const scriptElem = `script-src-elem 'self' https://cdn.shopify.com https://shopify.com https://cdn.ageverif.com https://www.ageverif.com 'unsafe-inline';`;
+        const scriptSrc = `script-src 'self' https://cdn.shopify.com https://shopify.com https://cdn.ageverif.com https://www.ageverif.com https://www.googletagmanager.com;`;
+        const scriptElem = `script-src-elem 'self' https://cdn.shopify.com https://shopify.com https://cdn.ageverif.com https://www.ageverif.com https://www.googletagmanager.com 'unsafe-inline';`;
         const styleSrc = `style-src 'self' https://cdn.shopify.com https://fonts.googleapis.com 'unsafe-inline';`;
         const fontSrc = `font-src 'self' https://fonts.gstatic.com;`;
         const imgSrc = `img-src 'self' https://cdn.shopify.com data: https:;`;
-        // Include AgeVerif stats endpoint and checker iframe host
-        const connectSrc = `connect-src 'self' https://cdn.shopify.com https://shopify.com https://cdn.ageverif.com https://www.ageverif.com https://wstats.ageverif.com;`;
+        // Include AgeVerif stats endpoint, checker iframe host, and Google Analytics
+        const connectSrc = `connect-src 'self' https://cdn.shopify.com https://shopify.com https://cdn.ageverif.com https://www.ageverif.com https://wstats.ageverif.com https://www.google-analytics.com https://analytics.google.com;`;
         const frameSrc = `frame-src https://checker.ageverif.com;`;
 
         // Note: the rendered page will also include a nonce-based header set by

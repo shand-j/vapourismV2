@@ -106,8 +106,8 @@ export async function loader({context}: LoaderFunctionArgs) {
       SHOPIFY_SEARCH_ROLLOUT: env.SHOPIFY_SEARCH_ROLLOUT,
       COLLECTIONS_NAV_ROLLOUT: env.COLLECTIONS_NAV_ROLLOUT,
       // Expose AgeVerif public keys to the client via window.ENV
-      AGEVERIF_PUBLIC_KEY: env?.AGEVERIF_PUBLIC_KEY || env?.PUBLIC_AGEVERIF_KEY,
-      PUBLIC_AGEVERIF_KEY: env?.PUBLIC_AGEVERIF_KEY || env?.AGEVERIF_PUBLIC_KEY,
+      AGEVERIF_PUBLIC_KEY: env?.['AGEVERIF_PUBLIC_KEY'] || env?.['PUBLIC_AGEVERIF_KEY'],
+      PUBLIC_AGEVERIF_KEY: env?.['PUBLIC_AGEVERIF_KEY'] || env?.['AGEVERIF_PUBLIC_KEY'],
       // GA4 Measurement ID for analytics
       GA4_MEASUREMENT_ID: env?.GA4_MEASUREMENT_ID,
     },
@@ -121,7 +121,7 @@ export default function App() {
   const location = useLocation();
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
-  const [cartSnapshot, setCartSnapshot] = useState<CartApiQueryFragment | null>(data.cart ?? null);
+  const [cartSnapshot, setCartSnapshot] = useState(data.cart ?? null);
   const [isAgeGateActive, setIsAgeGateActive] = useState(false);
 
   useEffect(() => {
@@ -411,11 +411,11 @@ function GlobalPerksRail() {
 }
 
 interface HeaderIconButtonProps {
-  to?: string;
-  label: string;
-  children: ReactNode;
-  className?: string;
-  onClick?: () => void;
+  readonly to?: string;
+  readonly label: string;
+  readonly children: ReactNode;
+  readonly className?: string;
+  readonly onClick?: () => void;
 }
 
 function HeaderIconButton({to, label, children, className, onClick}: HeaderIconButtonProps) {

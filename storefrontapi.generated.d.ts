@@ -740,6 +740,45 @@ export type TermsOfServiceFooterQuery = {
   shop: Pick<StorefrontAPI.Shop, 'name'>;
 };
 
+export type ProductsFeedQueryVariables = StorefrontAPI.Exact<{
+  first: StorefrontAPI.Scalars['Int']['input'];
+  after?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
+}>;
+
+export type ProductsFeedQuery = {
+  products: {
+    pageInfo: Pick<StorefrontAPI.PageInfo, 'hasNextPage' | 'endCursor'>;
+    edges: Array<{
+      node: Pick<
+        StorefrontAPI.Product,
+        | 'id'
+        | 'title'
+        | 'handle'
+        | 'description'
+        | 'vendor'
+        | 'productType'
+        | 'availableForSale'
+      > & {
+        priceRange: {
+          minVariantPrice: Pick<
+            StorefrontAPI.MoneyV2,
+            'amount' | 'currencyCode'
+          >;
+        };
+        featuredImage?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
+        variants: {
+          edges: Array<{
+            node: Pick<
+              StorefrontAPI.ProductVariant,
+              'id' | 'sku' | 'barcode'
+            > & {price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>};
+          }>;
+        };
+      };
+    }>;
+  };
+};
+
 export type ProductQueryVariables = StorefrontAPI.Exact<{
   handle: StorefrontAPI.Scalars['String']['input'];
 }>;
@@ -797,6 +836,22 @@ export type ProductQuery = {
       seo: Pick<StorefrontAPI.Seo, 'title' | 'description'>;
     }
   >;
+};
+
+export type SitemapDebugQueryVariables = StorefrontAPI.Exact<{
+  page: StorefrontAPI.Scalars['Int']['input'];
+}>;
+
+export type SitemapDebugQuery = {
+  sitemap: {
+    resources?: StorefrontAPI.Maybe<{
+      items: Array<
+        | Pick<StorefrontAPI.SitemapResource, 'handle' | 'updatedAt'>
+        | Pick<StorefrontAPI.SitemapResourceMetaobject, 'handle' | 'updatedAt'>
+      >;
+    }>;
+    pagesCount?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Count, 'count'>>;
+  };
 };
 
 interface GeneratedQueryTypes {
@@ -920,9 +975,17 @@ interface GeneratedQueryTypes {
     return: TermsOfServiceFooterQuery;
     variables: TermsOfServiceFooterQueryVariables;
   };
+  '#graphql\n  query ProductsFeed($first: Int!, $after: String) {\n    products(first: $first, after: $after) {\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n      edges {\n        node {\n          id\n          title\n          handle\n          description\n          vendor\n          productType\n          availableForSale\n          priceRange {\n            minVariantPrice {\n              amount\n              currencyCode\n            }\n          }\n          featuredImage {\n            url\n          }\n          variants(first: 1) {\n            edges {\n              node {\n                id\n                sku\n                barcode\n                price {\n                  amount\n                  currencyCode\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n': {
+    return: ProductsFeedQuery;
+    variables: ProductsFeedQueryVariables;
+  };
   '#graphql\n  query Product($handle: String!) {\n    product(handle: $handle) {\n      id\n      title\n      handle\n      vendor\n      description\n      descriptionHtml\n      productType\n      tags\n      availableForSale\n      priceRange {\n        minVariantPrice {\n          amount\n          currencyCode\n        }\n      }\n      compareAtPriceRange {\n        minVariantPrice {\n          amount\n          currencyCode\n        }\n      }\n      featuredImage {\n        url\n        altText\n        width\n        height\n      }\n      images(first: 10) {\n        edges {\n          node {\n            url\n            altText\n            width\n            height\n          }\n        }\n      }\n      variants(first: 50) {\n        edges {\n          node {\n            id\n            title\n            availableForSale\n            image {\n              url\n              altText\n              width\n              height\n            }\n            selectedOptions {\n              name\n              value\n            }\n            price {\n              amount\n              currencyCode\n            }\n            compareAtPrice {\n              amount\n              currencyCode\n            }\n          }\n        }\n      }\n      seo {\n        title\n        description\n      }\n    }\n  }\n': {
     return: ProductQuery;
     variables: ProductQueryVariables;
+  };
+  '#graphql\n  query SitemapDebug($page: Int!) {\n    sitemap(type: PRODUCT) {\n      resources(page: $page) {\n        items {\n          handle\n          updatedAt\n        }\n      }\n      pagesCount {\n        count\n      }\n    }\n  }\n': {
+    return: SitemapDebugQuery;
+    variables: SitemapDebugQueryVariables;
   };
 }
 

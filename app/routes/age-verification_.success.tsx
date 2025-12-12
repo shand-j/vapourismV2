@@ -1,63 +1,14 @@
-import {useEffect} from 'react';
-import {useLoaderData} from '@remix-run/react';
+import {useLoaderData, Link} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
-export async function loader({request, context}: LoaderFunctionArgs) {
+export async function loader({request}: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const order = url.searchParams.get('order');
-  const publicKey = context?.env?.AGEVERIF_PUBLIC_KEY ?? process.env.AGEVERIF_PUBLIC_KEY ?? null;
-  const clientUrl = context?.env?.PUBLIC_AGEVERIF_CLIENT_URL ?? process.env.PUBLIC_AGEVERIF_CLIENT_URL ?? null;
-  return json({order, publicKey, clientUrl});
+  return json({order});
 }
 
-export default function SuccessPage() {
-  const data = useLoaderData<typeof loader>();
-  const { order, publicKey, clientUrl } = data ?? {};
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    // Setup the lightweight global shims that the checker may call. They will
-    // dispatch CustomEvents which the preserved hook listens for.
-    (window as any).ageverifLoaded = (args: any) => window.dispatchEvent(new CustomEvent('ageverif:loaded', { detail: args }));
-    (window as any).ageverifReady = (args: any) => window.dispatchEvent(new CustomEvent('ageverif:ready', { detail: args }));
-    (window as any).ageverifSuccess = (args: any) => window.dispatchEvent(new CustomEvent('ageverif:success', { detail: args }));
-    (window as any).ageverifError = (err: any) => window.dispatchEvent(new CustomEvent('ageverif:error', { detail: err }));
-
-    // Construct script URL. Prefer explicit clientUrl if set, otherwise build from publicKey.
-    const src = clientUrl || (publicKey ? `https://www.ageverif.com/checker.js?key=${encodeURIComponent(publicKey)}&nostart` : null);
-    if (!src) return;
-
-    const existing = document.querySelector(`script[src="${src}"]`);
-    if (existing) return;
-
-    const s = document.createElement('script');
-    s.src = src;
-    s.async = true;
-    s.defer = true;
-    s.onload = () => {
-      try {
-        // notify loader/ready
-        (window as any).ageverifLoaded?.({ verified: false });
-        (window as any).ageverifReady?.();
-      } catch (e) {
-        // ignore
-      }
-    };
-    s.onerror = () => {
-      (window as any).ageverifError?.({ message: 'checker load failed' });
-    };
-    document.head.appendChild(s);
-
-    return () => {
-      delete (window as any).ageverifLoaded;
-      delete (window as any).ageverifReady;
-      delete (window as any).ageverifSuccess;
-      delete (window as any).ageverifError;
-      const el = document.querySelector(`script[src="${src}"]`);
-      if (el) el.remove();
-    };
-  }, [order, publicKey, clientUrl]);
+export default function AgeVerificationSuccess() {
+  const {order} = useLoaderData<typeof loader>();
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
@@ -72,7 +23,7 @@ export default function SuccessPage() {
       
       <div className="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 p-6">
         <p className="text-center text-slate-700">
-          Thank you! Your age has been successfully verified for order <strong className="text-slate-900">#{order}</strong>.
+          Thank you! Your age has been successfully verified{order ? <> for order <strong className="text-slate-900">#{order}</strong></> : ''}.
         </p>
         <p className="mt-3 text-center text-sm text-slate-600">
           Your order is now being processed and will be dispatched shortly.
@@ -104,19 +55,29 @@ export default function SuccessPage() {
       </div>
 
       <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-        <a 
-          href="/" 
+        <Link 
+          to="/" 
           className="inline-flex items-center justify-center rounded-md bg-slate-900 px-6 py-3 text-sm font-semibold text-white hover:bg-slate-800 transition-colors"
         >
           Continue Shopping
-        </a>
-        <a 
-          href="/account/orders" 
+        </Link>
+        <Link 
+          to="/account/orders" 
           className="inline-flex items-center justify-center rounded-md border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
         >
           View My Orders
-        </a>
+        </Link>
       </div>
+
+      <p className="mt-6 text-center text-sm text-slate-500">
+        Questions?{' '}
+        <a
+          href={`mailto:hello@vapourism.co.uk?subject=${encodeURIComponent(`Order #${order || ''} Query`)}`}
+          className="text-emerald-600 hover:underline"
+        >
+          Contact support
+        </a>
+      </p>
     </div>
   );
 }

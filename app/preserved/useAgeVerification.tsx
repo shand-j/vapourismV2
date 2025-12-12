@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { getClientScriptSrc, CALLBACK_ONLOAD, CALLBACK_ONREADY, CALLBACK_ONSUCCESS, CALLBACK_ONERROR } from '~/lib/ageverif.client';
 
 // AgeVerif type can be defined or imported as needed
@@ -34,14 +34,29 @@ export function useAgeVerif({ onSuccess, onError }: UseAgeVerifProps = {}) {
   const [ageverif, setAgeverif] = useState<AgeVerif | null>(null);
   const [lastError, setLastError] = useState<any>(null);
   const [pendingResult, setPendingResult] = useState<{resolve: (value: any) => void, reject: (reason: any) => void} | null>(null);
+  
+  // Track whether we've initialized to prevent double setup
+  const hasInitialized = useRef(false);
+  
   // Keep a ref to the current pending resolver so event listeners always
   // see the latest resolver without needing to re-register handlers.
   const pendingRef = (globalThis as any).__ageverif_pending_ref || { current: null };
   // Ensure it's stored globally for HMR stability across module reloads
   (globalThis as any).__ageverif_pending_ref = pendingRef;
-
+  
+  // Store callbacks in refs so event listeners always use latest versions
+  const onSuccessRef = useRef(onSuccess);
+  const onErrorRef = useRef(onError);
   useEffect(() => {
-    if (isLoaded || typeof window === 'undefined') return;
+    onSuccessRef.current = onSuccess;
+    onErrorRef.current = onError;
+  }, [onSuccess, onError]);
+
+  // Main effect: loads script and sets up listeners ONCE, cleans up only on unmount
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (hasInitialized.current) return;
+    hasInitialized.current = true;
 
     // Install global shims that the external checker may call. These shims
     // dispatch CustomEvents so the hook can update React state in a controlled way.
@@ -108,7 +123,7 @@ export function useAgeVerif({ onSuccess, onError }: UseAgeVerifProps = {}) {
         pendingRef.current = null;
         setPendingResult(null);
       }
-      onSuccess?.();
+      onSuccessRef.current?.();
       return normalized;
     };
     const onErrorEvt = (e: any) => {
@@ -123,7 +138,7 @@ export function useAgeVerif({ onSuccess, onError }: UseAgeVerifProps = {}) {
         pendingRef.current = null;
         setPendingResult(null);
       }
-      onError?.(e?.detail);
+      onErrorRef.current?.(e?.detail);
     };
 
     // Listen for both the prefixed events (our shim) and the
@@ -199,24 +214,29 @@ export function useAgeVerif({ onSuccess, onError }: UseAgeVerifProps = {}) {
         clearInterval(pollInterval);
         pollInterval = null;
       }
-        const existingScript = document.querySelector(`script[src="${getClientScriptSrc()}"]`);
+      // Only clean up on actual unmount - check hasInitialized ref
+      // This prevents premature cleanup when dependencies change
+      const existingScript = document.querySelector(`script[src="${getClientScriptSrc()}"]`);
       if (existingScript) {
         document.head.removeChild(existingScript);
       }
-          delete (window as any)[CALLBACK_ONLOAD];
-          delete (window as any)[CALLBACK_ONREADY];
-          delete (window as any)[CALLBACK_ONSUCCESS];
-          delete (window as any)[CALLBACK_ONERROR];
-        window.removeEventListener('ageverif:loaded', onLoaded as EventListener);
-        window.removeEventListener('loaded', onLoaded as EventListener);
-        window.removeEventListener('ageverif:ready', onReady as EventListener);
-        window.removeEventListener('ready', onReady as EventListener);
-        window.removeEventListener('ageverif:success', onSuccessEvt as EventListener);
-        window.removeEventListener('success', onSuccessEvt as EventListener);
-        window.removeEventListener('ageverif:error', onErrorEvt as EventListener);
-        window.removeEventListener('error', onErrorEvt as EventListener);
+      delete (window as any)[CALLBACK_ONLOAD];
+      delete (window as any)[CALLBACK_ONREADY];
+      delete (window as any)[CALLBACK_ONSUCCESS];
+      delete (window as any)[CALLBACK_ONERROR];
+      window.removeEventListener('ageverif:loaded', onLoaded as EventListener);
+      window.removeEventListener('loaded', onLoaded as EventListener);
+      window.removeEventListener('ageverif:ready', onReady as EventListener);
+      window.removeEventListener('ready', onReady as EventListener);
+      window.removeEventListener('ageverif:success', onSuccessEvt as EventListener);
+      window.removeEventListener('success', onSuccessEvt as EventListener);
+      window.removeEventListener('ageverif:error', onErrorEvt as EventListener);
+      window.removeEventListener('error', onErrorEvt as EventListener);
+      // Reset init flag so hook can reinitialize if component remounts
+      hasInitialized.current = false;
     };
-  }, [onSuccess, onError, isLoaded]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty deps - run once on mount, cleanup on unmount only
 
   const startVerification = useCallback(async (opts?: any) => {
     // If the script hasn't finished loading yet, wait up to a short timeout.
@@ -243,7 +263,7 @@ export function useAgeVerif({ onSuccess, onError }: UseAgeVerifProps = {}) {
     if (!av || typeof av.start !== 'function') {
       const err = new Error('AgeVerif client not available or missing start()');
       setLastError(err);
-      onError?.(err);
+      onErrorRef.current?.(err);
       throw err;
     }
 
@@ -278,7 +298,7 @@ export function useAgeVerif({ onSuccess, onError }: UseAgeVerifProps = {}) {
       const result = await resultPromise;
       if (result && (result as any).verified) {
         setIsVerified(true);
-        onSuccess?.();
+        onSuccessRef.current?.();
       }
       try {
         // eslint-disable-next-line no-console
@@ -291,10 +311,11 @@ export function useAgeVerif({ onSuccess, onError }: UseAgeVerifProps = {}) {
       return result as any;
     } catch (error) {
       setLastError(error);
-      onError?.(error);
+      onErrorRef.current?.(error);
       throw error;
     }
-  }, [isLoaded, ageverif, onSuccess, onError]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoaded, ageverif, pendingResult]); // Removed callback deps, using refs instead
 
   return {
     isLoaded,

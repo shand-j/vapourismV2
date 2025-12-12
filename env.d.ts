@@ -12,7 +12,11 @@ import type {
 import type {createAppLoadContext} from '~/preserved/context';
 
 declare global {
-  const process: {env: {NODE_ENV: 'production' | 'development'}};
+  namespace NodeJS {
+    interface ProcessEnv {
+      NODE_ENV: 'production' | 'development';
+    }
+  }
 
   interface Window {
     ENV: Record<string, unknown>;

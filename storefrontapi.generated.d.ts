@@ -601,6 +601,26 @@ export type StoreRobotsQueryVariables = StorefrontAPI.Exact<{
 
 export type StoreRobotsQuery = {shop: Pick<StorefrontAPI.Shop, 'id'>};
 
+export type ProductsCountQueryVariables = StorefrontAPI.Exact<{
+  [key: string]: never;
+}>;
+
+export type ProductsCountQuery = {
+  products: {pageInfo: Pick<StorefrontAPI.PageInfo, 'hasNextPage'>};
+};
+
+export type AllProductHandlesQueryVariables = StorefrontAPI.Exact<{
+  first: StorefrontAPI.Scalars['Int']['input'];
+  after?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
+}>;
+
+export type AllProductHandlesQuery = {
+  products: {
+    pageInfo: Pick<StorefrontAPI.PageInfo, 'hasNextPage' | 'endCursor'>;
+    nodes: Array<Pick<StorefrontAPI.Product, 'handle'>>;
+  };
+};
+
 export type ContactHeaderQueryVariables = StorefrontAPI.Exact<{
   [key: string]: never;
 }>;
@@ -740,6 +760,45 @@ export type TermsOfServiceFooterQuery = {
   shop: Pick<StorefrontAPI.Shop, 'name'>;
 };
 
+export type ProductsFeedQueryVariables = StorefrontAPI.Exact<{
+  first: StorefrontAPI.Scalars['Int']['input'];
+  after?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
+}>;
+
+export type ProductsFeedQuery = {
+  products: {
+    pageInfo: Pick<StorefrontAPI.PageInfo, 'hasNextPage' | 'endCursor'>;
+    edges: Array<{
+      node: Pick<
+        StorefrontAPI.Product,
+        | 'id'
+        | 'title'
+        | 'handle'
+        | 'description'
+        | 'vendor'
+        | 'productType'
+        | 'availableForSale'
+      > & {
+        priceRange: {
+          minVariantPrice: Pick<
+            StorefrontAPI.MoneyV2,
+            'amount' | 'currencyCode'
+          >;
+        };
+        featuredImage?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
+        variants: {
+          edges: Array<{
+            node: Pick<
+              StorefrontAPI.ProductVariant,
+              'id' | 'sku' | 'barcode'
+            > & {price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>};
+          }>;
+        };
+      };
+    }>;
+  };
+};
+
 export type ProductQueryVariables = StorefrontAPI.Exact<{
   handle: StorefrontAPI.Scalars['String']['input'];
 }>;
@@ -799,6 +858,42 @@ export type ProductQuery = {
   >;
 };
 
+export type ProductsSitemapQueryVariables = StorefrontAPI.Exact<{
+  first: StorefrontAPI.Scalars['Int']['input'];
+  after?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
+}>;
+
+export type ProductsSitemapQuery = {
+  products: {
+    pageInfo: Pick<StorefrontAPI.PageInfo, 'hasNextPage' | 'endCursor'>;
+    nodes: Array<Pick<StorefrontAPI.Product, 'handle' | 'updatedAt'>>;
+  };
+};
+
+export type CollectionsSitemapQueryVariables = StorefrontAPI.Exact<{
+  first: StorefrontAPI.Scalars['Int']['input'];
+  after?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
+}>;
+
+export type CollectionsSitemapQuery = {
+  collections: {
+    pageInfo: Pick<StorefrontAPI.PageInfo, 'hasNextPage' | 'endCursor'>;
+    nodes: Array<Pick<StorefrontAPI.Collection, 'handle' | 'updatedAt'>>;
+  };
+};
+
+export type PagesSitemapQueryVariables = StorefrontAPI.Exact<{
+  first: StorefrontAPI.Scalars['Int']['input'];
+  after?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
+}>;
+
+export type PagesSitemapQuery = {
+  pages: {
+    pageInfo: Pick<StorefrontAPI.PageInfo, 'hasNextPage' | 'endCursor'>;
+    nodes: Array<Pick<StorefrontAPI.Page, 'handle' | 'updatedAt'>>;
+  };
+};
+
 interface GeneratedQueryTypes {
   '#graphql\n  query Collections($first: Int!, $after: String) {\n    collections(first: $first, after: $after) {\n      edges {\n        node {\n          id\n          title\n          handle\n          description\n          image {\n            url\n            altText\n          }\n          seo {\n            title\n            description\n          }\n        }\n      }\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n    }\n  }\n': {
     return: CollectionsQuery;
@@ -855,6 +950,14 @@ interface GeneratedQueryTypes {
   '#graphql\n  query StoreRobots($country: CountryCode, $language: LanguageCode)\n   @inContext(country: $country, language: $language) {\n    shop {\n      id\n    }\n  }\n': {
     return: StoreRobotsQuery;
     variables: StoreRobotsQueryVariables;
+  };
+  '#graphql\n  query ProductsCount {\n    products(first: 1) {\n      pageInfo {\n        hasNextPage\n      }\n    }\n  }\n': {
+    return: ProductsCountQuery;
+    variables: ProductsCountQueryVariables;
+  };
+  '#graphql\n  query AllProductHandles($first: Int!, $after: String) {\n    products(first: $first, after: $after) {\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n      nodes {\n        handle\n      }\n    }\n  }\n': {
+    return: AllProductHandlesQuery;
+    variables: AllProductHandlesQueryVariables;
   };
   '#graphql\n      query ContactHeader {\n        shop {\n          name\n        }\n      }\n    ': {
     return: ContactHeaderQuery;
@@ -920,9 +1023,25 @@ interface GeneratedQueryTypes {
     return: TermsOfServiceFooterQuery;
     variables: TermsOfServiceFooterQueryVariables;
   };
+  '#graphql\n  query ProductsFeed($first: Int!, $after: String) {\n    products(first: $first, after: $after) {\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n      edges {\n        node {\n          id\n          title\n          handle\n          description\n          vendor\n          productType\n          availableForSale\n          priceRange {\n            minVariantPrice {\n              amount\n              currencyCode\n            }\n          }\n          featuredImage {\n            url\n          }\n          variants(first: 1) {\n            edges {\n              node {\n                id\n                sku\n                barcode\n                price {\n                  amount\n                  currencyCode\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n': {
+    return: ProductsFeedQuery;
+    variables: ProductsFeedQueryVariables;
+  };
   '#graphql\n  query Product($handle: String!) {\n    product(handle: $handle) {\n      id\n      title\n      handle\n      vendor\n      description\n      descriptionHtml\n      productType\n      tags\n      availableForSale\n      priceRange {\n        minVariantPrice {\n          amount\n          currencyCode\n        }\n      }\n      compareAtPriceRange {\n        minVariantPrice {\n          amount\n          currencyCode\n        }\n      }\n      featuredImage {\n        url\n        altText\n        width\n        height\n      }\n      images(first: 10) {\n        edges {\n          node {\n            url\n            altText\n            width\n            height\n          }\n        }\n      }\n      variants(first: 50) {\n        edges {\n          node {\n            id\n            title\n            availableForSale\n            image {\n              url\n              altText\n              width\n              height\n            }\n            selectedOptions {\n              name\n              value\n            }\n            price {\n              amount\n              currencyCode\n            }\n            compareAtPrice {\n              amount\n              currencyCode\n            }\n          }\n        }\n      }\n      seo {\n        title\n        description\n      }\n    }\n  }\n': {
     return: ProductQuery;
     variables: ProductQueryVariables;
+  };
+  '#graphql\n  query ProductsSitemap($first: Int!, $after: String) {\n    products(first: $first, after: $after) {\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n      nodes {\n        handle\n        updatedAt\n      }\n    }\n  }\n': {
+    return: ProductsSitemapQuery;
+    variables: ProductsSitemapQueryVariables;
+  };
+  '#graphql\n  query CollectionsSitemap($first: Int!, $after: String) {\n    collections(first: $first, after: $after) {\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n      nodes {\n        handle\n        updatedAt\n      }\n    }\n  }\n': {
+    return: CollectionsSitemapQuery;
+    variables: CollectionsSitemapQueryVariables;
+  };
+  '#graphql\n  query PagesSitemap($first: Int!, $after: String) {\n    pages(first: $first, after: $after) {\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n      nodes {\n        handle\n        updatedAt\n      }\n    }\n  }\n': {
+    return: PagesSitemapQuery;
+    variables: PagesSitemapQueryVariables;
   };
 }
 

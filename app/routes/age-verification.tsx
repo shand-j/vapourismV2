@@ -29,39 +29,16 @@ export default function AgeVerificationPage() {
     onError: () => {},
   });
 
-  // Defensive page-level listeners: if the hook isn't registering or the
-  // checker emits events before the hook attaches, these will still catch
-  // events and surface them in the console and a small debug panel.
+  // Defensive page-level listeners for ageverif events (console logging only in dev)
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const logEvent = (name: string) => (e: any) => {
-      try {
-        // eslint-disable-next-line no-console
-        console.error(`[ageverif.page] ${name}`, e?.detail ?? e);
-      } catch {}
-      try {
-        const elId = 'ageverif-debug-page';
-        let panel = document.getElementById(elId) as HTMLPreElement | null;
-        if (!panel) {
-          panel = document.createElement('pre');
-          panel.id = elId;
-          panel.style.position = 'fixed';
-          panel.style.left = '12px';
-          panel.style.bottom = '12px';
-          panel.style.zIndex = '2147483647';
-          panel.style.maxWidth = '40%';
-          panel.style.maxHeight = '40%';
-          panel.style.overflow = 'auto';
-          panel.style.background = 'rgba(0,0,0,0.85)';
-          panel.style.color = '#ffdede';
-          panel.style.fontSize = '12px';
-          panel.style.padding = '8px';
-          panel.style.borderRadius = '6px';
-          panel.style.whiteSpace = 'pre-wrap';
-          document.body.appendChild(panel);
-        }
-        panel.textContent = `${name}: ${JSON.stringify(e?.detail ?? e, null, 2)}`;
-      } catch {}
+      if (process.env.NODE_ENV === 'development') {
+        try {
+          // eslint-disable-next-line no-console
+          console.log(`[ageverif.page] ${name}`, e?.detail ?? e);
+        } catch {}
+      }
     };
 
     const onLoaded = logEvent('loaded');
@@ -79,8 +56,6 @@ export default function AgeVerificationPage() {
       window.removeEventListener('ageverif:ready', onReady as EventListener);
       window.removeEventListener('ageverif:success', onSuccess as EventListener);
       window.removeEventListener('ageverif:error', onError as EventListener);
-      const panel = document.getElementById('ageverif-debug-page');
-      if (panel && panel.parentNode) panel.parentNode.removeChild(panel);
     };
   }, []);
 
@@ -111,15 +86,16 @@ export default function AgeVerificationPage() {
       });
 
       if (!verifyRes.ok) {
-        navigate(`/age-verification/retry?order=${encodeURIComponent(order ?? '')}&error=${encodeURIComponent(String(await verifyRes.text()))}`);
+        const errorText = await verifyRes.text();
+        console.error('Verify API returned error:', verifyRes.status, errorText);
+        navigate(`/age-verification/retry?order=${encodeURIComponent(order ?? '')}&error=${encodeURIComponent(errorText)}`);
         return;
       }
 
       const verifyJson = await verifyRes.json();
       if (verifyJson?.ok) {
-        // API now returns `customerGid` and `customerNumericId` when available
-        const cid = verifyJson.customerGid ?? verifyJson.customerId ?? verifyJson.customerNumericId ?? undefined;
-        setVerificationResult({ success: true, customerId: cid });
+        // Redirect to success page with order context
+        navigate(`/age-verification/success?order=${encodeURIComponent(order ?? '')}`);
       } else {
         setVerificationResult({ success: false });
       }
@@ -137,20 +113,27 @@ export default function AgeVerificationPage() {
     return 'Loading…';
   };
 
-  const getCustomerNumber = (customerId?: string) => {
-    if (!customerId) return null;
-    // If the API returned a numeric id directly, return it.
-    if (/^\d+$/.test(customerId)) return customerId;
-    const match = /\/(\d+)$/.exec(customerId);
-    return match ? match[1] : null;
-  };
+  const helpEmailSubject = encodeURIComponent(`Age Verification Help - Order #${order ?? 'Unknown'}`);
+  const helpEmailLink = `mailto:hello@vapourism.co.uk?subject=${helpEmailSubject}`;
 
   if (verificationResult) {
+    const isFailure = !verificationResult.success;
     return (
       <div className="mx-auto max-w-3xl px-6 py-12">
-        <h1 className="text-2xl font-semibold">Verification Result</h1>
-        <p className="mt-4 text-sm text-slate-600">
-          {verificationResult.success ? 'Age verification successful.' : 'Age verification failed.'}
+        {isFailure ? (
+          <>
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+              <svg className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </div>
+            <h1 className="mt-6 text-center text-2xl font-semibold text-red-600">Verification Failed</h1>
+          </>
+        ) : (
+          <h1 className="text-2xl font-semibold text-emerald-600">Verification Successful</h1>
+        )}
+        <p className="mt-4 text-center text-sm text-slate-600">
+          {verificationResult.success ? 'Age verification successful.' : 'We were unable to verify your age automatically.'}
         </p>
         <div className="mt-6 rounded-lg border border-slate-200 bg-white p-6">
           <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -159,15 +142,28 @@ export default function AgeVerificationPage() {
               <dd className="mt-1 text-sm text-slate-900">{order ?? '—'}</dd>
             </div>
             <div>
-              <dt className="text-xs font-semibold text-slate-500">Customer Number</dt>
-              <dd className="mt-1 text-sm text-slate-900">{getCustomerNumber(verificationResult.customerId) ?? '—'}</dd>
-            </div>
-            <div>
               <dt className="text-xs font-semibold text-slate-500">Status</dt>
               <dd className="mt-1 text-sm text-slate-900">{verificationResult.success ? 'Pass' : 'Fail'}</dd>
             </div>
           </dl>
         </div>
+        {isFailure && (
+          <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-6">
+            <h2 className="text-sm font-semibold text-amber-800">Need help?</h2>
+            <p className="mt-2 text-sm text-amber-700">
+              If you&apos;re having trouble with age verification, please contact our support team and we&apos;ll help you complete your order.
+            </p>
+            <a
+              href={helpEmailLink}
+              className="mt-4 inline-flex items-center gap-2 rounded-md bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700 transition-colors"
+            >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+              </svg>
+              Contact Support
+            </a>
+          </div>
+        )}
       </div>
     );
   }
@@ -209,6 +205,22 @@ export default function AgeVerificationPage() {
             Cancel
           </button>
         </div>
+      </div>
+
+      <div className="mt-6 rounded-lg border border-slate-200 bg-slate-50 p-6">
+        <h2 className="text-sm font-semibold text-slate-700">Having trouble?</h2>
+        <p className="mt-2 text-sm text-slate-600">
+          If you need assistance with age verification, our support team is here to help.
+        </p>
+        <a
+          href={helpEmailLink}
+          className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors"
+        >
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+          </svg>
+          Email hello@vapourism.co.uk for help
+        </a>
       </div>
     </div>
   );

@@ -71,10 +71,12 @@ async function adminGraphQL(query: string, variables?: Record<string, any>, env?
   // Resolve runtime environment from multiple possible sources (context.env, globalThis.__ENV__, process.env, import.meta.env)
   const resolved = resolveRuntimeEnv(env);
   const domain = resolved.merged.PUBLIC_STORE_DOMAIN ?? resolved.merged.PUBLIC_STORE ?? resolved.merged.VITE_PUBLIC_STORE_DOMAIN;
-  const token = resolved.merged.SHOPIFY_ADMIN_TOKEN ?? resolved.merged.VITE_SHOPIFY_ADMIN_TOKEN;
+  // Check both PRIVATE_SHOPIFY_ADMIN_TOKEN (Oxygen convention) and SHOPIFY_ADMIN_TOKEN (legacy)
+  const token = resolved.merged.PRIVATE_SHOPIFY_ADMIN_TOKEN ?? resolved.merged.SHOPIFY_ADMIN_TOKEN ?? resolved.merged.VITE_SHOPIFY_ADMIN_TOKEN;
   if (!domain || !token) {
     console.log('adminGraphQL: Missing Shopify admin credentials. Sources:', resolved.sources);
     console.log('adminGraphQL: Resolved env keys count:', Object.keys(resolved.merged).length);
+    console.log('adminGraphQL: PRIVATE_SHOPIFY_ADMIN_TOKEN:', resolved.merged.PRIVATE_SHOPIFY_ADMIN_TOKEN ? 'SET' : 'NOT SET');
     return null;
   }
 
@@ -133,6 +135,7 @@ function resolveRuntimeEnv(provided?: Record<string, any>) {
 
   console.log('resolveRuntimeEnv merged keys:', Object.keys(merged));
   console.log('PUBLIC_STORE_DOMAIN from merged:', merged.PUBLIC_STORE_DOMAIN);
+  console.log('PRIVATE_SHOPIFY_ADMIN_TOKEN from merged:', merged.PRIVATE_SHOPIFY_ADMIN_TOKEN ? 'SET' : 'NOT SET');
   console.log('SHOPIFY_ADMIN_TOKEN from merged:', merged.SHOPIFY_ADMIN_TOKEN ? 'SET' : 'NOT SET');
   console.log('AGE_VERIF_METAFIELD_KEY from merged:', merged.AGE_VERIF_METAFIELD_KEY);
   console.log('AGE_VERIF_METAFIELD_NAMESPACE from merged:', merged.AGE_VERIF_METAFIELD_NAMESPACE);

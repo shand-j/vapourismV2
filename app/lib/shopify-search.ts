@@ -71,12 +71,12 @@ export interface SearchResults {
   };
 }
 
-const DEFAULT_PREDICTIVE_TYPES: StorefrontAPI.PredictiveSearchType[] = ['PRODUCT', 'COLLECTION'];
+const DEFAULT_PREDICTIVE_TYPES: StorefrontAPI.PredictiveSearchType[] = ['PRODUCT'];
 const DEFAULT_SEARCH_SORT_KEY: StorefrontAPI.SearchSortKeys = 'RELEVANCE';
 
 const EMPTY_PREDICTIVE_RESULTS: PredictiveSearchResults = {
   products: [],
-  collections: [],
+  collections: [], // Empty - collections not used in this store
   queries: [],
 };
 

@@ -1,6 +1,7 @@
 /**
  * SEO Automation Service for Vapourism
- * Provides automated SEO optimization for products, collections, and content
+ * Provides automated SEO optimization for products and content
+ * Note: Collections are not used in this store - all navigation is tag-based
  */
 
 export interface ProductSEOData {
@@ -15,14 +16,6 @@ export interface ProductSEOData {
   };
   handle: string;
   availableForSale?: boolean;
-}
-
-export interface CollectionSEOData {
-  title: string;
-  description?: string;
-  handle: string;
-  productCount?: number;
-  topVendors?: string[];
 }
 
 export class SEOAutomationService {
@@ -63,13 +56,13 @@ export class SEOAutomationService {
   }
 
   /**
-   * Generate collection meta description
+   * Generate category meta description (for tag-based search pages)
    */
-  static generateCollectionMetaDescription(collection: CollectionSEOData): string {
-    const productText = collection.productCount ? `${collection.productCount} products` : 'our range';
-    const topBrands = collection.topVendors?.slice(0, 3).join(', ') || 'top brands';
+  static generateCategoryMetaDescription(categoryTitle: string, productCount?: number, topBrands?: string[]): string {
+    const productText = productCount ? `${productCount} products` : 'our range';
+    const brandsText = topBrands?.slice(0, 3).join(', ') || 'top brands';
     
-    return `Shop ${collection.title} collection at Vapourism. ${productText} from ${topBrands}. ✓ Premium quality ✓ Fast UK delivery ✓ Competitive prices ✓ Expert support.`;
+    return `Shop ${categoryTitle} at Vapourism. ${productText} from ${brandsText}. ✓ Premium quality ✓ Fast UK delivery ✓ Competitive prices ✓ Expert support.`;
   }
 
   /**
@@ -156,9 +149,9 @@ export class SEOAutomationService {
         title: `Browse all ${product.vendor} vaping products`
       },
       {
-        url: `/products?category=${encodeURIComponent(product.productType)}`,
+        url: `/search?tag=${encodeURIComponent(product.productType.toLowerCase().replace(/\s+/g, '_'))}`,
         anchor: `Shop All ${product.productType}s`,
-        title: `Explore our ${product.productType} collection`
+        title: `Explore our ${product.productType} range`
       },
       {
         url: '/guides/complete-beginners-guide-to-vaping',

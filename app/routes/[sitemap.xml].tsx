@@ -10,7 +10,8 @@ export async function loader({
     request,
   });
 
-  response.headers.set('Cache-Control', `max-age=${60 * 60 * 24}`);
+  // No caching during debugging
+  response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
 
   return response;
 }

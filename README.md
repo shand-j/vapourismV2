@@ -8,6 +8,13 @@ Welcome to Vapourism V2 — the Shopify-native Hydrogen refactor of the Vapouris
 - **[GTM Deployment Guide](./docs/GTM_DEPLOYMENT_GUIDE.md)** - Step-by-step production deployment
 - **[Deployment Plan](./docs/migration-notes/deployment-plan.md)** - Detailed rollout strategy and monitoring
 
+## 📈 SEO Optimization
+
+**For SEO optimization and keyword analysis:**
+- **[SEO Optimization Guide](./docs/seo-optimization-guide.md)** - Comprehensive SEO implementation guide
+- **[Competitor Analysis](./docs/seo-competitor-analysis.md)** - Sample keyword analysis report
+- **[Scripts README](./scripts/README.md)** - SEO analysis tools and workflows
+
 ## Project Overview
 - **Framework:** Shopify Hydrogen 2025.1.4
 - **Runtime:** Shopify Oxygen (Cloudflare Workers)

@@ -22,20 +22,7 @@ const PRODUCTS_SITEMAP_QUERY = `#graphql
   }
 ` as const;
 
-const COLLECTIONS_SITEMAP_QUERY = `#graphql
-  query CollectionsSitemap($first: Int!, $after: String) {
-    collections(first: $first, after: $after) {
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
-      nodes {
-        handle
-        updatedAt
-      }
-    }
-  }
-` as const;
+// Collections are not used in this store - removed collections sitemap query
 
 const PAGES_SITEMAP_QUERY = `#graphql
   query PagesSitemap($first: Int!, $after: String) {
@@ -64,12 +51,7 @@ interface ProductsResult {
   };
 }
 
-interface CollectionsResult {
-  collections: {
-    pageInfo: { hasNextPage: boolean; endCursor: string | null };
-    nodes: SitemapItem[];
-  };
-}
+// Collections interface removed - not used in this store
 
 interface PagesResult {
   pages: {
@@ -81,10 +63,10 @@ interface PagesResult {
 /**
  * Fetch all items of a type with pagination for custom sitemap
  */
-async function fetchAllItems<T extends ProductsResult | CollectionsResult | PagesResult>(
+async function fetchAllItems<T extends ProductsResult | PagesResult>(
   storefront: LoaderFunctionArgs['context']['storefront'],
   query: string,
-  type: 'products' | 'collections' | 'pages',
+  type: 'products' | 'pages',
   pageSize = 250
 ): Promise<SitemapItem[]> {
   const allItems: SitemapItem[] = [];
@@ -178,28 +160,7 @@ export async function loader({
     }
   }
 
-  // Use custom sitemap generator for collections as fallback
-  if (type === 'collections') {
-    try {
-      const items = await fetchAllItems<CollectionsResult>(
-        storefront,
-        COLLECTIONS_SITEMAP_QUERY,
-        'collections'
-      );
-      
-      const xml = generateSitemapXml(items, baseUrl, 'collections');
-      
-      return new Response(xml, {
-        headers: {
-          'Content-Type': 'application/xml',
-          'Cache-Control': 'public, max-age=3600',
-          'X-Sitemap-Source': 'custom-collections-query',
-        },
-      });
-    } catch (error) {
-      console.error('[Sitemap] Error fetching collections:', error);
-    }
-  }
+  // Collections sitemap removed - not used in this store (tag-based navigation only)
 
   // Use custom sitemap generator for pages as fallback
   if (type === 'pages') {

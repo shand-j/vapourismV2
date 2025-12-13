@@ -55,8 +55,7 @@ Disallow: /*?*oseid=*
 Disallow: /*?*preview_theme_id*
 Disallow: /*?*currency=*
 
-# Allow crawling of collections and products
-Allow: /collections/
+# Allow crawling of products and pages
 Allow: /products/
 Allow: /pages/
 Allow: /policies/

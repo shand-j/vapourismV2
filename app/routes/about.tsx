@@ -12,7 +12,7 @@ export default function AboutRoute() {
   const milestones = [
     {year: '2015', detail: 'Opened our first UK retail experience focused on compliance and education.'},
     {year: '2020', detail: 'Launched a headless storefront to support rapid catalogue expansion.'},
-    {year: '2025', detail: 'Rebuilt on Hydrogen 2025.1.4 with Shopify predictive search and collections-driven navigation.'},
+    {year: '2025', detail: 'Rebuilt on Hydrogen 2025.1.4 with Shopify predictive search and tag-based navigation.'},
   ];
 
   return (

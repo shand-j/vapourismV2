@@ -71,12 +71,12 @@ export interface SearchResults {
   };
 }
 
-const DEFAULT_PREDICTIVE_TYPES: StorefrontAPI.PredictiveSearchType[] = ['PRODUCT', 'COLLECTION'];
+const DEFAULT_PREDICTIVE_TYPES: StorefrontAPI.PredictiveSearchType[] = ['PRODUCT'];
 const DEFAULT_SEARCH_SORT_KEY: StorefrontAPI.SearchSortKeys = 'RELEVANCE';
 
 const EMPTY_PREDICTIVE_RESULTS: PredictiveSearchResults = {
   products: [],
-  collections: [],
+  collections: [], // Empty - collections not used in this store
   queries: [],
 };
 
@@ -203,7 +203,7 @@ const SEARCH_QUERY = `#graphql
  * @param storefront - Hydrogen Storefront client
  * @param query - Search query string
  * @param limit - Maximum results per type (default: 10)
- * @param types - Types to search (default: [PRODUCT, COLLECTION])
+ * @param types - Types to search (default: [PRODUCT] - collections not used)
  * @returns Predictive search results
  */
 export async function predictiveSearch(

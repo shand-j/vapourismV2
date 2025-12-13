@@ -15,7 +15,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   if (!query || query.trim().length < 2) {
     return json({
       products: [],
-      collections: [],
+      collections: [], // Empty - collections not used
       queries: [],
     });
   }
@@ -25,7 +25,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
       context.storefront,
       query,
       10, // limit per type
-      ['PRODUCT', 'COLLECTION', 'QUERY']
+      ['PRODUCT', 'QUERY'] // Exclude collections - not used in this store
     );
 
     return json(results, {
@@ -39,7 +39,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     return json(
       {
         products: [],
-        collections: [],
+        collections: [], // Empty - collections not used
         queries: [],
         error: 'Search failed',
       },

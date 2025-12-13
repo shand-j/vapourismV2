@@ -87,13 +87,13 @@ export default function CartRoute() {
           {!hasItems ? (
             <div className="mt-12 rounded-[32px] border border-slate-100 bg-white/80 p-10 text-center shadow-[0_25px_60px_rgba(15,23,42,0.08)]">
               <p className="text-lg font-semibold text-slate-900">Your cart is empty</p>
-              <p className="mt-2 text-sm text-slate-500">Browse the latest collections and add products to get started.</p>
+              <p className="mt-2 text-sm text-slate-500">Browse our products by category and add items to get started.</p>
               <div className="mt-6 flex flex-wrap justify-center gap-4">
                 <Link
-                  to="/collections"
+                  to="/search"
                   className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-900"
                 >
-                  Explore collections
+                  Browse All Products
                 </Link>
                 <Link
                   to="/search?q=disposable"

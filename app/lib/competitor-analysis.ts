@@ -52,24 +52,24 @@ export function parseCompetitorKeywords(data: string): KeywordData[] {
 function classifyKeywordIntent(keyword: string): 'informational' | 'commercial' | 'transactional' | 'navigational' {
   const lower = keyword.toLowerCase();
   
-  // Transactional intent
+  // Transactional intent (highest priority - clear purchase intent)
   if (/(buy|shop|purchase|order|price|cheap|deal|sale|discount|coupon)/.test(lower)) {
     return 'transactional';
   }
   
-  // Navigational intent
+  // Navigational intent (brand/site specific)
   if (/(login|account|cart|checkout|store|vapourism)/.test(lower)) {
     return 'navigational';
   }
   
-  // Informational intent
-  if (/(how|what|why|when|guide|tutorial|tips|best|review|compare)/.test(lower)) {
-    return 'informational';
-  }
-  
-  // Commercial investigation
+  // Commercial investigation (product comparison/evaluation)
   if (/(best|top|review|vs|versus|alternative|comparison)/.test(lower)) {
     return 'commercial';
+  }
+  
+  // Informational intent (learning/how-to)
+  if (/(how|what|why|when|guide|tutorial|tips)/.test(lower)) {
+    return 'informational';
   }
   
   // Default to commercial for product-related keywords

@@ -5,6 +5,9 @@
  * to improve organic search rankings based on competitor analysis.
  */
 
+// Constants
+const PRICE_VALIDITY_DAYS = 30; // How long product prices are valid for schema.org
+
 export interface KeywordData {
   keyword: string;
   searchVolume?: number;
@@ -355,7 +358,7 @@ export class KeywordOptimizer {
           "@type": "Organization",
           "name": "Vapourism"
         },
-        "priceValidUntil": new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        "priceValidUntil": new Date(Date.now() + PRICE_VALIDITY_DAYS * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       },
       ...(product.image && {
         "image": product.image

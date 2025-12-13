@@ -1,6 +1,9 @@
 # SEO Competitor Analysis Report
 
-Generated: 2025-12-13T13:01:44.809Z
+> **Note**: This is a sample analysis generated from demo data (`competitor-keywords-sample.csv`).  
+> To analyze your actual competitor data, run: `node scripts/analyze-competitor-keywords.cjs <your-data.csv>`
+
+Generated: 2025-12-13T13:10:25.861Z
 
 ## Executive Summary
 

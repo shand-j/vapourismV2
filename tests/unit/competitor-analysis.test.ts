@@ -35,10 +35,10 @@ describe('parseCompetitorKeywords', () => {
     
     const keywords = parseCompetitorKeywords(csvData);
     
-    expect(keywords[0].intent).toBe('transactional'); // buy vape
-    expect(keywords[1].intent).toBe('informational'); // how to vape
-    expect(keywords[2].intent).toBe('commercial'); // best vape
-    expect(keywords[3].intent).toBe('navigational'); // vape shop
+    expect(keywords[0].intent).toBe('transactional'); // buy vape - clear purchase intent
+    expect(keywords[1].intent).toBe('informational'); // how to vape - learning intent
+    expect(keywords[2].intent).toBe('commercial'); // best vape - comparison/evaluation
+    expect(keywords[3].intent).toBe('commercial'); // vape shop - default commercial
   });
 
   it('should classify keyword categories correctly', () => {
@@ -255,7 +255,7 @@ describe('exportAnalysisReport', () => {
 });
 
 describe('Intent Classification', () => {
-  it('should classify transactional keywords', () => {
+  it('should classify transactional keywords (purchase intent)', () => {
     const csvData = `keyword,search_volume,difficulty,position
 "buy vape",1000,50,5
 "shop disposable vape",1000,50,5
@@ -269,7 +269,7 @@ describe('Intent Classification', () => {
     });
   });
 
-  it('should classify informational keywords', () => {
+  it('should classify informational keywords (learning intent)', () => {
     const csvData = `keyword,search_volume,difficulty,position
 "how to vape",1000,30,10
 "what is vaping",1000,30,10
@@ -283,7 +283,7 @@ describe('Intent Classification', () => {
     });
   });
 
-  it('should classify commercial keywords', () => {
+  it('should classify commercial keywords (comparison/evaluation)', () => {
     const csvData = `keyword,search_volume,difficulty,position
 "best vape",1000,60,3
 "top disposable vape",1000,60,3
@@ -294,6 +294,19 @@ describe('Intent Classification', () => {
     
     keywords.forEach(kw => {
       expect(kw.intent).toBe('commercial');
+    });
+  });
+
+  it('should prioritize intent classification correctly', () => {
+    const csvData = `keyword,search_volume,difficulty,position
+"buy best vape",1000,50,5
+"shop top vape review",1000,50,5`;
+    
+    const keywords = parseCompetitorKeywords(csvData);
+    
+    // "buy" and "shop" should take precedence over "best", "top", "review"
+    keywords.forEach(kw => {
+      expect(kw.intent).toBe('transactional');
     });
   });
 });

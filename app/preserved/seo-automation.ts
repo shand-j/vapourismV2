@@ -4,6 +4,8 @@
  * Note: Collections are not used in this store - all navigation is tag-based
  */
 
+import { KeywordOptimizer, generateKeywordVariations } from '~/lib/keyword-optimizer';
+
 export interface ProductSEOData {
   title: string;
   vendor: string;
@@ -16,12 +18,16 @@ export interface ProductSEOData {
   };
   handle: string;
   availableForSale?: boolean;
+  image?: string;
+  url?: string;
+  sku?: string;
 }
 
 export class SEOAutomationService {
   
   /**
    * Generate comprehensive keywords for products
+   * Enhanced with competitor keyword analysis
    */
   static generateProductKeywords(product: ProductSEOData): string[] {
     const baseKeywords = [
@@ -42,27 +48,88 @@ export class SEOAutomationService {
     // Add category-specific keywords
     const categoryKeywords = this.getCategoryKeywords(product.productType);
     
-    return [...new Set([...baseKeywords, ...featureKeywords, ...priceKeywords, ...categoryKeywords])];
+    // Extract optimized keywords using KeywordOptimizer
+    const optimizedKeywords = KeywordOptimizer.extractKeywordsFromContent(
+      product.description,
+      product.tags,
+      product.productType
+    );
+    
+    // Generate keyword variations for better coverage
+    const keywordVariations: string[] = [];
+    [...baseKeywords, ...categoryKeywords].forEach(keyword => {
+      if (keyword.length > 3) {
+        const variations = generateKeywordVariations(keyword);
+        keywordVariations.push(...variations.slice(0, 3)); // Limit variations per keyword
+      }
+    });
+    
+    return [...new Set([
+      ...baseKeywords, 
+      ...featureKeywords, 
+      ...priceKeywords, 
+      ...categoryKeywords,
+      ...optimizedKeywords,
+      ...keywordVariations
+    ])];
   }
 
   /**
    * Generate SEO-optimized meta description for products
+   * Enhanced with keyword optimization
    */
   static generateProductMetaDescription(product: ProductSEOData): string {
-    const price = product.price ? ` from £${product.price.amount}` : '';
-    const availability = product.availableForSale ? '✓ In Stock' : '✓ Pre-order';
-    
-    return `${product.title} by ${product.vendor}. Premium ${product.productType}${price}. ${availability} ✓ Fast UK delivery ✓ Quality guaranteed ✓ Age verification required. ${product.description.substring(0, 60)}...`;
+    // Use KeywordOptimizer for better keyword-rich descriptions
+    return KeywordOptimizer.optimizeMetaDescription({
+      title: product.title,
+      vendor: product.vendor,
+      productType: product.productType,
+      price: product.price,
+      tags: product.tags
+    });
+  }
+
+  /**
+   * Generate optimized page title for products
+   */
+  static generateProductTitle(product: ProductSEOData): string {
+    return KeywordOptimizer.optimizeProductTitle(
+      product.title,
+      product.vendor,
+      product.productType,
+      product.tags
+    );
   }
 
   /**
    * Generate category meta description (for tag-based search pages)
+   * Enhanced with keyword mapping
    */
   static generateCategoryMetaDescription(categoryTitle: string, productCount?: number, topBrands?: string[]): string {
     const productText = productCount ? `${productCount} products` : 'our range';
     const brandsText = topBrands?.slice(0, 3).join(', ') || 'top brands';
     
-    return `Shop ${categoryTitle} at Vapourism. ${productText} from ${brandsText}. ✓ Premium quality ✓ Fast UK delivery ✓ Competitive prices ✓ Expert support.`;
+    // Generate category-specific keywords
+    const categoryTag = categoryTitle.toLowerCase().replace(/\s+/g, '_');
+    const keywordMapping = KeywordOptimizer.generateCategoryKeywords(
+      categoryTag,
+      productCount,
+      topBrands
+    );
+    
+    // Use primary keywords in description
+    const primaryKeyword = keywordMapping.primary[0] || categoryTitle;
+    
+    return `Shop ${primaryKeyword} at Vapourism. ${productText} from ${brandsText}. ✓ Premium quality ✓ Fast UK delivery ✓ Competitive prices ✓ Expert support. Browse the best ${categoryTitle} ${new Date().getFullYear()}.`;
+  }
+
+  /**
+   * Generate optimized page title for category pages
+   */
+  static generateCategoryTitle(categoryTitle: string, productCount?: number): string {
+    const currentYear = new Date().getFullYear();
+    const countText = productCount ? ` (${productCount}+ Products)` : '';
+    return `${categoryTitle}${countText} | UK Vape Shop | Vapourism ${currentYear}`;
   }
 
   /**
@@ -213,6 +280,27 @@ export class SEOAutomationService {
         }
       }))
     };
+  }
+
+  /**
+   * Generate enhanced Product schema with keywords
+   */
+  static generateProductSchema(product: ProductSEOData) {
+    if (!product.price || !product.url) {
+      return null;
+    }
+
+    return KeywordOptimizer.generateProductSchema({
+      title: product.title,
+      vendor: product.vendor,
+      productType: product.productType,
+      description: product.description,
+      price: product.price,
+      image: product.image,
+      url: product.url,
+      sku: product.sku,
+      availability: product.availableForSale ?? true
+    });
   }
 
   /**

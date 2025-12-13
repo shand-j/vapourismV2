@@ -8,12 +8,22 @@ Welcome to Vapourism V2 — the Shopify-native Hydrogen refactor of the Vapouris
 - **[GTM Deployment Guide](./docs/GTM_DEPLOYMENT_GUIDE.md)** - Step-by-step production deployment
 - **[Deployment Plan](./docs/migration-notes/deployment-plan.md)** - Detailed rollout strategy and monitoring
 
-## 📈 SEO Optimization
+## 📈 SEO Optimization & Gap Analysis
 
-**For SEO optimization and keyword analysis:**
+**🔥 NEW: 10,000 Keyword Gap Analysis** - Massive opportunity identified!
+- **[Gap Analysis Report](./docs/gap-analysis-report.md)** - 10,000 keywords analysis (500k+ visit potential)
+- **[Immediate Action Plan](./docs/gap-analysis-action-plan.md)** - 12-week roadmap to 100k visits
+
+**SEO Tools & Guides:**
 - **[SEO Optimization Guide](./docs/seo-optimization-guide.md)** - Comprehensive SEO implementation guide
-- **[Competitor Analysis](./docs/seo-competitor-analysis.md)** - Sample keyword analysis report
+- **[Competitor Analysis (Sample)](./docs/seo-competitor-analysis.md)** - 96 keyword analysis example
 - **[Scripts README](./scripts/README.md)** - SEO analysis tools and workflows
+
+**Quick Stats from Gap Analysis:**
+- 10,000 competitor keywords where Vapourism isn't ranking
+- 15 quick wins (low difficulty, high volume)
+- 200k+ search potential in nicotine pouches (NEW category opportunity)
+- 121k monthly searches for "vape shop near me" terms
 
 ## Project Overview
 - **Framework:** Shopify Hydrogen 2025.1.4

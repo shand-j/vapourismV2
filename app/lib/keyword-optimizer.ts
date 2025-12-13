@@ -32,13 +32,17 @@ export interface CompetitorKeywordAnalysis {
 
 /**
  * UK Vaping Industry - High-Value Keywords
- * Based on competitor analysis and industry trends
+ * Based on competitor gap analysis (10,000+ keywords) and industry trends
+ * Updated: December 2025 with real competitor data
  */
 export const VAPING_KEYWORDS = {
   // Primary commercial keywords (high volume, high intent)
   primary: [
     'vape',
     'vaping',
+    'vape shop',
+    'vape uk',
+    'vapes',
     'e-cigarette',
     'e-liquid',
     'vape juice',
@@ -47,6 +51,8 @@ export const VAPING_KEYWORDS = {
     'vape pen',
     'pod system',
     'nicotine salt',
+    'vape shop near me',
+    'vape shops near me',
   ],
   
   // UK-specific modifiers (geo-targeting)
@@ -57,6 +63,9 @@ export const VAPING_KEYWORDS = {
     'london',
     'manchester',
     'birmingham',
+    'glasgow',
+    'liverpool',
+    'bristol',
   ],
   
   // Product type keywords
@@ -71,13 +80,19 @@ export const VAPING_KEYWORDS = {
     'nic shot',
     '10ml e-liquid',
     '50ml shortfill',
+    'nicotine pouches',
+    'vape pods',
+    'vape starter kit',
   ],
   
-  // Brand-related keywords (high commercial intent)
+  // Brand-related keywords (high commercial intent - updated with gap analysis)
   brands: [
     'elf bar',
     'lost mary',
     'geek bar',
+    'hayati',
+    'hayati pro ultra',
+    'hayati pro max',
     'smok',
     'voopoo',
     'vaporesso',
@@ -85,6 +100,34 @@ export const VAPING_KEYWORDS = {
     'innokin',
     'freemax',
     'uwell',
+    'riot squad',
+    'crystal bar',
+    'ivg',
+    'dinner lady',
+    'vampire vape',
+  ],
+  
+  // Emerging brands from gap analysis (high volume, low difficulty)
+  emergingBrands: [
+    'hayati pro ultra 25000',
+    'hayati pro ultra plus 25000',
+    'lost mary bm6000',
+    'lost mary 30k',
+    'hyola ultra 30k',
+    'elux legend',
+    'crystal prime',
+    'riot bar',
+  ],
+  
+  // Nicotine alternatives (new category from gap analysis)
+  nicotineAlternatives: [
+    'nicotine pouches',
+    'snus',
+    'velo',
+    'zyn',
+    'nordic spirit',
+    'lyft',
+    'white fox',
   ],
   
   // Feature keywords (long-tail)

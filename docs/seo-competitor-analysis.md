@@ -1,61 +1,58 @@
 # SEO Competitor Analysis Report
 
-> **Note**: This is a sample analysis generated from demo data (`competitor-keywords-sample.csv`).  
-> To analyze your actual competitor data, run: `node scripts/analyze-competitor-keywords.cjs <your-data.csv>`
-
-Generated: 2025-12-13T13:10:25.861Z
+Generated: 2025-12-13T22:10:17.679Z
 
 ## Executive Summary
 
-- **Total Keywords Analyzed**: 96
+- **Total Keywords Analyzed**: 10000
 - **Top 10 Positions**: 20 keywords
 - **Quick Win Opportunities**: 15 keywords
-- **Content Gap Opportunities**: 29 keywords
+- **Content Gap Opportunities**: 30 keywords
 
 ## Keyword Distribution by Intent
 
-- **navigational**: 79 keywords (82.3%)
-- **transactional**: 7 keywords (7.3%)
-- **commercial**: 6 keywords (6.3%)
-- **informational**: 4 keywords (4.2%)
+- **navigational**: 8669 keywords (86.7%)
+- **transactional**: 679 keywords (6.8%)
+- **commercial**: 311 keywords (3.1%)
+- **informational**: 341 keywords (3.4%)
 
 ## Category Breakdown
 
-- **General**: 73 keywords
-- **Disposable Vapes**: 6 keywords
-- **E-Liquids**: 5 keywords
-- **Brand - Elf Bar**: 3 keywords
-- **Brand - Lost Mary**: 2 keywords
-- **Pod Systems**: 2 keywords
-- **Coils**: 2 keywords
-- **Brand - Geek Bar**: 1 keywords
-- **Mods**: 1 keywords
-- **Tanks**: 1 keywords
+- **General**: 8112 keywords
+- **Pod Systems**: 636 keywords
+- **E-Liquids**: 425 keywords
+- **Brand - Lost Mary**: 202 keywords
+- **Disposable Vapes**: 198 keywords
+- **Brand - Elf Bar**: 165 keywords
+- **Coils**: 124 keywords
+- **Tanks**: 69 keywords
+- **Mods**: 57 keywords
+- **Brand - Geek Bar**: 12 keywords
 
 ## Top 20 Keywords by Position
 
 | Rank | Keyword | Position | Volume | Difficulty | Intent |
 |------|---------|----------|--------|------------|--------|
-| 1 | disposable vape | 1 | 33,100 | 65 | navigational |
-| 2 | lost mary | 1 | 18,100 | 68 | navigational |
-| 3 | elf bar 600 | 1 | 4,400 | 60 | navigational |
-| 4 | lost mary bm600 | 1 | 1,100 | 55 | navigational |
-| 5 | elf bar 600 puffs | 1 | 680 | 58 | navigational |
-| 6 | nic shot | 1 | 890 | 35 | navigational |
-| 7 | elf bar | 2 | 27,100 | 70 | navigational |
-| 8 | disposable vapes | 2 | 6,600 | 62 | navigational |
-| 9 | shortfill | 2 | 1,300 | 42 | navigational |
-| 10 | disposable vape uk | 2 | 720 | 52 | navigational |
-| 11 | geek bar disposable | 2 | 560 | 60 | navigational |
-| 12 | 50ml shortfill | 2 | 1,200 | 40 | navigational |
-| 13 | nic salt e liquid | 2 | 1,100 | 45 | navigational |
-| 14 | geek bar | 3 | 14,800 | 65 | navigational |
-| 15 | nic salt | 3 | 1,600 | 45 | navigational |
-| 16 | best disposable vape | 3 | 2,100 | 58 | commercial |
-| 17 | 10ml e liquid | 3 | 1,500 | 42 | navigational |
-| 18 | 50/50 e liquid | 3 | 980 | 40 | navigational |
-| 19 | e liquid | 4 | 9,900 | 55 | navigational |
-| 20 | buy vape online | 4 | 2,900 | 52 | transactional |
+| 1 | vape shop | 1 | 74,000 | 98 | transactional |
+| 2 | vape uk | 1 | 74,000 | 100 | navigational |
+| 3 | vape | 1 | 60,500 | 97 | navigational |
+| 4 | vape shops near me | 1 | 60,500 | 95 | transactional |
+| 5 | vapes | 1 | 49,500 | 71 | navigational |
+| 6 | hayati pro ultra | 1 | 27,100 | 10 | navigational |
+| 7 | hayati pro max | 1 | 22,200 | 16 | navigational |
+| 8 | disposable vape | 1 | 18,100 | 32 | navigational |
+| 9 | vapestore | 1 | 14,800 | 84 | navigational |
+| 10 | cape stores | 1 | 12,100 | 97 | navigational |
+| 11 | ivg 2400 | 1 | 12,100 | 20 | navigational |
+| 12 | vape liquid | 1 | 12,100 | 34 | navigational |
+| 13 | vape store | 1 | 12,100 | 91 | navigational |
+| 14 | refillable vape | 1 | 9,900 | 22 | navigational |
+| 15 | vape club | 1 | 9,900 | 34 | navigational |
+| 16 | vape juice | 1 | 9,900 | 47 | navigational |
+| 17 | vapeuk | 1 | 9,900 | 100 | navigational |
+| 18 | hayati vape | 1 | 8,100 | 16 | navigational |
+| 19 | oxva vape | 1 | 8,100 | 12 | navigational |
+| 20 | oxva xlim pro 2 | 1 | 8,100 | 9 | navigational |
 
 ## Quick Wins (Priority 1)
 
@@ -63,34 +60,34 @@ These keywords offer the best opportunity for quick ranking improvements.
 
 | Keyword | Position | Volume | Difficulty | Category |
 |---------|----------|--------|------------|----------|
-| nic shot | 1 | 890 | 35 | General |
-| 50ml shortfill | 2 | 1,200 | 40 | E-Liquids |
-| shortfill | 2 | 1,300 | 42 | E-Liquids |
-| nic salt e liquid | 2 | 1,100 | 45 | General |
-| disposable vape uk | 2 | 720 | 52 | Disposable Vapes |
-| 50/50 e liquid | 3 | 980 | 40 | General |
-| 10ml e liquid | 3 | 1,500 | 42 | General |
-| nic salt | 3 | 1,600 | 45 | General |
-| 3mg nicotine | 4 | 760 | 36 | General |
-| 100ml shortfill | 4 | 980 | 38 | E-Liquids |
-| vape coils | 4 | 820 | 44 | Coils |
-| 0mg e liquid | 5 | 820 | 38 | General |
-| cheap disposable vape | 4 | 1,400 | 48 | Disposable Vapes |
-| rechargeable vape | 4 | 1,400 | 48 | General |
-| buy vape online | 4 | 2,900 | 52 | General |
+| riot squad | 1 | 1,000 | 5 | General |
+| hayati pro ultra 25000 | 1 | 720 | 6 | General |
+| hayati pro ultra plus 25000 | 1 | 720 | 6 | General |
+| lost mary 30k pods | 1 | 1,300 | 7 | Pod Systems |
+| hyola ultra 30k | 1 | 1,000 | 7 | General |
+| lost mary nera 30k | 1 | 1,000 | 7 | Brand - Lost Mary |
+| angel 20000 vape pods | 1 | 880 | 7 | Pod Systems |
+| bloody bar 20k | 1 | 880 | 7 | General |
+| big bar | 1 | 590 | 7 | General |
+| crystal cl6000 pods | 1 | 590 | 7 | Pod Systems |
+| dojo vape pods | 1 | 590 | 7 | Pod Systems |
+| lemon and lime vape | 1 | 590 | 7 | General |
+| oxva vape pod | 1 | 590 | 7 | Pod Systems |
+| pyne pod click | 1 | 590 | 7 | Pod Systems |
+| vaporesso armour s | 1 | 590 | 7 | General |
 
 ### Recommended Actions for Quick Wins:
 
-1. **nic shot**: Optimize existing General pages with this keyword in title, description, and H1
-2. **50ml shortfill**: Optimize existing E-Liquids pages with this keyword in title, description, and H1
-3. **shortfill**: Optimize existing E-Liquids pages with this keyword in title, description, and H1
-4. **nic salt e liquid**: Optimize existing General pages with this keyword in title, description, and H1
-5. **disposable vape uk**: Optimize existing Disposable Vapes pages with this keyword in title, description, and H1
-6. **50/50 e liquid**: Optimize existing General pages with this keyword in title, description, and H1
-7. **10ml e liquid**: Optimize existing General pages with this keyword in title, description, and H1
-8. **nic salt**: Optimize existing General pages with this keyword in title, description, and H1
-9. **3mg nicotine**: Optimize existing General pages with this keyword in title, description, and H1
-10. **100ml shortfill**: Optimize existing E-Liquids pages with this keyword in title, description, and H1
+1. **riot squad**: Optimize existing General pages with this keyword in title, description, and H1
+2. **hayati pro ultra 25000**: Optimize existing General pages with this keyword in title, description, and H1
+3. **hayati pro ultra plus 25000**: Optimize existing General pages with this keyword in title, description, and H1
+4. **lost mary 30k pods**: Optimize existing Pod Systems pages with this keyword in title, description, and H1
+5. **hyola ultra 30k**: Optimize existing General pages with this keyword in title, description, and H1
+6. **lost mary nera 30k**: Optimize existing Brand - Lost Mary pages with this keyword in title, description, and H1
+7. **angel 20000 vape pods**: Optimize existing Pod Systems pages with this keyword in title, description, and H1
+8. **bloody bar 20k**: Optimize existing General pages with this keyword in title, description, and H1
+9. **big bar**: Optimize existing General pages with this keyword in title, description, and H1
+10. **crystal cl6000 pods**: Optimize existing Pod Systems pages with this keyword in title, description, and H1
 
 ## Content Gaps (Priority 2)
 
@@ -98,26 +95,26 @@ Keywords the competitor ranks for that we should target.
 
 | Keyword | Volume | Position | Category | Opportunity |
 |---------|--------|----------|----------|-------------|
-| geek bar | 14,800 | 3 | Brand - Geek Bar | High |
-| e liquid | 9,900 | 4 | General | High |
-| nic salt | 1,600 | 3 | General | High |
-| shortfill | 1,300 | 2 | E-Liquids | High |
-| e cigarette | 620 | 18 | General | Medium |
-| geek bar disposable | 560 | 2 | Disposable Vapes | Medium |
-| voopoo | 460 | 8 | General | Low |
-| vaporesso | 440 | 9 | General | Low |
-| freemax | 420 | 12 | General | Low |
-| uwell | 400 | 10 | General | Low |
-| tobacco flavour | 340 | 7 | General | Low |
-| nicotine strength guide | 540 | 9 | General | Medium |
-| coil replacement | 480 | 7 | Coils | Low |
-| mouth to lung | 380 | 6 | General | Low |
-| 10ml e liquid | 1,500 | 3 | General | High |
-| 50ml shortfill | 1,200 | 2 | E-Liquids | High |
-| 100ml shortfill | 980 | 4 | E-Liquids | Medium |
-| nic shot | 890 | 1 | General | Medium |
-| 0mg e liquid | 820 | 5 | General | Medium |
-| 3mg nicotine | 760 | 4 | General | Medium |
+| clearpay | 246,000 | 51 | General | High |
+| paypal uk | 165,000 | 47 | General | High |
+| snus | 60,500 | 70 | General | High |
+| vaporesso | 40,500 | 3 | General | High |
+| club l | 27,100 | 53 | General | High |
+| hayati pro ultra | 27,100 | 1 | General | High |
+| velo | 27,100 | 8 | General | High |
+| dpd local | 22,200 | 6 | General | High |
+| hayati pro max | 22,200 | 1 | General | High |
+| iqos | 22,200 | 12 | General | High |
+| nicotine pouches | 22,200 | 4 | General | High |
+| zyn | 22,200 | 8 | General | High |
+| clear pay | 18,100 | 64 | General | High |
+| iqos uk | 18,100 | 9 | General | High |
+| nordic spirit | 18,100 | 11 | General | High |
+| mtl share price | 14,800 | 87 | General | High |
+| smok | 14,800 | 5 | General | High |
+| tracking number royal mail tracking | 14,800 | 50 | General | High |
+| vapory near me | 14,800 | 6 | General | High |
+| cape stores | 12,100 | 1 | General | High |
 
 ## Implementation Roadmap
 
@@ -125,42 +122,41 @@ Keywords the competitor ranks for that we should target.
 
 Focus on optimizing existing pages for quick win keywords:
 
-1. Optimize for "nic shot" (Position: 1, Volume: 890)
-2. Optimize for "50ml shortfill" (Position: 2, Volume: 1,200)
-3. Optimize for "shortfill" (Position: 2, Volume: 1,300)
-4. Optimize for "nic salt e liquid" (Position: 2, Volume: 1,100)
-5. Optimize for "disposable vape uk" (Position: 2, Volume: 720)
-6. Optimize for "50/50 e liquid" (Position: 3, Volume: 980)
-7. Optimize for "10ml e liquid" (Position: 3, Volume: 1,500)
-8. Optimize for "nic salt" (Position: 3, Volume: 1,600)
-9. Optimize for "3mg nicotine" (Position: 4, Volume: 760)
-10. Optimize for "100ml shortfill" (Position: 4, Volume: 980)
+1. Optimize for "riot squad" (Position: 1, Volume: 1,000)
+2. Optimize for "hayati pro ultra 25000" (Position: 1, Volume: 720)
+3. Optimize for "hayati pro ultra plus 25000" (Position: 1, Volume: 720)
+4. Optimize for "lost mary 30k pods" (Position: 1, Volume: 1,300)
+5. Optimize for "hyola ultra 30k" (Position: 1, Volume: 1,000)
+6. Optimize for "lost mary nera 30k" (Position: 1, Volume: 1,000)
+7. Optimize for "angel 20000 vape pods" (Position: 1, Volume: 880)
+8. Optimize for "bloody bar 20k" (Position: 1, Volume: 880)
+9. Optimize for "big bar" (Position: 1, Volume: 590)
+10. Optimize for "crystal cl6000 pods" (Position: 1, Volume: 590)
 
 ### Phase 2: Content Creation (Months 2-3)
 
 Create new content targeting content gap keywords:
 
-1. Create content for "geek bar" (Brand - Geek Bar)
-2. Create content for "e liquid" (General)
-3. Create content for "nic salt" (General)
-4. Create content for "shortfill" (E-Liquids)
-5. Create content for "e cigarette" (General)
-6. Create content for "geek bar disposable" (Disposable Vapes)
-7. Create content for "voopoo" (General)
-8. Create content for "vaporesso" (General)
-9. Create content for "freemax" (General)
-10. Create content for "uwell" (General)
-11. Create content for "tobacco flavour" (General)
-12. Create content for "nicotine strength guide" (General)
-13. Create content for "coil replacement" (Coils)
-14. Create content for "mouth to lung" (General)
-15. Create content for "10ml e liquid" (General)
+1. Create content for "clearpay" (General)
+2. Create content for "paypal uk" (General)
+3. Create content for "snus" (General)
+4. Create content for "vaporesso" (General)
+5. Create content for "club l" (General)
+6. Create content for "hayati pro ultra" (General)
+7. Create content for "velo" (General)
+8. Create content for "dpd local" (General)
+9. Create content for "hayati pro max" (General)
+10. Create content for "iqos" (General)
+11. Create content for "nicotine pouches" (General)
+12. Create content for "zyn" (General)
+13. Create content for "clear pay" (General)
+14. Create content for "iqos uk" (General)
+15. Create content for "nordic spirit" (General)
 
 ### Phase 3: Authority Building (Months 4-6)
 
 Create comprehensive guides and resources:
 
-1. Write guide: "nicotine strength guide"
 
 ## Technical SEO Recommendations
 

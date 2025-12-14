@@ -108,7 +108,6 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     normalizedPriceRange.max = temp;
   }
 
-  // Phase 1 Optimization: Use server-side filtering instead of fetching all products
   // Build all filters for server-side application
   const allFilters: StorefrontAPI.ProductFilter[] = [
     ...selectedTypes.map((value) => ({productType: value} as StorefrontAPI.ProductFilter)),
@@ -125,16 +124,12 @@ export async function loader({request, context}: LoaderFunctionArgs) {
       : []),
   ];
 
-  // Handle tag expansion for server-side filtering
-  let expandedTags: string[] = [];
+  // Handle tag expansion and add to filters
+  let expandedTagFilters: string[] = [];
   let additionalVendors: string[] = [];
   let additionalTypes: string[] = [];
 
-  // For tag filtering, we need facet data. Use cached facets when possible.
-  const facetsCacheKey = `search-facets:v1`;
-  
-  // Get facets from cache or calculate from sample
-  // Note: Using a simpler caching approach with query caching
+  // Get facets from cache for efficient tag expansion
   let facetGroups: ReturnType<typeof buildTagFacetGroups>;
 
   try {
@@ -150,9 +145,9 @@ export async function loader({request, context}: LoaderFunctionArgs) {
       if (tag.startsWith('filter:flavour_type:') && flavourTypeFacet) {
         const option = flavourTypeFacet.options.find(opt => opt.value === tag);
         if (option && option.originalTags && option.originalTags.length > 0) {
-          expandedTags.push(...option.originalTags);
+          expandedTagFilters.push(...option.originalTags);
         } else {
-          expandedTags.push(tag);
+          expandedTagFilters.push(tag);
         }
       } else if (tag.startsWith('filter:brand:') && brandFacet) {
         const option = brandFacet.options.find(opt => opt.value === tag);
@@ -171,83 +166,45 @@ export async function loader({request, context}: LoaderFunctionArgs) {
           additionalTypes.push(productType);
         }
       } else {
-        expandedTags.push(tag);
+        expandedTagFilters.push(tag);
       }
     });
 
     // Remove duplicates
-    expandedTags = Array.from(new Set(expandedTags));
+    expandedTagFilters = Array.from(new Set(expandedTagFilters));
     additionalVendors = Array.from(new Set(additionalVendors));
     additionalTypes = Array.from(new Set(additionalTypes));
 
     // Add expanded filters to the filter list
     additionalTypes.forEach((value) => allFilters.push({productType: value} as StorefrontAPI.ProductFilter));
     additionalVendors.forEach((value) => allFilters.push({productVendor: value} as StorefrontAPI.ProductFilter));
+    
+    // Add tag filters to the filter list (will be converted to query syntax by searchProducts)
+    expandedTagFilters.forEach((tag) => allFilters.push({tag} as StorefrontAPI.ProductFilter));
 
-    // For tag filtering, we need to handle it differently since Shopify doesn't support tag filters directly
-    // We'll do this in-memory after the server-side filtered results
-    let tagFilteredProducts: SearchProduct[] = [];
-    let totalCount = 0;
-
-    if (expandedTags.length > 0) {
-      // If we have tag filters, we need to get more results and filter in-memory
-      // But we can still use server-side filtering for other filters
-      const serverFilters = allFilters.filter(f => !('productType' in f) || !additionalTypes.includes((f as any).productType));
-      
-      const searchResults = await searchProducts(context.storefront, query, {
-        first: Math.min(500, 24 * 5), // Get more results for tag filtering, but limit to reasonable amount
-        after,
-        sortKey,
-        reverse,
-        filters: serverFilters,
-      });
-
-      // Apply tag filtering in-memory (much more efficient than filtering all products)
-      tagFilteredProducts = searchResults.products.filter(product => {
-        if (!product.tags || product.tags.length === 0) return false;
-        return product.tags.some(tag => expandedTags.includes(tag));
-      });
-
-      totalCount = tagFilteredProducts.length; // This is approximate since we don't have total from filtered results
-    } else {
-      // No tag filters, use server-side filtering for everything
-      const searchResults = await searchProducts(context.storefront, query, {
-        first: 100,
-        after,
-        sortKey,
-        reverse,
-        filters: allFilters,
-      });
-
-      tagFilteredProducts = searchResults.products;
-      totalCount = searchResults.totalCount;
-    }
+    // Use server-side filtering for everything, including tags
+    const searchResults = await searchProducts(context.storefront, query, {
+      first: 24,
+      after,
+      sortKey,
+      reverse,
+      filters: allFilters,
+    });
 
     // Calculate price summary from filtered results
-    const priceSummary = calculatePriceSummary(tagFilteredProducts);
-
-    // Simple pagination on filtered results
-    const pageSize = 24;
-    const startIndex = after ? parseInt(after) || 0 : 0;
-    const endIndex = startIndex + pageSize;
-    const paginatedProducts = tagFilteredProducts.slice(startIndex, endIndex);
-    const hasMorePages = endIndex < tagFilteredProducts.length;
-    const nextCursor = hasMorePages ? endIndex.toString() : undefined;
+    const priceSummary = calculatePriceSummary(searchResults.products);
 
     // Calculate facets from the filtered search results
-    const filteredFacets = buildTagFacetGroups(tagFilteredProducts);
+    const filteredFacets = buildTagFacetGroups(searchResults.products);
 
     // Get hero banner based on selected tags
     const hero = getHeroForTags(selectedTags);
 
     return json<SearchLoaderData>({
       query,
-      products: paginatedProducts,
-      totalCount,
-      pageInfo: { 
-        hasNextPage: hasMorePages,
-        endCursor: nextCursor
-      },
+      products: searchResults.products,
+      totalCount: searchResults.totalCount,
+      pageInfo: searchResults.pageInfo,
       facets: filteredFacets,
       priceSummary,
       hero,

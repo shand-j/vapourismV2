@@ -3,77 +3,6 @@
 /* eslint-disable */
 import type * as StorefrontAPI from '@shopify/hydrogen/storefront-api-types';
 
-export type CollectionsQueryVariables = StorefrontAPI.Exact<{
-  first: StorefrontAPI.Scalars['Int']['input'];
-  after?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
-}>;
-
-export type CollectionsQuery = {
-  collections: {
-    edges: Array<{
-      node: Pick<
-        StorefrontAPI.Collection,
-        'id' | 'title' | 'handle' | 'description'
-      > & {
-        image?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Image, 'url' | 'altText'>
-        >;
-        seo: Pick<StorefrontAPI.Seo, 'title' | 'description'>;
-      };
-    }>;
-    pageInfo: Pick<StorefrontAPI.PageInfo, 'hasNextPage' | 'endCursor'>;
-  };
-};
-
-export type CollectionQueryVariables = StorefrontAPI.Exact<{
-  handle: StorefrontAPI.Scalars['String']['input'];
-  first?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Int']['input']>;
-  after?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
-  sortKey?: StorefrontAPI.InputMaybe<StorefrontAPI.ProductCollectionSortKeys>;
-  reverse?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Boolean']['input']>;
-  filters?: StorefrontAPI.InputMaybe<
-    Array<StorefrontAPI.ProductFilter> | StorefrontAPI.ProductFilter
-  >;
-}>;
-
-export type CollectionQuery = {
-  collection?: StorefrontAPI.Maybe<
-    Pick<
-      StorefrontAPI.Collection,
-      'id' | 'title' | 'handle' | 'description'
-    > & {
-      image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url' | 'altText'>>;
-      seo: Pick<StorefrontAPI.Seo, 'title' | 'description'>;
-      products: {
-        edges: Array<{
-          node: Pick<
-            StorefrontAPI.Product,
-            | 'id'
-            | 'title'
-            | 'handle'
-            | 'vendor'
-            | 'productType'
-            | 'tags'
-            | 'description'
-            | 'availableForSale'
-          > & {
-            priceRange: {
-              minVariantPrice: Pick<
-                StorefrontAPI.MoneyV2,
-                'amount' | 'currencyCode'
-              >;
-            };
-            featuredImage?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.Image, 'url' | 'altText'>
-            >;
-          };
-        }>;
-        pageInfo: Pick<StorefrontAPI.PageInfo, 'hasNextPage' | 'endCursor'>;
-      };
-    }
-  >;
-};
-
 export type FeaturedShowcaseProductsQueryVariables = StorefrontAPI.Exact<{
   first: StorefrontAPI.Scalars['Int']['input'];
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
@@ -870,18 +799,6 @@ export type ProductsSitemapQuery = {
   };
 };
 
-export type CollectionsSitemapQueryVariables = StorefrontAPI.Exact<{
-  first: StorefrontAPI.Scalars['Int']['input'];
-  after?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
-}>;
-
-export type CollectionsSitemapQuery = {
-  collections: {
-    pageInfo: Pick<StorefrontAPI.PageInfo, 'hasNextPage' | 'endCursor'>;
-    nodes: Array<Pick<StorefrontAPI.Collection, 'handle' | 'updatedAt'>>;
-  };
-};
-
 export type PagesSitemapQueryVariables = StorefrontAPI.Exact<{
   first: StorefrontAPI.Scalars['Int']['input'];
   after?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
@@ -895,14 +812,6 @@ export type PagesSitemapQuery = {
 };
 
 interface GeneratedQueryTypes {
-  '#graphql\n  query Collections($first: Int!, $after: String) {\n    collections(first: $first, after: $after) {\n      edges {\n        node {\n          id\n          title\n          handle\n          description\n          image {\n            url\n            altText\n          }\n          seo {\n            title\n            description\n          }\n        }\n      }\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n    }\n  }\n': {
-    return: CollectionsQuery;
-    variables: CollectionsQueryVariables;
-  };
-  '#graphql\n  query Collection(\n    $handle: String!\n    $first: Int\n    $after: String\n    $sortKey: ProductCollectionSortKeys\n    $reverse: Boolean\n    $filters: [ProductFilter!]\n  ) {\n    collection(handle: $handle) {\n      id\n      title\n      handle\n      description\n      image {\n        url\n        altText\n      }\n      seo {\n        title\n        description\n      }\n      products(\n        first: $first\n        after: $after\n        sortKey: $sortKey\n        reverse: $reverse\n        filters: $filters\n      ) {\n        edges {\n          node {\n            id\n            title\n            handle\n            vendor\n            productType\n            tags\n            description\n            priceRange {\n              minVariantPrice {\n                amount\n                currencyCode\n              }\n            }\n            featuredImage {\n              url(transform: {maxWidth: 500})\n              altText\n            }\n            availableForSale\n          }\n        }\n        pageInfo {\n          hasNextPage\n          endCursor\n        }\n      }\n    }\n  }\n': {
-    return: CollectionQuery;
-    variables: CollectionQueryVariables;
-  };
   '#graphql\n  query FeaturedShowcaseProducts(\n    $first: Int!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    products(\n      first: $first\n      sortKey: BEST_SELLING\n      query: "metafield:custom.showcase_featured:true"\n    ) {\n      nodes {\n        ...ProductCard\n      }\n    }\n  }\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    handle\n    vendor\n    featuredImage {\n      url\n      altText\n    }\n    priceRange {\n      minVariantPrice {\n        amount\n        currencyCode\n      }\n    }\n  }\n\n': {
     return: FeaturedShowcaseProductsQuery;
     variables: FeaturedShowcaseProductsQueryVariables;
@@ -1034,10 +943,6 @@ interface GeneratedQueryTypes {
   '#graphql\n  query ProductsSitemap($first: Int!, $after: String) {\n    products(first: $first, after: $after) {\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n      nodes {\n        handle\n        updatedAt\n      }\n    }\n  }\n': {
     return: ProductsSitemapQuery;
     variables: ProductsSitemapQueryVariables;
-  };
-  '#graphql\n  query CollectionsSitemap($first: Int!, $after: String) {\n    collections(first: $first, after: $after) {\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n      nodes {\n        handle\n        updatedAt\n      }\n    }\n  }\n': {
-    return: CollectionsSitemapQuery;
-    variables: CollectionsSitemapQueryVariables;
   };
   '#graphql\n  query PagesSitemap($first: Int!, $after: String) {\n    pages(first: $first, after: $after) {\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n      nodes {\n        handle\n        updatedAt\n      }\n    }\n  }\n': {
     return: PagesSitemapQuery;

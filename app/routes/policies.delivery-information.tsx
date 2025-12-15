@@ -1,5 +1,31 @@
-import {json, type LoaderFunctionArgs} from '@remix-run/server-runtime';
+import {json, type LoaderFunctionArgs, type MetaFunction} from '@remix-run/server-runtime';
 import {useLoaderData, Link} from '@remix-run/react';
+
+export const meta: MetaFunction = () => [
+  {
+    title: 'Delivery Information | UK Shipping & Tracking | Vapourism'
+  },
+  {
+    name: 'description',
+    content: 'Vapourism delivery information. Free UK delivery over £20. Standard 1-3 day shipping. Express next-day delivery available. Track your vaping products order.'
+  },
+  {
+    name: 'keywords',
+    content: 'delivery information, UK shipping, vape delivery, free delivery, next day delivery, order tracking, shipping policy'
+  },
+  {
+    property: 'og:title',
+    content: 'Delivery Information | Vapourism'
+  },
+  {
+    property: 'og:description',
+    content: 'Fast UK delivery for vaping products. Free shipping over £20. Next-day delivery available.'
+  },
+  {
+    name: 'robots',
+    content: 'index, follow'
+  }
+];
 
 export async function loader({context}: LoaderFunctionArgs) {
   return json({

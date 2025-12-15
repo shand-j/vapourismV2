@@ -1,9 +1,12 @@
 import type {LoaderFunctionArgs, MetaFunction} from '@shopify/remix-oxygen';
 import {useLoaderData} from '@remix-run/react';
 import React from 'react';
+import {SEOAutomationService} from '~/preserved/seo-automation';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Vapourism | ${data?.page.title ?? ''}`}];
+  const pageTitle = data?.page.title ?? '';
+  const fullTitle = `Vapourism | ${pageTitle}`;
+  return [{title: SEOAutomationService.truncateTitle(fullTitle)}];
 };
 
 export async function loader({params, context}: LoaderFunctionArgs) {

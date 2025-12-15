@@ -5,23 +5,69 @@ import {ContinueShoppingShowcase} from '~/components/ProductShowcase';
 import type {ProductCardProduct} from '~/components/ProductCard';
 import {FALLBACK_FEATURED_PRODUCTS_QUERY} from '~/lib/product-showcases';
 
-export const meta: MetaFunction = () => [
-  {title: 'Sustainability | Vapourism'},
-  {
-    name: 'description',
-    content:
-      'Learn about Vapourism\'s commitment to sustainability, responsible packaging, and environmental initiatives in the UK vaping industry.',
-  },
-  {
-    property: 'og:title',
-    content: 'Sustainability | Vapourism',
-  },
-  {
-    property: 'og:description',
-    content:
-      'Learn about Vapourism\'s commitment to sustainability, responsible packaging, and environmental initiatives in the UK vaping industry.',
-  },
-];
+export const meta: MetaFunction = () => {
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://vapourism.co.uk"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Guides",
+        "item": "https://vapourism.co.uk/guides"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Sustainability",
+        "item": "https://vapourism.co.uk/guides/sustainability"
+      }
+    ]
+  };
+
+  return [
+    {title: 'Sustainability & Environmental Commitment | Eco-Friendly Vaping | Vapourism'},
+    {
+      name: 'description',
+      content:
+        'Vapourism\'s sustainability commitment: eco-friendly packaging, responsible recycling, and environmental initiatives. Learn how we reduce waste and promote sustainable vaping practices in the UK.',
+    },
+    {
+      name: 'keywords',
+      content: 'sustainable vaping, eco-friendly packaging, vape recycling, environmental initiatives, responsible vaping, green practices, waste reduction, sustainability UK',
+    },
+    {
+      property: 'og:title',
+      content: 'Sustainability & Environmental Commitment | Vapourism',
+    },
+    {
+      property: 'og:description',
+      content:
+        'Vapourism\'s commitment to sustainability, responsible packaging, and environmental initiatives in the UK vaping industry.',
+    },
+    {
+      property: 'og:type',
+      content: 'article',
+    },
+    {
+      property: 'og:url',
+      content: 'https://vapourism.co.uk/guides/sustainability',
+    },
+    {
+      name: 'twitter:card',
+      content: 'summary',
+    },
+    {
+      "script:ld+json": breadcrumbSchema
+    }
+  ];
+};
 
 export async function loader({context}: LoaderFunctionArgs) {
   const {products} = await context.storefront.query(FALLBACK_FEATURED_PRODUCTS_QUERY, {

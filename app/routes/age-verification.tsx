@@ -1,7 +1,21 @@
 import {useState, useEffect} from 'react';
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {json, type LoaderFunctionArgs, type MetaFunction} from '@shopify/remix-oxygen';
 import {useLoaderData, useNavigate} from '@remix-run/react';
 import {useAgeVerif} from '~/preserved/useAgeVerification';
+
+export const meta: MetaFunction = () => [
+  {
+    title: 'Age Verification Required | Vapourism'
+  },
+  {
+    name: 'description',
+    content: 'Complete age verification to proceed with your vaping products order. UK law requires customers to be 18+ to purchase vaping products.'
+  },
+  {
+    name: 'robots',
+    content: 'noindex, nofollow'
+  }
+];
 
 export async function loader({request, context}: LoaderFunctionArgs) {
   const url = new URL(request.url);

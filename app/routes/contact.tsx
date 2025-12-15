@@ -1,7 +1,91 @@
 import type {ReactNode} from 'react';
-import {json, type LoaderFunctionArgs} from '@remix-run/server-runtime';
+import {json, type LoaderFunctionArgs, type MetaFunction} from '@remix-run/server-runtime';
 import {useLoaderData, Link} from '@remix-run/react';
 import {Mail, Phone, MapPin, Clock, MessageCircle, HelpCircle} from 'lucide-react';
+
+export const meta: MetaFunction = () => {
+  const contactSchema = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": "Contact Vapourism",
+    "description": "Contact Vapourism UK vape shop for customer support, product inquiries, and order assistance",
+    "mainEntity": {
+      "@type": "Organization",
+      "name": "Vapourism",
+      "url": "https://vapourism.co.uk",
+      "logo": "https://vapourism.co.uk/logo.png",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "Customer Service",
+        "email": "hello@vapourism.co.uk",
+        "areaServed": "GB",
+        "availableLanguage": "English",
+        "hoursAvailable": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          "opens": "09:00",
+          "closes": "18:00"
+        }
+      }
+    }
+  };
+
+  return [
+    {
+      title: 'Contact Us | Customer Support | Vapourism UK Vape Shop'
+    },
+    {
+      name: 'description',
+      content: 'Contact Vapourism for vaping product help, order support, and expert advice. Phone, email, and live chat available. Monday-Friday 9AM-6PM. Fast UK customer service.'
+    },
+    {
+      name: 'keywords',
+      content: 'contact vapourism, vape shop customer service, UK vape support, order help, product inquiries, vaping advice, customer support UK, contact details'
+    },
+    // Open Graph
+    {
+      property: 'og:title',
+      content: 'Contact Us | Vapourism Customer Support'
+    },
+    {
+      property: 'og:description',
+      content: 'Get in touch with Vapourism for product help, order support, and expert vaping advice. Multiple contact methods available.'
+    },
+    {
+      property: 'og:type',
+      content: 'website'
+    },
+    {
+      property: 'og:url',
+      content: 'https://vapourism.co.uk/contact'
+    },
+    {
+      property: 'og:site_name',
+      content: 'Vapourism'
+    },
+    // Twitter Card
+    {
+      name: 'twitter:card',
+      content: 'summary'
+    },
+    {
+      name: 'twitter:site',
+      content: '@vapourismuk'
+    },
+    {
+      name: 'twitter:title',
+      content: 'Contact Us | Vapourism Customer Support'
+    },
+    {
+      name: 'twitter:description',
+      content: 'Get in touch for vaping product help, order support, and expert advice.'
+    },
+    // JSON-LD Structured Data
+    {
+      "script:ld+json": contactSchema
+    }
+  ];
+};
 
 export async function loader({context}: LoaderFunctionArgs) {
   return json({

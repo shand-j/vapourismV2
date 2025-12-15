@@ -15,19 +15,43 @@ export const meta: MetaFunction = () => [
   {
     name: 'description',
     content:
-      'Take our device finder quiz to discover the perfect vape kit for your needs. Compare pod systems, vape pens, and box mods with expert guidance.',
+      'Take our device finder quiz to discover the perfect vape kit for your needs. Compare pod systems, vape pens, and box mods with expert guidance. Get personalised device recommendations.',
+  },
+  {
+    name: 'keywords',
+    content: 'vape device finder, device quiz, pod systems, vape kits, box mods, vape pens, device comparison, starter kits, beginner vapes, device recommendations',
   },
   {
     property: 'og:title',
-    content: 'Device Studio | Vapourism',
+    content: 'Device Studio | Find Your Perfect Vape Device | Vapourism',
   },
   {
     property: 'og:description',
-    content: 'Find your perfect vaping device with our guided comparison tool.',
+    content: 'Find your perfect vaping device with our guided comparison tool and personalised recommendations.',
+  },
+  {
+    property: 'og:type',
+    content: 'website',
+  },
+  {
+    property: 'og:url',
+    content: 'https://vapourism.co.uk/device-studio',
   },
   {
     property: 'og:image',
     content: DEVICE_STUDIO_QUIZ.heroImage,
+  },
+  {
+    name: 'twitter:card',
+    content: 'summary_large_image',
+  },
+  {
+    name: 'twitter:title',
+    content: 'Device Studio | Find Your Perfect Vape Device',
+  },
+  {
+    name: 'twitter:description',
+    content: 'Take our quiz to find the perfect vaping device for your needs.',
   },
 ];
 

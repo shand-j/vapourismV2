@@ -1,4 +1,12 @@
-import {redirect} from '@shopify/remix-oxygen';
+import {redirect, type MetaFunction} from '@shopify/remix-oxygen';
+
+export const meta: MetaFunction = () => [
+  {title: 'Help Centre | Vapourism Customer Support'},
+  {
+    name: 'description',
+    content: 'Access Vapourism help centre for instant answers to your questions about vaping products, orders, delivery, and account management.',
+  },
+];
 
 /**
  * Help Redirect

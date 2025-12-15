@@ -1,5 +1,13 @@
-import {json, type LoaderFunctionArgs} from '@remix-run/server-runtime';
+import {json, type LoaderFunctionArgs, type MetaFunction} from '@remix-run/server-runtime';
 import {useLoaderData, Link} from '@remix-run/react';
+
+export const meta: MetaFunction = () => [
+  {title: 'Returns Policy | Vapourism'},
+  {
+    name: 'description',
+    content: 'Vapourism returns and refunds policy. 14-day return period for unopened items. Learn about our hassle-free return process and warranty information.',
+  },
+];
 
 export async function loader({context}: LoaderFunctionArgs) {
   return json({

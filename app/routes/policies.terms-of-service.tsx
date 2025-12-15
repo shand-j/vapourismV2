@@ -1,5 +1,13 @@
-import {json, type LoaderFunctionArgs} from '@remix-run/server-runtime';
+import {json, type LoaderFunctionArgs, type MetaFunction} from '@remix-run/server-runtime';
 import {useLoaderData, Link} from '@remix-run/react';
+
+export const meta: MetaFunction = () => [
+  {title: 'Terms of Service | Vapourism'},
+  {
+    name: 'description',
+    content: 'Read Vapourism terms of service and conditions of use. Important information about purchasing vaping products, age restrictions, and legal requirements.',
+  },
+];
 
 export async function loader({context}: LoaderFunctionArgs) {
   return json({

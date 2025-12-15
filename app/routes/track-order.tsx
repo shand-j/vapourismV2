@@ -1,4 +1,12 @@
-import {redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {redirect, type LoaderFunctionArgs, type MetaFunction} from '@shopify/remix-oxygen';
+
+export const meta: MetaFunction = () => [
+  {title: 'Track Your Order | Vapourism Order Status'},
+  {
+    name: 'description',
+    content: 'Track your Vapourism order status and delivery. Enter your order number and email to view real-time shipping updates and estimated delivery dates.',
+  },
+];
 
 /**
  * Track Order Redirect

@@ -1,5 +1,13 @@
 import {useLoaderData, Link} from '@remix-run/react';
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {json, type LoaderFunctionArgs, type MetaFunction} from '@shopify/remix-oxygen';
+
+export const meta: MetaFunction = () => [
+  {title: 'Age Verification Complete | Vapourism'},
+  {
+    name: 'description',
+    content: 'Age verification successful! Your order is being processed and will be dispatched shortly. Thank you for shopping with Vapourism.',
+  },
+];
 
 export async function loader({request}: LoaderFunctionArgs) {
   const url = new URL(request.url);

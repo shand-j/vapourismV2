@@ -1,7 +1,15 @@
 import type {ReactNode} from 'react';
-import {json, type LoaderFunctionArgs} from '@remix-run/server-runtime';
+import {json, type LoaderFunctionArgs, type MetaFunction} from '@remix-run/server-runtime';
 import {useLoaderData, Link} from '@remix-run/react';
 import {Mail, Phone, MapPin, Clock, MessageCircle, HelpCircle} from 'lucide-react';
+
+export const meta: MetaFunction = () => [
+  {title: 'Contact Us | Vapourism Customer Support'},
+  {
+    name: 'description',
+    content: 'Get in touch with Vapourism customer service. Phone, email, and live chat support available. Fast responses to order inquiries, product questions, and technical support.',
+  },
+];
 
 export async function loader({context}: LoaderFunctionArgs) {
   return json({

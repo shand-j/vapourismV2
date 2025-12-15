@@ -1,7 +1,15 @@
-import {json, type LoaderFunctionArgs} from '@remix-run/server-runtime';
+import {json, type LoaderFunctionArgs, type MetaFunction} from '@remix-run/server-runtime';
 import {useLoaderData, Link} from '@remix-run/react';
 import {useState} from 'react';
 import {Search, ChevronDown, ChevronUp, Package, CreditCard, Truck, HelpCircle, Shield, Zap} from 'lucide-react';
+
+export const meta: MetaFunction = () => [
+  {title: 'FAQ | Frequently Asked Questions | Vapourism'},
+  {
+    name: 'description',
+    content: 'Find answers to common questions about ordering vaping products, delivery, returns, age verification, and product information. Instant help for Vapourism customers.',
+  },
+];
 
 // FAQ Data Structure
 const faqCategories = [

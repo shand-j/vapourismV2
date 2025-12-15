@@ -1,5 +1,13 @@
-import {json, type LoaderFunctionArgs} from '@remix-run/server-runtime';
+import {json, type LoaderFunctionArgs, type MetaFunction} from '@remix-run/server-runtime';
 import {useLoaderData, Link} from '@remix-run/react';
+
+export const meta: MetaFunction = () => [
+  {title: 'Privacy Policy | Vapourism'},
+  {
+    name: 'description',
+    content: 'Read Vapourism privacy policy. Learn how we collect, use, and protect your personal data in compliance with UK GDPR and data protection regulations.',
+  },
+];
 
 export async function loader({context}: LoaderFunctionArgs) {
   return json({

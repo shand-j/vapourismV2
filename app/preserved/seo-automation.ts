@@ -90,18 +90,6 @@ export class SEOAutomationService {
   }
 
   /**
-   * Generate optimized page title for products
-   */
-  static generateProductTitle(product: ProductSEOData): string {
-    return KeywordOptimizer.optimizeProductTitle(
-      product.title,
-      product.vendor,
-      product.productType,
-      product.tags
-    );
-  }
-
-  /**
    * Generate category meta description (for tag-based search pages)
    * Enhanced with keyword mapping
    */

@@ -12,10 +12,34 @@ type SelectedPolicies = keyof Pick<
   'privacyPolicy' | 'shippingPolicy' | 'termsOfService' | 'refundPolicy'
 >;
 
+// SEO descriptions for known policy types
+const POLICY_DESCRIPTIONS: Record<string, string> = {
+  'privacy-policy': 'Read our privacy policy to understand how Vapourism collects, uses, and protects your personal data. GDPR compliant data protection.',
+  'refund-policy': 'View our refund policy for returns and exchanges. 14-day money back guarantee on eligible products.',
+  'shipping-policy': 'Learn about our shipping policy, delivery times, and shipping costs. Fast UK delivery with DPD and Royal Mail.',
+  'terms-of-service': 'Read our terms of service covering purchases, age restrictions, and legal information for shopping at Vapourism.',
+};
+
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  const policyTitle = data?.policy.title ?? '';
+  const policyTitle = data?.policy?.title ?? 'Policy';
   const fullTitle = `Vapourism | ${policyTitle}`;
-  return [{title: SEOAutomationService.truncateTitle(fullTitle)}];
+  const metaTags = [
+    {title: SEOAutomationService.truncateTitle(fullTitle)}
+  ];
+  
+  // Get description from policy handle or fallback to a generic one
+  const handle = data?.policy?.handle || 'unknown';
+  const description = POLICY_DESCRIPTIONS[handle] || 
+    (policyTitle && policyTitle !== 'Policy' 
+      ? `Read our ${policyTitle} at Vapourism. Important legal and policy information for UK vape shop customers.`
+      : 'Important legal and policy information for UK vape shop customers. Read our policies and terms.');
+  
+  metaTags.push({
+    name: 'description',
+    content: description
+  });
+  
+  return metaTags;
 };
 
 export async function loader({params, context}: LoaderFunctionArgs) {

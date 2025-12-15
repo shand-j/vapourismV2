@@ -95,42 +95,52 @@ const EXCLUDED_ROUTES = new Set([
 ]);
 
 /**
+ * Sitemap priority values for different page types
+ */
+const PRIORITY = {
+  HIGH: 0.8,      // Core pages, collection landing pages
+  MEDIUM: 0.7,    // Guides index, FAQ, Blog
+  MEDIUM_LOW: 0.6, // Individual guide pages
+  LOW: 0.5,       // Policy pages
+} as const;
+
+/**
  * Static Remix routes that should be included in the sitemap
  * These are routes that don't come from Shopify Pages but should be indexed
  */
 const STATIC_ROUTES = [
   // Core information pages
-  { handle: 'about', priority: 0.8 },
-  { handle: 'contact', priority: 0.8 },
-  { handle: 'faq', priority: 0.7 },
+  { handle: 'about', priority: PRIORITY.HIGH },
+  { handle: 'contact', priority: PRIORITY.HIGH },
+  { handle: 'faq', priority: PRIORITY.MEDIUM },
   
   // Policy pages
-  { handle: 'policies/privacy-policy', priority: 0.5 },
-  { handle: 'policies/terms-of-service', priority: 0.5 },
-  { handle: 'policies/returns-policy', priority: 0.5 },
-  { handle: 'policies/cookie-policy', priority: 0.5 },
+  { handle: 'policies/privacy-policy', priority: PRIORITY.LOW },
+  { handle: 'policies/terms-of-service', priority: PRIORITY.LOW },
+  { handle: 'policies/returns-policy', priority: PRIORITY.LOW },
+  { handle: 'policies/cookie-policy', priority: PRIORITY.LOW },
   
   // Guide pages
-  { handle: 'guides', priority: 0.7 },
-  { handle: 'guides/age-verification', priority: 0.6 },
-  { handle: 'guides/certifications', priority: 0.6 },
-  { handle: 'guides/sustainability', priority: 0.6 },
+  { handle: 'guides', priority: PRIORITY.MEDIUM },
+  { handle: 'guides/age-verification', priority: PRIORITY.MEDIUM_LOW },
+  { handle: 'guides/certifications', priority: PRIORITY.MEDIUM_LOW },
+  { handle: 'guides/sustainability', priority: PRIORITY.MEDIUM_LOW },
   
   // Blog index
-  { handle: 'blog', priority: 0.7 },
+  { handle: 'blog', priority: PRIORITY.MEDIUM },
   
   // Collection landing pages (SEO-optimized category pages)
-  { handle: 'collections/crystal-bar', priority: 0.8 },
-  { handle: 'collections/elux-legend', priority: 0.8 },
-  { handle: 'collections/hayati-pro-max', priority: 0.8 },
-  { handle: 'collections/hayati-pro-ultra', priority: 0.8 },
-  { handle: 'collections/hayati-remix', priority: 0.8 },
-  { handle: 'collections/hayati-x4', priority: 0.8 },
-  { handle: 'collections/lost-mary-bm6000', priority: 0.8 },
-  { handle: 'collections/nicotine-pouches', priority: 0.8 },
-  { handle: 'collections/riot-squad', priority: 0.8 },
-  { handle: 'collections/velo-nicotine-pouches', priority: 0.8 },
-  { handle: 'collections/zyn-nicotine-pouches', priority: 0.8 },
+  { handle: 'collections/crystal-bar', priority: PRIORITY.HIGH },
+  { handle: 'collections/elux-legend', priority: PRIORITY.HIGH },
+  { handle: 'collections/hayati-pro-max', priority: PRIORITY.HIGH },
+  { handle: 'collections/hayati-pro-ultra', priority: PRIORITY.HIGH },
+  { handle: 'collections/hayati-remix', priority: PRIORITY.HIGH },
+  { handle: 'collections/hayati-x4', priority: PRIORITY.HIGH },
+  { handle: 'collections/lost-mary-bm6000', priority: PRIORITY.HIGH },
+  { handle: 'collections/nicotine-pouches', priority: PRIORITY.HIGH },
+  { handle: 'collections/riot-squad', priority: PRIORITY.HIGH },
+  { handle: 'collections/velo-nicotine-pouches', priority: PRIORITY.HIGH },
+  { handle: 'collections/zyn-nicotine-pouches', priority: PRIORITY.HIGH },
 ] as const;
 
 interface SitemapItem {

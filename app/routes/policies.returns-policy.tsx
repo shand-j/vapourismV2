@@ -1,5 +1,31 @@
-import {json, type LoaderFunctionArgs} from '@remix-run/server-runtime';
+import {json, type LoaderFunctionArgs, type MetaFunction} from '@remix-run/server-runtime';
 import {useLoaderData, Link} from '@remix-run/react';
+
+export const meta: MetaFunction = () => [
+  {
+    title: 'Returns & Refunds Policy | 14-Day Returns | Vapourism'
+  },
+  {
+    name: 'description',
+    content: 'Vapourism returns policy. 14-day return period for unopened items. Learn about our refund process, return conditions, and how to return vaping products.'
+  },
+  {
+    name: 'keywords',
+    content: 'returns policy, refunds, vape returns, product returns UK, 14 day returns, exchange policy, return conditions'
+  },
+  {
+    property: 'og:title',
+    content: 'Returns & Refunds Policy | Vapourism'
+  },
+  {
+    property: 'og:description',
+    content: '14-day return period for unopened vaping products. Learn about our hassle-free returns process.'
+  },
+  {
+    name: 'robots',
+    content: 'index, follow'
+  }
+];
 
 export async function loader({context}: LoaderFunctionArgs) {
   return json({

@@ -1,5 +1,31 @@
-import {json, type LoaderFunctionArgs} from '@remix-run/server-runtime';
+import {json, type LoaderFunctionArgs, type MetaFunction} from '@remix-run/server-runtime';
 import {useLoaderData, Link} from '@remix-run/react';
+
+export const meta: MetaFunction = () => [
+  {
+    title: 'Terms of Service | Terms & Conditions | Vapourism'
+  },
+  {
+    name: 'description',
+    content: 'Vapourism terms of service and conditions. Read our terms for purchasing vaping products, user responsibilities, and legal agreements for UK customers.'
+  },
+  {
+    name: 'keywords',
+    content: 'terms of service, terms and conditions, user agreement, vape shop terms, UK legal terms, purchase conditions'
+  },
+  {
+    property: 'og:title',
+    content: 'Terms of Service | Vapourism'
+  },
+  {
+    property: 'og:description',
+    content: 'Read our terms of service and conditions for purchasing vaping products.'
+  },
+  {
+    name: 'robots',
+    content: 'index, follow'
+  }
+];
 
 export async function loader({context}: LoaderFunctionArgs) {
   return json({

@@ -1,10 +1,42 @@
 import type {MetaFunction} from '@shopify/remix-oxygen';
 
 export const meta: MetaFunction = () => [
-  {title: 'About Vapourism'},
+  {title: 'About Vapourism | Premium UK Vape Shop | Est. 2015'},
   {
     name: 'description',
-    content: 'Learn how Vapourism pairs compliance-first retail with Shopify-native architecture.',
+    content: 'Learn about Vapourism - UK premium vape shop since 2015. Compliance-first retail with rigorous age verification, authentic products, and fast UK delivery. Built on Shopify for trusted shopping.',
+  },
+  {
+    name: 'keywords',
+    content: 'about vapourism, UK vape shop, vaping retailer, authentic vape products, age verification, compliance, premium vaping UK',
+  },
+  {
+    property: 'og:title',
+    content: 'About Vapourism | Premium UK Vape Shop',
+  },
+  {
+    property: 'og:description',
+    content: 'UK premium vape shop since 2015. Compliance-first retail with authentic products and fast delivery.',
+  },
+  {
+    property: 'og:type',
+    content: 'website',
+  },
+  {
+    property: 'og:url',
+    content: 'https://vapourism.co.uk/about',
+  },
+  {
+    name: 'twitter:card',
+    content: 'summary',
+  },
+  {
+    name: 'twitter:title',
+    content: 'About Vapourism | Premium UK Vape Shop',
+  },
+  {
+    name: 'twitter:description',
+    content: 'UK premium vape shop since 2015. Compliance-first retail with authentic products.',
   },
 ];
 

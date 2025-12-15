@@ -145,6 +145,37 @@ export default function App() {
         <link rel="canonical" href={canonicalUrl} />
         <Meta />
         <Links />
+        
+        {/* Organization Schema for SEO */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "Vapourism",
+              "url": siteUrl,
+              "logo": `${siteUrl}/logo.png`,
+              "description": data.shop?.description || "Premium UK vape shop offering authentic vaping products, e-liquids, and accessories with fast delivery",
+              "address": {
+                "@type": "PostalAddress",
+                "addressCountry": "GB"
+              },
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "contactType": "Customer Service",
+                "email": "hello@vapourism.co.uk",
+                "areaServed": "GB",
+                "availableLanguage": "English"
+              },
+              "sameAs": [
+                "https://twitter.com/vapourismuk"
+              ]
+            })
+          }}
+        />
+        
+        {/* Google Analytics 4 */}
         {ga4MeasurementId && <GoogleAnalytics measurementId={ga4MeasurementId} />}
       </head>
       <body className="bg-white text-slate-900 antialiased">
@@ -402,17 +433,7 @@ function SiteFooter({
             <p className="text-gray-300 mb-4">
               {description || 'Your trusted UK vaping retailer offering premium e-liquids, devices, and accessories.'}
             </p>
-            <div className="flex space-x-4">
-              <button className="text-gray-400 hover:text-white transition-colors" aria-label="Facebook">
-                <Icon name="facebook" />
-              </button>
-              <button className="text-gray-400 hover:text-white transition-colors" aria-label="Instagram">
-                <Icon name="instagram" />
-              </button>
-              <button className="text-gray-400 hover:text-white transition-colors" aria-label="Twitter">
-                <Icon name="twitter" />
-              </button>
-            </div>
+            {/* Social media links removed - to be added when official accounts are confirmed */}
           </div>
 
           {/* Shopping Links */}

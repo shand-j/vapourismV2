@@ -5,23 +5,69 @@ import {ContinueShoppingShowcase} from '~/components/ProductShowcase';
 import type {ProductCardProduct} from '~/components/ProductCard';
 import {FALLBACK_FEATURED_PRODUCTS_QUERY} from '~/lib/product-showcases';
 
-export const meta: MetaFunction = () => [
-  {title: 'Certifications & Compliance | Vapourism'},
-  {
-    name: 'description',
-    content:
-      'Vapourism\'s UK and EU regulatory certifications, MHRA registration, TPD compliance, and product safety standards for vaping products.',
-  },
-  {
-    property: 'og:title',
-    content: 'Certifications & Compliance | Vapourism',
-  },
-  {
-    property: 'og:description',
-    content:
-      'Vapourism\'s UK and EU regulatory certifications, MHRA registration, TPD compliance, and product safety standards for vaping products.',
-  },
-];
+export const meta: MetaFunction = () => {
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://vapourism.co.uk"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Guides",
+        "item": "https://vapourism.co.uk/guides"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Certifications & Compliance",
+        "item": "https://vapourism.co.uk/guides/certifications"
+      }
+    ]
+  };
+
+  return [
+    {title: 'Certifications & Compliance | UK & EU Vaping Regulations | Vapourism'},
+    {
+      name: 'description',
+      content:
+        'Vapourism\'s UK and EU regulatory certifications, MHRA registration, TPD compliance, and product safety standards. Learn how we ensure all vaping products meet strict quality and legal requirements.',
+    },
+    {
+      name: 'keywords',
+      content: 'TPD compliance, MHRA registration, UK vaping regulations, EU vaping laws, product safety, vaping certifications, regulatory compliance, quality standards',
+    },
+    {
+      property: 'og:title',
+      content: 'Certifications & Compliance | Vapourism',
+    },
+    {
+      property: 'og:description',
+      content:
+        'UK and EU regulatory certifications, MHRA registration, TPD compliance, and product safety standards for vaping products.',
+    },
+    {
+      property: 'og:type',
+      content: 'article',
+    },
+    {
+      property: 'og:url',
+      content: 'https://vapourism.co.uk/guides/certifications',
+    },
+    {
+      name: 'twitter:card',
+      content: 'summary',
+    },
+    {
+      "script:ld+json": breadcrumbSchema
+    }
+  ];
+};
 
 export async function loader({context}: LoaderFunctionArgs) {
   const {products} = await context.storefront.query(FALLBACK_FEATURED_PRODUCTS_QUERY, {

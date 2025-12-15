@@ -288,7 +288,7 @@ export default function IndexRoute() {
   const organizationSchema = generateOrganizationSchema({
     name: 'Vapourism',
     url: 'https://www.vapourism.co.uk',
-    logo: 'https://www.vapourism.co.uk/vapourism-logo.png',
+    logo: 'https://vapourism.co.uk/logo.png',
     description: 'Premium vaping essentials with trusted age verification and next-day UK delivery.',
     address: {
       '@type': 'PostalAddress',

@@ -6,11 +6,16 @@ import {CUSTOMER_ORDER_QUERY} from '~/graphql/customer-account/CustomerOrderQuer
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   const orderName = data?.order?.name ?? '';
+  const title = orderName ? `Vapourism | Order ${orderName}` : 'Vapourism | Order Details';
+  const description = orderName 
+    ? `View order details and tracking information for order ${orderName}. Check your order status, items, and delivery information.`
+    : 'View your order details and tracking information. Check your order status, items, and delivery information.';
+  
   return [
-    {title: `Vapourism | Order ${orderName}`},
+    {title},
     {
       name: 'description',
-      content: `View order details and tracking information for order ${orderName}. Check your order status, items, and delivery information.`
+      content: description
     },
     {
       name: 'robots',

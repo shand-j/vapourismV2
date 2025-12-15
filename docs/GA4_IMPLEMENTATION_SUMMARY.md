@@ -1,7 +1,7 @@
 # GA4 Analytics Implementation Summary
 
 **Date**: December 15, 2024  
-**Status**: ✅ Phase 1 Complete  
+**Status**: ✅ Phase 1 & 2 Complete  
 **Branch**: `copilot/start-implementation-seo-strategies`
 
 ---
@@ -9,6 +9,9 @@
 ## Overview
 
 Comprehensive Google Analytics 4 (GA4) tracking has been implemented across the Vapourism V2 Hydrogen storefront to support SEO optimization and conversion tracking goals. All tracking respects GDPR/cookie consent preferences.
+
+**Phase 1**: Global page views, collection tracking, homepage tracking  
+**Phase 2**: Blog engagement tracking, scroll depth, cart drawer tracking
 
 ---
 
@@ -129,7 +132,81 @@ All SEO-optimized collection pages now have GA4 tracking:
 
 ---
 
-### 5. Environment Configuration
+## Phase 2: Enhanced Engagement Tracking ✅
+
+### 5. Blog Article Tracking
+
+**File**: `app/routes/blog.$slug.tsx` (ENHANCED)
+
+Added comprehensive blog engagement tracking:
+
+**Events Implemented:**
+
+1. **view_blog_article** - Fires when article loads
+   ```typescript
+   gtag('event', 'view_blog_article', {
+     article_title: string,
+     article_category: string,
+     article_slug: string,
+     article_author: string,
+     article_tags: string,
+   });
+   ```
+
+2. **blog_engagement** - Fires on page unmount (if >5 seconds)
+   ```typescript
+   gtag('event', 'blog_engagement', {
+     article_title: string,
+     article_slug: string,
+     engagement_time_seconds: number,
+     value: number,
+   });
+   ```
+
+3. **scroll_depth** - Fires at reading milestones (25%, 50%, 75%, 100%)
+   ```typescript
+   gtag('event', 'scroll_depth', {
+     article_title: string,
+     article_slug: string,
+     scroll_depth_percentage: 25 | 50 | 75 | 100,
+     value: number,
+   });
+   ```
+
+**Impact**: 
+- Measure article engagement and reading completion
+- Identify most engaging content
+- Optimize article length based on data
+- Track reader behavior patterns
+
+---
+
+### 6. Cart Drawer View Tracking
+
+**File**: `app/components/cart/CartDrawer.tsx` (ENHANCED)
+
+Added cart view tracking when drawer opens:
+
+**Events Implemented:**
+
+1. **view_cart** - Fires when cart drawer opens with items
+   ```typescript
+   trackViewCart({
+     currency: 'GBP',
+     value: number, // VAT-inclusive cart value
+     items: GA4Product[], // Full cart contents
+   });
+   ```
+
+**Impact**:
+- Track cart abandonment patterns
+- Measure cart → checkout conversion
+- Identify high-value cart behaviors
+- Analyze cart composition
+
+---
+
+### 8. Environment Configuration
 
 **File**: `.env.example`
 
@@ -153,7 +230,7 @@ GA4_MEASUREMENT_ID=
 
 ---
 
-### 6. Comprehensive Documentation
+### 9. Comprehensive Documentation
 
 **File**: `docs/GA4_ANALYTICS_GUIDE.md` (NEW, 14KB+)
 
@@ -251,8 +328,9 @@ done
 1. `app/lib/hooks/useCollectionTracking.ts` - Reusable tracking hook
 2. `docs/GA4_ANALYTICS_GUIDE.md` - Comprehensive guide (14KB+)
 
-### Modified Files (14)
+### Modified Files (16)
 
+**Phase 1:**
 1. `app/root.tsx` - Global page view tracking
 2. `app/routes/_index.tsx` - Homepage tracking
 3. `app/routes/collections.hayati-pro-ultra.tsx`
@@ -268,13 +346,17 @@ done
 13. `app/routes/collections.hayati-remix.tsx`
 14. `.env.example` - GA4_MEASUREMENT_ID documentation
 
-**Total**: 16 files (2 new, 14 modified)
+**Phase 2:**
+15. `app/routes/blog.$slug.tsx` - Blog engagement & scroll tracking
+16. `app/components/cart/CartDrawer.tsx` - Cart drawer view tracking
+
+**Total**: 18 files (2 new, 16 modified)
 
 ---
 
 ## Git Commits
 
-### Commit 1: Foundation
+### Commit 1: Foundation (Phase 1)
 ```
 feat: implement comprehensive GA4 analytics tracking
 
@@ -286,7 +368,7 @@ feat: implement comprehensive GA4 analytics tracking
 - Create comprehensive GA4_ANALYTICS_GUIDE.md (14KB+)
 ```
 
-### Commit 2: Complete Collections
+### Commit 2: Complete Collections (Phase 1)
 ```
 feat: add GA4 tracking to all 11 collection routes
 
@@ -300,6 +382,26 @@ feat: add GA4 tracking to all 11 collection routes
 - Zyn Nicotine Pouches collection
 
 All collection pages now track view_item_list events for GA4 e-commerce analytics
+```
+
+### Commit 3: Documentation (Phase 1)
+```
+docs: add GA4 implementation summary and quick start guide
+
+- Comprehensive implementation summary
+- Stakeholder quick start guide
+- Business impact analysis
+```
+
+### Commit 4: Enhanced Events (Phase 2)
+```
+feat: add Phase 2 analytics - blog engagement and cart drawer tracking
+
+- Blog article view tracking with custom events
+- Engagement time tracking (fires on unmount if >5 seconds)
+- Scroll depth tracking at 25%, 50%, 75%, 100% milestones
+- Cart drawer view tracking with full item details
+- Enhanced e-commerce funnel coverage
 ```
 
 ---
@@ -350,19 +452,28 @@ Now possible to answer:
 
 ## Next Steps
 
-### Phase 2: Blog & Enhanced Events (Pending)
+### Phase 2: Blog & Enhanced Events ✅ COMPLETE
 
-- [ ] Add page view tracking to blog routes
-- [ ] Add engagement tracking for blog posts
-- [ ] Add internal link click tracking (blog → product)
-- [ ] Add scroll depth tracking
-- [ ] Add form submission tracking
+- [x] Add page view tracking to blog routes (global tracking covers this)
+- [x] Add engagement tracking for blog posts (view_blog_article, blog_engagement events)
+- [x] Add scroll depth tracking (25%, 50%, 75%, 100% milestones)
+- [x] Add cart drawer tracking (view_cart event with full item details)
+- [ ] Add internal link click tracking (blog → product) - Optional enhancement
+- [ ] Add form submission tracking - Optional enhancement
+
+**Completed**: December 15, 2024
+- Blog article engagement tracking
+- Scroll depth measurement
+- Cart drawer view tracking
+- Enhanced e-commerce funnel coverage
 
 ### Phase 3: Testing & Validation (Pending)
 
 - [ ] Test analytics locally with GA4_MEASUREMENT_ID
 - [ ] Verify consent management
 - [ ] Test e-commerce event data
+- [ ] Test new blog events (view_blog_article, scroll_depth, blog_engagement)
+- [ ] Test cart drawer view_cart events
 - [ ] Create deployment testing checklist
 
 ### Phase 4: Production Deployment

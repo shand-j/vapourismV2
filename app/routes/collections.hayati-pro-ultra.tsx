@@ -62,34 +62,33 @@ export default function HayatiProUltraCollection() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-4">
-          Hayati Pro Ultra 25000 | Premium Disposable Vapes UK
+      {/* Hero Section */}
+      <div className="mb-12 text-center">
+        <h1 className="text-5xl font-bold mb-4">
+          Hayati Pro Ultra 25000
         </h1>
-        <p className="text-lg text-gray-600 mb-6">
-          Experience the revolutionary Hayati Pro Ultra 25000 - the ultimate long-lasting disposable 
-          vape with an incredible 25,000 puffs. Featuring rechargeable battery, premium flavors, 
-          and exceptional value for money.
+        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          Revolutionary 25,000 puff disposable vape with rechargeable battery. Ultimate longevity and value.
         </p>
       </div>
 
-      {/* Key Features */}
-      <div className="grid md:grid-cols-4 gap-6 mb-12">
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="font-semibold text-xl mb-2">✓ 25,000 Puffs</h3>
-          <p className="text-gray-600">Extended usage - lasts weeks not days</p>
+      {/* Key Benefits */}
+      <div className="grid md:grid-cols-4 gap-4 mb-16">
+        <div className="text-center p-4">
+          <h3 className="font-semibold mb-1">25,000 Puffs</h3>
+          <p className="text-sm text-gray-600">Extended usage</p>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="font-semibold text-xl mb-2">✓ Rechargeable</h3>
-          <p className="text-gray-600">USB-C charging - use every last drop</p>
+        <div className="text-center p-4">
+          <h3 className="font-semibold mb-1">Rechargeable</h3>
+          <p className="text-sm text-gray-600">USB-C charging</p>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="font-semibold text-xl mb-2">✓ Premium Flavors</h3>
-          <p className="text-gray-600">Authentic, long-lasting taste profiles</p>
+        <div className="text-center p-4">
+          <h3 className="font-semibold mb-1">Premium Flavors</h3>
+          <p className="text-sm text-gray-600">Authentic taste</p>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="font-semibold text-xl mb-2">✓ Best Value</h3>
-          <p className="text-gray-600">Exceptional cost per puff ratio</p>
+        <div className="text-center p-4">
+          <h3 className="font-semibold mb-1">Best Value</h3>
+          <p className="text-sm text-gray-600">Exceptional cost</p>
         </div>
       </div>
 
@@ -220,27 +219,27 @@ export default function HayatiProUltraCollection() {
         <h2 className="text-2xl font-bold mb-4">Why Choose Hayati Pro Ultra 25000?</h2>
         <ul className="space-y-3">
           <li className="flex items-start">
-            <span className="text-green-600 mr-2">✓</span>
+            
             <span><strong>Unbeatable Longevity:</strong> 25,000 puffs means weeks of continuous use</span>
           </li>
           <li className="flex items-start">
-            <span className="text-green-600 mr-2">✓</span>
+            
             <span><strong>Superior Value:</strong> Lowest cost per puff in the market</span>
           </li>
           <li className="flex items-start">
-            <span className="text-green-600 mr-2">✓</span>
+            
             <span><strong>Rechargeable Design:</strong> Never waste unused e-liquid</span>
           </li>
           <li className="flex items-start">
-            <span className="text-green-600 mr-2">✓</span>
+            
             <span><strong>Consistent Performance:</strong> Mesh coil maintains flavor quality throughout</span>
           </li>
           <li className="flex items-start">
-            <span className="text-green-600 mr-2">✓</span>
+            
             <span><strong>Premium Flavors:</strong> Authentic taste that lasts</span>
           </li>
           <li className="flex items-start">
-            <span className="text-green-600 mr-2">✓</span>
+            
             <span><strong>TPD Compliant:</strong> Meets all UK vaping regulations</span>
           </li>
         </ul>

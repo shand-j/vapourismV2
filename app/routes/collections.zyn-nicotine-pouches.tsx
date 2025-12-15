@@ -62,34 +62,33 @@ export default function ZynPouchesCollection() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-4">
-          Zyn Nicotine Pouches UK | Premium Tobacco-Free Nicotine
+      {/* Hero Section */}
+      <div className="mb-12 text-center">
+        <h1 className="text-5xl font-bold mb-4">
+          Zyn Nicotine Pouches UK
         </h1>
-        <p className="text-lg text-gray-600 mb-6">
-          Experience Zyn - the premium US nicotine pouch brand now available in the UK. Known for 
-          exceptional flavor profiles and smooth nicotine delivery, Zyn offers a sophisticated 
-          tobacco-free alternative.
+        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          Premium US brand with exceptional flavors and smooth nicotine delivery. Tobacco-free satisfaction.
         </p>
       </div>
 
-      {/* Key Features */}
-      <div className="grid md:grid-cols-4 gap-6 mb-12">
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="font-semibold text-xl mb-2">✓ Premium Brand</h3>
-          <p className="text-gray-600">Leading US nicotine pouch manufacturer</p>
+      {/* Key Benefits */}
+      <div className="grid md:grid-cols-4 gap-4 mb-16">
+        <div className="text-center p-4">
+          <h3 className="font-semibold mb-1">Premium Brand</h3>
+          <p className="text-sm text-gray-600">Leading US manufacturer</p>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="font-semibold text-xl mb-2">✓ Exceptional Flavor</h3>
-          <p className="text-gray-600">Natural, authentic flavor profiles</p>
+        <div className="text-center p-4">
+          <h3 className="font-semibold mb-1">Exceptional Flavor</h3>
+          <p className="text-sm text-gray-600">Authentic profiles</p>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="font-semibold text-xl mb-2">✓ Smooth Delivery</h3>
-          <p className="text-gray-600">Comfortable, consistent nicotine satisfaction</p>
+        <div className="text-center p-4">
+          <h3 className="font-semibold mb-1">Smooth Delivery</h3>
+          <p className="text-sm text-gray-600">Consistent satisfaction</p>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="font-semibold text-xl mb-2">✓ Tobacco-Free</h3>
-          <p className="text-gray-600">Clean, modern nicotine experience</p>
+        <div className="text-center p-4">
+          <h3 className="font-semibold mb-1">Tobacco-Free</h3>
+          <p className="text-sm text-gray-600">Clean experience</p>
         </div>
       </div>
 
@@ -230,27 +229,27 @@ export default function ZynPouchesCollection() {
         <h2 className="text-2xl font-bold mb-4">Why Choose Zyn?</h2>
         <ul className="space-y-3">
           <li className="flex items-start">
-            <span className="text-green-600 mr-2">✓</span>
+            
             <span><strong>Premium Quality:</strong> Made by Swedish Match, world leaders in smokeless products</span>
           </li>
           <li className="flex items-start">
-            <span className="text-green-600 mr-2">✓</span>
+            
             <span><strong>Authentic Flavors:</strong> Natural, non-artificial taste profiles</span>
           </li>
           <li className="flex items-start">
-            <span className="text-green-600 mr-2">✓</span>
+            
             <span><strong>Smooth Satisfaction:</strong> Even nicotine release without harshness</span>
           </li>
           <li className="flex items-start">
-            <span className="text-green-600 mr-2">✓</span>
+            
             <span><strong>Comfortable Fit:</strong> Slim design that stays in place</span>
           </li>
           <li className="flex items-start">
-            <span className="text-green-600 mr-2">✓</span>
+            
             <span><strong>Reliable Results:</strong> Consistent experience every time</span>
           </li>
           <li className="flex items-start">
-            <span className="text-green-600 mr-2">✓</span>
+            
             <span><strong>Globally Trusted:</strong> Used by millions worldwide</span>
           </li>
         </ul>

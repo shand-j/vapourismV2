@@ -22,6 +22,8 @@ import {ClientOnly} from './components/ClientOnly';
 import {MegaMenu, MobileMenu} from './components/navigation/MegaMenu';
 import {ShopifySearch} from './components/search/ShopifySearch';
 import {CookieConsent} from './components/CookieConsent';
+import {GoogleAnalytics} from './components/Analytics';
+import {Icon} from './components/ui/Icon';
 
 // Lazy load components that might use Headless UI
 const LazyCartDrawer = lazy(() => import('./components/cart/CartDrawer').then(m => ({default: m.CartDrawer})));
@@ -143,39 +145,7 @@ export default function App() {
         <link rel="canonical" href={canonicalUrl} />
         <Meta />
         <Links />
-        
-        {/* Google Analytics 4 - with consent mode defaulting to denied */}
-        {ga4MeasurementId && (
-          <>
-            <script
-              async
-              src={`https://www.googletagmanager.com/gtag/js?id=${ga4MeasurementId}`}
-            />
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `
-                  window.dataLayer = window.dataLayer || [];
-                  function gtag(){dataLayer.push(arguments);}
-                  
-                  // Default consent to denied - will be updated by CookieConsent
-                  gtag('consent', 'default', {
-                    'analytics_storage': 'denied',
-                    'ad_storage': 'denied',
-                    'ad_user_data': 'denied',
-                    'ad_personalization': 'denied',
-                    'wait_for_update': 500
-                  });
-                  
-                  gtag('js', new Date());
-                  gtag('config', '${ga4MeasurementId}', {
-                    page_path: window.location.pathname,
-                    anonymize_ip: true
-                  });
-                `,
-              }}
-            />
-          </>
-        )}
+        {ga4MeasurementId && <GoogleAnalytics measurementId={ga4MeasurementId} />}
       </head>
       <body className="bg-white text-slate-900 antialiased">
         {isAgeGateActive && (
@@ -296,9 +266,7 @@ function SiteHeader({
               onClick={() => onToggleMobileNav(!isMobileNavOpen)}
               aria-label="Toggle navigation"
             >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+              <Icon name="menu" className="h-6 w-6" />
             </button>
 
             <Link to="/" className="flex items-center gap-3 text-2xl font-semibold tracking-tight text-slate-900">
@@ -320,14 +288,14 @@ function SiteHeader({
               className="lg:hidden"
               onClick={() => setIsMobileSearchOpen((open) => !open)}
             >
-              <MagnifierIcon />
+              <Icon name="search" />
             </HeaderIconButton>
             <HeaderIconButton to="/account" label="Account">
-              <UserIcon />
+              <Icon name="user" />
             </HeaderIconButton>
             <HeaderIconButton label="Cart" onClick={onCartToggle}>
               <span className="relative inline-flex">
-                <CartIcon />
+                <Icon name="cart" />
                 {cartCount > 0 && (
                   <span className="absolute -right-1.5 -top-1 rounded-full bg-rose-500 px-1.5 text-[10px] font-semibold leading-4 text-white">
                     {cartCount > 99 ? '99+' : cartCount}
@@ -353,41 +321,17 @@ function GlobalPerksRail() {
     {
       title: 'Free next-day delivery',
       description: 'On all orders over £50 across mainland UK.',
-      icon: (
-        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M3 7h13v10a1 1 0 01-1 1H4a1 1 0 01-1-1V7zm13 0h3.5a1 1 0 01.948.684l1.5 4.5A1 1 0 0121 13h-5"
-          />
-          <circle cx="7.5" cy="17.5" r="1.5" />
-          <circle cx="17" cy="17.5" r="1.5" />
-        </svg>
-      ),
+      icon: 'truck' as const,
     },
     {
       title: '30-day returns',
       description: 'Hassle-free exchanges on unopened products.',
-      icon: (
-        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M4 4h9a4 4 0 014 4v0" />
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M20 20h-9a4 4 0 01-4-4V7.5M20 20l-4-4m4 4l-4 4"
-          />
-        </svg>
-      ),
+      icon: 'returns' as const,
     },
     {
       title: 'Expert support',
       description: 'Real humans who vape—available 7 days a week.',
-      icon: (
-        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 12a5 5 0 100-10 5 5 0 000 10z" />
-          <path strokeLinecap="round" strokeLinejoin="round" d="M3 21a9 9 0 0118 0" />
-        </svg>
-      ),
+      icon: 'support' as const,
     },
   ];
 
@@ -396,7 +340,9 @@ function GlobalPerksRail() {
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8 md:flex-row md:items-center md:justify-between">
         {perks.map((perk) => (
           <div key={perk.title} className="flex flex-1 items-start gap-4">
-            <div className="rounded-2xl bg-slate-100 p-3 text-slate-700">{perk.icon}</div>
+            <div className="rounded-2xl bg-slate-100 p-3 text-slate-700">
+              <Icon name={perk.icon} />
+            </div>
             <div>
               <p className="text-sm font-semibold text-slate-900">{perk.title}</p>
               <p className="text-sm text-slate-600">{perk.description}</p>
@@ -439,30 +385,6 @@ function HeaderIconButton({to, label, children, className, onClick}: HeaderIconB
   );
 }
 
-const MagnifierIcon = () => (
-  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-    <circle cx="11" cy="11" r="7" />
-    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 16.5L21 21" />
-  </svg>
-);
-
-const UserIcon = () => (
-  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 12a5 5 0 100-10 5 5 0 000 10z" />
-    <path strokeLinecap="round" strokeLinejoin="round" d="M3 21a9 9 0 0118 0" />
-  </svg>
-);
-
-const CartIcon = () => (
-  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M3 3h2l.4 2M7 13h10l3-8H6.4M7 13L5.4 5M7 13l-2 9h14M10 21a1 1 0 11-2 0 1 1 0 012 0zm8 0a1 1 0 11-2 0 1 1 0 012 0z"
-    />
-  </svg>
-);
-
 function SiteFooter({
   shopName,
   description,
@@ -482,19 +404,13 @@ function SiteFooter({
             </p>
             <div className="flex space-x-4">
               <button className="text-gray-400 hover:text-white transition-colors" aria-label="Facebook">
-                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                </svg>
+                <Icon name="facebook" />
               </button>
               <button className="text-gray-400 hover:text-white transition-colors" aria-label="Instagram">
-                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12.017 0C8.396 0 7.996.014 6.79.067 5.584.12 4.775.302 4.084.605c-.713.309-1.317.905-1.626 1.618C2.15 3.536 1.968 4.345 1.915 5.551c-.053 1.206-.067 1.606-.067 5.227s.014 4.021.067 5.227c.053 1.206.235 2.015.528 2.706.309.713.905 1.317 1.618 1.626.691.293 1.5.475 2.706.528 1.206.053 1.606.067 5.227.067s4.021-.014 5.227-.067c1.206-.053 2.015-.235 2.706-.528.713-.309 1.317-.905 1.626-1.618.293-.691.475-1.5.528-2.706.053-1.206.067-1.606.067-5.227s-.014-4.021-.067-5.227c-.053-1.206-.235-2.015-.528-2.706-.309-.713-.905-1.317-1.618-1.626C19.464.302 18.655.12 17.449.067 16.243.014 15.843 0 12.222 0h-.205c-.001 0-.003 0-.004 0zm.195 2.509c4.378 0 4.778.016 6.468.096 1.562.075 2.403.332 2.978.696.631.4 1.142.935 1.542 1.566.364.575.621 1.416.696 2.978.08 1.69.096 2.09.096 6.468s-.016 4.778-.096 6.468c-.075 1.562-.332 2.403-.696 2.978-.4.631-.935 1.142-1.566 1.542-.575.364-1.416.621-2.978.696-1.69.08-2.09.096-6.468.096s-4.778-.016-6.468-.096c-1.562-.075-2.403-.332-2.978-.696-.631-.4-1.142-.935-1.542-1.566-.364-.575-.621-1.416-.696-2.978-.08-1.69-.096-2.09-.096-6.468s.016-4.778.096-6.468c.075-1.562.332-2.403.696-2.978.4-.631.935-1.142 1.566-1.542.575-.364 1.416-.621 2.978-.696 1.69-.08 2.09-.096 6.468-.096zm0 2.474c-4.511 0-8.166.034-8.166 8.166s3.655 8.166 8.166 8.166 8.166-3.655 8.166-8.166S16.703 5.749 12.212 5.749zm0 13.332c-2.942 0-5.332-2.39-5.332-5.332s2.39-5.332 5.332-5.332 5.332 2.39 5.332 5.332-2.39 5.332-5.332 5.332zm8.474-13.662c-1.055 0-1.91.855-1.91 1.91s.855 1.91 1.91 1.91 1.91-.855 1.91-1.91-.855-1.91-1.91-1.91z"/>
-                </svg>
+                <Icon name="instagram" />
               </button>
               <button className="text-gray-400 hover:text-white transition-colors" aria-label="Twitter">
-                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                </svg>
+                <Icon name="twitter" />
               </button>
             </div>
           </div>
@@ -588,20 +504,26 @@ function SiteFooter({
 
         {/* Delivery Information Section */}
         <div className="border-t border-gray-800 mt-8 pt-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div className="text-center">
               <div className="text-2xl font-bold text-green-400 mb-2">FREE</div>
-              <div className="text-sm text-gray-300">Delivery on orders over £25</div>
+              <div className="text-sm text-gray-300 mb-2">Delivery on orders over £50</div>
+              <p className="text-xs text-gray-400 px-4">Standard tracked delivery to mainland UK addresses at no extra cost</p>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-400 mb-2">1-2 Days</div>
-              <div className="text-sm text-gray-300">Express delivery available</div>
+              <div className="text-2xl font-bold text-blue-400 mb-2">1PM</div>
+              <div className="text-sm text-gray-300 mb-2">Same-day dispatch cutoff</div>
+              <p className="text-xs text-gray-400 px-4">Orders placed before 1pm Monday-Friday ship the same working day</p>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-purple-400 mb-2">14 Days</div>
-              <div className="text-sm text-gray-300">Free returns policy</div>
+              <div className="text-2xl font-bold text-purple-400 mb-2">30 Days</div>
+              <div className="text-sm text-gray-300 mb-2">Returns on unopened items</div>
+              <p className="text-xs text-gray-400 px-4">Hassle-free returns policy for sealed products in original condition</p>
             </div>
           </div>
+          <p className="text-xs text-gray-400 text-center max-w-3xl mx-auto">
+            We ship authentic vaping products exclusively to addresses within the United Kingdom. All orders require age verification before dispatch. Restricted products cannot be shipped to certain territories—our system automatically validates shipping eligibility during checkout.
+          </p>
         </div>
 
         {/* Newsletter Signup */}

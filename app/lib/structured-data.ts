@@ -1,0 +1,144 @@
+/**
+ * Structured Data Utilities
+ * Extracts JSON-LD schema generation to reduce inline script bloat in components
+ */
+
+export interface OrganizationSchemaParams {
+  name: string;
+  url: string;
+  logo?: string;
+  description?: string;
+  addressCountry?: string;
+  addressRegion?: string;
+  email?: string;
+  socialLinks?: string[];
+}
+
+export function generateOrganizationSchema(params: OrganizationSchemaParams) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: params.name,
+    url: params.url,
+    ...(params.logo && { logo: params.logo }),
+    ...(params.description && { description: params.description }),
+    ...(params.addressCountry && {
+      address: {
+        '@type': 'PostalAddress',
+        addressCountry: params.addressCountry,
+        ...(params.addressRegion && { addressRegion: params.addressRegion }),
+      },
+    }),
+    ...(params.email && {
+      contactPoint: {
+        '@type': 'ContactPoint',
+        contactType: 'customer service',
+        email: params.email,
+      },
+    }),
+    ...(params.socialLinks && params.socialLinks.length > 0 && {
+      sameAs: params.socialLinks,
+    }),
+  };
+}
+
+export interface WebsiteSchemaParams {
+  name: string;
+  url: string;
+  searchUrlTemplate?: string;
+}
+
+export function generateWebsiteSchema(params: WebsiteSchemaParams) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: params.name,
+    url: params.url,
+    ...(params.searchUrlTemplate && {
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: params.searchUrlTemplate,
+        },
+        'query-input': 'required name=search_term_string',
+      },
+    }),
+  };
+}
+
+export interface ProductSchemaParams {
+  name: string;
+  description: string;
+  image: string[];
+  brand: string;
+  sku?: string;
+  gtin?: string;
+  price: string;
+  priceCurrency: string;
+  availability: 'InStock' | 'OutOfStock' | 'PreOrder';
+  url: string;
+  rating?: {
+    ratingValue: number;
+    reviewCount: number;
+  };
+}
+
+export function generateProductSchema(params: ProductSchemaParams) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: params.name,
+    description: params.description,
+    image: params.image,
+    brand: {
+      '@type': 'Brand',
+      name: params.brand,
+    },
+    ...(params.sku && { sku: params.sku }),
+    ...(params.gtin && { gtin: params.gtin }),
+    offers: {
+      '@type': 'Offer',
+      price: params.price,
+      priceCurrency: params.priceCurrency,
+      availability: `https://schema.org/${params.availability}`,
+      url: params.url,
+    },
+    ...(params.rating && {
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: params.rating.ratingValue,
+        reviewCount: params.rating.reviewCount,
+      },
+    }),
+  };
+}
+
+export interface BreadcrumbItem {
+  name: string;
+  url: string;
+}
+
+export function generateBreadcrumbSchema(items: BreadcrumbItem[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  };
+}
+
+/**
+ * Helper to create a script tag for structured data
+ * Usage: <script {...structuredDataScript(schema)} />
+ */
+export function structuredDataScript(schema: Record<string, unknown>) {
+  return {
+    type: 'application/ld+json' as const,
+    dangerouslySetInnerHTML: { __html: JSON.stringify(schema) },
+  };
+}

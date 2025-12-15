@@ -1,4 +1,4 @@
-import {json, type LoaderFunctionArgs, type MetaFunction} from '@remix-run/server-runtime';
+import {json, type LoaderFunctionArgs, type MetaFunction} from '@shopify/remix-oxygen';
 import {useLoaderData, Link} from '@remix-run/react';
 import {useState} from 'react';
 import {Search, ChevronDown, ChevronUp, Package, CreditCard, Truck, HelpCircle, Shield, Zap} from 'lucide-react';

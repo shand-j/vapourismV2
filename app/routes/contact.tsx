@@ -1,5 +1,5 @@
 import type {ReactNode} from 'react';
-import {json, type LoaderFunctionArgs, type MetaFunction} from '@remix-run/server-runtime';
+import {json, type LoaderFunctionArgs, type MetaFunction} from '@shopify/remix-oxygen';
 import {useLoaderData, Link} from '@remix-run/react';
 import {Mail, Phone, MapPin, Clock, MessageCircle, HelpCircle} from 'lucide-react';
 

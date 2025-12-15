@@ -1,0 +1,48 @@
+/**
+ * Blog Articles Index
+ * 
+ * Central registry for all blog articles.
+ * Import and export all articles here for easy management.
+ */
+
+import type {BlogArticle} from './nicotine-pouches-risks-and-benefits';
+import {nicotinePouchesArticle} from './nicotine-pouches-risks-and-benefits';
+
+/**
+ * All blog articles available on the site
+ */
+export const allArticles: BlogArticle[] = [
+  nicotinePouchesArticle,
+];
+
+/**
+ * Get article by slug
+ */
+export function getArticleBySlug(slug: string): BlogArticle | undefined {
+  return allArticles.find(article => article.slug === slug);
+}
+
+/**
+ * Get all articles sorted by published date (newest first)
+ */
+export function getAllArticles(): BlogArticle[] {
+  return [...allArticles].sort((a, b) => {
+    return new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime();
+  });
+}
+
+/**
+ * Get articles by category
+ */
+export function getArticlesByCategory(category: string): BlogArticle[] {
+  return allArticles.filter(article => article.category === category);
+}
+
+/**
+ * Get articles by tag
+ */
+export function getArticlesByTag(tag: string): BlogArticle[] {
+  return allArticles.filter(article => article.tags.includes(tag));
+}
+
+export type {BlogArticle};

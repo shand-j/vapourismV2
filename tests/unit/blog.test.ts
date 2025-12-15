@@ -172,7 +172,7 @@ describe('Blog Data Layer', () => {
 
     it('should have proper markdown structure', () => {
       const article = getArticleBySlug('nicotine-pouches-risks-and-benefits');
-      expect(article?.content).toContain('# Nicotine Pouches');
+      expect(article?.content).toContain('# Nicotine Pouches: Risks and Benefits Explained');
       expect(article?.content).toContain('## '); // Section headers
     });
   });

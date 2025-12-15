@@ -80,7 +80,17 @@ export async function loader({params, request}: LoaderFunctionArgs) {
 /**
  * ArticleContent component
  * Renders markdown content with proper HTML structure and styling
- * Content is pre-validated as it comes from our TypeScript files
+ * 
+ * SECURITY NOTE: This component uses dangerouslySetInnerHTML for performance and simplicity.
+ * This is SAFE because:
+ * 1. Content comes from TypeScript files in our codebase (not user input)
+ * 2. Content is version-controlled and code-reviewed
+ * 3. Content is known at build time
+ * 4. Only basic markdown formatting is processed (bold, italic)
+ * 5. No user-generated content or external sources
+ * 
+ * If you need to accept user-generated content in the future, use a proper
+ * markdown library with sanitization (e.g., marked + DOMPurify).
  */
 function ArticleContent({content}: {content: string}) {
   const lines = content.split('\n');
@@ -102,9 +112,10 @@ function ArticleContent({content}: {content: string}) {
 
   const processInlineFormatting = (text: string): string => {
     // Only process bold and italic - content is from trusted source
+    // Use non-greedy patterns to prevent catastrophic backtracking
     return text
-      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*([^*]+)\*/g, '<em>$1</em>');
+      .replace(/\*\*([^*]+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*([^*]+?)\*/g, '<em>$1</em>');
   };
 
   lines.forEach((line, index) => {

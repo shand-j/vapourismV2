@@ -16,6 +16,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
   
   // Search for Zyn nicotine pouch products using tag-based query
+  // Space-separated tags = implicit AND (tag:zyn AND tag:nicotine_pouches)
   const searchResults = await searchProducts(
     storefront,
     'tag:zyn tag:nicotine_pouches',

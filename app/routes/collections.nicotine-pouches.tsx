@@ -18,9 +18,10 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
   
   // Search for nicotine pouch products using tag-based query
+  // Uses Shopify search syntax: space-separated tags with OR operator
   const searchResults = await searchProducts(
     storefront,
-    'tag:nicotine_pouches OR tag:snus',
+    '(tag:nicotine_pouches OR tag:snus)',
     {
       sortKey: 'RELEVANCE',
       reverse: false,

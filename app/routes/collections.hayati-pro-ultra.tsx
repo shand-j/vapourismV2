@@ -16,6 +16,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
   
   // Search for Hayati Pro Ultra products using tag-based query
+  // Space-separated tags = implicit AND (tag:hayati AND tag:pro_ultra AND tag:disposable)
   const searchResults = await searchProducts(
     storefront,
     'tag:hayati tag:pro_ultra tag:disposable',

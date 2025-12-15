@@ -16,6 +16,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
   
   // Search for Velo nicotine pouch products using tag-based query
+  // Space-separated tags = implicit AND (tag:velo AND tag:nicotine_pouches)
   const searchResults = await searchProducts(
     storefront,
     'tag:velo tag:nicotine_pouches',

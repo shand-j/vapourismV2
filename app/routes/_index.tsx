@@ -17,10 +17,54 @@ const EXPERIENCE_BACKDROPS = [
 ];
 
 export const meta: MetaFunction = () => [
-  {title: 'Vapourism | Premium vaping essentials delivered fast'},
+  {title: 'Vapourism | Premium UK Vape Shop | E-Liquids, Vape Kits & Accessories'},
   {
     name: 'description',
-    content: 'Shop authentic vape kits, nic salts, and accessories with trusted age verification and next-day UK delivery.',
+    content: 'Shop authentic vape kits, premium e-liquids, nic salts, and vaping accessories at Vapourism UK. ✓ Age verified ✓ Next-day delivery ✓ Free shipping over £20 ✓ Genuine products only.',
+  },
+  {
+    name: 'keywords',
+    content: 'vape shop UK, e-liquid, vape kits, nic salts, vaping accessories, premium vaping, UK vape delivery, authentic vape products, disposable vapes, pod systems',
+  },
+  {
+    property: 'og:title',
+    content: 'Vapourism | Premium UK Vape Shop',
+  },
+  {
+    property: 'og:description',
+    content: 'Shop authentic vape kits, premium e-liquids, and accessories. Age verified, next-day UK delivery available.',
+  },
+  {
+    property: 'og:type',
+    content: 'website',
+  },
+  {
+    property: 'og:url',
+    content: 'https://vapourism.co.uk',
+  },
+  {
+    property: 'og:site_name',
+    content: 'Vapourism',
+  },
+  {
+    property: 'og:locale',
+    content: 'en_GB',
+  },
+  {
+    name: 'twitter:card',
+    content: 'summary_large_image',
+  },
+  {
+    name: 'twitter:site',
+    content: '@vapourismuk',
+  },
+  {
+    name: 'twitter:title',
+    content: 'Vapourism | Premium UK Vape Shop',
+  },
+  {
+    name: 'twitter:description',
+    content: 'Shop authentic vape kits, premium e-liquids, and accessories with next-day UK delivery.',
   },
 ];
 

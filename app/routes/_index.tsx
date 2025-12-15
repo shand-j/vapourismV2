@@ -279,11 +279,6 @@ export default function IndexRoute() {
       contactType: 'customer service',
       email: 'support@vapourism.co.uk',
     },
-    sameAs: [
-      'https://www.facebook.com/vapourism',
-      'https://www.instagram.com/vapourism',
-      'https://twitter.com/vapourism',
-    ],
   };
 
   // WebSite schema with SearchAction for sitelinks searchbox

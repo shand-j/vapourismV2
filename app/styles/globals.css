@@ -7,20 +7,14 @@
   --foreground: 222.2 84% 4.9%;
   --card: 0 0% 100%;
   --card-foreground: 222.2 84% 4.9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 222.2 84% 4.9%;
   --primary: 222.2 47.4% 11.2%;
   --primary-foreground: 210 40% 98%;
   --secondary: 210 40% 96.1%;
-  --secondary-foreground: 222.2 47.4% 11.2%;
   --muted: 210 40% 96.1%;
   --muted-foreground: 215.4 16.3% 46.9%;
-  --accent: 210 40% 96.1%;
-  --accent-foreground: 222.2 47.4% 11.2%;
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 210 40% 98%;
   --border: 214.3 31.8% 91.4%;
-  --input: 214.3 31.8% 91.4%;
   --ring: 222.2 84% 4.9%;
   --radius: 1.5rem;
   --gradient-start: #5b2be0;
@@ -28,9 +22,7 @@
 }
 
 @layer base {
-  * {
-    border-color: hsl(var(--border));
-  }
+  * { border-color: hsl(var(--border)); }
 
   body {
     font-family: 'Inter', 'SF Pro Display', 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -42,56 +34,28 @@
     letter-spacing: -0.011em;
   }
 
-  h1 {
-  font-family: 'SF Pro Display', 'Space Grotesk', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-    font-size: 3.5rem;
-    line-height: 1.1;
-    letter-spacing: -0.022em;
+  h1, h2, h3 {
+    font-family: 'SF Pro Display', 'Space Grotesk', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     font-weight: 600;
   }
 
-  h2 {
-  font-family: 'SF Pro Display', 'Space Grotesk', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-    font-size: 2.5rem;
-    line-height: 1.2;
-    letter-spacing: -0.019em;
-    font-weight: 600;
-  }
-
-  h3 {
-  font-family: 'SF Pro Display', 'Space Grotesk', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-    font-size: 1.75rem;
-    line-height: 1.3;
-    letter-spacing: -0.014em;
-    font-weight: 600;
-  }
-
+  h1 { font-size: 3.5rem; line-height: 1.1; letter-spacing: -0.022em; }
+  h2 { font-size: 2.5rem; line-height: 1.2; letter-spacing: -0.019em; }
+  h3 { font-size: 1.75rem; line-height: 1.3; letter-spacing: -0.014em; }
   h4 {
-  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  font-size: 1.25rem;
+    font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-size: 1.25rem;
     line-height: 1.4;
     letter-spacing: -0.011em;
     font-weight: 600;
   }
 
-  p {
-    font-size: 1rem;
-    line-height: 1.6;
-    letter-spacing: -0.003em;
-  }
+  p { font-size: 1rem; line-height: 1.6; letter-spacing: -0.003em; }
 
   @media (max-width: 768px) {
-    h1 {
-      font-size: 2.5rem;
-    }
-
-    h2 {
-      font-size: 2rem;
-    }
-
-    h3 {
-      font-size: 1.5rem;
-    }
+    h1 { font-size: 2.5rem; }
+    h2 { font-size: 2rem; }
+    h3 { font-size: 1.5rem; }
   }
 
   a {
@@ -100,30 +64,18 @@
     text-underline-offset: 2px;
     transition: color 150ms ease;
   }
-
-  a:hover {
-    color: hsl(var(--primary));
-  }
+  a:hover { color: hsl(var(--primary)); }
 }
 
-.frosted-panel {
-  backdrop-filter: blur(12px);
-  background-color: rgba(255, 255, 255, 0.7);
-}
+.frosted-panel { backdrop-filter: blur(12px); background-color: rgba(255, 255, 255, 0.7); }
 
 .gradient-hero {
   background: radial-gradient(120% 120% at 0% 0%, #a855f7 0%, rgba(168, 85, 247, 0) 45%),
-    radial-gradient(100% 120% at 100% 0%, #38bdf8 0%, rgba(56, 189, 248, 0) 40%),
-    #111827;
+    radial-gradient(100% 120% at 100% 0%, #38bdf8 0%, rgba(56, 189, 248, 0) 40%), #111827;
 }
 
-.gradient-brand {
-  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
-}
-
-.gradient-brand-subtle {
-  background: linear-gradient(135deg, rgba(91, 43, 224, 0.05) 0%, rgba(31, 178, 255, 0.05) 100%);
-}
+.gradient-brand { background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%); }
+.gradient-brand-subtle { background: linear-gradient(135deg, rgba(91, 43, 224, 0.05) 0%, rgba(31, 178, 255, 0.05) 100%); }
 
 .glass-morphism {
   background: rgba(255, 255, 255, 0.7);
@@ -146,64 +98,19 @@
   padding-right: 1.5rem;
 }
 
-@media (min-width: 640px) {
-  .container-custom {
-    max-width: 640px;
-  }
-}
+@media (min-width: 640px) { .container-custom { max-width: 640px; } }
+@media (min-width: 768px) { .container-custom { max-width: 768px; } }
+@media (min-width: 1024px) { .container-custom { max-width: 1024px; } }
+@media (min-width: 1280px) { .container-custom { max-width: 1280px; } }
+@media (min-width: 1536px) { .container-custom { max-width: 1536px; } }
+@media (min-width: 1920px) { .container-custom { max-width: 1920px; } }
 
-@media (min-width: 768px) {
-  .container-custom {
-    max-width: 768px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .container-custom {
-    max-width: 1024px;
-  }
-}
-
-@media (min-width: 1280px) {
-  .container-custom {
-    max-width: 1280px;
-  }
-}
-
-@media (min-width: 1536px) {
-  .container-custom {
-    max-width: 1536px;
-  }
-}
-
-@media (min-width: 1920px) {
-  .container-custom {
-    max-width: 1920px;
-  }
-}
-
-.blur-site {
-  filter: blur(8px);
-  pointer-events: none;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
+.blur-site { filter: blur(8px); pointer-events: none; }
+html { scroll-behavior: smooth; }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
   border-radius: 5px;
 }
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--gradient-start);
-}
+::-webkit-scrollbar-thumb:hover { background: var(--gradient-start); }

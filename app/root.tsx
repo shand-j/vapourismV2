@@ -25,6 +25,7 @@ import {CookieConsent} from './components/CookieConsent';
 import {GoogleAnalytics} from './components/Analytics';
 import {trackPageView} from './lib/analytics';
 import {Icon} from './components/ui/Icon';
+import {generateOrganizationSchema, structuredDataScript} from './lib/structured-data';
 
 // Lazy load components that might use Headless UI
 const LazyCartDrawer = lazy(() => import('./components/cart/CartDrawer').then(m => ({default: m.CartDrawer})));
@@ -147,6 +148,17 @@ export default function App() {
   // GA4 Measurement ID
   const ga4MeasurementId = data.env?.GA4_MEASUREMENT_ID;
 
+  // Generate organization schema
+  const orgSchema = generateOrganizationSchema({
+    name: 'Vapourism',
+    url: siteUrl,
+    logo: `${siteUrl}/logo.png`,
+    description: data.shop?.description || 'Premium UK vape shop offering authentic vaping products, e-liquids, and accessories with fast delivery',
+    addressCountry: 'GB',
+    email: 'hello@vapourism.co.uk',
+    socialLinks: ['https://twitter.com/vapourismuk'],
+  });
+
   return (
     <html lang="en-GB">
       <head>
@@ -157,33 +169,7 @@ export default function App() {
         <Links />
         
         {/* Organization Schema for SEO */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              "name": "Vapourism",
-              "url": siteUrl,
-              "logo": `${siteUrl}/logo.png`,
-              "description": data.shop?.description || "Premium UK vape shop offering authentic vaping products, e-liquids, and accessories with fast delivery",
-              "address": {
-                "@type": "PostalAddress",
-                "addressCountry": "GB"
-              },
-              "contactPoint": {
-                "@type": "ContactPoint",
-                "contactType": "Customer Service",
-                "email": "hello@vapourism.co.uk",
-                "areaServed": "GB",
-                "availableLanguage": "English"
-              },
-              "sameAs": [
-                "https://twitter.com/vapourismuk"
-              ]
-            })
-          }}
-        />
+        {structuredDataScript(orgSchema)}
         
         {/* Google Analytics 4 */}
         {ga4MeasurementId && <GoogleAnalytics measurementId={ga4MeasurementId} />}
@@ -255,15 +241,8 @@ export default function App() {
           {() => <CookieConsent />}
         </ClientOnly>
 
-        {/* Inline window.ENV assignment — DO NOT add nonce here. Some HMR / client-side
-            scripts are injected without nonce and React warns about mismatches when
-            the server includes a nonce attribute on a script node. To avoid noisy
-            hydration warnings in dev, keep this script without nonce. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.ENV = ${JSON.stringify(data.env ?? {})};`,
-          }}
-        />
+        {/* Environment variables for client - kept inline to avoid hydration issues */}
+        <script dangerouslySetInnerHTML={{__html: `window.ENV=${JSON.stringify(data.env??{})}`}} />
         <ScrollRestoration />
         <Scripts nonce={nonce} />
       </body>

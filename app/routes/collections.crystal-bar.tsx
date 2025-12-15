@@ -95,17 +95,69 @@ export default function CrystalBarCollection() {
 
       {/* Brand Story */}
       <div className="mb-12 bg-gradient-to-r from-blue-50 to-purple-50 p-8 rounded-lg">
-        <h2 className="text-2xl font-bold mb-4">About Crystal Bar</h2>
+        <h2 className="text-2xl font-bold mb-4">About Crystal Bar Disposable Vapes</h2>
         <p className="text-gray-700 mb-4">
           Crystal Bar has quickly become one of the UK's favorite disposable vape brands, 
           known for delivering exceptional flavor clarity and smooth vapor production. Each device 
           is carefully crafted to provide a premium vaping experience from the first puff to the last.
+          The brand stands out in the crowded disposable market through its focus on authentic taste profiles 
+          and reliable performance that UK vapers have come to trust.
         </p>
-        <p className="text-gray-700">
+        <p className="text-gray-700 mb-4">
           With a focus on quality ingredients and innovative design, Crystal Bar offers vapers 
           a reliable choice for everyday use. The brand's commitment to authentic flavors and 
-          consistent performance has made it a top choice among UK vapers.
+          consistent performance has made it a top choice among UK vapers who demand both convenience 
+          and quality from their disposable vapes.
         </p>
+        <p className="text-gray-700">
+          Every Crystal Bar device undergoes rigorous quality control testing to ensure compliance with UK TPD 
+          regulations and safety standards. The brand uses food-grade materials, pharmaceutical-grade nicotine, 
+          and premium flavor concentrates to deliver an exceptional vaping experience. Crystal Bar disposables 
+          are designed for adult smokers transitioning away from traditional cigarettes, as well as experienced 
+          vapers seeking convenient, hassle-free options for on-the-go use.
+        </p>
+      </div>
+
+      {/* Why Choose Crystal Bar */}
+      <div className="mb-12">
+        <h2 className="text-2xl font-bold mb-6">Why Choose Crystal Bar Vapes?</h2>
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <h3 className="font-semibold text-lg mb-3">Beginner-Friendly Design</h3>
+            <p className="text-gray-700">
+              Crystal Bar disposables are perfect for new vapers with their simple draw-activated operation. 
+              No buttons, no settings, no maintenance required—just open the package and start vaping. 
+              The consistent power output ensures smooth flavor delivery without the learning curve associated 
+              with traditional vape devices.
+            </p>
+          </div>
+          <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <h3 className="font-semibold text-lg mb-3">Cost-Effective Vaping</h3>
+            <p className="text-gray-700">
+              Compared to daily cigarette purchases, Crystal Bar offers significant savings without compromising 
+              on satisfaction. Each device provides hundreds of puffs at a fraction of the cost of traditional 
+              smoking. No need to purchase separate e-liquid, coils, or accessories—everything comes built-in 
+              and ready to use.
+            </p>
+          </div>
+          <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <h3 className="font-semibold text-lg mb-3">Wide Flavor Selection</h3>
+            <p className="text-gray-700">
+              Crystal Bar offers an extensive range of flavors catering to diverse preferences. Whether you prefer 
+              fruity blends, refreshing menthol, classic tobacco, or indulgent dessert profiles, there's a Crystal 
+              Bar flavor to match your taste. Popular options include mixed berries, tropical fruits, cooling ice 
+              varieties, and smooth tobacco blends.
+            </p>
+          </div>
+          <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <h3 className="font-semibold text-lg mb-3">Portable and Discreet</h3>
+            <p className="text-gray-700">
+              The compact, lightweight design makes Crystal Bar perfect for vaping on the move. Slip it into your 
+              pocket or bag without bulk or worry. The sleek appearance and moderate vapor production allow for 
+              discreet use in appropriate settings, making it ideal for busy lifestyles and social situations.
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Products Grid */}

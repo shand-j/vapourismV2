@@ -91,9 +91,81 @@ export default function EluxLegendCollection() {
         </div>
       </div>
 
+      {/* Brand Story */}
+      <div className="mb-12 bg-gradient-to-r from-blue-50 to-indigo-50 p-8 rounded-lg">
+        <h2 className="text-2xl font-bold mb-4">About Elux Legend Brand</h2>
+        <p className="text-gray-700 mb-4">
+          Elux Legend has established itself as a leading name in the UK disposable vape market through consistent 
+          innovation and unwavering commitment to quality. The brand combines cutting-edge vaping technology with 
+          sophisticated flavor development to create devices that exceed user expectations. Each Elux Legend product 
+          undergoes extensive testing to ensure optimal performance, safety compliance, and satisfaction from the first 
+          to the last puff.
+        </p>
+        <p className="text-gray-700 mb-4">
+          What sets Elux Legend apart is their attention to detail across every aspect of the vaping experience. 
+          From the ergonomic mouthpiece design that ensures comfortable draws to the precision-engineered coil systems 
+          that deliver consistent vapor production, every element is carefully crafted. The brand's use of high-quality 
+          mesh coils provides superior flavor accuracy compared to traditional coil systems found in many competing 
+          disposables.
+        </p>
+        <p className="text-gray-700">
+          Elux Legend's commitment to sustainability and regulatory compliance makes them a responsible choice for UK 
+          vapers. All products meet stringent TPD (Tobacco Products Directive) requirements and undergo third-party 
+          lab testing. The brand works exclusively with authorized UK distributors to ensure product authenticity 
+          and maintain the highest quality standards throughout the supply chain.
+        </p>
+      </div>
+
+      {/* Product Features Deep Dive */}
+      <div className="mb-12">
+        <h2 className="text-2xl font-bold mb-6">Elux Legend Product Features Explained</h2>
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <h3 className="font-semibold text-lg mb-3">Advanced Mesh Coil Technology</h3>
+            <p className="text-gray-700">
+              Elux Legend devices utilize advanced mesh coil technology that heats e-liquid more evenly than traditional 
+              wire coils. This results in enhanced flavor delivery, smoother vapor production, and consistent performance 
+              throughout the device's lifespan. Mesh coils have larger surface area contact with e-liquid, producing 
+              fuller, more satisfying vapor clouds with every puff.
+            </p>
+          </div>
+          <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <h3 className="font-semibold text-lg mb-3">Optimized Battery Performance</h3>
+            <p className="text-gray-700">
+              Each Elux Legend features a carefully calibrated battery designed to last the entire duration of the 
+              e-liquid capacity. The intelligent power management system ensures consistent wattage output from first 
+              to last puff, preventing the weak hits and flavor degradation common in lower-quality disposables. 
+              You get reliable performance without battery anxiety or diminishing satisfaction.
+            </p>
+          </div>
+          <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <h3 className="font-semibold text-lg mb-3">Premium E-Liquid Formulations</h3>
+            <p className="text-gray-700">
+              Elux Legend e-liquids are crafted using pharmaceutical-grade nicotine salts, food-grade flavorings, 
+              and high-purity base ingredients. The carefully balanced VG/PG ratios deliver smooth throat hits and 
+              satisfying nicotine delivery without harshness. Each flavor profile is developed by experienced mixologists 
+              who understand UK vaper preferences and create blends that remain enjoyable for extended use.
+            </p>
+          </div>
+          <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <h3 className="font-semibold text-lg mb-3">Ergonomic Design & Portability</h3>
+            <p className="text-gray-700">
+              The sleek, compact design of Elux Legend devices fits comfortably in hand or pocket. The rounded mouthpiece 
+              provides comfortable draws without sharp edges, while the lightweight construction ensures easy portability. 
+              Subtle LED indicators provide draw activation feedback, and the matte finish prevents fingerprints and 
+              maintains a premium appearance throughout use.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Comparison Guide */}
       <div className="mb-12 bg-blue-50 p-8 rounded-lg">
         <h2 className="text-2xl font-bold mb-4">Elux Legend Range Comparison</h2>
+        <p className="text-gray-700 mb-6">
+          The Elux Legend family offers multiple options to suit different vaping needs and preferences. Whether you 
+          prioritize maximum puff count, portability, or specific feature sets, there's an Elux model designed for you.
+        </p>
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white border">
             <thead>
@@ -107,12 +179,12 @@ export default function EluxLegendCollection() {
               <tr>
                 <td className="px-4 py-2 border font-semibold">Elux Legend 3500</td>
                 <td className="px-4 py-2 border">3500 puffs</td>
-                <td className="px-4 py-2 border">Everyday use, portable</td>
+                <td className="px-4 py-2 border">Everyday use, portable, value-focused vapers</td>
               </tr>
               <tr>
                 <td className="px-4 py-2 border font-semibold">Elux Legend Mini</td>
                 <td className="px-4 py-2 border">600 puffs</td>
-                <td className="px-4 py-2 border">Compact, travel-friendly</td>
+                <td className="px-4 py-2 border">Compact, travel-friendly, trying new flavors</td>
               </tr>
             </tbody>
           </table>

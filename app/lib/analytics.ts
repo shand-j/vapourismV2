@@ -213,6 +213,32 @@ export function shopifyProductToGA4Item(product: {
   };
 }
 
+/**
+ * Generates minified GA4 initialization script
+ * Optimized for text-to-HTML ratio by removing unnecessary whitespace
+ * 
+ * Original formatted version (for reference):
+ * ```
+ * window.dataLayer = window.dataLayer || [];
+ * function gtag(){dataLayer.push(arguments);}
+ * gtag('consent', 'default', {
+ *   'analytics_storage': 'denied',
+ *   'ad_storage': 'denied',
+ *   'ad_user_data': 'denied',
+ *   'ad_personalization': 'denied',
+ *   'wait_for_update': 500
+ * });
+ * gtag('js', new Date());
+ * gtag('config', '${measurementId}', {
+ *   page_path: window.location.pathname,
+ *   anonymize_ip: true
+ * });
+ * ```
+ */
+export function generateGA4InitScript(measurementId: string): string {
+  return `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('consent','default',{'analytics_storage':'denied','ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','wait_for_update':500});gtag('js',new Date());gtag('config','${measurementId}',{page_path:window.location.pathname,anonymize_ip:true});`;
+}
+
 // Extend window interface for TypeScript
 declare global {
   interface Window {

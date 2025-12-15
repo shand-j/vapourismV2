@@ -15,11 +15,11 @@ import {searchProducts} from '~/lib/shopify-search';
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
   
-  // Search for Velo nicotine pouch products using tag-based query
-  // Space-separated tags = implicit AND (tag:velo AND tag:nicotine_pouches)
+  // Search for Velo nicotine pouch products using vendor field
+  // Vendor filtering is the correct approach for brand-specific pages
   const searchResults = await searchProducts(
     storefront,
-    'tag:velo tag:nicotine_pouches',
+    'vendor:Velo tag:nicotine_pouches',
     {
       sortKey: 'RELEVANCE',
       reverse: false,

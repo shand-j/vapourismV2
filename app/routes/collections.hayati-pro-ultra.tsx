@@ -15,11 +15,11 @@ import {searchProducts} from '~/lib/shopify-search';
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
   
-  // Search for Hayati Pro Ultra products using tag-based query
-  // Space-separated tags = implicit AND (tag:hayati AND tag:pro_ultra AND tag:disposable)
+  // Search for Hayati Pro Ultra products using vendor field and product-specific tags
+  // Vendor filtering is the correct approach for brand-specific pages
   const searchResults = await searchProducts(
     storefront,
-    'tag:hayati tag:pro_ultra tag:disposable',
+    'vendor:Hayati tag:pro_ultra tag:disposable',
     {
       sortKey: 'RELEVANCE',
       reverse: false,

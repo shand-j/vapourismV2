@@ -332,6 +332,73 @@ export class SEOAutomationService {
       whatsapp: `Found this great ${product.productType} - ${product.title} by ${product.vendor}${price}. Thought you might be interested! Available at vapourism.co.uk`
     };
   }
+
+  /**
+   * Truncate page title to 70 characters or less for SEO compliance
+   * Most search engines truncate titles over 70 characters
+   * @param title The full title string
+   * @param maxLength Maximum length (default 70)
+   * @returns Truncated title with ellipsis if needed
+   */
+  static truncateTitle(title: string, maxLength: number = 70): string {
+    if (title.length <= maxLength) {
+      return title;
+    }
+
+    // Reserve 1 character for the ellipsis
+    const maxContentLength = maxLength - 1;
+    const truncated = title.substring(0, maxContentLength);
+    const lastSpace = truncated.lastIndexOf(' ');
+    
+    // If we can break at a word boundary within the last 10 characters, do so
+    if (lastSpace > maxContentLength - 10) {
+      return truncated.substring(0, lastSpace) + '…';
+    }
+    
+    return truncated + '…';
+  }
+
+  /**
+   * Generate optimized product title for meta tags
+   * Ensures title fits within 70 character SEO limit
+   * Priority: Product title > Vendor > "Vapourism"
+   * @param productTitle The product title
+   * @param vendor The vendor/brand name
+   * @param seoTitle Optional SEO title override from Shopify
+   * @returns Optimized title string ≤70 characters
+   */
+  static generateProductTitle(productTitle: string, vendor: string, seoTitle?: string | null): string {
+    // Use SEO title from Shopify if available
+    if (seoTitle) {
+      return this.truncateTitle(seoTitle);
+    }
+
+    const suffix = ' | Vapourism';
+    const maxProductLength = 70 - suffix.length;
+
+    // Try full title with vendor
+    const fullTitle = `${productTitle} | ${vendor}${suffix}`;
+    if (fullTitle.length <= 70) {
+      return fullTitle;
+    }
+
+    // Try product title only with suffix
+    const titleOnly = `${productTitle}${suffix}`;
+    if (titleOnly.length <= 70) {
+      return titleOnly;
+    }
+
+    // Truncate product title to fit (reserve 1 char for ellipsis)
+    const maxContentLength = maxProductLength - 1;
+    const truncatedProduct = productTitle.substring(0, maxContentLength);
+    const lastSpace = truncatedProduct.lastIndexOf(' ');
+    
+    if (lastSpace > maxContentLength - 10) {
+      return truncatedProduct.substring(0, lastSpace) + '…' + suffix;
+    }
+    
+    return truncatedProduct + '…' + suffix;
+  }
 }
 
 /**

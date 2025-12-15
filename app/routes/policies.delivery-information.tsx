@@ -75,7 +75,6 @@ export default function DeliveryInformation() {
           {/* Delivery Options - Card Design */}
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
             <div className="bg-white border-2 border-gray-200 rounded-xl p-6 text-center hover:border-blue-500 hover:shadow-lg transition">
-              <div className="text-4xl mb-3">📦</div>
               <h3 className="font-bold text-lg mb-2">Standard</h3>
               <p className="text-2xl font-bold text-blue-600 mb-2">£3.99</p>
               <p className="text-sm text-gray-600">3-5 working days</p>
@@ -83,7 +82,6 @@ export default function DeliveryInformation() {
             </div>
 
             <div className="bg-white border-2 border-gray-200 rounded-xl p-6 text-center hover:border-blue-500 hover:shadow-lg transition">
-              <div className="text-4xl mb-3">⚡</div>
               <h3 className="font-bold text-lg mb-2">Express</h3>
               <p className="text-2xl font-bold text-blue-600 mb-2">£7.99</p>
               <p className="text-sm text-gray-600">1-2 working days</p>
@@ -91,7 +89,6 @@ export default function DeliveryInformation() {
             </div>
 
             <div className="bg-white border-2 border-gray-200 rounded-xl p-6 text-center hover:border-blue-500 hover:shadow-lg transition">
-              <div className="text-4xl mb-3">🚀</div>
               <h3 className="font-bold text-lg mb-2">Next Day</h3>
               <p className="text-2xl font-bold text-blue-600 mb-2">£9.99</p>
               <p className="text-sm text-gray-600">Next working day</p>
@@ -99,7 +96,6 @@ export default function DeliveryInformation() {
             </div>
 
             <div className="bg-gradient-to-br from-green-50 to-blue-50 border-2 border-green-300 rounded-xl p-6 text-center hover:border-green-500 hover:shadow-lg transition">
-              <div className="text-4xl mb-3">🎉</div>
               <h3 className="font-bold text-lg mb-2">Free!</h3>
               <p className="text-2xl font-bold text-green-600 mb-2">£0.00</p>
               <p className="text-sm text-gray-700">Orders over £20</p>
@@ -110,7 +106,7 @@ export default function DeliveryInformation() {
           <div className="space-y-6 mb-16">
             <details className="group border-2 border-gray-200 rounded-xl overflow-hidden">
               <summary className="cursor-pointer p-6 bg-white hover:bg-gray-50 transition font-semibold text-lg flex justify-between items-center">
-                <span>🚚 DPD Local Tracking</span>
+                <span>DPD Local Tracking</span>
                 <span className="group-open:rotate-180 transition-transform">▼</span>
               </summary>
               <div className="p-6 bg-gray-50 space-y-3">
@@ -142,7 +138,7 @@ export default function DeliveryInformation() {
 
             <details className="group border-2 border-gray-200 rounded-xl overflow-hidden">
               <summary className="cursor-pointer p-6 bg-white hover:bg-gray-50 transition font-semibold text-lg flex justify-between items-center">
-                <span>⏰ Order Processing & Cut-off Times</span>
+                <span>Order Processing & Cut-off Times</span>
                 <span className="group-open:rotate-180 transition-transform">▼</span>
               </summary>
               <div className="p-6 bg-gray-50">
@@ -169,7 +165,7 @@ export default function DeliveryInformation() {
 
             <details className="group border-2 border-gray-200 rounded-xl overflow-hidden">
               <summary className="cursor-pointer p-6 bg-white hover:bg-gray-50 transition font-semibold text-lg flex justify-between items-center">
-                <span>🗺️ UK Delivery Coverage</span>
+                <span>UK Delivery Coverage</span>
                 <span className="group-open:rotate-180 transition-transform">▼</span>
               </summary>
               <div className="p-6 bg-gray-50">
@@ -197,7 +193,7 @@ export default function DeliveryInformation() {
 
             <details className="group border-2 border-gray-200 rounded-xl overflow-hidden">
               <summary className="cursor-pointer p-6 bg-white hover:bg-gray-50 transition font-semibold text-lg flex justify-between items-center">
-                <span>📦 Tracking Your Order</span>
+                <span>Tracking Your Order</span>
                 <span className="group-open:rotate-180 transition-transform">▼</span>
               </summary>
               <div className="p-6 bg-gray-50 space-y-4">
@@ -236,7 +232,7 @@ export default function DeliveryInformation() {
 
             <details className="group border-2 border-gray-200 rounded-xl overflow-hidden">
               <summary className="cursor-pointer p-6 bg-white hover:bg-gray-50 transition font-semibold text-lg flex justify-between items-center">
-                <span>📋 Delivery Restrictions & Age Verification</span>
+                <span>Delivery Restrictions & Age Verification</span>
                 <span className="group-open:rotate-180 transition-transform">▼</span>
               </summary>
               <div className="p-6 bg-gray-50 space-y-3">
@@ -263,7 +259,7 @@ export default function DeliveryInformation() {
 
             <details className="group border-2 border-gray-200 rounded-xl overflow-hidden">
               <summary className="cursor-pointer p-6 bg-white hover:bg-gray-50 transition font-semibold text-lg flex justify-between items-center">
-                <span>❓ Delivery FAQs</span>
+                <span>Delivery FAQs</span>
                 <span className="group-open:rotate-180 transition-transform">▼</span>
               </summary>
               <div className="p-6 bg-gray-50 space-y-4">
@@ -300,7 +296,7 @@ export default function DeliveryInformation() {
               <p className="mb-4">Our customer service team is here to assist you</p>
               <div className="space-y-2 text-sm">
                 <p>📧 Email: delivery@vapourism.com</p>
-                <p>⏰ Response within 24 hours (working days)</p>
+                <p>Response within 24 hours (working days)</p>
               </div>
             </div>
           </div>

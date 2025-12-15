@@ -77,22 +77,18 @@ export default function NicotinePouchesCollection() {
       {/* Key Benefits - Sleeker Design */}
       <div className="grid md:grid-cols-4 gap-4 mb-16">
         <div className="text-center p-4">
-          <div className="text-4xl mb-2">🚭</div>
           <h3 className="font-semibold mb-1">Tobacco-Free</h3>
           <p className="text-sm text-gray-600">Pure nicotine</p>
         </div>
         <div className="text-center p-4">
-          <div className="text-4xl mb-2">🤫</div>
           <h3 className="font-semibold mb-1">Discreet</h3>
           <p className="text-sm text-gray-600">Use anywhere</p>
         </div>
         <div className="text-center p-4">
-          <div className="text-4xl mb-2">⚡</div>
           <h3 className="font-semibold mb-1">Various Strengths</h3>
           <p className="text-sm text-gray-600">3mg - 20mg</p>
         </div>
         <div className="text-center p-4">
-          <div className="text-4xl mb-2">🌟</div>
           <h3 className="font-semibold mb-1">Great Flavors</h3>
           <p className="text-sm text-gray-600">Mint, fruit & more</p>
         </div>
@@ -168,8 +164,7 @@ export default function NicotinePouchesCollection() {
           </div>
         ) : (
           <div className="text-center py-16 bg-gray-50 rounded-xl">
-            <div className="text-6xl mb-4">📦</div>
-            <p className="text-xl text-gray-600 mb-2">Products arriving soon!</p>
+            <p className="text-xl text-gray-600 mb-2 font-semibold">Products arriving soon!</p>
             <p className="text-gray-500">
               We're adding nicotine pouches from Velo, Zyn, and Nordic Spirit to our range.
             </p>

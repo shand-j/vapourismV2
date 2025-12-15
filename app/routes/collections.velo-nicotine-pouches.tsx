@@ -62,128 +62,40 @@ export default function VeloPouchesCollection() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-4">
-          Velo Nicotine Pouches UK | Premium Tobacco-Free
+      {/* Hero Section */}
+      <div className="mb-12 text-center">
+        <h1 className="text-5xl font-bold mb-4">
+          Velo Nicotine Pouches UK
         </h1>
-        <p className="text-lg text-gray-600 mb-6">
-          Experience the UK's leading nicotine pouch brand. Velo offers a premium, tobacco-free 
-          alternative with exceptional flavors and a range of nicotine strengths to suit every preference.
+        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          UK's leading nicotine pouch brand with premium tobacco-free satisfaction and exceptional flavors.
         </p>
       </div>
 
-      {/* Key Features */}
-      <div className="grid md:grid-cols-4 gap-6 mb-12">
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="font-semibold text-xl mb-2">✓ Market Leader</h3>
-          <p className="text-gray-600">UK's most popular nicotine pouch brand</p>
+      {/* Key Benefits */}
+      <div className="grid md:grid-cols-4 gap-4 mb-16">
+        <div className="text-center p-4">
+          <h3 className="font-semibold mb-1">Market Leader</h3>
+          <p className="text-sm text-gray-600">Most popular brand</p>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="font-semibold text-xl mb-2">✓ Premium Quality</h3>
-          <p className="text-gray-600">Exceptional flavor and nicotine delivery</p>
+        <div className="text-center p-4">
+          <h3 className="font-semibold mb-1">Premium Quality</h3>
+          <p className="text-sm text-gray-600">Exceptional flavor</p>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="font-semibold text-xl mb-2">✓ Wide Range</h3>
-          <p className="text-gray-600">Multiple strengths and flavors available</p>
+        <div className="text-center p-4">
+          <h3 className="font-semibold mb-1">Wide Range</h3>
+          <p className="text-sm text-gray-600">Multiple strengths</p>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="font-semibold text-xl mb-2">✓ Tobacco-Free</h3>
-          <p className="text-gray-600">Clean, modern nicotine experience</p>
-        </div>
-      </div>
-
-      {/* About Velo */}
-      <div className="mb-12 bg-blue-50 p-6 rounded-lg">
-        <h2 className="text-2xl font-bold mb-4">About Velo Nicotine Pouches</h2>
-        <div className="space-y-4 text-gray-700">
-          <p>
-            Velo is the UK's leading nicotine pouch brand, trusted by thousands of users for its 
-            <strong> consistent quality</strong> and <strong>superior flavor profiles</strong>. 
-            Formerly known as Lyft, Velo has established itself as the premium choice for 
-            tobacco-free nicotine satisfaction.
-          </p>
-          <p>
-            Each Velo pouch is carefully crafted with pharmaceutical-grade nicotine and natural 
-            flavoring to deliver a smooth, satisfying experience without any tobacco. The pouches 
-            are designed to be discreet, comfortable, and long-lasting.
-          </p>
-          <p className="font-semibold">
-            Whether you're looking for a light, regular, or strong nicotine hit, Velo has the 
-            perfect strength to match your needs.
-          </p>
+        <div className="text-center p-4">
+          <h3 className="font-semibold mb-1">Tobacco-Free</h3>
+          <p className="text-sm text-gray-600">Clean experience</p>
         </div>
       </div>
 
-      {/* Popular Velo Products */}
-      <div className="mb-12">
-        <h2 className="text-2xl font-bold mb-6">Popular Velo Flavors</h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="border rounded-lg p-6">
-            <h3 className="font-bold text-xl mb-2">Velo Ice Cool</h3>
-            <p className="text-gray-600">
-              Classic mint flavor with an icy cool sensation. The most popular Velo variant 
-              for a refreshing nicotine experience.
-            </p>
-          </div>
-          
-          <div className="border rounded-lg p-6">
-            <h3 className="font-bold text-xl mb-2">Velo Freeze</h3>
-            <p className="text-gray-600">
-              Intense mint with extra cooling effect. Perfect for those who love a strong, 
-              refreshing flavor.
-            </p>
-          </div>
-          
-          <div className="border rounded-lg p-6">
-            <h3 className="font-bold text-xl mb-2">Velo Polar Mint</h3>
-            <p className="text-gray-600">
-              Smooth spearmint with a cooling finish. A balanced mint flavor that's not 
-              too intense.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Velo Strength Guide */}
-      <div className="mb-12 overflow-x-auto">
-        <h2 className="text-2xl font-bold mb-4">Velo Strength Guide</h2>
-        <table className="min-w-full bg-white border">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="px-4 py-2 border">Strength Level</th>
-              <th className="px-4 py-2 border">Nicotine per Pouch</th>
-              <th className="px-4 py-2 border">Recommended For</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="px-4 py-2 border font-semibold">Velo Mini (2mg)</td>
-              <td className="px-4 py-2 border">2mg</td>
-              <td className="px-4 py-2 border">Beginners, very light users</td>
-            </tr>
-            <tr>
-              <td className="px-4 py-2 border font-semibold">Velo Regular (4mg)</td>
-              <td className="px-4 py-2 border">4mg</td>
-              <td className="px-4 py-2 border">Light to moderate users</td>
-            </tr>
-            <tr>
-              <td className="px-4 py-2 border font-semibold">Velo Strong (10mg)</td>
-              <td className="px-4 py-2 border">10mg</td>
-              <td className="px-4 py-2 border">Regular vapers/smokers</td>
-            </tr>
-            <tr>
-              <td className="px-4 py-2 border font-semibold">Velo X-Strong (11mg)</td>
-              <td className="px-4 py-2 border">11mg</td>
-              <td className="px-4 py-2 border">Heavy users, high tolerance</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      {/* Products Grid */}
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-6">
-          All Velo Products ({totalCount})
+      {/* Products Grid - Move higher */}
+      <div className="mb-16">
+        <h2 className="text-3xl font-bold mb-8 text-center">
+          {products.length > 0 ? `All Velo Nicotine Pouches (${totalCount})` : 'Velo Pouches Coming Soon'}
         </h2>
         
         {products.length > 0 ? (
@@ -192,20 +104,141 @@ export default function VeloPouchesCollection() {
               <Link
                 key={product.id}
                 to={`/products/${product.handle}`}
-                className="group border rounded-lg overflow-hidden hover:shadow-lg transition"
+                className="group border-2 border-gray-100 rounded-xl overflow-hidden hover:border-blue-500 hover:shadow-xl transition-all"
               >
                 {product.featuredImage && (
                   <img
                     src={product.featuredImage.url}
                     alt={product.featuredImage.altText || product.title}
-                    className="w-full h-48 object-cover"
+                    className="w-full h-56 object-cover"
                   />
                 )}
                 <div className="p-4">
-                  <h3 className="font-semibold group-hover:text-blue-600 transition">
+                  <h3 className="font-semibold group-hover:text-blue-600 transition line-clamp-2">
                     {product.title}
                   </h3>
-                  <p className="text-sm text-gray-600 mt-1">{product.vendor}</p>
+                  <p className="text-sm text-gray-500 mt-1">{product.vendor}</p>
+                  {product.priceRange && (
+                    <p className="text-xl font-bold mt-2 text-blue-600">
+                      £{parseFloat(product.priceRange.minVariantPrice.amount).toFixed(2)}
+                    </p>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-16 bg-gray-50 rounded-xl">
+            <p className="text-xl text-gray-600 mb-2 font-semibold">Products arriving soon!</p>
+            <p className="text-gray-500">
+              We're adding the complete Velo range to our collection.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Collapsible Info Sections */}
+      <div className="mb-16 space-y-4">
+        <details className="group border-2 border-gray-200 rounded-xl overflow-hidden">
+          <summary className="cursor-pointer p-6 bg-white hover:bg-gray-50 transition font-semibold text-lg flex justify-between items-center">
+            <span>About Velo</span>
+            <span className="group-open:rotate-180 transition-transform">▼</span>
+          </summary>
+          <div className="p-6 bg-gray-50 space-y-3 text-gray-700">
+            <p>
+              Velo is the UK's leading nicotine pouch brand, trusted by thousands of users for its 
+              <strong> consistent quality</strong> and <strong>superior flavor profiles</strong>.
+            </p>
+            <p>
+              Each Velo pouch is crafted with pharmaceutical-grade nicotine and natural 
+              flavoring to deliver a smooth, satisfying experience without any tobacco.
+            </p>
+          </div>
+        </details>
+
+        <details className="group border-2 border-gray-200 rounded-xl overflow-hidden">
+          <summary className="cursor-pointer p-6 bg-white hover:bg-gray-50 transition font-semibold text-lg flex justify-between items-center">
+            <span>Popular Flavors</span>
+            <span className="group-open:rotate-180 transition-transform">▼</span>
+          </summary>
+          <div className="p-6 bg-gray-50 space-y-4">
+            <div>
+              <p className="font-semibold mb-1">Velo Ice Cool</p>
+              <p className="text-sm text-gray-700">
+                Classic mint flavor with an icy cool sensation. Most popular variant.
+              </p>
+            </div>
+            <div>
+              <p className="font-semibold mb-1">Velo Freeze</p>
+              <p className="text-sm text-gray-700">
+                Intense mint with extra cooling effect. Perfect for strong flavor lovers.
+              </p>
+            </div>
+            <div>
+              <p className="font-semibold mb-1">Velo Polar Mint</p>
+              <p className="text-sm text-gray-700">
+                Smooth spearmint with a cooling finish. Balanced and not too intense.
+              </p>
+            </div>
+          </div>
+        </details>
+
+        <details className="group border-2 border-gray-200 rounded-xl overflow-hidden">
+          <summary className="cursor-pointer p-6 bg-white hover:bg-gray-50 transition font-semibold text-lg flex justify-between items-center">
+            <span>Strength Guide</span>
+            <span className="group-open:rotate-180 transition-transform">▼</span>
+          </summary>
+          <div className="p-6 bg-gray-50 overflow-x-auto">
+            <table className="min-w-full bg-white border rounded-lg">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="px-4 py-3 border text-left">Strength</th>
+                  <th className="px-4 py-3 border text-left">Nicotine</th>
+                  <th className="px-4 py-3 border text-left">Recommended For</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="px-4 py-2 border font-semibold">Velo Mini</td>
+                  <td className="px-4 py-2 border">2mg</td>
+                  <td className="px-4 py-2 border">Beginners</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-2 border font-semibold">Velo Regular</td>
+                  <td className="px-4 py-2 border">4mg</td>
+                  <td className="px-4 py-2 border">Light to moderate</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-2 border font-semibold">Velo Strong</td>
+                  <td className="px-4 py-2 border">10mg</td>
+                  <td className="px-4 py-2 border">Regular users</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-2 border font-semibold">Velo X-Strong</td>
+                  <td className="px-4 py-2 border">11mg</td>
+                  <td className="px-4 py-2 border">Heavy users</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+
+      {/* Related Links */}
+      <div className="border-t-2 border-gray-200 pt-8">
+        <h3 className="font-semibold text-xl mb-4 text-center">Related Products</h3>
+        <div className="flex flex-wrap justify-center gap-3">
+          <Link to="/collections/nicotine-pouches" className="px-6 py-3 bg-gray-100 hover:bg-blue-50 text-gray-800 rounded-lg hover:text-blue-700 transition font-medium">
+            All Nicotine Pouches
+          </Link>
+          <Link to="/collections/zyn-nicotine-pouches" className="px-6 py-3 bg-gray-100 hover:bg-blue-50 text-gray-800 rounded-lg hover:text-blue-700 transition font-medium">
+            Zyn Pouches
+          </Link>
+          <Link to="/search?tag=disposable" className="px-6 py-3 bg-gray-100 hover:bg-blue-50 text-gray-800 rounded-lg hover:text-blue-700 transition font-medium">
+            Disposable Vapes
+          </Link>
+        </div>
+      </div>
                   {product.priceRange && (
                     <p className="text-lg font-bold mt-2">
                       £{parseFloat(product.priceRange.minVariantPrice.amount).toFixed(2)}

@@ -37,7 +37,11 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   if (!data) {
-    return [{title: 'Riot Squad | Vapourism'}, {name: 'robots', content: 'noindex'}];
+    return [
+      {title: 'Riot Squad | Vapourism'},
+      {name: 'description', content: 'Shop Riot Squad e-liquids at Vapourism. Premium vape juice from award-winning brand. Fast UK delivery and best prices.'},
+      {name: 'robots', content: 'noindex'}
+    ];
   }
 
   return [

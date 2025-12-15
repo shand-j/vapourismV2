@@ -43,7 +43,11 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   if (!data) {
-    return [{title: 'Lost Mary BM6000 | Vapourism'}, {name: 'robots', content: 'noindex'}];
+    return [
+      {title: 'Lost Mary BM6000 | Vapourism'},
+      {name: 'description', content: 'Discover Lost Mary BM6000 disposable vapes at Vapourism. Premium UK vape shop with fast delivery and best prices.'},
+      {name: 'robots', content: 'noindex'}
+    ];
   }
 
   return [

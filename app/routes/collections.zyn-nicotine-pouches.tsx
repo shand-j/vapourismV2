@@ -45,7 +45,11 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   if (!data) {
-    return [{title: 'Zyn Nicotine Pouches UK | Vapourism'}, {name: 'robots', content: 'noindex'}];
+    return [
+      {title: 'Zyn Nicotine Pouches UK | Vapourism'},
+      {name: 'description', content: 'Shop ZYN nicotine pouches at Vapourism. Premium tobacco-free nicotine pouches with fast UK delivery and best prices.'},
+      {name: 'robots', content: 'noindex'}
+    ];
   }
 
   return [

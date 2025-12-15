@@ -58,15 +58,19 @@ export function getVatAmount(exVatAmount: number): number {
 /**
  * Escape XML special characters to ensure valid XML output.
  * Used for sitemap generation to prevent malformed XML from special characters in URLs.
+ * Uses a single-pass replacement for better performance with large strings.
  * 
  * @param str - The string to escape
  * @returns The escaped string safe for use in XML
  */
 export function escapeXml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
+  const xmlEscapeMap: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&apos;',
+  };
+  
+  return str.replace(/[&<>"']/g, (char) => xmlEscapeMap[char] || char);
 }

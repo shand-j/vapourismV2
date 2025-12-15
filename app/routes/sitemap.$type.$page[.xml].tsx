@@ -111,14 +111,15 @@ async function fetchAllItems<T extends ProductsResult | PagesResult>(
     
     // Filter out items that shouldn't be in sitemap
     const filteredNodes = data.nodes.filter(node => {
-      // Filter out excluded page handles
+      // Filter out excluded page handles (redirect-only routes)
       if (type === 'pages' && EXCLUDED_ROUTES.has(node.handle)) {
         return false;
       }
       
       // Filter out products that are not ACTIVE (published)
       // Only include products with ACTIVE status to ensure 200 response
-      if (type === 'products' && node.status && node.status !== 'ACTIVE') {
+      // Note: node.status is optional, so we check for its existence
+      if (type === 'products' && node.status !== 'ACTIVE') {
         return false;
       }
       

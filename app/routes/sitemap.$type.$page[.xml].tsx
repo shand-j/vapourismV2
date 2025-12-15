@@ -3,6 +3,19 @@ import {getSitemap} from '@shopify/hydrogen';
 import {escapeXml} from '~/lib/utils';
 
 /**
+ * Sitemap Type Handler - Generates XML sitemaps for different content types
+ * 
+ * This route handles sitemap generation for:
+ * - Products: /sitemap/products/1.xml (ACTIVE products only, ensures 200 status)
+ * - Pages: /sitemap/pages/1.xml (excludes redirect/noindex routes)
+ * - Other types: Falls back to Hydrogen's getSitemap (articles, blogs, etc.)
+ * 
+ * SEO Requirements (per SEMrush audit):
+ * - Only include canonical URLs that return 200 status codes
+ * - Exclude URLs that redirect (301/302)
+ * - Exclude URLs with noindex meta tags
+ * - Exclude URLs with duplicate content
+ * 
  * Custom product sitemap query using standard products query.
  * This is a workaround for when the sitemap API returns empty results.
  * The Storefront sitemap API requires products to be published to the
@@ -53,14 +66,72 @@ const PAGES_SITEMAP_QUERY = `#graphql
  * - Return non-200 status codes (redirects, etc.)
  * - Are not canonical URLs
  * - Should not be indexed by search engines
+ * - Have noindex meta tags
  * 
  * This list should include any Shopify page handles that correspond to
- * Remix routes that perform redirects or return non-200 status codes.
+ * Remix routes that perform redirects, have noindex tags, or return non-200 status codes.
  */
 const EXCLUDED_ROUTES = new Set([
-  'help',        // Redirects to /faq (301)
-  'track-order', // Redirects to external Shopify domain (301)
+  // Redirect routes (301/302 status codes)
+  'help',                    // Redirects to /faq (301)
+  'track-order',             // Redirects to external Shopify domain (301)
+  
+  // Age verification routes (noindex, nofollow)
+  'age-verification',        // Age verification flow
+  'age-verification-fail',   // Age verification failure
+  'age-verification-retry',  // Age verification retry
+  'age-verification-success',// Age verification success
+  
+  // Account/Auth routes (noindex, require auth)
+  'account',                 // Account portal
+  'account-login',           // Login page
+  'account-authorize',       // OAuth authorize
+  'account-orders',          // Order history (requires auth)
+  
+  // Utility/Search routes (dynamic content, not canonical)
+  'search',                  // Search results page (dynamic)
+  'device-studio-results',   // Device recommendation results
+  'flavour-lab-results',     // Flavor recommendation results
 ]);
+
+/**
+ * Static Remix routes that should be included in the sitemap
+ * These are routes that don't come from Shopify Pages but should be indexed
+ */
+const STATIC_ROUTES = [
+  // Core information pages
+  { handle: 'about', priority: 0.8 },
+  { handle: 'contact', priority: 0.8 },
+  { handle: 'faq', priority: 0.7 },
+  
+  // Policy pages
+  { handle: 'policies/privacy-policy', priority: 0.5 },
+  { handle: 'policies/terms-of-service', priority: 0.5 },
+  { handle: 'policies/returns-policy', priority: 0.5 },
+  { handle: 'policies/cookie-policy', priority: 0.5 },
+  
+  // Guide pages
+  { handle: 'guides', priority: 0.7 },
+  { handle: 'guides/age-verification', priority: 0.6 },
+  { handle: 'guides/certifications', priority: 0.6 },
+  { handle: 'guides/sustainability', priority: 0.6 },
+  
+  // Blog index
+  { handle: 'blog', priority: 0.7 },
+  
+  // Collection landing pages (SEO-optimized category pages)
+  { handle: 'collections/crystal-bar', priority: 0.8 },
+  { handle: 'collections/elux-legend', priority: 0.8 },
+  { handle: 'collections/hayati-pro-max', priority: 0.8 },
+  { handle: 'collections/hayati-pro-ultra', priority: 0.8 },
+  { handle: 'collections/hayati-remix', priority: 0.8 },
+  { handle: 'collections/hayati-x4', priority: 0.8 },
+  { handle: 'collections/lost-mary-bm6000', priority: 0.8 },
+  { handle: 'collections/nicotine-pouches', priority: 0.8 },
+  { handle: 'collections/riot-squad', priority: 0.8 },
+  { handle: 'collections/velo-nicotine-pouches', priority: 0.8 },
+  { handle: 'collections/zyn-nicotine-pouches', priority: 0.8 },
+] as const;
 
 interface SitemapItem {
   handle: string;
@@ -138,36 +209,53 @@ async function fetchAllItems<T extends ProductsResult | PagesResult>(
 }
 
 /**
- * Generate XML sitemap content
+ * Generate XML sitemap content for Shopify Pages and static routes
  */
 function generateSitemapXml(
   items: SitemapItem[],
   baseUrl: string,
-  type: string
+  type: string,
+  includeStaticRoutes = false
 ): string {
   const xmlPrefix = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">`;
   const xmlSuffix = `</urlset>`;
 
-  if (items.length === 0) {
+  const urls: string[] = [];
+  
+  // Add homepage if no items
+  if (items.length === 0 && !includeStaticRoutes) {
     return `${xmlPrefix}
   <url><loc>${escapeXml(baseUrl)}/</loc></url>
 ${xmlSuffix}`;
   }
 
-  const urls = items.map((item) => {
+  // Add Shopify Pages/Products
+  items.forEach((item) => {
     // Build URL and escape special characters for valid XML
     const loc = escapeXml(`${baseUrl}/${type}/${item.handle}`);
     const lastmod = item.updatedAt ? `
   <lastmod>${item.updatedAt}</lastmod>` : '';
-    return `<url>
+    urls.push(`<url>
   <loc>${loc}</loc>${lastmod}
   <changefreq>weekly</changefreq>
-</url>`;
-  }).join('\n');
+</url>`);
+  });
+  
+  // Add static routes for pages sitemap
+  if (includeStaticRoutes && type === 'pages') {
+    STATIC_ROUTES.forEach((route) => {
+      const loc = escapeXml(`${baseUrl}/${route.handle}`);
+      urls.push(`<url>
+  <loc>${loc}</loc>
+  <changefreq>weekly</changefreq>
+  <priority>${route.priority}</priority>
+</url>`);
+    });
+  }
 
   return `${xmlPrefix}
-${urls}
+${urls.join('\n')}
 ${xmlSuffix}`;
 }
 
@@ -215,13 +303,14 @@ export async function loader({
         'pages'
       );
       
-      const xml = generateSitemapXml(items, baseUrl, 'pages');
+      // Include static routes in the pages sitemap (SEO-optimized Remix routes)
+      const xml = generateSitemapXml(items, baseUrl, 'pages', true);
       
       return new Response(xml, {
         headers: {
           'Content-Type': 'application/xml',
           'Cache-Control': 'public, max-age=3600',
-          'X-Sitemap-Source': 'custom-pages-query',
+          'X-Sitemap-Source': 'custom-pages-query-with-static-routes',
         },
       });
     } catch (error) {

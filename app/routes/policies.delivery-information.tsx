@@ -207,12 +207,12 @@ export default function DeliveryInformation() {
                   <div>
                     <p className="font-semibold text-sm mb-1">Track DPD parcels:</p>
                     <a 
-                      href="https://www.dpd.co.uk/tracking" 
+                      href="https://track.dpd.co.uk/" 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:text-blue-800 text-sm underline"
                     >
-                      www.dpd.co.uk/tracking →
+                      track.dpd.co.uk →
                     </a>
                   </div>
                   <div>

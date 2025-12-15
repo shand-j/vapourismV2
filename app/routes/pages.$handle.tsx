@@ -6,17 +6,18 @@ import {SEOAutomationService} from '~/preserved/seo-automation';
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   const pageTitle = data?.page.title ?? '';
   const fullTitle = `Vapourism | ${pageTitle}`;
-  const metaTags = [
-    {title: SEOAutomationService.truncateTitle(fullTitle)}
-  ];
   
-  // Add meta description from Shopify SEO if available
-  if (data?.page?.seo?.description) {
-    metaTags.push({
+  // Generate fallback description if Shopify SEO description is not set
+  const description = data?.page?.seo?.description || 
+    `${pageTitle} - Discover more about our premium vaping products and services at Vapourism, UK's trusted vape shop with fast delivery and best prices.`;
+  
+  const metaTags = [
+    {title: SEOAutomationService.truncateTitle(fullTitle)},
+    {
       name: 'description',
-      content: data.page.seo.description
-    });
-  }
+      content: description
+    }
+  ];
   
   return metaTags;
 };

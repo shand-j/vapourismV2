@@ -47,7 +47,11 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   if (!data) {
-    return [{title: 'Nicotine Pouches UK | Vapourism'}, {name: 'robots', content: 'noindex'}];
+    return [
+      {title: 'Nicotine Pouches UK | Vapourism'},
+      {name: 'description', content: 'Shop premium nicotine pouches at Vapourism. Wide range of brands including Velo, ZYN, and Nordic Spirit. Fast UK delivery and best prices.'},
+      {name: 'robots', content: 'noindex'}
+    ];
   }
 
   return [

@@ -37,7 +37,11 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   if (!data) {
-    return [{title: 'Elux Legend | Vapourism'}, {name: 'robots', content: 'noindex'}];
+    return [
+      {title: 'Elux Legend | Vapourism'},
+      {name: 'description', content: 'Discover Elux Legend disposable vapes at Vapourism. Premium UK vape shop with fast delivery and best prices.'},
+      {name: 'robots', content: 'noindex'}
+    ];
   }
 
   return [

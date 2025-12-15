@@ -1,11 +1,18 @@
 import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {getSitemap} from '@shopify/hydrogen';
+import {escapeXml} from '~/lib/utils';
 
 /**
  * Custom product sitemap query using standard products query.
  * This is a workaround for when the sitemap API returns empty results.
  * The Storefront sitemap API requires products to be published to the
  * Hydrogen sales channel specifically, not just the Online Store channel.
+ * 
+ * Fields:
+ * - handle: Product URL slug
+ * - updatedAt: Last modified date for sitemap lastmod
+ * - status: Product status (ACTIVE, DRAFT, ARCHIVED) - used to filter non-ACTIVE products
+ * - availableForSale: Whether product is available - used to ensure only purchasable products in sitemap
  */
 const PRODUCTS_SITEMAP_QUERY = `#graphql
   query ProductsSitemap($first: Int!, $after: String) {
@@ -127,18 +134,6 @@ async function fetchAllItems<T extends ProductsResult | PagesResult>(
   }
 
   return allItems;
-}
-
-/**
- * Escape XML special characters to ensure valid XML output
- */
-function escapeXml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
 }
 
 /**

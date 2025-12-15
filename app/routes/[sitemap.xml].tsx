@@ -1,4 +1,5 @@
 import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {escapeXml} from '~/lib/utils';
 
 /**
  * Custom sitemap index generator.
@@ -68,18 +69,6 @@ async function countProducts(
   }
 
   return count;
-}
-
-/**
- * Escape XML special characters to ensure valid XML output
- */
-function escapeXml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
 }
 
 export async function loader({

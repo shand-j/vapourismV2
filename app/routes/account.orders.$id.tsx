@@ -8,12 +8,11 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
   const orderName = data?.order?.name ?? '';
   const title = orderName ? `Vapourism | Order ${orderName}` : 'Vapourism | Order Details';
   
-  // Build description with shared prefix and suffix to avoid duplication
-  const basePrefix = 'View';
-  const baseSuffix = 'order details and tracking information. Check your order status, items, and delivery information.';
+  // Build description with shared text to avoid duplication
+  const sharedSuffix = 'Check your order status, items, and delivery information.';
   const description = orderName 
-    ? `${basePrefix} order details and tracking information for order ${orderName}. Check your order status, items, and delivery information.`
-    : `${basePrefix} your ${baseSuffix}`;
+    ? `View order details and tracking information for order ${orderName}. ${sharedSuffix}`
+    : `View your order details and tracking information. ${sharedSuffix}`;
   
   return [
     {title},

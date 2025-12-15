@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 ## Issue 1: Missing Meta Description
 About this issue: Though meta descriptions don't have a direct influence on rankings, they are used by search engines to display your page's description in search results. A good description helps users know what your page is about and encourages them to click on it. If your page's meta description tag is missing, search engines will usually display its first sentence, which may be irrelevant and unappealing to users. For more information, please see these article: Create good titles and snippets in Search Results: https://support.google.com/webmasters/answer/35624. How to fix: In order to gain a higher click-through rate, you should ensure that all of your webpages have meta descriptions that contain relevant keywords.
 
 ## Issue 2: Low Word Count
 About this issue: This issue is triggered if the number of words on your webpage is less than 200. The amount of text placed on your webpage is a quality signal to search engines. Search engines prefer to provide as much information to users as possible, so pages with longer content tend to be placed higher in search results, as opposed to those with lower word counts. For more information, please view this video: https://www.youtube.com/watch?v=w3-obcXkyA4. How to fix: Improve your on-page content and be sure to include  more than 200 meaningful words.
+=======
+About this issue: This issue is triggered if the number of words on your webpage is less than 200. The amount of text placed on your webpage is a quality signal to search engines. Search engines prefer to provide as much information to users as possible, so pages with longer content tend to be placed higher in search results, as opposed to those with lower word counts. For more information, please view this video: https://www.youtube.com/watch?v=w3-obcXkyA4. How to fix: Improve your on-page content and be sure to include  more than 200 meaningful words.
+>>>>>>> main

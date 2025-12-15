@@ -1,5 +1,31 @@
-import {json, type LoaderFunctionArgs} from '@remix-run/server-runtime';
+import {json, type LoaderFunctionArgs, type MetaFunction} from '@remix-run/server-runtime';
 import {useLoaderData, Link} from '@remix-run/react';
+
+export const meta: MetaFunction = () => [
+  {
+    title: 'Cookie Policy | How We Use Cookies | Vapourism'
+  },
+  {
+    name: 'description',
+    content: 'Vapourism cookie policy. Learn how we use cookies to improve your shopping experience, analytics, and site functionality. Manage your cookie preferences.'
+  },
+  {
+    name: 'keywords',
+    content: 'cookie policy, cookies, website cookies, cookie consent, privacy, tracking, analytics cookies'
+  },
+  {
+    property: 'og:title',
+    content: 'Cookie Policy | Vapourism'
+  },
+  {
+    property: 'og:description',
+    content: 'How Vapourism uses cookies to improve your shopping experience.'
+  },
+  {
+    name: 'robots',
+    content: 'index, follow'
+  }
+];
 
 export async function loader({context}: LoaderFunctionArgs) {
   return json({

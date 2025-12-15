@@ -1,4 +1,4 @@
-import {json, type LoaderFunctionArgs} from '@remix-run/server-runtime';
+import {json, type LoaderFunctionArgs, type MetaFunction} from '@remix-run/server-runtime';
 import {useLoaderData, Link} from '@remix-run/react';
 import {useState} from 'react';
 import {Search, ChevronDown, ChevronUp, Package, CreditCard, Truck, HelpCircle, Shield, Zap} from 'lucide-react';
@@ -174,6 +174,80 @@ const faqCategories = [
     ]
   }
 ];
+
+export const meta: MetaFunction = () => {
+  // Generate FAQ schema for search engines
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqCategories.flatMap(category => 
+      category.questions.map(q => ({
+        "@type": "Question",
+        "name": q.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": q.answer
+        }
+      }))
+    )
+  };
+
+  return [
+    {
+      title: 'FAQ - Frequently Asked Questions | Vapourism UK Vape Shop'
+    },
+    {
+      name: 'description',
+      content: 'Get answers to common questions about vaping products, UK delivery, age verification, returns policy, and technical support. Fast help for all your vaping queries at Vapourism.'
+    },
+    {
+      name: 'keywords',
+      content: 'vaping FAQ, vape shop questions, UK vape delivery, age verification, e-liquid returns, vape device help, nicotine strength guide, coil replacement, battery safety, vaping support'
+    },
+    // Open Graph
+    {
+      property: 'og:title',
+      content: 'Frequently Asked Questions | Vapourism'
+    },
+    {
+      property: 'og:description',
+      content: 'Get answers to common questions about vaping products, UK delivery, age verification, returns policy, and technical support.'
+    },
+    {
+      property: 'og:type',
+      content: 'website'
+    },
+    {
+      property: 'og:url',
+      content: 'https://vapourism.co.uk/faq'
+    },
+    {
+      property: 'og:site_name',
+      content: 'Vapourism'
+    },
+    // Twitter Card
+    {
+      name: 'twitter:card',
+      content: 'summary'
+    },
+    {
+      name: 'twitter:site',
+      content: '@vapourismuk'
+    },
+    {
+      name: 'twitter:title',
+      content: 'FAQ - Frequently Asked Questions | Vapourism'
+    },
+    {
+      name: 'twitter:description',
+      content: 'Get answers to common questions about vaping products, UK delivery, age verification, and more.'
+    },
+    // JSON-LD Structured Data
+    {
+      "script:ld+json": faqSchema
+    }
+  ];
+};
 
 export async function loader({context}: LoaderFunctionArgs) {
   return json({

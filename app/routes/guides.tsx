@@ -20,10 +20,30 @@ const GUIDES = [
 ];
 
 export const meta: MetaFunction = () => [
-  {title: 'Guides & playbooks | Vapourism'},
+  {title: 'Vaping Guides & Resources | Expert Advice | Vapourism'},
   {
     name: 'description',
-    content: 'Compliance, sustainability, and product education guides that ship with Vapourism V2.',
+    content: 'Expert vaping guides covering compliance, sustainability, age verification, certifications, and product education. Learn about UK vaping regulations and best practices.',
+  },
+  {
+    name: 'keywords',
+    content: 'vaping guides, vaping advice, UK vaping regulations, age verification guide, vaping compliance, sustainability, product education, vaping resources',
+  },
+  {
+    property: 'og:title',
+    content: 'Vaping Guides & Resources | Vapourism',
+  },
+  {
+    property: 'og:description',
+    content: 'Expert vaping guides covering compliance, sustainability, and product education.',
+  },
+  {
+    property: 'og:type',
+    content: 'website',
+  },
+  {
+    name: 'twitter:card',
+    content: 'summary',
   },
 ];
 

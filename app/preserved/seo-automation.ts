@@ -257,12 +257,13 @@ export class SEOAutomationService {
       return title;
     }
 
-    // Truncate and add ellipsis, but try to break at a word boundary
-    const truncated = title.substring(0, maxLength - 1);
+    // Reserve 1 character for the ellipsis
+    const maxContentLength = maxLength - 1;
+    const truncated = title.substring(0, maxContentLength);
     const lastSpace = truncated.lastIndexOf(' ');
     
     // If we can break at a word boundary within the last 10 characters, do so
-    if (lastSpace > maxLength - 11) {
+    if (lastSpace > maxContentLength - 10) {
       return truncated.substring(0, lastSpace) + '…';
     }
     
@@ -299,11 +300,12 @@ export class SEOAutomationService {
       return titleOnly;
     }
 
-    // Truncate product title to fit
-    const truncatedProduct = productTitle.substring(0, maxProductLength - 1);
+    // Truncate product title to fit (reserve 1 char for ellipsis)
+    const maxContentLength = maxProductLength - 1;
+    const truncatedProduct = productTitle.substring(0, maxContentLength);
     const lastSpace = truncatedProduct.lastIndexOf(' ');
     
-    if (lastSpace > maxProductLength - 11) {
+    if (lastSpace > maxContentLength - 10) {
       return truncatedProduct.substring(0, lastSpace) + '…' + suffix;
     }
     

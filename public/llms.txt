@@ -1,0 +1,57 @@
+# Vapourism V2
+
+> Vapourism V2 is a Shopify-native Hydrogen storefront for a UK vaping products retailer, built on Remix, Hydrogen 2025.1.4, and Oxygen (Shopify's edge runtime).
+
+A modern e-commerce platform specializing in vaping products with advanced features including age verification, shipping restrictions, SEO automation, and Shopify-native search and navigation. Built with TypeScript and React using Shopify's Hydrogen framework for optimal performance on Cloudflare Workers runtime.
+
+## Documentation
+
+- [README](https://github.com/shand-j/vapourismV2/blob/main/README.md): Project overview, quick start guide, and setup instructions
+- [GTM Deployment Guide](https://github.com/shand-j/vapourismV2/blob/main/docs/GTM_DEPLOYMENT_GUIDE.md): Step-by-step production deployment instructions
+- [GTM Quick Start](https://github.com/shand-j/vapourismV2/blob/main/docs/GTM_QUICK_START.md): Fast track deployment guide
+- [Implementation Guide](https://github.com/shand-j/vapourismV2/blob/main/docs/implementation-guide.md): Technical implementation details
+- [Deployment Plan](https://github.com/shand-j/vapourismV2/blob/main/docs/migration-notes/deployment-plan.md): Detailed rollout strategy and monitoring
+- [Implementation Summary](https://github.com/shand-j/vapourismV2/blob/main/IMPLEMENTATION_SUMMARY.md): Overview of key features and changes
+
+## Features
+
+- [Tag-Based Navigation](https://github.com/shand-j/vapourismV2/blob/main/docs/tag-based-navigation.md): Product discovery and navigation system
+- [Filtering System](https://github.com/shand-j/vapourismV2/blob/main/docs/filtering-system-complete.md): Advanced product filtering capabilities
+- [Product Grouping Strategy](https://github.com/shand-j/vapourismV2/blob/main/docs/product-grouping-strategy.md): Organization and categorization approach
+- [Tagging Reference](https://github.com/shand-j/vapourismV2/blob/main/docs/tagging-reference.md): Product tagging standards and patterns
+
+## Technical Architecture
+
+- [Shopify Search Comparison](https://github.com/shand-j/vapourismV2/blob/main/docs/research/shopify-search-comparison.md): Search implementation analysis
+- [Collections Audit](https://github.com/shand-j/vapourismV2/blob/main/docs/research/collections-audit.md): Collections navigation audit
+- [Media Pack Integration Plan](https://github.com/shand-j/vapourismV2/blob/main/docs/research/media-pack-integration-plan.md): Brand assets integration strategy
+- [Phase 1 Completion](https://github.com/shand-j/vapourismV2/blob/main/docs/research/PHASE_1_COMPLETION.md): Development milestone documentation
+
+## Technical Details
+
+**Framework:** Shopify Hydrogen 2025.1.4 with Remix
+**Runtime:** Shopify Oxygen (Cloudflare Workers)
+**Language:** TypeScript + React
+**Architecture:** V2 with Shopify-native search and collections navigation
+
+**Key Features:**
+- Age verification system for regulatory compliance
+- Country-based shipping restrictions (49+ countries for vaping products, 100+ for CBD)
+- Automated SEO metadata generation with 25+ meta tags per product
+- Shopify-native predictive search with GA4 tracking
+- Collections-based navigation with 100+ legacy redirects
+- Brand media pack integration for enhanced product pages
+- Optimistic cart updates for instant UI feedback
+- Comprehensive product tagging system (5-30+ searchable tags per product)
+
+**Compliance Systems:**
+- Age verification with customer-level persistence
+- Shipping restriction validation for vaping and CBD products
+- SEO automation with schema.org markup (Product, Offer, AggregateRating, FAQ, ImageObject)
+
+## Repository
+
+**Source Code:** https://github.com/shand-j/vapourismV2
+**License:** Private/Proprietary
+**Platform:** Shopify
+**Storefront Type:** Headless Hydrogen storefront

@@ -5,7 +5,26 @@ import {Money, Image} from '@shopify/hydrogen';
 import {CUSTOMER_ORDER_QUERY} from '~/graphql/customer-account/CustomerOrderQuery';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Vapourism | Order ${data?.order?.name ?? ''}`}];
+  const orderName = data?.order?.name ?? '';
+  const title = orderName ? `Vapourism | Order ${orderName}` : 'Vapourism | Order Details';
+  
+  // Build description with shared text to avoid duplication
+  const sharedSuffix = 'Check your order status, items, and delivery information.';
+  const description = orderName 
+    ? `View order details and tracking information for order ${orderName}. ${sharedSuffix}`
+    : `View your order details and tracking information. ${sharedSuffix}`;
+  
+  return [
+    {title},
+    {
+      name: 'description',
+      content: description
+    },
+    {
+      name: 'robots',
+      content: 'noindex, nofollow' // Order pages should not be indexed
+    }
+  ];
 };
 
 export async function loader({params, context}: LoaderFunctionArgs) {

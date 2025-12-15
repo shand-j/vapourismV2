@@ -14,11 +14,10 @@ import {searchProducts} from '~/lib/shopify-search';
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
   
-  // Search for Hayati Pro Max e-liquid products
+  // Search for Hayati Pro Max e-liquid products using tag-based query
   const searchResults = await searchProducts(
     storefront,
-    '',
-    ['hayati', 'pro_max', 'e-liquid'],
+    'tag:hayati tag:pro_max tag:e-liquid',
     {
       sortKey: 'RELEVANCE',
       reverse: false,

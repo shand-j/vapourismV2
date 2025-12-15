@@ -13,10 +13,10 @@ import {searchProducts} from '~/lib/shopify-search';
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
   
+  // Search for Riot Squad e-liquid products using tag-based query
   const searchResults = await searchProducts(
     storefront,
-    '',
-    ['riot_squad', 'e-liquid'],
+    'tag:riot_squad tag:e-liquid',
     {
       sortKey: 'RELEVANCE',
       reverse: false,

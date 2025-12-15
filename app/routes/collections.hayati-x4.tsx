@@ -13,11 +13,10 @@ import {searchProducts} from '~/lib/shopify-search';
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
   
-  // Search for Hayati X4 devices
+  // Search for Hayati X4 device products using tag-based query
   const searchResults = await searchProducts(
     storefront,
-    '',
-    ['hayati', 'x4', 'device'],
+    'tag:hayati tag:x4 tag:device',
     {
       sortKey: 'RELEVANCE',
       reverse: false,

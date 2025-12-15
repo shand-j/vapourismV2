@@ -13,10 +13,10 @@ import {searchProducts} from '~/lib/shopify-search';
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
   
+  // Search for Elux Legend products using tag-based query
   const searchResults = await searchProducts(
     storefront,
-    '',
-    ['elux', 'legend', 'disposable'],
+    'tag:elux tag:legend tag:disposable',
     {
       sortKey: 'RELEVANCE',
       reverse: false,

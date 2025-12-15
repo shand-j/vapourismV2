@@ -14,10 +14,10 @@ import {searchProducts} from '~/lib/shopify-search';
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
   
+  // Search for Lost Mary BM6000 products using tag-based query
   const searchResults = await searchProducts(
     storefront,
-    '',
-    ['lost_mary', 'bm6000', 'disposable'],
+    'tag:lost_mary tag:bm6000 tag:disposable',
     {
       sortKey: 'RELEVANCE',
       reverse: false,

@@ -535,8 +535,15 @@ export const meta = ({data}: {data: any}) => {
   const query = data?.query || '';
   const count = data?.totalCount || 0;
 
+  // Truncate search query if needed to keep title under 70 characters
+  // "Search Results for "" | Vapourism" = 33 chars, leaving 37 for query
+  const maxQueryLength = 37;
+  const truncatedQuery = query.length > maxQueryLength 
+    ? query.substring(0, maxQueryLength - 1) + '…' 
+    : query;
+
   return [
-    {title: `Search Results for "${query}" | Vapourism`},
+    {title: `Search Results for "${truncatedQuery}" | Vapourism`},
     {
       name: 'description',
       content: `Found ${count} products matching "${query}". Shop premium vaping products at Vapourism with fast UK delivery.`,

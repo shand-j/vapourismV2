@@ -5,6 +5,7 @@ import {type Shop} from '@shopify/hydrogen/storefront-api-types';
 import {ContinueShoppingShowcase} from '~/components/ProductShowcase';
 import type {ProductCardProduct} from '~/components/ProductCard';
 import {FALLBACK_FEATURED_PRODUCTS_QUERY} from '~/lib/product-showcases';
+import {SEOAutomationService} from '~/preserved/seo-automation';
 
 type SelectedPolicies = keyof Pick<
   Shop,
@@ -12,7 +13,9 @@ type SelectedPolicies = keyof Pick<
 >;
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Vapourism | ${data?.policy.title ?? ''}`}];
+  const policyTitle = data?.policy.title ?? '';
+  const fullTitle = `Vapourism | ${policyTitle}`;
+  return [{title: SEOAutomationService.truncateTitle(fullTitle)}];
 };
 
 export async function loader({params, context}: LoaderFunctionArgs) {

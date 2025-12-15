@@ -1,10 +1,16 @@
-import {redirect} from '@shopify/remix-oxygen';
+import {redirect, type MetaFunction} from '@shopify/remix-oxygen';
 
 /**
  * Help Redirect
  * 
  * Redirects to the FAQ page which serves as the main help resource.
  */
+
+export const meta: MetaFunction = () => [
+  {title: 'Help | Vapourism'},
+  {name: 'robots', content: 'noindex, nofollow'},
+];
+
 export async function loader() {
   return redirect('/faq', {
     status: 301,

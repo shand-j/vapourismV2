@@ -144,6 +144,36 @@ export default function App() {
         <Meta />
         <Links />
         
+        {/* Organization Schema for SEO */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "Vapourism",
+              "url": siteUrl,
+              "logo": `${siteUrl}/logo.png`,
+              "description": data.shop?.description || "Premium UK vape shop offering authentic vaping products, e-liquids, and accessories with fast delivery",
+              "address": {
+                "@type": "PostalAddress",
+                "addressCountry": "GB"
+              },
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "telephone": "+44-123-456-7890",
+                "contactType": "Customer Service",
+                "email": "hello@vapourism.co.uk",
+                "areaServed": "GB",
+                "availableLanguage": "English"
+              },
+              "sameAs": [
+                "https://twitter.com/vapourismuk"
+              ]
+            })
+          }}
+        />
+        
         {/* Google Analytics 4 - with consent mode defaulting to denied */}
         {ga4MeasurementId && (
           <>

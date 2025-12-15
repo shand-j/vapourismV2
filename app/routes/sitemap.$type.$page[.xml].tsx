@@ -17,6 +17,8 @@ const PRODUCTS_SITEMAP_QUERY = `#graphql
       nodes {
         handle
         updatedAt
+        status
+        availableForSale
       }
     }
   }
@@ -39,9 +41,25 @@ const PAGES_SITEMAP_QUERY = `#graphql
   }
 ` as const;
 
+/**
+ * Routes/handles that should be excluded from sitemap because they:
+ * - Return non-200 status codes (redirects, etc.)
+ * - Are not canonical URLs
+ * - Should not be indexed by search engines
+ * 
+ * This list should include any Shopify page handles that correspond to
+ * Remix routes that perform redirects or return non-200 status codes.
+ */
+const EXCLUDED_ROUTES = new Set([
+  'help',        // Redirects to /faq (301)
+  'track-order', // Redirects to external Shopify domain (301)
+]);
+
 interface SitemapItem {
   handle: string;
   updatedAt: string;
+  status?: string;
+  availableForSale?: boolean;
 }
 
 interface ProductsResult {
@@ -83,7 +101,24 @@ async function fetchAllItems<T extends ProductsResult | PagesResult>(
     });
 
     const data = result[type as keyof T] as { pageInfo: { hasNextPage: boolean; endCursor: string | null }; nodes: SitemapItem[] };
-    allItems.push(...data.nodes);
+    
+    // Filter out items that shouldn't be in sitemap
+    const filteredNodes = data.nodes.filter(node => {
+      // Filter out excluded page handles
+      if (type === 'pages' && EXCLUDED_ROUTES.has(node.handle)) {
+        return false;
+      }
+      
+      // Filter out products that are not ACTIVE (published)
+      // Only include products with ACTIVE status to ensure 200 response
+      if (type === 'products' && node.status && node.status !== 'ACTIVE') {
+        return false;
+      }
+      
+      return true;
+    });
+    
+    allItems.push(...filteredNodes);
     hasNextPage = data.pageInfo.hasNextPage;
     cursor = data.pageInfo.endCursor;
 

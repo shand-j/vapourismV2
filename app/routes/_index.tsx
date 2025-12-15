@@ -23,22 +23,22 @@ const EXPERIENCE_BACKDROPS = [
 ];
 
 export const meta: MetaFunction = () => [
-  {title: 'Vapourism | Premium UK Vape Shop | E-Liquids, Vape Kits & Accessories'},
+  {title: 'Vape Shop UK | Premium Vaping Products | Vapourism 2025'},
   {
     name: 'description',
-    content: 'Shop authentic vape kits, premium e-liquids, nic salts, and vaping accessories at Vapourism UK. ✓ Age verified ✓ Next-day delivery ✓ Free shipping over £20 ✓ Genuine products only.',
+    content: 'UK\'s leading vape shop. ✓ Disposable Vapes ✓ E-Liquids ✓ Nicotine Pouches ✓ Pod Kits ✓ Fast Delivery ✓ Best Prices. Shop premium vaping products with next-day UK delivery.',
   },
   {
     name: 'keywords',
-    content: 'vape shop UK, e-liquid, vape kits, nic salts, vaping accessories, premium vaping, UK vape delivery, authentic vape products, disposable vapes, pod systems',
+    content: 'vape shop, vape uk, vape shop uk, vapes, vaping, disposable vape, e-liquid, vape juice, nicotine pouches, vape kits, pod system, nic salts, uk vape delivery',
   },
   {
     property: 'og:title',
-    content: 'Vapourism | Premium UK Vape Shop',
+    content: 'Vape Shop UK | Premium Vaping Products | Vapourism',
   },
   {
     property: 'og:description',
-    content: 'Shop authentic vape kits, premium e-liquids, and accessories. Age verified, next-day UK delivery available.',
+    content: 'UK\'s leading vape shop. Shop disposable vapes, e-liquids, nicotine pouches, and pod kits with fast UK delivery and best prices.',
   },
   {
     property: 'og:type',
@@ -66,11 +66,11 @@ export const meta: MetaFunction = () => [
   },
   {
     name: 'twitter:title',
-    content: 'Vapourism | Premium UK Vape Shop',
+    content: 'Vape Shop UK | Premium Vaping Products | Vapourism',
   },
   {
     name: 'twitter:description',
-    content: 'Shop authentic vape kits, premium e-liquids, and accessories with next-day UK delivery.',
+    content: 'UK\'s leading vape shop. Shop disposable vapes, e-liquids, nicotine pouches with fast delivery and best prices.',
   },
 ];
 

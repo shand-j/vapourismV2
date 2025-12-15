@@ -129,7 +129,7 @@ export default function GuideCertifications() {
                 <strong>Verification:</strong> You can check product registrations
                 on the{' '}
                 <a
-                  href="https://www.gov.uk/guidance/e-cigarettes-regulations-for-consumer-products"
+                  href="https://www.gov.uk/government/collections/mhra-e-cigarette-and-vape-products-guidance-hub"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 hover:underline"

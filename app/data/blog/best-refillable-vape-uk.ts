@@ -16,12 +16,31 @@ export const bestRefillableVapeArticle: BlogArticle = {
   author: 'Vapourism Team',
   category: 'Buying Guides',
   tags: ['refillable vapes', 'pod systems', 'vape kits', 'buying guide', 'beginner friendly'],
+  featuredImage: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=630&fit=crop',
   content: `
 # Best Refillable Vape UK 2025: Top Pod Systems Reviewed
 
 Refillable vapes offer superior value, environmental benefits, and flavor flexibility compared to disposables. If you're ready to make the switch or upgrade your current setup, this comprehensive guide reviews the best refillable pod systems available in the UK market.
 
 We'll explore top performers across different price points, usage styles, and experience levels to help you find your perfect refillable vape.
+
+**[→ Shop All Refillable Vape Kits](/search?q=refillable+vape)**
+
+---
+
+## 💰 Cost Savings Calculator
+
+See how much you'll save by switching to refillable:
+
+| Timeframe | Disposables Cost | Refillable Cost | **Your Savings** |
+|-----------|------------------|-----------------|------------------|
+| 1 Month | £165 | £35 | **£130** |
+| 6 Months | £990 | £85 | **£905** |
+| 1 Year | £1,980 | £145 | **£1,835** |
+
+*Based on average daily usage equivalent to one 600-puff disposable*
+
+**[Start Saving Now →](/search?q=refillable+vape)**
 
 ## Why Choose a Refillable Vape?
 

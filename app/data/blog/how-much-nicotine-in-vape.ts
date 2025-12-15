@@ -16,6 +16,7 @@ export const howMuchNicotineArticle: BlogArticle = {
   author: 'Vapourism Team',
   category: 'Education',
   tags: ['nicotine', 'vaping guide', 'nicotine strength', 'beginners', 'health'],
+  featuredImage: 'https://images.unsplash.com/photo-1611158317464-0f2e6ab88a9f?w=1200&h=630&fit=crop',
   content: `
 # How Much Nicotine is in a Vape? Complete UK Guide 2025
 
@@ -46,23 +47,19 @@ In the UK, TPD regulations limit nicotine strength to a maximum of 20mg/ml (2%).
 
 Most disposable vapes in the UK contain **20mg/ml nicotine**, the legal maximum. Here's what this means for popular disposables:
 
-### Hayati Pro Ultra 25000
-* Nicotine strength: 20mg/ml
-* E-liquid capacity: 28ml
-* Total nicotine: 560mg
-* Approximate puffs: 25,000
+| Device | Nicotine | E-liquid | Total Nicotine | Puffs | Shop |
+|--------|----------|----------|----------------|-------|------|
+| [Hayati Pro Ultra](/collections/hayati-pro-ultra) | 20mg/ml | 28ml | 560mg | 25,000 | [View →](/collections/hayati-pro-ultra) |
+| [Lost Mary BM6000](/collections/lost-mary-bm6000) | 20mg/ml | 12ml | 240mg | 6,000 | [View →](/collections/lost-mary-bm6000) |
+| [Crystal Bar](/collections/crystal-bar) | 20mg/ml | 2ml | 40mg | 600 | [View →](/collections/crystal-bar) |
 
-### Lost Mary BM6000
-* Nicotine strength: 20mg/ml
-* E-liquid capacity: 12ml
-* Total nicotine: 240mg
-* Approximate puffs: 6,000
+**[→ Browse All Disposable Vapes](/search?q=disposable+vape)**
 
-### Crystal Bar
-* Nicotine strength: 20mg/ml
-* E-liquid capacity: 2ml
-* Total nicotine: 40mg
-* Approximate puffs: 600
+### Understanding These Numbers
+
+- **20mg/ml** = Maximum legal strength in UK
+- **Higher e-liquid capacity** = More total nicotine, but delivered over more puffs
+- **Per-puff nicotine** remains consistent across devices
 
 ## Nicotine in Refillable Vapes
 

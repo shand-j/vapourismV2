@@ -16,12 +16,28 @@ export const crystalBarGuideArticle: BlogArticle = {
   author: 'Vapourism Team',
   category: 'Product Guides',
   tags: ['crystal bar', 'disposable vapes', 'SKE', 'flavours', 'reviews'],
+  featuredImage: 'https://images.unsplash.com/photo-1610796386159-a1f96cb4e2e3?w=1200&h=630&fit=crop',
   content: `
 # Crystal Bar Vape: Complete Guide to Flavours & Models 2025
 
 Crystal Bar has become one of the UK's most popular disposable vape brands, known for exceptional flavor quality and reliable performance. Whether you're considering your first Crystal vape or exploring the full range, this comprehensive guide covers everything you need to know.
 
 From the original Crystal Bar 600 to the advanced Crystal Pro Max, we'll explore every model, review the best flavours, and help you choose the perfect Crystal vape for your needs.
+
+**[→ Shop Crystal Bar Collection](/collections/crystal-bar)**
+
+---
+
+## 📊 Crystal Bar Models Quick Comparison
+
+| Model | Puffs | Price | Rechargeable | Best For |
+|-------|-------|-------|--------------|----------|
+| Crystal Bar 600 | 600 | £4.99-5.99 | ❌ | Trying flavors |
+| Crystal Pro 600 | 600 | £5.99-6.99 | ✅ | Daily use |
+| Crystal Pro Max 4000 | 4,000 | £12.99-14.99 | ✅ | Heavy vapers |
+| Crystal Prime 7000 | 7,000 | £14.99-16.99 | ✅ | Maximum value |
+
+[**→ View All Crystal Bar Products**](/collections/crystal-bar)
 
 ## What is Crystal Bar?
 
@@ -402,7 +418,34 @@ Crystal Bar vapes offer exceptional quality, flavor variety, and reliable perfor
 
 The extensive flavor range ensures there's a perfect option for every preference, from refreshing menthols to sweet desserts and bold fruits. With TPD compliance and strict quality control, Crystal Bar remains a trusted choice for UK vapers.
 
-**Ready to experience Crystal Bar's legendary flavors?** Browse our complete collection at Vapourism, with fast UK delivery and authentic products guaranteed.
+---
+
+## 🛒 Shop Crystal Bar at Vapourism
+
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem; border-radius: 1rem; color: white; margin: 2rem 0;">
+
+### Experience Crystal-Clear Flavors
+
+**[→ Shop Full Crystal Bar Collection](/collections/crystal-bar)**
+
+Choose from 30+ authentic flavors, all models, and enjoy:
+
+✅ **Authentic Products** - Direct from SKE  
+✅ **Best Prices** - Competitive UK pricing  
+✅ **Fast Delivery** - Next-day shipping available  
+✅ **Expert Support** - Help choosing your perfect flavor  
+✅ **Quality Guarantee** - 100% genuine Crystal Bar products
+
+### Popular Collections
+
+- **[All Disposable Vapes →](/search?q=disposable+vape)**
+- **[Elux Legend Collection →](/collections/elux-legend)**
+- **[Lost Mary Range →](/collections/lost-mary-bm6000)**
+- **[Hayati Pro Ultra →](/collections/hayati-pro-ultra)**
+
+</div>
+
+**Questions about Crystal Bar?** Our expert team is ready to help you find your perfect vape and flavor combination.
 
 ---
 

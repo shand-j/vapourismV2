@@ -16,6 +16,7 @@ export const nicotinePouchesArticle: BlogArticle = {
   author: 'Vapourism Team',
   category: 'Education',
   tags: ['nicotine pouches', 'health', 'tobacco alternatives', 'harm reduction'],
+  featuredImage: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=1200&h=630&fit=crop',
   content: `
 # Nicotine Pouches: Risks and Benefits Explained
 
@@ -62,9 +63,13 @@ Consumers can select different nicotine strengths and flavors to suit their pref
 
 ### Popular Nicotine Pouch Brands
 
-* **Zyn**: Known for clean flavors
-* **Velo**: Offers multiple nicotine levels
-* **Nordic Spirit**: Popular for innovative tastes
+| Brand | Strengths | Best For | Shop |
+|-------|-----------|----------|------|
+| **[Zyn](/collections/zyn-nicotine-pouches)** | 3-6mg | Clean flavors, subtle taste | [View →](/collections/zyn-nicotine-pouches) |
+| **[Velo](/collections/velo-nicotine-pouches)** | 4-11mg | Multiple levels, variety | [View →](/collections/velo-nicotine-pouches) |
+| **Nordic Spirit** | 6-9mg | Innovative tastes | [Browse →](/collections/nicotine-pouches) |
+
+**[→ Shop All Nicotine Pouches](/collections/nicotine-pouches)**
 
 Each brand has distinct characteristics, allowing users to find the best match for their needs. When choosing, consider factors like taste, strength, and quality.
 

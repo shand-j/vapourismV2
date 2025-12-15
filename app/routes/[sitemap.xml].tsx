@@ -1,4 +1,5 @@
 import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {escapeXml} from '~/lib/utils';
 
 /**
  * Custom sitemap index generator.
@@ -90,12 +91,14 @@ export async function loader({
   
   // Add product sitemaps
   for (let i = 1; i <= productPages; i++) {
-    sitemaps.push(`  <sitemap><loc>${baseUrl}/sitemap/products/${i}.xml</loc></sitemap>`);
+    const url = escapeXml(`${baseUrl}/sitemap/products/${i}.xml`);
+    sitemaps.push(`  <sitemap><loc>${url}</loc></sitemap>`);
   }
   
   // Add pages sitemap (collections not used - tag-based navigation only)
+  const pagesUrl = escapeXml(`${baseUrl}/sitemap/pages/1.xml`);
   sitemaps.push(
-    `  <sitemap><loc>${baseUrl}/sitemap/pages/1.xml</loc></sitemap>`
+    `  <sitemap><loc>${pagesUrl}</loc></sitemap>`
   );
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>

@@ -77,41 +77,61 @@ export async function loader({
 }: LoaderFunctionArgs) {
   const baseUrl = new URL(request.url).origin;
   
-  // Get actual product count
-  const productCount = await countProducts(storefront);
-  
-  // Calculate number of sitemap pages needed (max 250 per page is Shopify's limit, 
-  // but we fetch all in one go for simplicity - single page)
-  // For a proper implementation, you'd paginate. For now, we use 1 page since
-  // our custom handler fetches all products.
-  const productPages = productCount > 0 ? 1 : 0;
-  
-  // Build sitemap index XML
-  const sitemaps: string[] = [];
-  
-  // Add product sitemaps
-  for (let i = 1; i <= productPages; i++) {
-    const url = escapeXml(`${baseUrl}/sitemap/products/${i}.xml`);
-    sitemaps.push(`  <sitemap><loc>${url}</loc></sitemap>`);
-  }
-  
-  // Add pages sitemap (collections not used - tag-based navigation only)
-  const pagesUrl = escapeXml(`${baseUrl}/sitemap/pages/1.xml`);
-  sitemaps.push(
-    `  <sitemap><loc>${pagesUrl}</loc></sitemap>`
-  );
+  try {
+    // Get actual product count
+    const productCount = await countProducts(storefront);
+    
+    // Calculate number of sitemap pages needed (max 250 per page is Shopify's limit, 
+    // but we fetch all in one go for simplicity - single page)
+    // For a proper implementation, you'd paginate. For now, we use 1 page since
+    // our custom handler fetches all products.
+    const productPages = productCount > 0 ? 1 : 0;
+    
+    // Build sitemap index XML
+    const sitemaps: string[] = [];
+    
+    // Add product sitemaps
+    for (let i = 1; i <= productPages; i++) {
+      const url = escapeXml(`${baseUrl}/sitemap/products/${i}.xml`);
+      sitemaps.push(`  <sitemap><loc>${url}</loc></sitemap>`);
+    }
+    
+    // Add pages sitemap (collections not used - tag-based navigation only)
+    const pagesUrl = escapeXml(`${baseUrl}/sitemap/pages/1.xml`);
+    sitemaps.push(
+      `  <sitemap><loc>${pagesUrl}</loc></sitemap>`
+    );
 
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${sitemaps.join('\n')}
 </sitemapindex>`;
 
-  return new Response(xml, {
-    headers: {
-      'Content-Type': 'application/xml',
-      'Cache-Control': 'public, max-age=3600',
-      'X-Sitemap-Source': 'custom-index',
-      'X-Product-Count': String(productCount),
-    },
-  });
+    return new Response(xml, {
+      headers: {
+        'Content-Type': 'application/xml',
+        'Cache-Control': 'public, max-age=3600',
+        'X-Sitemap-Source': 'custom-index',
+        'X-Product-Count': String(productCount),
+      },
+    });
+  } catch (error) {
+    // Log the error for debugging
+    console.error('[Sitemap Index] Error generating sitemap index:', error);
+    
+    // Return a minimal sitemap index with just the pages sitemap to prevent 500 errors
+    const fallbackXml = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap><loc>${escapeXml(`${baseUrl}/sitemap/pages/1.xml`)}</loc></sitemap>
+</sitemapindex>`;
+
+    return new Response(fallbackXml, {
+      headers: {
+        'Content-Type': 'application/xml',
+        'Cache-Control': 'public, max-age=3600',
+        'X-Sitemap-Source': 'fallback-index',
+        'X-Sitemap-Error': 'query-failed',
+      },
+    });
+  }
 }

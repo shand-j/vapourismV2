@@ -329,20 +329,46 @@ export async function loader({
     }
   }
 
-  // Fall back to default Hydrogen sitemap handler for other types
-  // (articles, blogs, metaObjects)
-  const response = await getSitemap({
-    storefront,
-    request,
-    params,
-    locales: ['EN-GB'],
-    getLink: ({type: linkType, baseUrl: linkBaseUrl, handle}) => {
-      if (!handle) return linkBaseUrl;
-      return `${linkBaseUrl}/${linkType}/${handle}`;
-    },
-  });
+  // For other types (articles, blogs, metaObjects, collections), try Hydrogen's
+  // sitemap handler first, but fall back to an empty sitemap if it fails.
+  // This prevents 500 errors when the sitemap API is not available or
+  // when there's no data for a requested type.
+  try {
+    const response = await getSitemap({
+      storefront,
+      request,
+      params,
+      locales: ['EN-GB'],
+      getLink: ({type: linkType, baseUrl: linkBaseUrl, handle}) => {
+        if (!handle) return linkBaseUrl;
+        return `${linkBaseUrl}/${linkType}/${handle}`;
+      },
+    });
 
-  response.headers.set('Cache-Control', 'public, max-age=3600');
+    response.headers.set('Cache-Control', 'public, max-age=3600');
 
-  return response;
+    return response;
+  } catch (error) {
+    // If getSitemap throws (e.g., unsupported type, no data, API error),
+    // return an empty sitemap to prevent 500 errors
+    // Sanitize type for logging to prevent log injection
+    const sanitizedType = String(type || 'unknown').replace(/[^\w-]/g, '');
+    console.error(`[Sitemap] Error from getSitemap for type "${sanitizedType}":`, error);
+    
+    // Return empty sitemap for graceful degradation
+    // Use escapeXml to prevent XML injection from baseUrl
+    const emptyXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url><loc>${escapeXml(baseUrl)}/</loc></url>
+</urlset>`;
+    
+    return new Response(emptyXml, {
+      headers: {
+        'Content-Type': 'application/xml',
+        'Cache-Control': 'public, max-age=3600',
+        'X-Sitemap-Source': 'fallback-empty',
+        'X-Sitemap-Error': 'type-not-available',
+      },
+    });
+  }
 }

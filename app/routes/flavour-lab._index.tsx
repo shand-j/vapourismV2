@@ -70,7 +70,7 @@ export default function FlavourLabRoute() {
               Finding the perfect e-liquid flavour profile can transform your vaping experience from ordinary to exceptional. Our Flavour Lab quiz uses your taste preferences, vaping habits, and nicotine requirements to recommend ideal fruity vapes, menthol e-liquids, dessert flavours, tobacco blends, or beverage-inspired juices. Whether you're exploring disposable vapes, shortfill e-liquids, or nicotine salt formulations, our intelligent matching system guides you to flavours you'll love.
             </p>
             <p className="text-lg text-slate-600 leading-relaxed">
-              Say goodbye to disappointing purchases and wasted bottles. Our quiz considers flavor intensity preferences, sweetness levels, cooling sensations, and nicotine delivery styles to ensure every recommendation matches your unique taste profile. Start your flavor journey now and discover UK e-liquids, disposables, and nicotine pouches perfectly suited to your palate.
+              Say goodbye to disappointing purchases and wasted bottles. Our quiz considers flavour intensity preferences, sweetness levels, cooling sensations, and nicotine delivery styles to ensure every recommendation matches your unique taste profile. Start your flavour journey now and discover UK e-liquids, disposables, and nicotine pouches perfectly suited to your palate.
             </p>
           </div>
 
@@ -80,14 +80,14 @@ export default function FlavourLabRoute() {
               <div className="text-3xl mb-3">👅</div>
               <h3 className="font-semibold text-slate-900 mb-2">Taste Profile Matching</h3>
               <p className="text-sm text-slate-600">
-                Our quiz analyzes your flavor preferences across fruit, menthol, dessert, tobacco, and beverage categories to recommend e-liquids that perfectly match your taste buds and vaping style.
+                Our quiz analyzes your flavour preferences across fruit, menthol, dessert, tobacco, and beverage categories to recommend e-liquids that perfectly match your taste buds and vaping style.
               </p>
             </div>
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
               <div className="text-3xl mb-3">🎯</div>
               <h3 className="font-semibold text-slate-900 mb-2">Avoid Flavor Fatigue</h3>
               <p className="text-sm text-slate-600">
-                Discover complementary flavors to rotate in your collection, preventing taste bud fatigue. We suggest variety packs and alternating profiles to keep your vaping experience fresh and exciting.
+                Discover complementary flavours to rotate in your collection, preventing taste bud fatigue. We suggest variety packs and alternating profiles to keep your vaping experience fresh and exciting.
               </p>
             </div>
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
@@ -121,7 +121,7 @@ export default function FlavourLabRoute() {
                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-pink-600 text-white flex items-center justify-center font-bold">3</div>
                 <div>
                   <h3 className="font-semibold text-slate-900 mb-1">Get Personalized Recommendations</h3>
-                  <p className="text-slate-700">Receive curated flavor suggestions from top UK brands with detailed tasting notes, nicotine options, VG/PG ratios, and user reviews. Compare similar flavours and add favorites to your basket.</p>
+                  <p className="text-slate-700">Receive curated flavour suggestions from top UK brands with detailed tasting notes, nicotine options, VG/PG ratios, and user reviews. Compare similar flavours and add favorites to your basket.</p>
                 </div>
               </div>
             </div>
@@ -134,7 +134,7 @@ export default function FlavourLabRoute() {
               <div className="bg-white rounded-xl p-6 border border-slate-200">
                 <h3 className="font-semibold text-lg text-slate-900 mb-3">🍓 Fruity Flavours</h3>
                 <p className="text-slate-700 mb-3">
-                  Fruit-flavored e-liquids dominate UK vaping for their vibrant taste and all-day vapability. From tropical blends (mango, pineapple, passion fruit) to classic berries (strawberry, blueberry, raspberry) and citrus explosions, fruity vapes offer endless variety and natural sweetness.
+                  Fruit-flavoured e-liquids dominate UK vaping for their vibrant taste and all-day vapability. From tropical blends (mango, pineapple, passion fruit) to classic berries (strawberry, blueberry, raspberry) and citrus explosions, fruity vapes offer endless variety and natural sweetness.
                 </p>
                 <p className="text-sm text-slate-600">
                   <strong>Popular options:</strong> Mixed berry blends, tropical fruit medleys, single-fruit profiles, fruit with menthol, candy fruit flavours.
@@ -179,7 +179,7 @@ export default function FlavourLabRoute() {
               <div className="bg-white rounded-xl p-6 border border-slate-200">
                 <h3 className="font-semibold text-lg text-slate-900 mb-3">🍬 Candy & Sweets</h3>
                 <p className="text-slate-700 mb-3">
-                  Candy-flavored e-liquids recreate childhood favorites and popular confections: gummy bears, hard candies, bubble gum, sherbet, and more. These sweet, nostalgic flavours deliver punchy taste with playful profiles that appeal to vapers with serious sweet tooths.
+                  Candy-flavoured e-liquids recreate childhood favorites and popular confections: gummy bears, hard candies, bubble gum, sherbet, and more. These sweet, nostalgic flavours deliver punchy taste with playful profiles that appeal to vapers with serious sweet teeth.
                 </p>
                 <p className="text-sm text-slate-600">
                   <strong>Popular options:</strong> Gummy candy, bubble gum, sherbet, hard candies, licorice, cotton candy, sour sweets.
@@ -204,7 +204,7 @@ export default function FlavourLabRoute() {
               <div>
                 <h3 className="font-semibold text-slate-900 mb-2">Nicotine Strength Guidelines</h3>
                 <ul className="list-disc list-inside space-y-2 ml-4">
-                  <li><strong>0mg (Zero Nicotine):</strong> For non-smokers, social vapers, or those who've successfully reduced nicotine dependency. Pure flavor without nicotine effects.</li>
+                  <li><strong>0mg (Zero Nicotine):</strong> For non-smokers, social vapers, or those who've successfully reduced nicotine dependency. Pure flavour without nicotine effects.</li>
                   <li><strong>3mg Freebase:</strong> Light smokers (fewer than 10 cigarettes daily) using sub-ohm devices. Minimal throat hit with satisfying vapor.</li>
                   <li><strong>6mg Freebase:</strong> Moderate smokers (10-20 cigarettes daily) using standard tanks or lower-powered devices. Noticeable throat hit.</li>
                   <li><strong>10-12mg Salt Nic:</strong> Moderate smokers switching to pod systems. Smooth delivery with moderate nicotine satisfaction.</li>
@@ -224,16 +224,16 @@ export default function FlavourLabRoute() {
           <div className="bg-white rounded-2xl p-8 mb-12 border border-slate-200">
             <h2 className="text-2xl font-bold text-slate-900 mb-6">Understanding VG/PG Ratios in E-Liquids</h2>
             <p className="text-slate-700 mb-6">
-              E-liquid base consists of Vegetable Glycerin (VG) and Propylene Glycol (PG) in varying ratios. Each ingredient affects vapor production, throat hit, flavor intensity, and device compatibility. Choosing the right ratio optimizes your vaping experience.
+              E-liquid base consists of Vegetable Glycerin (VG) and Propylene Glycol (PG) in varying ratios. Each ingredient affects vapor production, throat hit, flavour intensity, and device compatibility. Choosing the right ratio optimizes your vaping experience.
             </p>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="border-l-4 border-purple-500 pl-4">
                 <h3 className="font-semibold text-slate-900 mb-2">50/50 VG/PG - Balanced Blend</h3>
                 <p className="text-slate-700 text-sm mb-2">
-                  Perfect balance between flavor, throat hit, and vapor. Ideal for mouth-to-lung vaping, starter kits, and pod systems. Works with most devices and coil resistances.
+                  Perfect balance between flavour, throat hit, and vapor. Ideal for mouth-to-lung vaping, starter kits, and pod systems. Works with most devices and coil resistances.
                 </p>
                 <p className="text-xs text-slate-600">
-                  <strong>Best for:</strong> Beginners, MTL devices, higher nicotine strengths, all-day vaping, maximum flavor.
+                  <strong>Best for:</strong> Beginners, MTL devices, higher nicotine strengths, all-day vaping, maximum flavour.
                 </p>
               </div>
               <div className="border-l-4 border-purple-500 pl-4">
@@ -257,10 +257,10 @@ export default function FlavourLabRoute() {
               <div className="border-l-4 border-pink-500 pl-4">
                 <h3 className="font-semibold text-slate-900 mb-2">High PG (60/40 PG/VG)</h3>
                 <p className="text-slate-700 text-sm mb-2">
-                  Higher PG content delivers stronger throat hit and more intense flavor. Thinner consistency suits basic devices and provides cigarette-like sensation for ex-smokers.
+                  Higher PG content delivers stronger throat hit and more intense flavour. Thinner consistency suits basic devices and provides cigarette-like sensation for ex-smokers.
                 </p>
                 <p className="text-xs text-slate-600">
-                  <strong>Best for:</strong> Ex-smokers, strong throat hit, maximum flavor intensity, basic e-cigarettes, high nicotine strengths.
+                  <strong>Best for:</strong> Ex-smokers, strong throat hit, maximum flavour intensity, basic e-cigarettes, high nicotine strengths.
                 </p>
               </div>
             </div>

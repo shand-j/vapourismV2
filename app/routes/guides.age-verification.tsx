@@ -5,23 +5,69 @@ import {ContinueShoppingShowcase} from '~/components/ProductShowcase';
 import type {ProductCardProduct} from '~/components/ProductCard';
 import {FALLBACK_FEATURED_PRODUCTS_QUERY} from '~/lib/product-showcases';
 
-export const meta: MetaFunction = () => [
-  {title: 'Age Verification | Vapourism'},
-  {
-    name: 'description',
-    content:
-      'How Vapourism verifies customer age to comply with UK law. Learn about our two-stage age verification process for vaping products.',
-  },
-  {
-    property: 'og:title',
-    content: 'Age Verification | Vapourism',
-  },
-  {
-    property: 'og:description',
-    content:
-      'How Vapourism verifies customer age to comply with UK law. Learn about our two-stage age verification process for vaping products.',
-  },
-];
+export const meta: MetaFunction = () => {
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://vapourism.co.uk"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Guides",
+        "item": "https://vapourism.co.uk/guides"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Age Verification",
+        "item": "https://vapourism.co.uk/guides/age-verification"
+      }
+    ]
+  };
+
+  return [
+    {title: 'Age Verification Guide | UK Legal Requirements | Vapourism'},
+    {
+      name: 'description',
+      content:
+        'How Vapourism verifies customer age to comply with UK law. Learn about our two-stage age verification process for vaping products. Must be 18+ to purchase.',
+    },
+    {
+      name: 'keywords',
+      content: 'age verification, UK vaping law, 18+ requirement, age check, legal compliance, customer verification, vaping regulations, ID verification',
+    },
+    {
+      property: 'og:title',
+      content: 'Age Verification Guide | Vapourism',
+    },
+    {
+      property: 'og:description',
+      content:
+        'How Vapourism verifies customer age to comply with UK law. Two-stage verification process explained.',
+    },
+    {
+      property: 'og:type',
+      content: 'article',
+    },
+    {
+      property: 'og:url',
+      content: 'https://vapourism.co.uk/guides/age-verification',
+    },
+    {
+      name: 'twitter:card',
+      content: 'summary',
+    },
+    {
+      "script:ld+json": breadcrumbSchema
+    }
+  ];
+};
 
 export async function loader({context}: LoaderFunctionArgs) {
   const {products} = await context.storefront.query(FALLBACK_FEATURED_PRODUCTS_QUERY, {

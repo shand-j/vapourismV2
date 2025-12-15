@@ -22,11 +22,19 @@ export interface BlogArticle {
 }
 
 import {nicotinePouchesArticle} from './nicotine-pouches-risks-and-benefits';
+import {bestVapes2025Article} from './best-vapes-2025';
+import {howMuchNicotineArticle} from './how-much-nicotine-in-vape';
+import {crystalBarGuideArticle} from './crystal-bar-vape-guide';
+import {bestRefillableVapeArticle} from './best-refillable-vape-uk';
 
 /**
  * All blog articles available on the site
  */
 export const allArticles: BlogArticle[] = [
+  bestRefillableVapeArticle, // Newest first
+  crystalBarGuideArticle,
+  howMuchNicotineArticle,
+  bestVapes2025Article,
   nicotinePouchesArticle,
 ];
 

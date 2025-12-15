@@ -13,6 +13,7 @@ import {json, type LoaderFunctionArgs, type MetaFunction} from '@shopify/remix-o
 import {useLoaderData, Link} from '@remix-run/react';
 import {SEOAutomationService} from '~/preserved/seo-automation';
 import {searchProducts} from '~/lib/shopify-search';
+import {useCollectionTracking} from '~/lib/hooks/useCollectionTracking';
 
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
@@ -61,6 +62,13 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
 
 export default function NicotinePouchesCollection() {
   const {products, totalCount} = useLoaderData<typeof loader>();
+
+  // Track collection view with GA4
+  useCollectionTracking({
+    products,
+    listId: 'collection_nicotine_pouches',
+    listName: 'Nicotine Pouches Collection',
+  });
 
   return (
     <div className="container mx-auto px-4 py-8">

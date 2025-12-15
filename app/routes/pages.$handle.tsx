@@ -6,7 +6,19 @@ import {SEOAutomationService} from '~/preserved/seo-automation';
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   const pageTitle = data?.page.title ?? '';
   const fullTitle = `Vapourism | ${pageTitle}`;
-  return [{title: SEOAutomationService.truncateTitle(fullTitle)}];
+  const metaTags = [
+    {title: SEOAutomationService.truncateTitle(fullTitle)}
+  ];
+  
+  // Add meta description from Shopify SEO if available
+  if (data?.page?.seo?.description) {
+    metaTags.push({
+      name: 'description',
+      content: data.page.seo.description
+    });
+  }
+  
+  return metaTags;
 };
 
 export async function loader({params, context}: LoaderFunctionArgs) {

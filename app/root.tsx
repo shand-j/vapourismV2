@@ -23,6 +23,7 @@ import {MegaMenu, MobileMenu} from './components/navigation/MegaMenu';
 import {ShopifySearch} from './components/search/ShopifySearch';
 import {CookieConsent} from './components/CookieConsent';
 import {GoogleAnalytics} from './components/Analytics';
+import {trackPageView} from './lib/analytics';
 import {Icon} from './components/ui/Icon';
 
 // Lazy load components that might use Headless UI
@@ -127,6 +128,15 @@ export default function App() {
   useEffect(() => {
     setCartSnapshot(data.cart ?? null);
   }, [data.cart]);
+
+  // Track page views on route changes
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.document) {
+      // Get page title from document
+      const pageTitle = document.title || 'Vapourism';
+      trackPageView(location.pathname + location.search, pageTitle);
+    }
+  }, [location.pathname, location.search]);
 
   const shopName = data.shop?.name ?? 'Vapourism';
   

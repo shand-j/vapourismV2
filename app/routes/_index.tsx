@@ -3,6 +3,12 @@ import {type LoaderFunctionArgs, type MetaFunction} from '@shopify/remix-oxygen'
 import {Link, useLoaderData} from '@remix-run/react';
 import {ProductCard} from '~/components/ProductCard';
 import type {ProductCardProduct} from '~/components/ProductCard';
+import {Icon} from '~/components/ui/Icon';
+import {
+  generateOrganizationSchema,
+  generateWebsiteSchema,
+  structuredDataScript,
+} from '~/lib/structured-data';
 import {
   fetchAllShowcases,
   FALLBACK_FEATURED_PRODUCTS_QUERY,
@@ -203,9 +209,9 @@ export default function IndexRoute() {
   // heroImages removed - now using heroSlides carousel
 
   const credibilitySignals = [
-    {label: 'UK compliant', icon: <ShieldIcon />},
-    {label: 'Free shipping £50+', icon: <TruckIcon />},
-    {label: 'Expert support', icon: <SupportIcon />},
+    {label: 'UK compliant', icon: 'shield' as const},
+    {label: 'Free shipping £50+', icon: 'truck' as const},
+    {label: 'Expert support', icon: 'support' as const},
   ];
 
   // Use showcase products from metafields, or fall back to fetched products
@@ -261,10 +267,8 @@ export default function IndexRoute() {
 
   const brandPlaceholders = [1, 2, 3];
 
-  // Organization schema for rich results
-  const organizationSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
+  // Generate structured data for SEO
+  const organizationSchema = generateOrganizationSchema({
     name: 'Vapourism',
     url: 'https://www.vapourism.co.uk',
     logo: 'https://www.vapourism.co.uk/vapourism-logo.png',
@@ -279,35 +283,19 @@ export default function IndexRoute() {
       contactType: 'customer service',
       email: 'support@vapourism.co.uk',
     },
-  };
+  });
 
-  // WebSite schema with SearchAction for sitelinks searchbox
-  const websiteSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
+  const websiteSchema = generateWebsiteSchema({
     name: 'Vapourism',
     url: 'https://www.vapourism.co.uk',
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: 'https://www.vapourism.co.uk/search?q={search_term_string}',
-      },
-      'query-input': 'required name=search_term_string',
-    },
-  };
+    searchUrlTemplate: 'https://www.vapourism.co.uk/search?q={search_term_string}',
+  });
 
   return (
     <div className="bg-gradient-to-b from-slate-50 via-white to-white">
       {/* Organization and WebSite structured data for SEO */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{__html: JSON.stringify(organizationSchema)}}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{__html: JSON.stringify(websiteSchema)}}
-      />
+      <script {...structuredDataScript(organizationSchema)} />
+      <script {...structuredDataScript(websiteSchema)} />
 
       {/* Hero Section with integrated Flavour Lab / Device Studio */}
       <section className="relative overflow-hidden bg-gradient-to-br from-white via-slate-50 to-blue-50 text-slate-900">
@@ -335,7 +323,7 @@ export default function IndexRoute() {
                   className="inline-flex items-center justify-center gap-2 rounded-full gradient-brand px-8 py-4 text-sm font-semibold text-white shadow-[0_25px_60px_rgba(91,43,224,0.35)]"
                 >
                   Explore products
-                  <ArrowRightIcon />
+                  <Icon name="arrowRight" />
                 </Link>
                 <Link
                   to="/search?tag=device"
@@ -438,7 +426,7 @@ export default function IndexRoute() {
               {credibilitySignals.map((signal) => (
                 <div key={signal.label} className="flex items-center justify-center gap-2 text-sm font-semibold text-slate-700">
                   <span className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-700">
-                    {signal.icon}
+                    <Icon name={signal.icon} />
                   </span>
                   <span>{signal.label}</span>
                 </div>
@@ -468,7 +456,7 @@ export default function IndexRoute() {
             className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-8 py-4 text-sm font-semibold text-slate-900 shadow-sm transition hover:shadow-md"
           >
             Browse all products
-            <ArrowRightIcon />
+            <Icon name="arrowRight" />
           </Link>
         </div>
       </section>
@@ -540,11 +528,107 @@ export default function IndexRoute() {
                 </div>
                 <div className="mt-8 inline-flex items-center gap-2 text-sm font-semibold">
                   Browse category
-                  <ArrowRightIcon />
+                  <Icon name="arrowRight" />
                 </div>
               </div>
             </Link>
           ))}
+        </div>
+      </section>
+
+      {/* Why Choose Vapourism - Educational Content */}
+      <section className="container-custom py-16 lg:py-24">
+        <div className="text-center mb-12">
+          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-400">Why choose us</p>
+          <h2 className="mt-3 mb-4">Your trusted UK vaping partner</h2>
+          <p className="text-slate-600">Quality products, expert guidance, and uncompromising compliance standards</p>
+        </div>
+
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="glass-morphism rounded-2xl border border-slate-100 p-8">
+            <h3 className="text-xl font-semibold text-slate-900 mb-3">Authentic Products Only</h3>
+            <p className="text-slate-600 leading-relaxed">
+              Every product in our catalogue is sourced directly from authorized UK distributors and manufacturers. We verify authenticity certificates, batch numbers, and compliance documentation for complete peace of mind. Our quality control process ensures you receive genuine products that meet UK safety standards.
+            </p>
+          </div>
+
+          <div className="glass-morphism rounded-2xl border border-slate-100 p-8">
+            <h3 className="text-xl font-semibold text-slate-900 mb-3">Regulatory Compliance</h3>
+            <p className="text-slate-600 leading-relaxed">
+              We adhere strictly to UK Tobacco and Related Products Regulations (TRPR). All our e-liquids contain maximum 20mg/ml nicotine strength, comply with TPD notification requirements, and feature childproof packaging. Our two-stage age verification process ensures responsible retail practices.
+            </p>
+          </div>
+
+          <div className="glass-morphism rounded-2xl border border-slate-100 p-8">
+            <h3 className="text-xl font-semibold text-slate-900 mb-3">Expert Product Knowledge</h3>
+            <p className="text-slate-600 leading-relaxed">
+              Our team comprises experienced vapers who understand the nuances of different devices, e-liquid compositions, and vaping styles. Whether you're transitioning from smoking or seeking advanced equipment, we provide honest recommendations tailored to your preferences and experience level.
+            </p>
+          </div>
+
+          <div className="glass-morphism rounded-2xl border border-slate-100 p-8">
+            <h3 className="text-xl font-semibold text-slate-900 mb-3">Extensive Product Range</h3>
+            <p className="text-slate-600 leading-relaxed">
+              From convenient disposables and starter kits to advanced mods and premium shortfills, our curated selection represents over 112 trusted brands. We stock thousands of flavours including nic salts, freebase e-liquids, and high-VG options for cloud chasers and flavour enthusiasts alike.
+            </p>
+          </div>
+
+          <div className="glass-morphism rounded-2xl border border-slate-100 p-8">
+            <h3 className="text-xl font-semibold text-slate-900 mb-3">Fast UK Delivery</h3>
+            <p className="text-slate-600 leading-relaxed">
+              Orders placed before 1pm are dispatched the same day from our Sussex warehouse. We offer free next-day delivery on orders over £50, with tracked courier services to mainland UK addresses. Express delivery options available for urgent orders.
+            </p>
+          </div>
+
+          <div className="glass-morphism rounded-2xl border border-slate-100 p-8">
+            <h3 className="text-xl font-semibold text-slate-900 mb-3">Customer-First Service</h3>
+            <p className="text-slate-600 leading-relaxed">
+              Our support team is available seven days a week to assist with product queries, order tracking, and technical advice. We maintain transparent policies on returns, warranty claims, and product troubleshooting to ensure complete customer satisfaction.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Vaping Information Section */}
+      <section className="bg-gradient-to-br from-slate-50 to-white py-16 lg:py-24">
+        <div className="container-custom">
+          <div className="text-center mb-12">
+            <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-400">New to vaping?</p>
+            <h2 className="mt-3 mb-4">Understanding vaping essentials</h2>
+            <p className="text-slate-600">A beginner's guide to devices, e-liquids, and making informed choices</p>
+          </div>
+
+          <div className="max-w-4xl mx-auto space-y-8 text-slate-700">
+            <div className="glass-morphism rounded-2xl border border-slate-100 p-8">
+              <h3 className="text-xl font-semibold text-slate-900 mb-4">What is vaping?</h3>
+              <p className="leading-relaxed mb-4">
+                Vaping involves inhaling vapour produced by an electronic device that heats e-liquid. Unlike traditional cigarettes that burn tobacco, vape devices use battery-powered coils to create an inhalable aerosol. This fundamental difference eliminates many harmful combustion byproducts found in cigarette smoke.
+              </p>
+              <p className="leading-relaxed">
+                Modern vaping devices range from simple disposable units to sophisticated customizable systems. The technology has evolved significantly since early e-cigarettes, now offering improved flavour delivery, battery life, and user control over nicotine intake and vapour production.
+              </p>
+            </div>
+
+            <div className="glass-morphism rounded-2xl border border-slate-100 p-8">
+              <h3 className="text-xl font-semibold text-slate-900 mb-4">Choosing your device</h3>
+              <p className="leading-relaxed mb-4">
+                Starter kits and pod systems provide the easiest entry point for new vapers. These devices feature simple operation, minimal maintenance, and often include everything needed to begin vaping immediately. Popular options include refillable pod kits from brands like SMOK, Vaporesso, and Voopoo.
+              </p>
+              <p className="leading-relaxed">
+                Disposable vapes offer maximum convenience for trying vaping without commitment. These single-use devices require no charging or refilling, making them ideal for testing different flavours and nicotine strengths before investing in a reusable system.
+              </p>
+            </div>
+
+            <div className="glass-morphism rounded-2xl border border-slate-100 p-8">
+              <h3 className="text-xl font-semibold text-slate-900 mb-4">Understanding e-liquids</h3>
+              <p className="leading-relaxed mb-4">
+                E-liquids (also called vape juice) contain four primary ingredients: propylene glycol (PG), vegetable glycerin (VG), flavourings, and optional nicotine. The PG/VG ratio affects throat hit, flavour intensity, and vapour production. Higher PG provides stronger throat hit and flavour clarity, while higher VG produces denser vapour clouds.
+              </p>
+              <p className="leading-relaxed">
+                Nicotine salts deliver smoother throat hit at higher concentrations, making them suitable for mouth-to-lung devices and satisfying nicotine cravings efficiently. Freebase nicotine offers traditional throat sensation preferred by many transitioning smokers. UK regulations limit nicotine strength to maximum 20mg/ml in 10ml bottles.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -585,7 +669,7 @@ export default function IndexRoute() {
               <div key={review.name} className="glass-morphism rounded-2xl border border-slate-100 p-8">
                 <div className="mb-4 flex items-center gap-1">
                   {STAR_POSITIONS.map((position) => (
-                    <StarIcon key={`${review.name}-${position}`} />
+                    <Icon key={`${review.name}-${position}`} name="star" />
                   ))}
                 </div>
                 <p className="text-slate-700">“{review.text}”</p>
@@ -596,49 +680,6 @@ export default function IndexRoute() {
         </div>
       </section>
     </div>
-  );
-}
-
-function ArrowRightIcon() {
-  return (
-    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14m-6-6 6 6-6 6" />
-    </svg>
-  );
-}
-
-function StarIcon() {
-  return (
-    <svg className="h-5 w-5 text-[#5b2be0]" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-    </svg>
-  );
-}
-
-function ShieldIcon() {
-  return (
-    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3l8 4v5c0 5.25-3.5 9.75-8 11-4.5-1.25-8-5.75-8-11V7l8-4z" />
-    </svg>
-  );
-}
-
-function TruckIcon() {
-  return (
-    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M3 7h11v10H3zM14 9h4l3 4v4h-7" />
-      <circle cx="7" cy="17" r="1.5" />
-      <circle cx="17" cy="17" r="1.5" />
-    </svg>
-  );
-}
-
-function SupportIcon() {
-  return (
-    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 12a5 5 0 100-10 5 5 0 000 10z" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M3 21a9 9 0 0118 0" />
-    </svg>
   );
 }
 

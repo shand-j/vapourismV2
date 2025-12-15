@@ -71,13 +71,72 @@ export default function AboutRoute() {
           ))}
         </div>
 
-        <div className="mt-16 rounded-[28px] border border-slate-200 bg-white/90 p-6">
-          <h2 className="text-2xl font-semibold text-slate-900">What stays non‑negotiable</h2>
-          <ul className="mt-4 space-y-3 text-sm text-slate-600">
-            <li>• Two-stage age verification mirrors our brick-and-mortar flow.</li>
-            <li>• Shipping restrictions automatically reference our preserved compliance map.</li>
-            <li>• Shopify Checkout handles every transaction—no custom forks.</li>
-          </ul>
+        <div className="mt-16 space-y-8 mx-auto max-w-4xl">
+          <div className="rounded-[28px] border border-slate-200 bg-white/90 p-8">
+            <h2 className="text-2xl font-semibold text-slate-900 mb-6">Our commitment to responsible retail</h2>
+            <div className="prose prose-slate max-w-none">
+              <p className="text-slate-700 leading-relaxed mb-4">
+                Since our founding in 2015, Vapourism has operated with a single guiding principle: vaping products should be accessible to adult consumers while maintaining the highest standards of regulatory compliance and customer safety. We serve the UK vaping community with integrity, transparency, and unwavering attention to legal requirements.
+              </p>
+              <p className="text-slate-700 leading-relaxed mb-4">
+                Our retail philosophy combines the convenience of e-commerce with the accountability standards expected of traditional tobacco retailers. Every aspect of our operation—from product sourcing to age verification—reflects our commitment to being a responsible participant in the UK nicotine marketplace.
+              </p>
+              <p className="text-slate-700 leading-relaxed">
+                We believe informed consumers make better choices. That's why we invest heavily in product information, transparent labelling, and educational resources that help customers understand what they're purchasing, how products work, and the regulatory landscape governing vaping in the United Kingdom.
+              </p>
+            </div>
+          </div>
+
+          <div className="rounded-[28px] border border-slate-200 bg-white/90 p-8">
+            <h2 className="text-2xl font-semibold text-slate-900 mb-6">What stays non‑negotiable</h2>
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-semibold text-slate-900 mb-2">Two-stage age verification</h3>
+                <p className="text-slate-700 leading-relaxed">
+                  Our age verification process mirrors our brick-and-mortar standards. All customers must verify they're 18+ before browsing, with additional verification required before checkout. We partner with certified third-party age verification providers to ensure compliance with UK regulations.
+                </p>
+              </div>
+              <div>
+                <h3 className="font-semibold text-slate-900 mb-2">Shipping restrictions enforcement</h3>
+                <p className="text-slate-700 leading-relaxed">
+                  Our system automatically references comprehensive shipping restriction databases covering 49 countries for vaping products and 100+ territories for CBD-containing items. We prevent prohibited shipments at the cart level, ensuring regulatory compliance across international borders.
+                </p>
+              </div>
+              <div>
+                <h3 className="font-semibold text-slate-900 mb-2">Shopify-native checkout</h3>
+                <p className="text-slate-700 leading-relaxed">
+                  We use Shopify's secure, PCI-compliant checkout system without modifications. This ensures customers benefit from Shopify's fraud detection, payment security, and order management infrastructure while we maintain focus on product quality and compliance.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-[28px] border border-slate-200 bg-white/90 p-8">
+            <h2 className="text-2xl font-semibold text-slate-900 mb-6">Product quality standards</h2>
+            <div className="prose prose-slate max-w-none">
+              <p className="text-slate-700 leading-relaxed mb-4">
+                Every product in our catalogue undergoes rigorous vetting before earning a place in our inventory. We source exclusively from authorized UK distributors and manufacturers who provide complete compliance documentation, including TPD notification numbers, batch testing certificates, and ingredient disclosure statements.
+              </p>
+              <p className="text-slate-700 leading-relaxed mb-4">
+                Our buying team evaluates products across multiple criteria: regulatory compliance, brand reputation, customer feedback, and market demand. We refuse to stock products that don't meet UK Tobacco and Related Products Regulations (TRPR) requirements, regardless of profit margins or customer requests.
+              </p>
+              <p className="text-slate-700 leading-relaxed">
+                This selective approach means our catalogue may be smaller than competitors who prioritize quantity over quality. We accept that trade-off because we're building a business for the long term—one that earns customer trust through consistent reliability rather than overwhelming choice.
+              </p>
+            </div>
+          </div>
+
+          <div className="rounded-[28px] border border-slate-200 bg-white/90 p-8">
+            <h2 className="text-2xl font-semibold text-slate-900 mb-6">Looking ahead</h2>
+            <div className="prose prose-slate max-w-none">
+              <p className="text-slate-700 leading-relaxed mb-4">
+                The UK vaping landscape continues evolving as regulations adapt and consumer preferences shift. We're investing in technology that helps us scale responsibly—better product data management, enhanced age verification systems, and improved customer education resources.
+              </p>
+              <p className="text-slate-700 leading-relaxed">
+                Our recent migration to Shopify Hydrogen represents a significant technical advancement, enabling faster page loads, better mobile experiences, and more sophisticated product discovery features. These improvements serve a single goal: making it easier for adult consumers to find quality vaping products that meet their needs.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

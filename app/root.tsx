@@ -22,6 +22,8 @@ import {ClientOnly} from './components/ClientOnly';
 import {MegaMenu, MobileMenu} from './components/navigation/MegaMenu';
 import {ShopifySearch} from './components/search/ShopifySearch';
 import {CookieConsent} from './components/CookieConsent';
+import {GoogleAnalytics} from './components/Analytics';
+import {Icon} from './components/ui/Icon';
 
 // Lazy load components that might use Headless UI
 const LazyCartDrawer = lazy(() => import('./components/cart/CartDrawer').then(m => ({default: m.CartDrawer})));
@@ -173,38 +175,8 @@ export default function App() {
           }}
         />
         
-        {/* Google Analytics 4 - with consent mode defaulting to denied */}
-        {ga4MeasurementId && (
-          <>
-            <script
-              async
-              src={`https://www.googletagmanager.com/gtag/js?id=${ga4MeasurementId}`}
-            />
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `
-                  window.dataLayer = window.dataLayer || [];
-                  function gtag(){dataLayer.push(arguments);}
-                  
-                  // Default consent to denied - will be updated by CookieConsent
-                  gtag('consent', 'default', {
-                    'analytics_storage': 'denied',
-                    'ad_storage': 'denied',
-                    'ad_user_data': 'denied',
-                    'ad_personalization': 'denied',
-                    'wait_for_update': 500
-                  });
-                  
-                  gtag('js', new Date());
-                  gtag('config', '${ga4MeasurementId}', {
-                    page_path: window.location.pathname,
-                    anonymize_ip: true
-                  });
-                `,
-              }}
-            />
-          </>
-        )}
+        {/* Google Analytics 4 */}
+        {ga4MeasurementId && <GoogleAnalytics measurementId={ga4MeasurementId} />}
       </head>
       <body className="bg-white text-slate-900 antialiased">
         {isAgeGateActive && (
@@ -325,9 +297,7 @@ function SiteHeader({
               onClick={() => onToggleMobileNav(!isMobileNavOpen)}
               aria-label="Toggle navigation"
             >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+              <Icon name="menu" className="h-6 w-6" />
             </button>
 
             <Link to="/" className="flex items-center gap-3 text-2xl font-semibold tracking-tight text-slate-900">
@@ -349,14 +319,14 @@ function SiteHeader({
               className="lg:hidden"
               onClick={() => setIsMobileSearchOpen((open) => !open)}
             >
-              <MagnifierIcon />
+              <Icon name="search" />
             </HeaderIconButton>
             <HeaderIconButton to="/account" label="Account">
-              <UserIcon />
+              <Icon name="user" />
             </HeaderIconButton>
             <HeaderIconButton label="Cart" onClick={onCartToggle}>
               <span className="relative inline-flex">
-                <CartIcon />
+                <Icon name="cart" />
                 {cartCount > 0 && (
                   <span className="absolute -right-1.5 -top-1 rounded-full bg-rose-500 px-1.5 text-[10px] font-semibold leading-4 text-white">
                     {cartCount > 99 ? '99+' : cartCount}
@@ -382,41 +352,17 @@ function GlobalPerksRail() {
     {
       title: 'Free next-day delivery',
       description: 'On all orders over £50 across mainland UK.',
-      icon: (
-        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M3 7h13v10a1 1 0 01-1 1H4a1 1 0 01-1-1V7zm13 0h3.5a1 1 0 01.948.684l1.5 4.5A1 1 0 0121 13h-5"
-          />
-          <circle cx="7.5" cy="17.5" r="1.5" />
-          <circle cx="17" cy="17.5" r="1.5" />
-        </svg>
-      ),
+      icon: 'truck' as const,
     },
     {
       title: '30-day returns',
       description: 'Hassle-free exchanges on unopened products.',
-      icon: (
-        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M4 4h9a4 4 0 014 4v0" />
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M20 20h-9a4 4 0 01-4-4V7.5M20 20l-4-4m4 4l-4 4"
-          />
-        </svg>
-      ),
+      icon: 'returns' as const,
     },
     {
       title: 'Expert support',
       description: 'Real humans who vape—available 7 days a week.',
-      icon: (
-        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 12a5 5 0 100-10 5 5 0 000 10z" />
-          <path strokeLinecap="round" strokeLinejoin="round" d="M3 21a9 9 0 0118 0" />
-        </svg>
-      ),
+      icon: 'support' as const,
     },
   ];
 
@@ -425,7 +371,9 @@ function GlobalPerksRail() {
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8 md:flex-row md:items-center md:justify-between">
         {perks.map((perk) => (
           <div key={perk.title} className="flex flex-1 items-start gap-4">
-            <div className="rounded-2xl bg-slate-100 p-3 text-slate-700">{perk.icon}</div>
+            <div className="rounded-2xl bg-slate-100 p-3 text-slate-700">
+              <Icon name={perk.icon} />
+            </div>
             <div>
               <p className="text-sm font-semibold text-slate-900">{perk.title}</p>
               <p className="text-sm text-slate-600">{perk.description}</p>
@@ -467,30 +415,6 @@ function HeaderIconButton({to, label, children, className, onClick}: HeaderIconB
     </button>
   );
 }
-
-const MagnifierIcon = () => (
-  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-    <circle cx="11" cy="11" r="7" />
-    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 16.5L21 21" />
-  </svg>
-);
-
-const UserIcon = () => (
-  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 12a5 5 0 100-10 5 5 0 000 10z" />
-    <path strokeLinecap="round" strokeLinejoin="round" d="M3 21a9 9 0 0118 0" />
-  </svg>
-);
-
-const CartIcon = () => (
-  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M3 3h2l.4 2M7 13h10l3-8H6.4M7 13L5.4 5M7 13l-2 9h14M10 21a1 1 0 11-2 0 1 1 0 012 0zm8 0a1 1 0 11-2 0 1 1 0 012 0z"
-    />
-  </svg>
-);
 
 function SiteFooter({
   shopName,
@@ -601,20 +525,26 @@ function SiteFooter({
 
         {/* Delivery Information Section */}
         <div className="border-t border-gray-800 mt-8 pt-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div className="text-center">
               <div className="text-2xl font-bold text-green-400 mb-2">FREE</div>
-              <div className="text-sm text-gray-300">Delivery on orders over £25</div>
+              <div className="text-sm text-gray-300 mb-2">Delivery on orders over £50</div>
+              <p className="text-xs text-gray-400 px-4">Standard tracked delivery to mainland UK addresses at no extra cost</p>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-400 mb-2">1-2 Days</div>
-              <div className="text-sm text-gray-300">Express delivery available</div>
+              <div className="text-2xl font-bold text-blue-400 mb-2">1PM</div>
+              <div className="text-sm text-gray-300 mb-2">Same-day dispatch cutoff</div>
+              <p className="text-xs text-gray-400 px-4">Orders placed before 1pm Monday-Friday ship the same working day</p>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-purple-400 mb-2">14 Days</div>
-              <div className="text-sm text-gray-300">Free returns policy</div>
+              <div className="text-2xl font-bold text-purple-400 mb-2">30 Days</div>
+              <div className="text-sm text-gray-300 mb-2">Returns on unopened items</div>
+              <p className="text-xs text-gray-400 px-4">Hassle-free returns policy for sealed products in original condition</p>
             </div>
           </div>
+          <p className="text-xs text-gray-400 text-center max-w-3xl mx-auto">
+            We ship authentic vaping products exclusively to addresses within the United Kingdom. All orders require age verification before dispatch. Restricted products cannot be shipped to certain territories—our system automatically validates shipping eligibility during checkout.
+          </p>
         </div>
 
         {/* Newsletter Signup */}

@@ -1,11 +1,18 @@
 import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {getSitemap} from '@shopify/hydrogen';
+import {escapeXml} from '~/lib/utils';
 
 /**
  * Custom product sitemap query using standard products query.
  * This is a workaround for when the sitemap API returns empty results.
  * The Storefront sitemap API requires products to be published to the
  * Hydrogen sales channel specifically, not just the Online Store channel.
+ * 
+ * Fields:
+ * - handle: Product URL slug
+ * - updatedAt: Last modified date for sitemap lastmod
+ * - status: Product status (ACTIVE, DRAFT, ARCHIVED) - used to filter non-ACTIVE products
+ * - availableForSale: Whether product is available - used to ensure only purchasable products in sitemap
  */
 const PRODUCTS_SITEMAP_QUERY = `#graphql
   query ProductsSitemap($first: Int!, $after: String) {
@@ -17,6 +24,8 @@ const PRODUCTS_SITEMAP_QUERY = `#graphql
       nodes {
         handle
         updatedAt
+        status
+        availableForSale
       }
     }
   }
@@ -39,9 +48,25 @@ const PAGES_SITEMAP_QUERY = `#graphql
   }
 ` as const;
 
+/**
+ * Routes/handles that should be excluded from sitemap because they:
+ * - Return non-200 status codes (redirects, etc.)
+ * - Are not canonical URLs
+ * - Should not be indexed by search engines
+ * 
+ * This list should include any Shopify page handles that correspond to
+ * Remix routes that perform redirects or return non-200 status codes.
+ */
+const EXCLUDED_ROUTES = new Set([
+  'help',        // Redirects to /faq (301)
+  'track-order', // Redirects to external Shopify domain (301)
+]);
+
 interface SitemapItem {
   handle: string;
   updatedAt: string;
+  status?: string;
+  availableForSale?: boolean;
 }
 
 interface ProductsResult {
@@ -83,7 +108,25 @@ async function fetchAllItems<T extends ProductsResult | PagesResult>(
     });
 
     const data = result[type as keyof T] as { pageInfo: { hasNextPage: boolean; endCursor: string | null }; nodes: SitemapItem[] };
-    allItems.push(...data.nodes);
+    
+    // Filter out items that shouldn't be in sitemap
+    const filteredNodes = data.nodes.filter(node => {
+      // Filter out excluded page handles (redirect-only routes)
+      if (type === 'pages' && EXCLUDED_ROUTES.has(node.handle)) {
+        return false;
+      }
+      
+      // Filter out products that are not ACTIVE (published)
+      // Only include products with ACTIVE status to ensure 200 response
+      // Note: node.status is optional, so we check for its existence
+      if (type === 'products' && node.status !== 'ACTIVE') {
+        return false;
+      }
+      
+      return true;
+    });
+    
+    allItems.push(...filteredNodes);
     hasNextPage = data.pageInfo.hasNextPage;
     cursor = data.pageInfo.endCursor;
 
@@ -108,12 +151,13 @@ function generateSitemapXml(
 
   if (items.length === 0) {
     return `${xmlPrefix}
-  <url><loc>${baseUrl}/</loc></url>
+  <url><loc>${escapeXml(baseUrl)}/</loc></url>
 ${xmlSuffix}`;
   }
 
   const urls = items.map((item) => {
-    const loc = `${baseUrl}/${type}/${item.handle}`;
+    // Build URL and escape special characters for valid XML
+    const loc = escapeXml(`${baseUrl}/${type}/${item.handle}`);
     const lastmod = item.updatedAt ? `
   <lastmod>${item.updatedAt}</lastmod>` : '';
     return `<url>

@@ -5,6 +5,11 @@ import {ProductCard} from '~/components/ProductCard';
 import type {ProductCardProduct} from '~/components/ProductCard';
 import {Icon} from '~/components/ui/Icon';
 import {
+  generateOrganizationSchema,
+  generateWebsiteSchema,
+  structuredDataScript,
+} from '~/lib/structured-data';
+import {
   fetchAllShowcases,
   FALLBACK_FEATURED_PRODUCTS_QUERY,
   type FallbackFeaturedResponse,
@@ -218,58 +223,33 @@ export default function IndexRoute() {
 
   const brandPlaceholders = [1, 2, 3];
 
-  // Organization schema for rich results
-  const organizationSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
+  // Generate structured data for SEO
+  const organizationSchema = generateOrganizationSchema({
     name: 'Vapourism',
     url: 'https://www.vapourism.co.uk',
     logo: 'https://www.vapourism.co.uk/vapourism-logo.png',
     description: 'Premium vaping essentials with trusted age verification and next-day UK delivery.',
-    address: {
-      '@type': 'PostalAddress',
-      addressCountry: 'GB',
-      addressRegion: 'West Sussex',
-    },
-    contactPoint: {
-      '@type': 'ContactPoint',
-      contactType: 'customer service',
-      email: 'support@vapourism.co.uk',
-    },
-    sameAs: [
+    addressCountry: 'GB',
+    addressRegion: 'West Sussex',
+    email: 'support@vapourism.co.uk',
+    socialLinks: [
       'https://www.facebook.com/vapourism',
       'https://www.instagram.com/vapourism',
       'https://twitter.com/vapourism',
     ],
-  };
+  });
 
-  // WebSite schema with SearchAction for sitelinks searchbox
-  const websiteSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
+  const websiteSchema = generateWebsiteSchema({
     name: 'Vapourism',
     url: 'https://www.vapourism.co.uk',
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: 'https://www.vapourism.co.uk/search?q={search_term_string}',
-      },
-      'query-input': 'required name=search_term_string',
-    },
-  };
+    searchUrlTemplate: 'https://www.vapourism.co.uk/search?q={search_term_string}',
+  });
 
   return (
     <div className="bg-gradient-to-b from-slate-50 via-white to-white">
       {/* Organization and WebSite structured data for SEO */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{__html: JSON.stringify(organizationSchema)}}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{__html: JSON.stringify(websiteSchema)}}
-      />
+      <script {...structuredDataScript(organizationSchema)} />
+      <script {...structuredDataScript(websiteSchema)} />
 
       {/* Hero Section with integrated Flavour Lab / Device Studio */}
       <section className="relative overflow-hidden bg-gradient-to-br from-white via-slate-50 to-blue-50 text-slate-900">

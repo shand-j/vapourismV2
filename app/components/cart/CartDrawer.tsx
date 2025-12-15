@@ -3,6 +3,7 @@ import {Link, useFetcher} from '@remix-run/react';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import {CartForm, Image} from '@shopify/hydrogen';
 import {cn} from '../../lib/utils';
+import {trackViewCart, shopifyProductToGA4Item} from '../../lib/analytics';
 
 /**
  * UK VAT rate (20%)
@@ -69,6 +70,29 @@ export function CartDrawer({isOpen, onClose, fallbackCart, onCartUpdate}: CartDr
   useEffect(() => {
     onCartUpdate?.(cart ?? null);
   }, [cart, onCartUpdate]);
+
+  // Track cart view when drawer opens with items
+  useEffect(() => {
+    if (isOpen && cart && lines.length > 0) {
+      const ga4Items = lines.map(line => {
+        const merchandise = line.merchandise;
+        return shopifyProductToGA4Item({
+          id: merchandise.id,
+          title: merchandise.product?.title || merchandise.title,
+          vendor: merchandise.product?.vendor,
+          price: merchandise.price,
+          variantTitle: merchandise.title,
+          quantity: line.quantity,
+        });
+      });
+
+      trackViewCart({
+        currency: cart.cost?.subtotalAmount?.currencyCode || 'GBP',
+        value: subtotalIncVat,
+        items: ga4Items,
+      });
+    }
+  }, [isOpen, cart, lines, subtotalIncVat]);
 
   if (!isOpen) {
     return null;

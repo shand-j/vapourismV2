@@ -14,6 +14,7 @@ import {
   FALLBACK_FEATURED_PRODUCTS_QUERY,
   type FallbackFeaturedResponse,
 } from '~/lib/product-showcases';
+import {trackViewItemList, shopifyProductToGA4Item} from '~/lib/analytics';
 
 const STAR_POSITIONS = ['first', 'second', 'third', 'fourth', 'fifth'] as const;
 const EXPERIENCE_BACKDROPS = [
@@ -218,6 +219,22 @@ export default function IndexRoute() {
   const highlightedProducts = showcaseProducts.featured.length > 0 
     ? showcaseProducts.featured.slice(0, 8) 
     : featuredProducts.slice(0, 8);
+
+  // Track homepage featured products view
+  useEffect(() => {
+    if (highlightedProducts.length > 0) {
+      const ga4Items = highlightedProducts.map(product => 
+        shopifyProductToGA4Item({
+          id: product.id,
+          title: product.title,
+          vendor: product.vendor,
+          price: product.priceRange?.minVariantPrice,
+        })
+      );
+      
+      trackViewItemList(ga4Items, 'homepage_featured', 'Homepage Featured Products');
+    }
+  }, [highlightedProducts]);
   
   // Static curated categories for homepage (replaces dynamic collections)
   const curatedCategories = [

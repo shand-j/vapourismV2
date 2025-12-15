@@ -1,5 +1,6 @@
 import type {MetaFunction, LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useLoaderData, Link} from '@remix-run/react';
+import {useEffect, useRef} from 'react';
 import {getArticleBySlug} from '~/data/blog';
 import {SEOAutomationService} from '~/preserved/seo-automation';
 
@@ -176,6 +177,78 @@ function ArticleContent({content}: {content: string}) {
 
 export default function BlogArticle() {
   const {article, structuredData} = useLoaderData<typeof loader>();
+  const engagementTracked = useRef(false);
+  const startTime = useRef<number>(0);
+  const scrollDepthTracked = useRef<Set<number>>(new Set());
+
+  // Track blog article engagement
+  useEffect(() => {
+    startTime.current = Date.now();
+
+    // Track article view as a custom event
+    if (typeof window !== 'undefined' && window.gtag && !engagementTracked.current) {
+      window.gtag('event', 'view_blog_article', {
+        article_title: article.title,
+        article_category: article.category,
+        article_slug: article.slug,
+        article_author: article.author,
+        article_tags: article.tags.join(','),
+      });
+      engagementTracked.current = true;
+    }
+
+    // Track engagement time when user leaves
+    return () => {
+      if (typeof window !== 'undefined' && window.gtag && startTime.current > 0) {
+        const timeSpent = Math.round((Date.now() - startTime.current) / 1000);
+        
+        // Only track if spent more than 5 seconds (actual engagement)
+        if (timeSpent > 5) {
+          window.gtag('event', 'blog_engagement', {
+            article_title: article.title,
+            article_slug: article.slug,
+            engagement_time_seconds: timeSpent,
+            value: timeSpent, // Use time as value for GA4
+          });
+        }
+      }
+    };
+  }, [article.title, article.category, article.slug, article.author, article.tags]);
+
+  // Track scroll depth
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const trackScrollDepth = () => {
+      const scrollPercentage = Math.round(
+        (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
+      );
+
+      // Track milestones: 25%, 50%, 75%, 100%
+      const milestones = [25, 50, 75, 100];
+      
+      for (const milestone of milestones) {
+        if (scrollPercentage >= milestone && !scrollDepthTracked.current.has(milestone)) {
+          scrollDepthTracked.current.add(milestone);
+          
+          if (window.gtag) {
+            window.gtag('event', 'scroll_depth', {
+              article_title: article.title,
+              article_slug: article.slug,
+              scroll_depth_percentage: milestone,
+              value: milestone,
+            });
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', trackScrollDepth, {passive: true});
+    
+    return () => {
+      window.removeEventListener('scroll', trackScrollDepth);
+    };
+  }, [article.title, article.slug]);
 
   return (
     <>

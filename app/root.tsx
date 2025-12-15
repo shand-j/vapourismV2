@@ -161,7 +161,6 @@ export default function App() {
               },
               "contactPoint": {
                 "@type": "ContactPoint",
-                "telephone": "+44-123-456-7890",
                 "contactType": "Customer Service",
                 "email": "hello@vapourism.co.uk",
                 "areaServed": "GB",

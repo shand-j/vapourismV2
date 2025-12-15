@@ -16,7 +16,6 @@ export const meta: MetaFunction = () => {
       "logo": "https://vapourism.co.uk/logo.png",
       "contactPoint": {
         "@type": "ContactPoint",
-        "telephone": "+44-123-456-7890",
         "contactType": "Customer Service",
         "email": "hello@vapourism.co.uk",
         "areaServed": "GB",

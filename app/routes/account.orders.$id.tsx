@@ -7,9 +7,12 @@ import {CUSTOMER_ORDER_QUERY} from '~/graphql/customer-account/CustomerOrderQuer
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   const orderName = data?.order?.name ?? '';
   const title = orderName ? `Vapourism | Order ${orderName}` : 'Vapourism | Order Details';
+  
+  // Build description with shared suffix to avoid duplication
+  const baseSuffix = 'Check your order status, items, and delivery information.';
   const description = orderName 
-    ? `View order details and tracking information for order ${orderName}. Check your order status, items, and delivery information.`
-    : 'View your order details and tracking information. Check your order status, items, and delivery information.';
+    ? `View order details and tracking information for order ${orderName}. ${baseSuffix}`
+    : `View your order details and tracking information. ${baseSuffix}`;
   
   return [
     {title},

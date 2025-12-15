@@ -30,7 +30,9 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
   // Get description from policy handle or fallback to a generic one
   const handle = data?.policy?.handle || 'unknown';
   const description = policyDescriptions[handle] || 
-    `Read our ${policyTitle} at Vapourism. Important legal and policy information for UK vape shop customers.`;
+    (policyTitle && policyTitle !== 'Policy' 
+      ? `Read our ${policyTitle} at Vapourism. Important legal and policy information for UK vape shop customers.`
+      : 'Important legal and policy information for UK vape shop customers. Read our policies and terms.');
   
   metaTags.push({
     name: 'description',

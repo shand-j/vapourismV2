@@ -130,6 +130,18 @@ async function fetchAllItems<T extends ProductsResult | PagesResult>(
 }
 
 /**
+ * Escape XML special characters to ensure valid XML output
+ */
+function escapeXml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+/**
  * Generate XML sitemap content
  */
 function generateSitemapXml(
@@ -143,12 +155,13 @@ function generateSitemapXml(
 
   if (items.length === 0) {
     return `${xmlPrefix}
-  <url><loc>${baseUrl}/</loc></url>
+  <url><loc>${escapeXml(baseUrl)}/</loc></url>
 ${xmlSuffix}`;
   }
 
   const urls = items.map((item) => {
-    const loc = `${baseUrl}/${type}/${item.handle}`;
+    // Build URL and escape special characters for valid XML
+    const loc = escapeXml(`${baseUrl}/${type}/${item.handle}`);
     const lastmod = item.updatedAt ? `
   <lastmod>${item.updatedAt}</lastmod>` : '';
     return `<url>

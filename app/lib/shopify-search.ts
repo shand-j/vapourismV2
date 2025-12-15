@@ -290,9 +290,15 @@ export async function searchProducts(
     queryParts.push(trimmedTerm);
   }
 
+  // Collect tag filters separately to handle OR logic
+  const tagFilters: string[] = [];
+
   // Add filters to the query string
   for (const filter of filters) {
-    if ('productType' in filter && filter.productType) {
+    if ('tag' in filter && filter.tag) {
+      // Collect tag filters for OR logic
+      tagFilters.push(filter.tag);
+    } else if ('productType' in filter && filter.productType) {
       queryParts.push(`product_type:${filter.productType}`);
     } else if ('productVendor' in filter && filter.productVendor) {
       queryParts.push(`vendor:${filter.productVendor}`);
@@ -308,7 +314,27 @@ export async function searchProducts(
     }
   }
 
-  const fullQuery = queryParts.join(' ') || '*';
+  // Add tag filters with OR logic if present
+  if (tagFilters.length > 0) {
+    if (tagFilters.length === 1) {
+      // Single tag, no need for parentheses
+      queryParts.push(`tag:${tagFilters[0]}`);
+    } else {
+      // Multiple tags, use OR logic with parentheses
+      const tagQuery = tagFilters.map(tag => `tag:${tag}`).join(' OR ');
+      queryParts.push(`(${tagQuery})`);
+    }
+  }
+
+  // Join with AND logic when we have a search term, otherwise just space-separate
+  let fullQuery: string;
+  if (trimmedTerm && queryParts.length > 1) {
+    // If we have a search term, AND it with the filters
+    const [searchTerm, ...filterParts] = queryParts;
+    fullQuery = `${searchTerm} AND ${filterParts.join(' ')}`;
+  } else {
+    fullQuery = queryParts.join(' ') || '*';
+  }
 
   // Allow empty queries to return all products
   if (fullQuery !== '*' && fullQuery.length < 2) {

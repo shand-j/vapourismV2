@@ -34,7 +34,6 @@ export async function loader({context}: LoaderFunctionArgs) {
   const shopDomain = context.env?.PUBLIC_STORE_DOMAIN || 'vapourism.co.uk';
   
   return json({
-    shopDomain,
     trackingUrl: `https://${shopDomain}/account/orders`,
   });
 }

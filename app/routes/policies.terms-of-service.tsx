@@ -160,7 +160,6 @@ export default function TermsOfService() {
                   <li><strong>Email:</strong> hello@vapourism.co.uk</li>
                   <li><strong>Address:</strong> Vapourism, 3 Hylton Drive, Cheadle Hulme, Stockport, SK8 7DH, United Kingdom</li>
                   <li><strong>Company Registration:</strong> 15936898</li>
-                  <li><strong>VAT Number:</strong> 04 6116 26</li>
                 </ul>
               </section>
             </div>

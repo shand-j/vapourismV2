@@ -1,14 +1,22 @@
-# Shopify Setup Guide - Week 1 Collections
+# Shopify Setup Guide - Week 1 Collections (Revised)
 
 **Implementation Date**: December 2025  
-**Pages Deployed**: 6 SEO-optimized collection pages  
+**Pages Deployed**: 6 SEO-optimized collection pages (aligned with actual inventory)  
 **Expected Impact**: 10k-20k monthly visits
 
 ---
 
 ## Overview
 
-This guide provides step-by-step instructions for configuring Shopify collections and products to make the Week 1 SEO collection pages functional.
+This guide provides step-by-step instructions for configuring Shopify collections and products to make the Week 1 SEO collection pages functional. **This guide has been updated to reflect your actual inventory.**
+
+### What Changed
+
+- ✅ **Removed**: Hayati Pro Ultra page (you don't stock this disposable)
+- ✅ **Updated**: Hayati Pro Max page (now focuses on e-liquids, not disposables)
+- ✅ **Added**: Hayati X4 device page
+- ✅ **Added**: Hayati Remix device page
+- ✅ **Kept**: Lost Mary BM6000, Crystal Bar, Elux Legend, Riot Squad (as you stock these)
 
 ---
 
@@ -16,7 +24,7 @@ This guide provides step-by-step instructions for configuring Shopify collection
 
 - [ ] Create 6 Smart Collections in Shopify Admin
 - [ ] Tag existing products with appropriate tags
-- [ ] Upload new products for each brand/collection
+- [ ] Upload new products if needed
 - [ ] Verify collection rules are working
 - [ ] Test collection pages display products correctly
 - [ ] Add navigation menu links (optional)
@@ -40,65 +48,117 @@ This guide provides step-by-step instructions for configuring Shopify collection
 
 ---
 
-## 1️⃣ Hayati Pro Ultra Collection
+## 1️⃣ Hayati Pro Max E-Liquids Collection
 
 ### Collection Settings
 
-**Title**: `Hayati Pro Ultra`
+**Title**: `Hayati Pro Max E-Liquids`
 
-**Handle**: `hayati-pro-ultra` (auto-generated, matches route)
+**Handle**: `hayati-pro-max` (matches route)
 
 **Description**:
 ```
-Shop the Hayati Pro Ultra 25000 range - premium disposable vapes with up to 25,000 puffs. Rechargeable battery, LED display, and exceptional flavor. Fast UK delivery.
+Shop the complete Hayati Pro Max e-liquid range. Premium formulations with authentic flavors and smooth nicotine salt delivery. Perfect for all-day vaping with Hayati X4 and Remix devices.
 ```
 
 **Collection Conditions** (Automated):
-- **Condition 1**: Product tag contains `hayati` AND Product tag contains `pro_ultra`
-- **OR Condition 2**: Product vendor equals `Hayati` AND Product title contains `Pro Ultra`
+- **Condition 1**: Product tag contains `hayati` AND Product tag contains `pro_max` AND Product type equals `E-Liquid`
+- **OR Condition 2**: Product vendor equals `Hayati` AND Product title contains `Pro Max` AND Product type equals `E-Liquid`
 
 **Sort Order**: Best selling
 
 **SEO Settings**:
-- **Page title**: `Hayati Pro Ultra 25000 | Premium Disposable Vapes UK`
-- **Meta description**: `Shop Hayati Pro Ultra 25000 puff disposable vapes. ✓ 25,000 puffs ✓ Fast UK delivery ✓ Best prices. Browse the complete range.`
+- **Page title**: `Hayati Pro Max E-Liquids | Premium Vape Juice UK`
+- **Meta description**: `Shop Hayati Pro Max e-liquids. ✓ Premium formulations ✓ Nicotine salt ✓ 50/50 VG/PG ✓ Works with X4 & Remix devices. Fast UK delivery.`
 
 **Products to Include**:
-- Hayati Pro Ultra 25000 (all flavors)
-- Hayati Pro Ultra Plus 25000 (all flavors)
+- Hayati Pro Max 10ml nicotine salt e-liquids (all flavors)
+- 10mg and 20mg strength options
+
+**Tags Required**:
+- `hayati`
+- `pro_max`
+- `e-liquid`
+- `nic_salt` or `nicotine_salt`
+- `10ml`
 
 ---
 
-## 2️⃣ Hayati Pro Max Collection
+## 2️⃣ Hayati X4 Device Collection
 
 ### Collection Settings
 
-**Title**: `Hayati Pro Max`
+**Title**: `Hayati X4`
 
-**Handle**: `hayati-pro-max`
+**Handle**: `hayati-x4` (matches route)
 
 **Description**:
 ```
-Discover Hayati Pro Max disposable vapes with extended battery life and premium flavor delivery. Perfect for vapers seeking reliable, long-lasting devices.
+Experience the Hayati X4 pod system - a versatile, refillable device designed for use with Hayati Pro Max e-liquids. Compact design with powerful performance and long battery life.
 ```
 
 **Collection Conditions**:
-- **Condition 1**: Product tag contains `hayati` AND Product tag contains `pro_max`
-- **OR Condition 2**: Product vendor equals `Hayati` AND Product title contains `Pro Max`
+- **Condition 1**: Product tag contains `hayati` AND Product tag contains `x4`
+- **OR Condition 2**: Product vendor equals `Hayati` AND Product title contains `X4`
 
 **Sort Order**: Best selling
 
 **SEO Settings**:
-- **Page title**: `Hayati Pro Max | Long-Lasting Vapes UK`
-- **Meta description**: `Shop Hayati Pro Max disposable vapes. ✓ Extended capacity ✓ Rechargeable ✓ Premium build ✓ Fast UK delivery. Browse the range.`
+- **Page title**: `Hayati X4 | Premium Pod System UK`
+- **Meta description**: `Shop Hayati X4 pod system devices. ✓ Refillable pods ✓ Compact design ✓ Long battery life ✓ USB-C charging. Works with Pro Max e-liquids.`
 
 **Products to Include**:
-- Hayati Pro Max 6000 (all flavors)
-- Hayati Pro Max Plus (all flavors)
+- Hayati X4 device (starter kit)
+- Hayati X4 replacement pods
+- Hayati X4 coils (if sold separately)
+
+**Tags Required**:
+- `hayati`
+- `x4`
+- `device`
+- `pod_system`
+- `refillable`
 
 ---
 
-## 3️⃣ Lost Mary BM6000 Collection
+## 3️⃣ Hayati Remix Device Collection
+
+### Collection Settings
+
+**Title**: `Hayati Remix`
+
+**Handle**: `hayati-remix` (matches route)
+
+**Description**:
+```
+Discover the Hayati Remix pod system - an advanced refillable device designed for use with Hayati Pro Max e-liquids. Modern design meets exceptional performance with enhanced battery life.
+```
+
+**Collection Conditions**:
+- **Condition 1**: Product tag contains `hayati` AND Product tag contains `remix`
+- **OR Condition 2**: Product vendor equals `Hayati` AND Product title contains `Remix`
+
+**Sort Order**: Best selling
+
+**SEO Settings**:
+- **Page title**: `Hayati Remix | Premium Pod System UK`
+- **Meta description**: `Shop Hayati Remix pod system devices. ✓ Advanced pod system ✓ 800mAh battery ✓ LED indicator ✓ Fast charging. Optimized for Pro Max e-liquids.`
+
+**Products to Include**:
+- Hayati Remix device (starter kit)
+- Hayati Remix replacement pods
+- Hayati Remix coils (if sold separately)
+
+**Tags Required**:
+- `hayati`
+- `remix`
+- `device`
+- `pod_system`
+- `refillable`
+
+---
+
+## 4️⃣ Lost Mary BM6000 Collection
 
 ### Collection Settings
 
@@ -108,7 +168,7 @@ Discover Hayati Pro Max disposable vapes with extended battery life and premium 
 
 **Description**:
 ```
-Experience the Lost Mary BM6000 range with 6000 puffs, rechargeable battery, and exceptional flavor quality. The perfect choice for UK vapers.
+Shop Lost Mary BM6000 6000-puff disposable vapes. Premium flavors, rechargeable battery, and sleek design. The perfect balance of performance and portability.
 ```
 
 **Collection Conditions**:
@@ -119,15 +179,21 @@ Experience the Lost Mary BM6000 range with 6000 puffs, rechargeable battery, and
 
 **SEO Settings**:
 - **Page title**: `Lost Mary BM6000 | 6000 Puff Vape Pods UK`
-- **Meta description**: `Shop Lost Mary BM6000 disposable vape pods. ✓ 6000 puffs ✓ Rechargeable ✓ Premium flavors ✓ Fast UK delivery. Best prices.`
+- **Meta description**: `Shop Lost Mary BM6000 disposable vapes. ✓ 6000 puffs ✓ Rechargeable ✓ Premium flavors ✓ Fast UK delivery. Browse the complete range.`
 
 **Products to Include**:
 - Lost Mary BM6000 (all flavors)
-- Lost Mary BM6000 Rechargeable (all flavors)
+
+**Tags Required**:
+- `lost_mary`
+- `bm6000`
+- `disposable`
+- `6000_puff`
+- `rechargeable`
 
 ---
 
-## 4️⃣ Crystal Bar Collection
+## 5️⃣ Crystal Bar Collection
 
 ### Collection Settings
 
@@ -137,7 +203,7 @@ Experience the Lost Mary BM6000 range with 6000 puffs, rechargeable battery, and
 
 **Description**:
 ```
-Experience crystal-clear flavor with Crystal Bar premium disposable vapes. Smooth vapor production and exceptional taste in every puff.
+Discover Crystal Bar disposable vapes with crystal-clear flavor delivery. Premium quality, sleek design, and exceptional performance. TPD compliant.
 ```
 
 **Collection Conditions**:
@@ -148,16 +214,21 @@ Experience crystal-clear flavor with Crystal Bar premium disposable vapes. Smoot
 
 **SEO Settings**:
 - **Page title**: `Crystal Bar | Premium Disposable Vapes UK`
-- **Meta description**: `Shop Crystal Bar disposable vapes. ✓ Crystal clear flavor ✓ Smooth vapor ✓ Fast UK delivery ✓ Authentic products. Browse the range.`
+- **Meta description**: `Shop Crystal Bar disposable vapes. ✓ Crystal-clear flavors ✓ Premium quality ✓ Sleek design ✓ Fast UK delivery. Browse the collection.`
 
 **Products to Include**:
-- Crystal Bar 600 (all flavors)
-- Crystal Bar 3500 (all flavors)
-- Crystal Prime (all flavors)
+- Crystal Bar 600
+- Crystal Bar 3500
+- Any SKE Crystal products
+
+**Tags Required**:
+- `crystal`
+- `crystal_bar` or `ske`
+- `disposable`
 
 ---
 
-## 5️⃣ Elux Legend Collection
+## 6️⃣ Elux Legend Collection
 
 ### Collection Settings
 
@@ -167,7 +238,7 @@ Experience crystal-clear flavor with Crystal Bar premium disposable vapes. Smoot
 
 **Description**:
 ```
-Discover the legendary Elux range of disposable vapes, known for exceptional flavor delivery and reliable performance.
+Shop Elux Legend disposable vapes - legendary performance with premium flavors. Range of capacities from 600 to 3500 puffs. Reliable and TPD compliant.
 ```
 
 **Collection Conditions**:
@@ -178,15 +249,21 @@ Discover the legendary Elux range of disposable vapes, known for exceptional fla
 
 **SEO Settings**:
 - **Page title**: `Elux Legend | Premium Disposable Vapes UK`
-- **Meta description**: `Shop Elux Legend disposable vapes. ✓ Long-lasting ✓ Premium flavors ✓ Fast UK delivery ✓ Authentic Elux. Browse the range.`
+- **Meta description**: `Shop Elux Legend disposable vapes. ✓ Legendary performance ✓ Multiple capacities ✓ Premium flavors ✓ Fast UK delivery. Browse the range.`
 
 **Products to Include**:
-- Elux Legend 3500 (all flavors)
-- Elux Legend Mini 600 (all flavors)
+- Elux Legend 600
+- Elux Legend 3500
+- Elux Legend Mini (if available)
+
+**Tags Required**:
+- `elux`
+- `legend`
+- `disposable`
 
 ---
 
-## 6️⃣ Riot Squad Collection
+## 7️⃣ Riot Squad E-Liquids Collection
 
 ### Collection Settings
 
@@ -196,7 +273,7 @@ Discover the legendary Elux range of disposable vapes, known for exceptional fla
 
 **Description**:
 ```
-Experience award-winning e-liquids from Riot Squad. Bold flavors, exceptional quality, both shortfills and nicotine salts available.
+Shop Riot Squad premium e-liquids - made in the UK with exceptional flavor profiles. Available in shortfills and nicotine salts. Award-winning vape juice.
 ```
 
 **Collection Conditions**:
@@ -207,371 +284,379 @@ Experience award-winning e-liquids from Riot Squad. Bold flavors, exceptional qu
 
 **SEO Settings**:
 - **Page title**: `Riot Squad E-Liquids | Premium Vape Juice UK`
-- **Meta description**: `Shop Riot Squad premium e-liquids. ✓ Award-winning flavors ✓ 50ml shortfills ✓ 10ml nic salts ✓ Fast UK delivery. Browse the range.`
+- **Meta description**: `Shop Riot Squad e-liquids. ✓ UK-made ✓ Award-winning flavors ✓ 50ml shortfills ✓ 10ml nic salts ✓ Fast UK delivery. Browse the collection.`
 
 **Products to Include**:
-- Riot Squad Punx Series (50ml shortfills)
-- Riot Squad Bar Edition (10ml nic salts)
-- Riot Squad Fresh Series (all formats)
+- Riot Squad 50ml shortfills
+- Riot Squad 10ml nicotine salts
+- Punx series
+- Bar Edition series (if available)
+
+**Tags Required**:
+- `riot_squad`
+- `e-liquid`
+- `shortfill` or `nic_salt`
+- `50ml` or `10ml`
 
 ---
 
 ## 🏷️ Product Tagging Strategy
 
-### Tag Naming Convention
+### Tag Naming Conventions
 
-Use underscores for multi-word tags (e.g., `lost_mary`, not `lost-mary`)
+Use lowercase with underscores for consistency:
 
-### Required Tags by Product Type
+**Brand Tags**:
+- `hayati`
+- `lost_mary`
+- `crystal`, `crystal_bar`, `ske`
+- `elux`
+- `riot_squad`
 
-#### Disposable Vapes - General
-- `disposable` - ALL disposable vapes must have this tag
-- `rechargeable` - If device has USB-C charging
-- `high_capacity` - For devices with 5000+ puffs
+**Product Type Tags**:
+- `disposable`
+- `e-liquid`
+- `device`
+- `pod_system`
+- `shortfill`
+- `nic_salt`, `nicotine_salt`
 
-#### Disposable Vapes - Brand Specific
+**Model/Series Tags**:
+- `pro_max`
+- `x4`
+- `remix`
+- `bm6000`
+- `legend`
 
-**Hayati Products:**
-- `hayati` - All Hayati products
-- `pro_ultra` - Pro Ultra 25000 models
-- `pro_max` - Pro Max models
-- `25000_puff` - Pro Ultra specifically
-- `6000_puff` - Pro Max specifically
+**Capacity Tags**:
+- `600_puff`, `3500_puff`, `6000_puff`
+- `10ml`, `50ml`
 
-**Lost Mary Products:**
-- `lost_mary` - All Lost Mary products
-- `bm6000` - BM6000 model specifically
-- `6000_puff` - For BM6000
+**Feature Tags**:
+- `rechargeable`
+- `refillable`
+- `usb_c`
 
-**Crystal Products:**
-- `crystal` - All Crystal products
-- `crystal_bar` - Crystal Bar branded products
-- `crystal_prime` - Crystal Prime models
+### How to Add Tags
 
-**Elux Products:**
-- `elux` - All Elux products
-- `legend` - Legend series
-- `3500_puff` - For 3500 models
-- `600_puff` - For mini models
+1. Go to `Products` in Shopify Admin
+2. Select product to edit
+3. Scroll to `Organization` section
+4. Add tags in the `Tags` field (comma-separated)
+5. Click `Save`
 
-#### E-Liquids
+**Example for Hayati Pro Max E-Liquid**:
+```
+hayati, pro_max, e-liquid, nic_salt, 10ml
+```
 
-**Riot Squad Products:**
-- `riot_squad` - All Riot Squad products
-- `e-liquid` - All e-liquids
-- `shortfill` - For 50ml bottles
-- `nic_salt` - For 10ml nicotine salt
-- `50ml` - Shortfill size
-- `10ml` - Nic salt size
-
-**Flavor Tags:**
-- `fruit` - Fruit flavors
-- `menthol` - Menthol/ice flavors
-- `dessert` - Dessert flavors
-- `candy` - Candy/sweet flavors
+**Example for Hayati X4 Device**:
+```
+hayati, x4, device, pod_system, refillable, rechargeable
+```
 
 ---
 
-## 📦 Product Upload Template
+## 📦 Product Upload Templates
 
-### Disposable Vape Product Example
+### Template 1: Hayati Pro Max E-Liquid
 
-**Title**: `Hayati Pro Ultra 25000 - Strawberry Ice`
+**Title**: `Hayati Pro Max [Flavor Name] 10ml`
 
 **Vendor**: `Hayati`
 
-**Product Type**: `Disposable Vape`
-
-**Tags**: `disposable, hayati, pro_ultra, 25000_puff, rechargeable, fruit, strawberry`
-
-**Description**:
-```
-Experience the Hayati Pro Ultra 25000 in Strawberry Ice flavor. This premium disposable vape offers an incredible 25,000 puffs with a rechargeable battery, LED display, and authentic strawberry ice taste.
-
-Key Features:
-• Up to 25,000 puffs
-• Rechargeable battery (USB-C)
-• 20ml e-liquid capacity
-• 20mg (2%) nicotine salt
-• LED battery and e-liquid indicators
-• Compact and portable design
-• TPD compliant
-
-The Hayati Pro Ultra 25000 sets a new standard for disposable vapes with its exceptional puff count and rechargeable design, ensuring you get every last drop of premium e-liquid.
-```
-
-**Price**: Set competitive pricing (typically £9.99-£14.99)
-
-**Inventory**: Set stock levels
-
-**Images**: Upload high-quality product images (front, back, packaging)
-
----
-
-### E-Liquid Product Example
-
-**Title**: `Riot Squad Punx - Raspberry Grenade 50ml`
-
-**Vendor**: `Riot Squad`
-
 **Product Type**: `E-Liquid`
 
-**Tags**: `e-liquid, riot_squad, shortfill, 50ml, fruit, raspberry`
+**Tags**: `hayati, pro_max, e-liquid, nic_salt, 10ml`
 
 **Description**:
 ```
-Riot Squad Punx Raspberry Grenade is an explosive blend of sweet and tangy raspberries with a hint of sharp grenade. This 50ml shortfill delivers intense flavor for sub-ohm vapers.
+Hayati Pro Max [Flavor Name] nicotine salt e-liquid. Premium formulation with authentic [flavor description]. 
 
-Key Features:
-• 50ml shortfill bottle (60ml capacity)
-• 0mg nicotine (add nic shots)
-• 70VG/30PG ratio
-• Perfect for sub-ohm vaping
-• UK made and TPD compliant
-• Award-winning Punx range
+• Nicotine Strength: 10mg or 20mg
+• Volume: 10ml
+• VG/PG: 50/50
+• Type: Nicotine Salt
+• Made for MTL devices
+• Compatible with Hayati X4 and Remix
 
-Add a 10ml 18mg nic shot for 3mg nicotine strength (60ml total).
+Perfect for all-day vaping with smooth throat hit and rapid satisfaction.
 ```
 
 **Variants**:
-- 0mg (50ml) - Base option
-
-**Price**: Typically £9.99-£14.99
-
----
-
-## 🔍 Verification Steps
-
-### 1. Test Collection Rules
-
-After creating collections:
-
-1. Go to `Products` → `Collections`
-2. Click each collection name
-3. Verify products appear automatically
-4. Check product count matches expectations
-
-### 2. Test Collection Pages
-
-Visit each URL to ensure pages load correctly:
-
-- https://yourdomain.com/collections/hayati-pro-ultra
-- https://yourdomain.com/collections/hayati-pro-max
-- https://yourdomain.com/collections/lost-mary-bm6000
-- https://yourdomain.com/collections/crystal-bar
-- https://yourdomain.com/collections/elux-legend
-- https://yourdomain.com/collections/riot-squad
-
-### 3. Verify SEO Elements
-
-For each page, check:
-- [ ] Page title displays correctly in browser tab
-- [ ] Meta description is present (view page source)
-- [ ] H1 heading is visible and keyword-optimized
-- [ ] Products display in grid format
-- [ ] Images load properly
-- [ ] Prices display correctly
-- [ ] Links to product pages work
+- 10mg Nicotine Salt
+- 20mg Nicotine Salt
 
 ---
 
-## 🎨 Optional: Add to Navigation Menu
+### Template 2: Hayati X4 Device
 
-### Create a "Brands" Menu Section
+**Title**: `Hayati X4 Pod System Starter Kit`
 
-In Shopify Admin → `Online Store` → `Navigation`:
+**Vendor**: `Hayati`
 
-**Create new menu: "Popular Brands"**
+**Product Type**: `Vape Device`
 
-Menu items:
-- Hayati Pro Ultra → `/collections/hayati-pro-ultra`
-- Hayati Pro Max → `/collections/hayati-pro-max`
-- Lost Mary BM6000 → `/collections/lost-mary-bm6000`
-- Crystal Bar → `/collections/crystal-bar`
-- Elux Legend → `/collections/elux-legend`
-- Riot Squad → `/collections/riot-squad`
+**Tags**: `hayati, x4, device, pod_system, refillable, rechargeable`
 
-Add this menu to your header or sidebar navigation.
-
----
-
-## 📊 Performance Tracking
-
-### Monitor These Metrics
-
-**Weekly:**
-- Organic traffic to each collection page (Google Analytics)
-- Product impressions (Google Search Console)
-- Conversion rates by collection
-
-**Monthly:**
-- Keyword rankings for target terms
-- Total organic sessions
-- Revenue from organic traffic
-
-### Google Search Console Setup
-
-Add these URLs to monitoring:
+**Description**:
 ```
-/collections/hayati-pro-ultra
-/collections/hayati-pro-max
-/collections/lost-mary-bm6000
-/collections/crystal-bar
-/collections/elux-legend
-/collections/riot-squad
+Hayati X4 pod system - a versatile refillable device designed for Hayati Pro Max e-liquids.
+
+**What's Included:**
+• Hayati X4 device
+• 2ml refillable pod
+• USB-C charging cable
+• User manual
+
+**Specifications:**
+• Pod capacity: 2ml
+• Battery: 650mAh
+• Charging: USB-C fast charge
+• Coil: 1.2Ω mesh
+• Activation: Draw-activated
+
+Compact, cost-effective, and eco-friendly alternative to disposables.
 ```
 
-Track keywords:
-- hayati pro ultra
-- hayati pro max
-- lost mary bm6000
-- crystal bar
-- elux legend
-- riot squad
+---
+
+### Template 3: Hayati Remix Device
+
+**Title**: `Hayati Remix Pod System Starter Kit`
+
+**Vendor**: `Hayati`
+
+**Product Type**: `Vape Device`
+
+**Tags**: `hayati, remix, device, pod_system, refillable, rechargeable`
+
+**Description**:
+```
+Hayati Remix pod system - advanced refillable device with enhanced features.
+
+**What's Included:**
+• Hayati Remix device
+• 2ml refillable pod
+• USB-C charging cable
+• User manual
+
+**Specifications:**
+• Pod capacity: 2ml
+• Battery: 800mAh
+• Charging: USB-C fast charge
+• Coil options: 1.0Ω/1.2Ω mesh
+• Activation: Draw-activated with LED
+• Design: Modern, ergonomic
+
+Perfect for vapers seeking power and versatility.
+```
+
+---
+
+## ✅ Verification & Testing
+
+### Step 1: Verify Collection Rules
+
+1. Navigate to each collection in Shopify Admin
+2. Check "Products" tab to see auto-included products
+3. Verify correct products appear
+4. Adjust conditions if needed
+
+### Step 2: Test Collection Pages
+
+Visit each URL to verify pages load correctly:
+
+- `/collections/hayati-pro-max` (e-liquids)
+- `/collections/hayati-x4` (device)
+- `/collections/hayati-remix` (device)
+- `/collections/lost-mary-bm6000`
+- `/collections/crystal-bar`
+- `/collections/elux-legend`
+- `/collections/riot-squad`
+
+### Step 3: Check Mobile Responsiveness
+
+- Test on mobile device or browser dev tools
+- Verify product grids display correctly
+- Check images load properly
+
+### Step 4: Verify SEO Tags
+
+1. View page source (right-click → View Page Source)
+2. Check for:
+   - `<title>` tag
+   - `<meta name="description">` tag
+   - `<meta name="keywords">` tag
+   - Open Graph tags (`og:title`, `og:description`)
+
+---
+
+## 📊 Expected Results
+
+### Traffic Projections
+
+**Month 3:**
+- Top 20 rankings for target keywords
+- 5k+ monthly visits
+- 100+ organic conversions
+
+**Month 6:**
+- Top 10 rankings for most keywords
+- 10k-20k monthly visits
+- 300+ organic conversions
+
+**Month 12:**
+- Multiple #1 rankings
+- 30k+ monthly visits
+- 600+ organic conversions
+
+### Revenue Impact
+
+Assuming 2% conversion rate and £15 average order value:
+- Month 3: ~£1,500 organic revenue
+- Month 6: ~£5,000 organic revenue
+- Month 12: ~£9,000 organic revenue
+
+---
+
+## 🔧 Troubleshooting
+
+### Products Not Showing in Collection
+
+**Check:**
+1. Product has correct tags
+2. Product is set to "Active" status
+3. Product is not draft or archived
+4. Collection conditions match product attributes
+5. Product type is set correctly
+
+**Fix:**
+- Edit product and add missing tags
+- Set product to Active
+- Adjust collection conditions if needed
+
+### Collection Page Shows "Coming Soon"
+
+This means no products match the collection conditions yet.
+
+**Fix:**
+- Tag existing products appropriately
+- Upload new products for that collection
+- Verify vendor names match exactly
+
+### Images Not Displaying
+
+**Check:**
+1. Product has featured image set
+2. Image URL is valid
+3. Image file size isn't too large
+
+**Fix:**
+- Upload product images in Shopify Admin
+- Set featured image for each product
+- Optimize images (<500KB recommended)
 
 ---
 
 ## 🚀 Launch Checklist
 
-### Pre-Launch
-- [ ] All 6 collections created in Shopify
-- [ ] Collection rules tested and working
-- [ ] At least 5-10 products per collection uploaded
-- [ ] Product tags applied correctly
-- [ ] Product descriptions optimized
-- [ ] High-quality images uploaded
-- [ ] Pricing set competitively
-- [ ] Inventory levels configured
+### Pre-Launch (Complete these before going live)
+
+- [ ] All 6 collections created with correct handles
+- [ ] Collection SEO titles and descriptions added
+- [ ] At least 5 products tagged per collection
+- [ ] All product images uploaded
+- [ ] Product descriptions written
+- [ ] Prices set for all products
+- [ ] Inventory levels set
+- [ ] All products set to "Active"
 
 ### Launch Day
-- [ ] Deploy code to production (already done via PR)
-- [ ] Test all 6 collection URLs
-- [ ] Verify mobile responsiveness
-- [ ] Check page load speed
-- [ ] Submit URLs to Google Search Console
-- [ ] Share on social media (optional)
 
-### Post-Launch (Week 1)
-- [ ] Monitor Google Analytics for traffic
-- [ ] Check for any 404 errors
-- [ ] Adjust collection rules if needed
-- [ ] Add more products based on performance
-- [ ] Respond to any customer feedback
+- [ ] Test all 6 collection URLs
+- [ ] Verify products display correctly
+- [ ] Check mobile responsiveness
+- [ ] Submit URLs to Google Search Console
+- [ ] Share new pages on social media (optional)
+
+### Post-Launch (Week 1-2)
+
+- [ ] Monitor Google Search Console for indexing
+- [ ] Check Google Analytics for traffic
+- [ ] Track keyword rankings
+- [ ] Gather customer feedback
+- [ ] Adjust based on performance
 
 ---
 
-## 🆘 Troubleshooting
+## 📈 Performance Tracking
 
-### Products Not Showing on Collection Page
+### Metrics to Monitor
 
-**Possible causes:**
-1. Product doesn't have required tags
-2. Product vendor name doesn't match collection rule
-3. Product is not active/published
-4. Collection conditions are too restrictive
+**Google Search Console:**
+- Impressions (how many times pages appear in search)
+- Clicks (how many people visit from search)
+- Average position (ranking)
+- Click-through rate (CTR)
 
-**Solution:**
-- Check product tags in Shopify admin
-- Verify product vendor field
-- Ensure product is set to "Active"
-- Review and adjust collection conditions
+**Google Analytics:**
+- Organic traffic to collection pages
+- Bounce rate
+- Time on page
+- Conversion rate from organic traffic
 
-### Collection Page Shows "Products Coming Soon"
+**Shopify Analytics:**
+- Products sold from each collection
+- Revenue per collection
+- Top-performing products
 
-**This is expected behavior when:**
-- Collection is empty (no products match rules)
-- Products are not yet uploaded
+### Weekly Tracking Spreadsheet
 
-**Solution:**
-- Upload products with appropriate tags
-- Or wait for products to be added
+| Collection | Impressions | Clicks | Position | Conversions | Revenue |
+|-----------|-------------|--------|----------|-------------|---------|
+| Hayati Pro Max | | | | | |
+| Hayati X4 | | | | | |
+| Hayati Remix | | | | | |
+| Lost Mary BM6000 | | | | | |
+| Crystal Bar | | | | | |
+| Elux Legend | | | | | |
+| Riot Squad | | | | | |
 
-### SEO Title/Description Not Showing
+---
 
-**Solution:**
-- Edit collection in Shopify Admin
-- Scroll to "Search engine listing preview"
-- Click "Edit website SEO"
-- Add custom page title and meta description
+## 🎯 Success Criteria
+
+Week 1 is successful when:
+
+- [x] Code deployed (DONE)
+- [ ] Collections configured in Shopify
+- [ ] Minimum 5 products per collection
+- [ ] All pages loading correctly
+- [ ] Mobile responsive verified
+- [ ] URLs submitted to Google
+- [ ] First organic impressions appearing
 
 ---
 
 ## 📞 Support
 
-### Need Help?
+For questions about this implementation:
 
-- **Shopify Documentation**: https://help.shopify.com/en/manual/products/collections
-- **Collection Conditions**: https://help.shopify.com/en/manual/products/collections/automated-collections
-- **Product Tagging**: https://help.shopify.com/en/manual/products/details/tags
-
-### Common Questions
-
-**Q: Do I need to create Manual or Smart collections?**
-A: Use Smart (automated) collections. They automatically include products based on rules.
-
-**Q: Can products appear in multiple collections?**
-A: Yes! Products can appear in as many collections as they match.
-
-**Q: What if I don't have all these products yet?**
-A: Create the collections anyway. Pages will show "Products coming soon" until you add items.
-
-**Q: Should I use the same collection handle in Shopify?**
-A: Yes! The handle must match the route (e.g., `hayati-pro-ultra`)
+1. Review this guide thoroughly
+2. Check the troubleshooting section
+3. Test on a staging environment first (if available)
+4. Document any issues encountered
 
 ---
 
-## ✅ Success Criteria
+**Setup Time Estimate**: 2-4 hours total
 
-Week 1 implementation is successful when:
+**Difficulty Level**: Beginner-friendly
 
-- [ ] All 6 collections are live and functional
-- [ ] Each collection has at least 5 products
-- [ ] Collection pages display correctly on desktop and mobile
-- [ ] SEO titles and descriptions are optimized
-- [ ] Products are properly tagged
-- [ ] Internal links between collections work
-- [ ] Pages are being crawled by Google (Search Console)
+**Prerequisites**: Shopify Admin access, product inventory ready
 
 ---
 
-## 📈 Expected Results
-
-**Week 2-4**: 
-- Initial indexing by Google
-- First organic impressions
-- 10-50 clicks/day combined
-
-**Month 2-3**:
-- Ranking for brand keywords
-- 100-500 clicks/day combined
-- 5-10 conversions/week from organic
-
-**Month 4-6**:
-- Top 10 rankings for target keywords
-- 1000+ clicks/day combined
-- Significant organic revenue
-
----
-
-## 🎯 Next Steps
-
-After Week 1 setup is complete, prepare for:
-
-**Week 2**: Nicotine Pouches category launch
-- Collections needed: Velo, Zyn, general nicotine pouches
-- Educational content pages
-- 200k+ monthly search potential
-
-**Week 3-4**: Core page optimization
-- Homepage updates
-- Payment methods page
-- Delivery information page
-- Local SEO setup
-
----
-
-**Setup Guide Version**: 1.0  
-**Last Updated**: December 2025  
-**Maintained By**: SEO Implementation Team
-
-Ready to capture competitor traffic and grow organic visitors! 🚀
+*Last Updated: December 2025*
+*Aligned with actual inventory: Hayati Pro Max e-liquids, X4/Remix devices, Lost Mary, Crystal, Elux, Riot Squad*

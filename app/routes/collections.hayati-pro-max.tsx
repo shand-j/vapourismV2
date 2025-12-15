@@ -1,8 +1,8 @@
 /**
  * Hayati Pro Max Collection Page
  * 
- * SEO-optimized category page for Hayati Pro Max disposable vapes
- * Target keywords: "hayati pro max"
+ * SEO-optimized category page for Hayati Pro Max e-liquids
+ * Target keywords: "hayati pro max", "hayati pro max e-liquid"
  * Search volume: 22,200 monthly searches, difficulty: 16
  */
 
@@ -14,11 +14,11 @@ import {searchProducts} from '~/lib/shopify-search';
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
   
-  // Search for Hayati Pro Max products
+  // Search for Hayati Pro Max e-liquid products
   const searchResults = await searchProducts(
     storefront,
     '',
-    ['hayati', 'pro_max', 'disposable'],
+    ['hayati', 'pro_max', 'e-liquid'],
     {
       sortKey: 'RELEVANCE',
       reverse: false,
@@ -27,7 +27,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   );
 
   const topBrands = [...new Set(searchResults.products.map(p => p.vendor))].slice(0, 5);
-  const categoryTitle = 'Hayati Pro Max';
+  const categoryTitle = 'Hayati Pro Max E-Liquids';
   const seoTitle = SEOAutomationService.generateCategoryTitle(categoryTitle, searchResults.totalCount);
   const seoDescription = SEOAutomationService.generateCategoryMetaDescription(
     categoryTitle,
@@ -56,7 +56,7 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
     {title: data.seo.title},
     {name: 'description', content: data.seo.description},
-    {name: 'keywords', content: 'hayati pro max, hayati pro max 6000, hayati disposable vape, long lasting vape uk'},
+    {name: 'keywords', content: 'hayati pro max, hayati pro max e-liquid, hayati vape juice, premium e-liquid uk'},
     {property: 'og:title', content: data.seo.title},
     {property: 'og:description', content: data.seo.description},
     {property: 'og:type', content: 'website'},
@@ -70,72 +70,71 @@ export default function HayatiProMaxCollection() {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-4">
-          Hayati Pro Max | Long-Lasting Vapes UK
+          Hayati Pro Max E-Liquids | Premium Vape Juice UK
         </h1>
         <p className="text-lg text-gray-600 mb-6">
-          Discover the Hayati Pro Max range with extended battery life and premium flavor delivery. 
-          Perfect for vapers seeking reliable, long-lasting disposable devices.
+          Shop the complete Hayati Pro Max e-liquid range. Premium formulations with authentic 
+          flavors and smooth nicotine salt delivery. Perfect for all-day vaping.
         </p>
       </div>
 
       {/* Key Features */}
       <div className="grid md:grid-cols-3 gap-6 mb-12">
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="font-semibold text-xl mb-2">✓ Extended Capacity</h3>
-          <p className="text-gray-600">Long-lasting performance with high puff count</p>
+          <h3 className="font-semibold text-xl mb-2">✓ Premium Formulations</h3>
+          <p className="text-gray-600">High-quality ingredients for authentic flavor</p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="font-semibold text-xl mb-2">✓ Rechargeable Battery</h3>
-          <p className="text-gray-600">USB-C charging for maximum value</p>
+          <h3 className="font-semibold text-xl mb-2">✓ Nicotine Salt</h3>
+          <p className="text-gray-600">Smooth throat hit and rapid satisfaction</p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="font-semibold text-xl mb-2">✓ Premium Build</h3>
-          <p className="text-gray-600">High-quality construction and design</p>
+          <h3 className="font-semibold text-xl mb-2">✓ Wide Flavor Range</h3>
+          <p className="text-gray-600">Something for every taste preference</p>
         </div>
       </div>
 
-      {/* Comparison with Pro Ultra */}
+      {/* Product Specifications */}
       <div className="mb-12 bg-blue-50 p-6 rounded-lg">
-        <h2 className="text-2xl font-bold mb-4">Hayati Pro Max vs Pro Ultra</h2>
+        <h2 className="text-2xl font-bold mb-4">Hayati Pro Max E-Liquid Details</h2>
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white border">
             <thead>
               <tr className="bg-gray-100">
                 <th className="px-4 py-2 border">Feature</th>
-                <th className="px-4 py-2 border">Pro Max</th>
-                <th className="px-4 py-2 border">Pro Ultra</th>
+                <th className="px-4 py-2 border">Specification</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td className="px-4 py-2 border font-semibold">Puff Count</td>
-                <td className="px-4 py-2 border">6,000-8,000 puffs</td>
-                <td className="px-4 py-2 border">Up to 25,000 puffs</td>
+                <td className="px-4 py-2 border font-semibold">Nicotine Type</td>
+                <td className="px-4 py-2 border">Nicotine Salt</td>
               </tr>
               <tr>
-                <td className="px-4 py-2 border font-semibold">Size</td>
-                <td className="px-4 py-2 border">Compact & portable</td>
-                <td className="px-4 py-2 border">Larger capacity</td>
+                <td className="px-4 py-2 border font-semibold">Nicotine Strength</td>
+                <td className="px-4 py-2 border">10mg or 20mg options</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2 border font-semibold">Bottle Size</td>
+                <td className="px-4 py-2 border">10ml TPD compliant</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2 border font-semibold">VG/PG Ratio</td>
+                <td className="px-4 py-2 border">50/50 blend</td>
               </tr>
               <tr>
                 <td className="px-4 py-2 border font-semibold">Best For</td>
-                <td className="px-4 py-2 border">Daily carry, convenience</td>
-                <td className="px-4 py-2 border">Maximum longevity</td>
+                <td className="px-4 py-2 border">Mouth-to-Lung (MTL) devices</td>
               </tr>
             </tbody>
           </table>
-        </div>
-        <div className="mt-4 text-center">
-          <Link to="/collections/hayati-pro-ultra" className="text-blue-600 hover:underline font-semibold">
-            Compare with Hayati Pro Ultra 25000 →
-          </Link>
         </div>
       </div>
 
       {/* Products Grid */}
       <div className="mb-8">
         <h2 className="text-2xl font-bold mb-6">
-          All Hayati Pro Max Products ({totalCount})
+          All Hayati Pro Max E-Liquids ({totalCount})
         </h2>
         
         {products.length > 0 ? (
@@ -171,7 +170,7 @@ export default function HayatiProMaxCollection() {
           <div className="text-center py-12">
             <p className="text-gray-600 mb-4">Products coming soon!</p>
             <p className="text-sm text-gray-500">
-              Check back shortly for the complete Hayati Pro Max range.
+              Check back shortly for the complete Hayati Pro Max e-liquid range.
             </p>
           </div>
         )}
@@ -179,23 +178,27 @@ export default function HayatiProMaxCollection() {
 
       {/* Benefits Section */}
       <div className="bg-gray-50 p-8 rounded-lg mb-8">
-        <h2 className="text-2xl font-bold mb-4">Why Choose Hayati Pro Max?</h2>
+        <h2 className="text-2xl font-bold mb-4">Why Choose Hayati Pro Max E-Liquids?</h2>
         <ul className="space-y-3">
           <li className="flex items-start">
             <span className="text-green-600 mr-2">✓</span>
-            <span><strong>Portable Design:</strong> Perfect size for everyday carry</span>
+            <span><strong>Authentic Flavors:</strong> Premium formulations for true taste</span>
           </li>
           <li className="flex items-start">
             <span className="text-green-600 mr-2">✓</span>
-            <span><strong>Reliable Performance:</strong> Consistent vapor production throughout device life</span>
+            <span><strong>Smooth Nicotine Salt:</strong> Rapid satisfaction with gentle throat hit</span>
           </li>
           <li className="flex items-start">
             <span className="text-green-600 mr-2">✓</span>
-            <span><strong>Authentic Hayati Quality:</strong> Premium construction and materials</span>
+            <span><strong>50/50 VG/PG Blend:</strong> Perfect balance for MTL devices</span>
           </li>
           <li className="flex items-start">
             <span className="text-green-600 mr-2">✓</span>
-            <span><strong>Wide Flavor Selection:</strong> Something for every taste preference</span>
+            <span><strong>TPD Compliant:</strong> Meets all UK vaping regulations</span>
+          </li>
+          <li className="flex items-start">
+            <span className="text-green-600 mr-2">✓</span>
+            <span><strong>Compatible with Hayati Devices:</strong> Works perfectly with X4 and Remix</span>
           </li>
         </ul>
       </div>
@@ -204,14 +207,17 @@ export default function HayatiProMaxCollection() {
       <div className="border-t pt-8">
         <h3 className="font-semibold text-lg mb-4">Related Collections</h3>
         <div className="flex flex-wrap gap-3">
-          <Link to="/collections/hayati-pro-ultra" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
-            Hayati Pro Ultra 25000
+          <Link to="/collections/hayati-x4" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
+            Hayati X4 Device
           </Link>
-          <Link to="/collections/lost-mary-bm6000" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
-            Lost Mary BM6000
+          <Link to="/collections/hayati-remix" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
+            Hayati Remix Device
           </Link>
-          <Link to="/search?tag=disposable" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
-            All Disposables
+          <Link to="/collections/riot-squad" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
+            Riot Squad E-Liquids
+          </Link>
+          <Link to="/search?tag=e-liquid" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
+            All E-Liquids
           </Link>
         </div>
       </div>

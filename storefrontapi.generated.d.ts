@@ -795,7 +795,9 @@ export type ProductsSitemapQueryVariables = StorefrontAPI.Exact<{
 export type ProductsSitemapQuery = {
   products: {
     pageInfo: Pick<StorefrontAPI.PageInfo, 'hasNextPage' | 'endCursor'>;
-    nodes: Array<Pick<StorefrontAPI.Product, 'handle' | 'updatedAt'>>;
+    nodes: Array<
+      Pick<StorefrontAPI.Product, 'handle' | 'updatedAt' | 'availableForSale'>
+    >;
   };
 };
 
@@ -940,7 +942,7 @@ interface GeneratedQueryTypes {
     return: ProductQuery;
     variables: ProductQueryVariables;
   };
-  '#graphql\n  query ProductsSitemap($first: Int!, $after: String) {\n    products(first: $first, after: $after) {\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n      nodes {\n        handle\n        updatedAt\n      }\n    }\n  }\n': {
+  '#graphql\n  query ProductsSitemap($first: Int!, $after: String) {\n    products(first: $first, after: $after) {\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n      nodes {\n        handle\n        updatedAt\n        availableForSale\n      }\n    }\n  }\n': {
     return: ProductsSitemapQuery;
     variables: ProductsSitemapQueryVariables;
   };

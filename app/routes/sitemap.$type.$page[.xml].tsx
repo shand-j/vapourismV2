@@ -24,8 +24,11 @@ import {escapeXml} from '~/lib/utils';
  * Fields:
  * - handle: Product URL slug
  * - updatedAt: Last modified date for sitemap lastmod
- * - status: Product status (ACTIVE, DRAFT, ARCHIVED) - used to filter non-ACTIVE products
  * - availableForSale: Whether product is available - used to ensure only purchasable products in sitemap
+ * 
+ * Note: The `status` field (ACTIVE, DRAFT, ARCHIVED) is only available in the Admin API,
+ * not the Storefront API. Products returned by the Storefront API are already filtered
+ * to only include published/active products.
  */
 const PRODUCTS_SITEMAP_QUERY = `#graphql
   query ProductsSitemap($first: Int!, $after: String) {
@@ -37,7 +40,6 @@ const PRODUCTS_SITEMAP_QUERY = `#graphql
       nodes {
         handle
         updatedAt
-        status
         availableForSale
       }
     }
@@ -146,7 +148,6 @@ const STATIC_ROUTES = [
 interface SitemapItem {
   handle: string;
   updatedAt: string;
-  status?: string;
   availableForSale?: boolean;
 }
 
@@ -197,12 +198,12 @@ async function fetchAllItems<T extends ProductsResult | PagesResult>(
         return false;
       }
       
-      // Filter out products that are not ACTIVE (published)
-      // Only include products with ACTIVE status to ensure 200 response
-      // Note: node.status is optional, so we check for its existence
-      if (type === 'products' && node.status !== 'ACTIVE') {
-        return false;
-      }
+      // Note: Products returned by the Storefront API are already filtered
+      // to only include published/active products. The `status` field is only
+      // available via the Admin API, not the Storefront API.
+      // The `availableForSale` field is fetched but not filtered here because
+      // we want to include products that may temporarily be out of stock but
+      // still have active product pages.
       
       return true;
     });

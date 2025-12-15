@@ -5,18 +5,7 @@
  * their benefits, risks, and health considerations for SEO purposes.
  */
 
-export interface BlogArticle {
-  slug: string;
-  title: string;
-  metaDescription: string;
-  publishedDate: string;
-  lastModified: string;
-  author: string;
-  category: string;
-  tags: string[];
-  content: string;
-  featuredImage?: string;
-}
+import type {BlogArticle} from './index';
 
 export const nicotinePouchesArticle: BlogArticle = {
   slug: 'nicotine-pouches-risks-and-benefits',

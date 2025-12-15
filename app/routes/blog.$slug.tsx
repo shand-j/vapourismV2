@@ -30,7 +30,7 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
   ];
 };
 
-export async function loader({params}: LoaderFunctionArgs) {
+export async function loader({params, request}: LoaderFunctionArgs) {
   const {slug} = params;
 
   if (!slug) {
@@ -42,6 +42,10 @@ export async function loader({params}: LoaderFunctionArgs) {
   if (!article) {
     throw new Response('Not Found', {status: 404});
   }
+
+  // Get the current origin for the logo URL
+  const url = new URL(request.url);
+  const origin = url.origin;
 
   // Generate JSON-LD structured data for the article
   const structuredData = {
@@ -60,7 +64,7 @@ export async function loader({params}: LoaderFunctionArgs) {
       name: 'Vapourism',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://vapourism.co.uk/logo.png',
+        url: `${origin}/favicon.svg`,
       },
     },
     articleSection: article.category,
@@ -71,6 +75,92 @@ export async function loader({params}: LoaderFunctionArgs) {
     article,
     structuredData,
   };
+}
+
+/**
+ * ArticleContent component
+ * Renders markdown content with proper HTML structure and styling
+ * Content is pre-validated as it comes from our TypeScript files
+ */
+function ArticleContent({content}: {content: string}) {
+  const lines = content.split('\n');
+  const elements: JSX.Element[] = [];
+  let listItems: string[] = [];
+
+  const flushList = () => {
+    if (listItems.length > 0) {
+      elements.push(
+        <ul key={`list-${elements.length}`} className="list-disc list-inside mb-4 space-y-1 text-slate-700">
+          {listItems.map((item, idx) => (
+            <li key={idx} dangerouslySetInnerHTML={{__html: item}} />
+          ))}
+        </ul>
+      );
+      listItems = [];
+    }
+  };
+
+  const processInlineFormatting = (text: string): string => {
+    // Only process bold and italic - content is from trusted source
+    return text
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  };
+
+  lines.forEach((line, index) => {
+    const trimmed = line.trim();
+    
+    if (!trimmed) {
+      flushList();
+      return;
+    }
+
+    // Headers
+    if (trimmed.startsWith('# ')) {
+      flushList();
+      elements.push(
+        <h1 key={index} className="text-3xl font-bold text-slate-900 mb-4 mt-8 first:mt-0">
+          {trimmed.substring(2)}
+        </h1>
+      );
+    } else if (trimmed.startsWith('## ')) {
+      flushList();
+      elements.push(
+        <h2 key={index} className="text-2xl font-bold text-slate-900 mb-3 mt-6">
+          {trimmed.substring(3)}
+        </h2>
+      );
+    } else if (trimmed.startsWith('### ')) {
+      flushList();
+      elements.push(
+        <h3 key={index} className="text-xl font-semibold text-slate-900 mb-2 mt-4">
+          {trimmed.substring(4)}
+        </h3>
+      );
+    } else if (trimmed === '---') {
+      flushList();
+      elements.push(
+        <hr key={index} className="border-t border-slate-300 my-8" />
+      );
+    } else if (trimmed.startsWith('* ')) {
+      // Collect list items
+      listItems.push(processInlineFormatting(trimmed.substring(2)));
+    } else {
+      // Regular paragraph
+      flushList();
+      elements.push(
+        <p 
+          key={index} 
+          className="text-slate-700 leading-relaxed mb-4"
+          dangerouslySetInnerHTML={{__html: processInlineFormatting(trimmed)}}
+        />
+      );
+    }
+  });
+
+  flushList(); // Flush any remaining list items
+
+  return <div className="article-content">{elements}</div>;
 }
 
 export default function BlogArticle() {
@@ -139,44 +229,8 @@ export default function BlogArticle() {
         )}
 
         {/* Article Content */}
-        <article className="prose prose-slate prose-lg max-w-4xl mx-auto">
-          <div
-            dangerouslySetInnerHTML={{
-              __html: article.content
-                .split('\n')
-                .map((line) => {
-                  // Convert markdown to HTML (basic implementation)
-                  // Handle headers
-                  if (line.startsWith('# ')) {
-                    return `<h1>${line.substring(2)}</h1>`;
-                  }
-                  if (line.startsWith('## ')) {
-                    return `<h2>${line.substring(3)}</h2>`;
-                  }
-                  if (line.startsWith('### ')) {
-                    return `<h3>${line.substring(4)}</h3>`;
-                  }
-                  // Handle bold
-                  line = line.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-                  // Handle italic
-                  line = line.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-                  // Handle lists
-                  if (line.startsWith('* ')) {
-                    return `<li>${line.substring(2)}</li>`;
-                  }
-                  // Handle horizontal rule
-                  if (line === '---') {
-                    return '<hr />';
-                  }
-                  // Regular paragraph
-                  if (line.trim()) {
-                    return `<p>${line}</p>`;
-                  }
-                  return '';
-                })
-                .join('\n'),
-            }}
-          />
+        <article className="max-w-4xl mx-auto">
+          <ArticleContent content={article.content} />
         </article>
 
         {/* Article Tags */}

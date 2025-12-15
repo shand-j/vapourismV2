@@ -83,7 +83,12 @@ function ArticleCard({article}: {article: BlogArticle}) {
           <h2 className="text-xl font-semibold text-slate-900 mb-2 hover:text-violet-600 transition-colors">
             {article.title}
           </h2>
-          <p className="text-slate-600 line-clamp-3">
+          <p className="text-slate-600 overflow-hidden" style={{
+            display: '-webkit-box',
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: 'vertical',
+            maxHeight: '4.5rem'
+          }}>
             {article.metaDescription}
           </p>
           <div className="mt-4 flex flex-wrap gap-2">

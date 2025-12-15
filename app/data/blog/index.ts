@@ -5,7 +5,22 @@
  * Import and export all articles here for easy management.
  */
 
-import type {BlogArticle} from './nicotine-pouches-risks-and-benefits';
+/**
+ * Blog Article interface
+ */
+export interface BlogArticle {
+  slug: string;
+  title: string;
+  metaDescription: string;
+  publishedDate: string;
+  lastModified: string;
+  author: string;
+  category: string;
+  tags: string[];
+  content: string;
+  featuredImage?: string;
+}
+
 import {nicotinePouchesArticle} from './nicotine-pouches-risks-and-benefits';
 
 /**
@@ -44,5 +59,3 @@ export function getArticlesByCategory(category: string): BlogArticle[] {
 export function getArticlesByTag(tag: string): BlogArticle[] {
   return allArticles.filter(article => article.tags.includes(tag));
 }
-
-export type {BlogArticle};

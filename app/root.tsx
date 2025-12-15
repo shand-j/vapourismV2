@@ -22,6 +22,7 @@ import {ClientOnly} from './components/ClientOnly';
 import {MegaMenu, MobileMenu} from './components/navigation/MegaMenu';
 import {ShopifySearch} from './components/search/ShopifySearch';
 import {CookieConsent} from './components/CookieConsent';
+import {GoogleAnalytics} from './components/Analytics';
 import {Icon} from './components/ui/Icon';
 
 // Lazy load components that might use Headless UI
@@ -144,39 +145,7 @@ export default function App() {
         <link rel="canonical" href={canonicalUrl} />
         <Meta />
         <Links />
-        
-        {/* Google Analytics 4 - with consent mode defaulting to denied */}
-        {ga4MeasurementId && (
-          <>
-            <script
-              async
-              src={`https://www.googletagmanager.com/gtag/js?id=${ga4MeasurementId}`}
-            />
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `
-                  window.dataLayer = window.dataLayer || [];
-                  function gtag(){dataLayer.push(arguments);}
-                  
-                  // Default consent to denied - will be updated by CookieConsent
-                  gtag('consent', 'default', {
-                    'analytics_storage': 'denied',
-                    'ad_storage': 'denied',
-                    'ad_user_data': 'denied',
-                    'ad_personalization': 'denied',
-                    'wait_for_update': 500
-                  });
-                  
-                  gtag('js', new Date());
-                  gtag('config', '${ga4MeasurementId}', {
-                    page_path: window.location.pathname,
-                    anonymize_ip: true
-                  });
-                `,
-              }}
-            />
-          </>
-        )}
+        {ga4MeasurementId && <GoogleAnalytics measurementId={ga4MeasurementId} />}
       </head>
       <body className="bg-white text-slate-900 antialiased">
         {isAgeGateActive && (
@@ -535,20 +504,26 @@ function SiteFooter({
 
         {/* Delivery Information Section */}
         <div className="border-t border-gray-800 mt-8 pt-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div className="text-center">
               <div className="text-2xl font-bold text-green-400 mb-2">FREE</div>
-              <div className="text-sm text-gray-300">Delivery on orders over £25</div>
+              <div className="text-sm text-gray-300 mb-2">Delivery on orders over £50</div>
+              <p className="text-xs text-gray-400 px-4">Standard tracked delivery to mainland UK addresses at no extra cost</p>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-400 mb-2">1-2 Days</div>
-              <div className="text-sm text-gray-300">Express delivery available</div>
+              <div className="text-2xl font-bold text-blue-400 mb-2">1PM</div>
+              <div className="text-sm text-gray-300 mb-2">Same-day dispatch cutoff</div>
+              <p className="text-xs text-gray-400 px-4">Orders placed before 1pm Monday-Friday ship the same working day</p>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-purple-400 mb-2">14 Days</div>
-              <div className="text-sm text-gray-300">Free returns policy</div>
+              <div className="text-2xl font-bold text-purple-400 mb-2">30 Days</div>
+              <div className="text-sm text-gray-300 mb-2">Returns on unopened items</div>
+              <p className="text-xs text-gray-400 px-4">Hassle-free returns policy for sealed products in original condition</p>
             </div>
           </div>
+          <p className="text-xs text-gray-400 text-center max-w-3xl mx-auto">
+            We ship authentic vaping products exclusively to addresses within the United Kingdom. All orders require age verification before dispatch. Restricted products cannot be shipped to certain territories—our system automatically validates shipping eligibility during checkout.
+          </p>
         </div>
 
         {/* Newsletter Signup */}

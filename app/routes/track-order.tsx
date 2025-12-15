@@ -1,4 +1,4 @@
-import {redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {redirect, type LoaderFunctionArgs, type MetaFunction} from '@shopify/remix-oxygen';
 
 /**
  * Track Order Redirect
@@ -6,6 +6,12 @@ import {redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
  * Redirects to Shopify's hosted order status page.
  * Users can enter their order number and email on Shopify's hosted page.
  */
+
+export const meta: MetaFunction = () => [
+  {title: 'Track Order | Vapourism'},
+  {name: 'robots', content: 'noindex, nofollow'},
+];
+
 export async function loader({context}: LoaderFunctionArgs) {
   // Get shop domain from environment or context
   const shopDomain = context.env?.PUBLIC_STORE_DOMAIN || 'vapourism.co.uk';

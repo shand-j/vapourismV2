@@ -41,6 +41,8 @@ jobs:
         run: npm run test
 
   deploy-preview:
+    name: Deploy Oxygen Preview
+    needs: unit-tests
     uses: ./.github/workflows/oxygen-deployment-1000063397.yml
     secrets:
       OXYGEN_DEPLOYMENT_TOKEN_1000063397: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_1000063397 }}

@@ -387,6 +387,115 @@ export class SEOAutomationService {
     
     return truncatedProduct + '…' + suffix;
   }
+
+  /**
+   * Generate marketing-friendly Open Graph title for products
+   * Creates engaging, concise titles optimized for social sharing
+   * Handles promotional text (BUY 1 GET 1 FREE, etc.) by reordering for impact
+   * @param productTitle The raw product title from Shopify
+   * @param vendor The vendor/brand name
+   * @returns Marketing-optimized og:title (no suffix, ready for social sharing)
+   */
+  static generateOGTitle(productTitle: string, vendor: string): string {
+    // Remove parentheses and their content first to extract promo text
+    const promoMatch = productTitle.match(/\(([^)]+)\)/);
+    const promoText = promoMatch ? promoMatch[1] : null;
+    
+    // Clean title by removing parentheses content and extra whitespace
+    let cleanTitle = productTitle.replace(/\s*\([^)]*\)\s*/g, ' ').trim();
+    
+    // Handle "BUY X GET Y FREE" promotions - move to front with colon
+    if (promoText && /buy\s+\d+\s+get\s+\d+\s+free/i.test(promoText)) {
+      const match = promoText.match(/buy\s+(\d+)\s+get\s+(\d+)\s+free/i);
+      if (match) {
+        const [, buy, get] = match;
+        const buyNum = parseInt(buy);
+        const getNum = parseInt(get);
+        
+        // Extract key product info (strength, size, type)
+        const strengthMatch = cleanTitle.match(/(\d+mg)/i);
+        const strength = strengthMatch ? strengthMatch[1] : '';
+        
+        // Get product type (last significant word before vendor)
+        const words = cleanTitle.split(/\s+/);
+        const typeWords = ['Crumble', 'Oil', 'Drops', 'Tea', 'Gummies', 'Capsules', 'Vape', 'E-Liquid'];
+        const productType = words.find(w => typeWords.some(t => w.toLowerCase().includes(t.toLowerCase()))) || '';
+        
+        if (buyNum === 1 && getNum === 1) {
+          return `Buy 1 Get 1 Free: ${vendor} ${strength} ${productType} Deal`.replace(/\s+/g, ' ').trim();
+        } else if (buyNum === 1 && getNum === 2) {
+          return `Buy 1 Get 2 Free: ${vendor} ${strength} ${productType}`.replace(/\s+/g, ' ').trim();
+        }
+      }
+    }
+    
+    // For standard products, create format: "Strength/Key Feature + Product Type + by Vendor + Unique Selling Point"
+    
+    // Extract numeric strength (mg, ml, g)
+    const strengthMatch = cleanTitle.match(/(\d+(?:mg|ml|g))/i);
+    const strength = strengthMatch ? strengthMatch[1] : '';
+    
+    // Extract percentage if present
+    const percentMatch = cleanTitle.match(/(\d+%)/);
+    const percent = percentMatch ? percentMatch[1] : '';
+    
+    // Identify product category
+    const categories: Record<string, string> = {
+      'Oil': 'CBD Oil',
+      'Drops': 'CBD Oil Drops',
+      'Crumble': 'CBD Crumble',
+      'Tea': 'CBD Tea',
+      'E-Liquid': 'E-Liquid',
+      'Vape': 'Vape',
+    };
+    
+    let productCategory = '';
+    for (const [key, value] of Object.entries(categories)) {
+      if (cleanTitle.includes(key)) {
+        productCategory = value;
+        break;
+      }
+    }
+    
+    // Extract key descriptors (Broad Spectrum, Full Spectrum, Raw, Cold Pressed, etc.)
+    const descriptors: string[] = [];
+    if (/broad\s+spectrum/i.test(cleanTitle)) descriptors.push('Broad Spectrum');
+    if (/full\s+spectrum/i.test(cleanTitle)) descriptors.push('Full Spectrum');
+    if (/raw/i.test(cleanTitle)) descriptors.push('Raw Extract');
+    if (/cold\s+pressed/i.test(cleanTitle)) descriptors.push('Cold Pressed');
+    
+    // Build optimized title based on available components
+    if (strength && productCategory && vendor) {
+      if (descriptors.length > 0) {
+        return `${strength} ${productCategory} by ${vendor} - ${descriptors[0]}`;
+      }
+      return `${strength} ${productCategory} by ${vendor}`;
+    }
+    
+    // Fallback: try to create a concise version
+    // Remove redundant "CBD" repetitions
+    let optimized = cleanTitle.replace(/\bCBD\s+by\s+(\w+)\s+(\w+)\s+CBD\b/gi, 'CBD by $1 $2');
+    
+    // If title is too long, extract key parts
+    if (optimized.length > 60) {
+      const parts = [];
+      if (strength) parts.push(strength);
+      if (productCategory) parts.push(productCategory);
+      if (vendor && !optimized.toLowerCase().includes('by')) parts.push(`by ${vendor}`);
+      if (descriptors.length > 0) parts.push(`- ${descriptors[0]}`);
+      
+      if (parts.length > 0) {
+        return parts.join(' ');
+      }
+    }
+    
+    // Final fallback: use cleaned title, truncated if needed
+    if (optimized.length > 60) {
+      return optimized.substring(0, 57) + '...';
+    }
+    
+    return optimized;
+  }
 }
 
 /**

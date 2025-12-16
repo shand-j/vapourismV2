@@ -546,6 +546,10 @@ export const meta = ({data}: {data: any}) => {
       content: `Found ${count} products matching "${query}". Shop premium vaping products at Vapourism with fast UK delivery.`,
     },
     {
+      property: 'og:title',
+      content: `Find Your Vape: ${count} Products to Choose From - Fast Delivery`,
+    },
+    {
       name: 'robots',
       content: 'noindex, follow', // Don't index search results pages
     },

@@ -6,7 +6,7 @@ import {escapeXml} from '~/lib/utils';
  * Sitemap Type Handler - Generates XML sitemaps for different content types
  * 
  * This route handles sitemap generation for:
- * - Products: /sitemap/products/1.xml (ACTIVE products only, ensures 200 status)
+ * - Products: /sitemap/products/1.xml (available products only, ensures 200 status)
  * - Pages: /sitemap/pages/1.xml (excludes redirect/noindex routes)
  * - Other types: Falls back to Hydrogen's getSitemap (articles, blogs, etc.)
  * 
@@ -24,8 +24,11 @@ import {escapeXml} from '~/lib/utils';
  * Fields:
  * - handle: Product URL slug
  * - updatedAt: Last modified date for sitemap lastmod
- * - status: Product status (ACTIVE, DRAFT, ARCHIVED) - used to filter non-ACTIVE products
  * - availableForSale: Whether product is available - used to ensure only purchasable products in sitemap
+ * 
+ * Note: The 'status' field (ACTIVE, DRAFT, ARCHIVED) is NOT available in the
+ * Storefront API - it's only available in the Admin API. We use availableForSale
+ * instead to filter products that should be in the sitemap.
  */
 const PRODUCTS_SITEMAP_QUERY = `#graphql
   query ProductsSitemap($first: Int!, $after: String) {
@@ -37,7 +40,6 @@ const PRODUCTS_SITEMAP_QUERY = `#graphql
       nodes {
         handle
         updatedAt
-        status
         availableForSale
       }
     }
@@ -146,7 +148,6 @@ const STATIC_ROUTES = [
 interface SitemapItem {
   handle: string;
   updatedAt: string;
-  status?: string;
   availableForSale?: boolean;
 }
 
@@ -197,10 +198,10 @@ async function fetchAllItems<T extends ProductsResult | PagesResult>(
         return false;
       }
       
-      // Filter out products that are not ACTIVE (published)
-      // Only include products with ACTIVE status to ensure 200 response
-      // Note: node.status is optional, so we check for its existence
-      if (type === 'products' && node.status !== 'ACTIVE') {
+      // Filter out products that are not available for sale
+      // The 'status' field is not available in Storefront API, so we use
+      // availableForSale to ensure only purchasable products are in the sitemap
+      if (type === 'products' && node.availableForSale === false) {
         return false;
       }
       

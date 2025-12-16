@@ -4,7 +4,19 @@ export const meta: MetaFunction = () => [
   {title: 'Account access | Vapourism'},
   {
     name: 'description',
-    content: 'Customer account management is moving to Shopify’s native experience.',
+    content: 'Customer account management is moving to Shopify's native experience.',
+  },
+  {
+    name: 'twitter:card',
+    content: 'summary',
+  },
+  {
+    name: 'twitter:title',
+    content: 'Account Management | Vapourism',
+  },
+  {
+    name: 'twitter:description',
+    content: 'Streamline your vape shop experience! Vapourism\'s account management just got a Shopify upgrade. #Vaping #Shopify',
   },
 ];
 

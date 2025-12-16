@@ -14,6 +14,18 @@ export const meta: MetaFunction = () => [
   {
     name: 'robots',
     content: 'noindex, nofollow'
+  },
+  {
+    name: 'twitter:card',
+    content: 'summary'
+  },
+  {
+    name: 'twitter:title',
+    content: 'Age Verification | Vapourism'
+  },
+  {
+    name: 'twitter:description',
+    content: 'Verify your age easily for vaping products at Vapourism. Quick & secure age check. #VapingUK #AgeVerification'
   }
 ];
 

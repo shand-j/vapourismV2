@@ -891,7 +891,7 @@ export const meta = ({data}: {data: {product: typeof import('storefrontapi.gener
     },
     {
       name: 'twitter:description',
-      content: metaDescription,
+      content: `Shop ${product.title} by ${product.vendor} from £${price.amount} ${product.productType} in the UK. ✓ Fast UK Delivery ✓ Authentic Products ✓ Best prices`,
     },
     ...(product.featuredImage ? [
       {

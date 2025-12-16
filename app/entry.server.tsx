@@ -131,7 +131,7 @@ export default async function handleRequest(
     effectiveHeader = effectiveHeader.replace(/script-src([^;]*)/, (match, v = '') => {
       let existing = v;
       if (!existing.includes('https://dashboard.searchatlas.com')) existing += ' https://dashboard.searchatlas.com';
-      if (!existing.includes("data:")) existing += ' data:';
+      if (!existing.includes('data:')) existing += ' data:';
       return `script-src${existing}`;
     });
   }

@@ -65,7 +65,7 @@ export default function PrivacyPolicy() {
       <main className="flex-1">
         <div className="container mx-auto px-4 py-12 max-w-4xl">
           <div className="prose prose-lg max-w-none">
-            <h1>Privacy Policy</h1>
+            <h1>Vapourism UK GDPR Privacy Policy: Data Collection, Use & Rights</h1>
             
             <p className="lead text-xl text-gray-600 mb-8">
               At Vapourism, we take your privacy seriously. This Privacy Policy explains how we collect, use, store, and protect your personal information in compliance with UK GDPR and Data Protection Act 2018. We are committed to transparency about our data practices and your privacy rights.

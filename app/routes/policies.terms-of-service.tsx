@@ -66,7 +66,7 @@ export default function TermsOfService() {
       <main className="flex-1">
         <div className="container mx-auto px-4 py-12 max-w-4xl">
           <div className="prose prose-lg max-w-none">
-            <h1>Terms of Service</h1>
+            <h1>Vapourism Terms of Service: UK Vaping Purchase Policies</h1>
             
             <p className="lead text-xl text-gray-600 mb-8">
               These Terms of Service govern your use of the Vapourism website and purchase of products. By accessing our website or placing an order, you agree to be bound by these terms. Please read them carefully before making a purchase. If you disagree with any part of these terms, you must not use our website or services.

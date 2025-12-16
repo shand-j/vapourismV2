@@ -186,7 +186,7 @@ export default function AgeVerificationPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
-      <h1 className="text-2xl font-semibold">Verify your age</h1>
+      <h1 className="text-2xl font-semibold">Vapourism Age Verification: Complete Your Vape Order</h1>
       <p className="mt-4 text-sm text-slate-600">
         To complete your order verification, open the link sent in your confirmation email. This page accepts an
         order number and confirmation code and starts the age verification widget when you click the button below.

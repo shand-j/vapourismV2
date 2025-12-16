@@ -126,7 +126,7 @@ export default function Contact() {
         <div className="container mx-auto px-4 py-12 max-w-6xl">
           {/* Header Section */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4 text-gray-900">Contact Us</h1>
+            <h1 className="text-4xl font-bold mb-4 text-gray-900">Contact Vapourism: UK Vaping Support & Order Help</h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Need help with your order or have questions about our products? Our friendly customer service team is here to help.
             </p>

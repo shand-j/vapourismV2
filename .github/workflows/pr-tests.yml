@@ -1,0 +1,176 @@
+name: PR Tests
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: read
+  deployments: write
+  pull-requests: write
+
+jobs:
+  deploy-preview:
+    name: Deploy Preview
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    outputs:
+      preview_url: ${{ steps.deploy.outputs.preview_url }}
+      auth_bypass_token: ${{ steps.deploy.outputs.auth_bypass_token }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          check-latest: true
+
+      - name: Cache node modules
+        id: cache-npm
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and Deploy Preview with Auth Bypass Token
+        id: deploy
+        run: |
+          # Deploy to Oxygen with auth bypass token for testing
+          npx shopify hydrogen deploy --auth-bypass-token --json-output > h2_deploy_log.json 2>&1 || true
+          
+          # Extract deployment info from JSON output
+          if [ -f h2_deploy_log.json ]; then
+            # Parse the JSON to get URL and token
+            PREVIEW_URL=$(cat h2_deploy_log.json | jq -r '.url // empty')
+            AUTH_TOKEN=$(cat h2_deploy_log.json | jq -r '.authBypassToken // empty')
+            
+            # If jq parsing fails, try alternative parsing
+            if [ -z "$PREVIEW_URL" ]; then
+              PREVIEW_URL=$(grep -oP '"url"\s*:\s*"\K[^"]+' h2_deploy_log.json | head -1)
+            fi
+            if [ -z "$AUTH_TOKEN" ]; then
+              AUTH_TOKEN=$(grep -oP '"authBypassToken"\s*:\s*"\K[^"]+' h2_deploy_log.json | head -1)
+            fi
+            
+            echo "preview_url=$PREVIEW_URL" >> $GITHUB_OUTPUT
+            echo "auth_bypass_token=$AUTH_TOKEN" >> $GITHUB_OUTPUT
+            
+            echo "Preview URL: $PREVIEW_URL"
+            echo "Auth token obtained: $([ -n "$AUTH_TOKEN" ] && echo 'yes' || echo 'no')"
+          else
+            echo "::error::Deployment log file not found"
+            exit 1
+          fi
+        env:
+          SHOPIFY_HYDROGEN_DEPLOYMENT_TOKEN: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_1000063397 }}
+
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          check-latest: true
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm run test
+
+  e2e-tests:
+    name: E2E Tests
+    needs: [deploy-preview]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          check-latest: true
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Wait for preview deployment to be ready
+        run: |
+          PREVIEW_URL="${{ needs.deploy-preview.outputs.preview_url }}"
+          echo "Waiting for preview deployment at: $PREVIEW_URL"
+          
+          # Wait up to 5 minutes for the deployment to be ready
+          for i in {1..30}; do
+            if curl -sf -o /dev/null -H "oxygen-auth-bypass-token: ${{ needs.deploy-preview.outputs.auth_bypass_token }}" "$PREVIEW_URL"; then
+              echo "Preview deployment is ready!"
+              exit 0
+            fi
+            echo "Attempt $i/30: Deployment not ready yet, waiting 10 seconds..."
+            sleep 10
+          done
+          
+          echo "::error::Preview deployment did not become ready in time"
+          exit 1
+
+      - name: Run Playwright E2E tests
+        run: npm run test:e2e
+        env:
+          PLAYWRIGHT_BASE_URL: ${{ needs.deploy-preview.outputs.preview_url }}
+          OXYGEN_AUTH_BYPASS_TOKEN: ${{ needs.deploy-preview.outputs.auth_bypass_token }}
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 30

@@ -182,7 +182,7 @@ export default function Contact() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
             <div className="bg-white border border-gray-200 rounded-lg p-8">
-              <h2 className="text-2xl font-bold mb-6 text-gray-900">Send Us a Message</h2>
+              <h2 className="text-2xl font-bold mb-6 text-gray-900">Fill Out Our Contact Form for Fast Vaping Support</h2>
               <form className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>

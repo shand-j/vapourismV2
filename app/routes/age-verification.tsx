@@ -222,7 +222,7 @@ export default function AgeVerificationPage() {
       </div>
 
       <div className="mt-6 rounded-lg border border-slate-200 bg-slate-50 p-6">
-        <h2 className="text-sm font-semibold text-slate-700">Having trouble?</h2>
+        <h2 className="text-sm font-semibold text-slate-700">Having Trouble Verifying Your Age? Contact Our Support Team</h2>
         <p className="mt-2 text-sm text-slate-600">
           If you need assistance with age verification, our support team is here to help.
         </p>

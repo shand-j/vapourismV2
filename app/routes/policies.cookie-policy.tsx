@@ -73,7 +73,7 @@ export default function CookiePolicy() {
 
             <div className="space-y-8">
               <section>
-                <h2>1. What Are Cookies</h2>
+                <h2>Understanding Cookies: A Guide to Vapourism's Cookie Usage</h2>
                 <p>Cookies are small text files that are stored on your computer or mobile device when you visit our website. They serve various purposes including remembering your preferences, understanding how you use our site, and providing you with a personalized shopping experience. Cookies can be "persistent" (remaining on your device until you delete them or they expire) or "session" cookies (deleted when you close your browser).</p>
                 <p>Modern websites rely on cookies to function effectively and provide the features users expect. Without cookies, e-commerce sites like Vapourism couldn't maintain shopping carts, remember login credentials, or provide personalized product recommendations. Understanding how we use cookies helps you make informed decisions about your online privacy.</p>
               </section>

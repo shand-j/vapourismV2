@@ -6,8 +6,10 @@ import {SEOAutomationService} from '~/preserved/seo-automation';
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   const pageTitle = data?.page.title ?? '';
   const fullTitle = `Vapourism | ${pageTitle}`;
+  const description = data?.page?.seo?.description ?? `${pageTitle} at Vapourism`;
+  
   const metaTags = [
-    {title: SEOAutomationService.truncateTitle(fullTitle)}
+    {title: SEOAutomationService.truncateTitle(fullTitle)},
   ];
   
   // Add meta description from Shopify SEO if available
@@ -17,6 +19,14 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
       content: data.page.seo.description
     });
   }
+  
+  // Add Twitter Card metadata
+  metaTags.push(
+    {name: 'twitter:card', content: 'summary_large_image'},
+    {name: 'twitter:site', content: '@vapourismuk'},
+    {name: 'twitter:title', content: SEOAutomationService.truncateTitle(fullTitle)},
+    {name: 'twitter:description', content: description},
+  );
   
   return metaTags;
 };

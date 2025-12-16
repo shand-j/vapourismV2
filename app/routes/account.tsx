@@ -1,12 +1,21 @@
 import type {MetaFunction} from '@shopify/remix-oxygen';
 
-export const meta: MetaFunction = () => [
-  {title: 'Account access | Vapourism'},
-  {
-    name: 'description',
-    content: 'Customer account management is moving to Shopify’s native experience.',
-  },
-];
+export const meta: MetaFunction = () => {
+  const title = 'Account access | Vapourism';
+  const description = 'Customer account management is moving to Shopify native experience.';
+  
+  return [
+    {title},
+    {
+      name: 'description',
+      content: description,
+    },
+    {name: 'twitter:card', content: 'summary_large_image'},
+    {name: 'twitter:site', content: '@vapourismuk'},
+    {name: 'twitter:title', content: title},
+    {name: 'twitter:description', content: description},
+  ];
+};
 
 export default function AccountRoute() {
   const steps = [

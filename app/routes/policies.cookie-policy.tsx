@@ -1,31 +1,38 @@
 import {json, type LoaderFunctionArgs, type MetaFunction} from '@remix-run/server-runtime';
 import {useLoaderData, Link} from '@remix-run/react';
 
-export const meta: MetaFunction = () => [
-  {
-    title: 'Cookie Policy | How We Use Cookies | Vapourism'
-  },
-  {
-    name: 'description',
-    content: 'Vapourism cookie policy. Learn how we use cookies to improve your shopping experience, analytics, and site functionality. Manage your cookie preferences.'
-  },
-  {
-    name: 'keywords',
-    content: 'cookie policy, cookies, website cookies, cookie consent, privacy, tracking, analytics cookies'
-  },
-  {
-    property: 'og:title',
-    content: 'Cookie Policy | Vapourism'
-  },
-  {
-    property: 'og:description',
-    content: 'How Vapourism uses cookies to improve your shopping experience.'
-  },
-  {
-    name: 'robots',
-    content: 'index, follow'
-  }
-];
+export const meta: MetaFunction = () => {
+  const title = 'Cookie Policy | How We Use Cookies | Vapourism';
+  const description = 'Vapourism cookie policy. Learn how we use cookies to improve your shopping experience, analytics, and site functionality. Manage your cookie preferences.';
+  
+  return [
+    {title},
+    {
+      name: 'description',
+      content: description
+    },
+    {
+      name: 'keywords',
+      content: 'cookie policy, cookies, website cookies, cookie consent, privacy, tracking, analytics cookies'
+    },
+    {
+      property: 'og:title',
+      content: title
+    },
+    {
+      property: 'og:description',
+      content: description
+    },
+    {
+      name: 'robots',
+      content: 'index, follow'
+    },
+    {name: 'twitter:card', content: 'summary_large_image'},
+    {name: 'twitter:site', content: '@vapourismuk'},
+    {name: 'twitter:title', content: title},
+    {name: 'twitter:description', content: description},
+  ];
+};
 
 export async function loader({context}: LoaderFunctionArgs) {
   return json({

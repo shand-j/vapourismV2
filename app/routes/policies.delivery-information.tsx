@@ -1,31 +1,38 @@
 import {json, type LoaderFunctionArgs, type MetaFunction} from '@remix-run/server-runtime';
 import {useLoaderData, Link} from '@remix-run/react';
 
-export const meta: MetaFunction = () => [
-  {
-    title: 'Delivery Information | Fast UK Delivery | DPD & Royal Mail | Vapourism'
-  },
-  {
-    name: 'description',
-    content: 'Fast UK delivery for vaping products via DPD Local and Royal Mail. ✓ Free delivery over £20 ✓ Next-day delivery ✓ DPD tracking ✓ 1-3 day shipping. Order tracking included.'
-  },
-  {
-    name: 'keywords',
-    content: 'dpd local, delivery information, UK shipping, vape delivery, free delivery, next day delivery, order tracking, dpd tracking, royal mail, shipping policy'
-  },
-  {
-    property: 'og:title',
-    content: 'Delivery Information | Fast UK Delivery | DPD | Vapourism'
-  },
-  {
-    property: 'og:description',
-    content: 'Fast UK delivery for vaping products via DPD Local. Free shipping over £20. Next-day delivery available with full tracking.'
-  },
-  {
-    name: 'robots',
-    content: 'index, follow'
-  }
-];
+export const meta: MetaFunction = () => {
+  const title = 'Delivery Information | Fast UK Delivery | DPD & Royal Mail | Vapourism';
+  const description = 'Fast UK delivery for vaping products via DPD Local and Royal Mail. ✓ Free delivery over £20 ✓ Next-day delivery ✓ DPD tracking ✓ 1-3 day shipping. Order tracking included.';
+  
+  return [
+    {title},
+    {
+      name: 'description',
+      content: description
+    },
+    {
+      name: 'keywords',
+      content: 'dpd local, delivery information, UK shipping, vape delivery, free delivery, next day delivery, order tracking, dpd tracking, royal mail, shipping policy'
+    },
+    {
+      property: 'og:title',
+      content: title
+    },
+    {
+      property: 'og:description',
+      content: description
+    },
+    {
+      name: 'robots',
+      content: 'index, follow'
+    },
+    {name: 'twitter:card', content: 'summary_large_image'},
+    {name: 'twitter:site', content: '@vapourismuk'},
+    {name: 'twitter:title', content: title},
+    {name: 'twitter:description', content: description},
+  ];
+};
 
 export async function loader({context}: LoaderFunctionArgs) {
   return json({

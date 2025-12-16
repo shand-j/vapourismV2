@@ -1,31 +1,38 @@
 import {json, type LoaderFunctionArgs, type MetaFunction} from '@remix-run/server-runtime';
 import {useLoaderData, Link} from '@remix-run/react';
 
-export const meta: MetaFunction = () => [
-  {
-    title: 'Privacy Policy | Data Protection & GDPR | Vapourism'
-  },
-  {
-    name: 'description',
-    content: 'Vapourism privacy policy. Learn how we collect, use, and protect your personal data in compliance with UK GDPR. Transparent data handling for vaping customers.'
-  },
-  {
-    name: 'keywords',
-    content: 'privacy policy, GDPR, data protection, personal information, UK privacy law, customer data, vape shop privacy'
-  },
-  {
-    property: 'og:title',
-    content: 'Privacy Policy | Vapourism'
-  },
-  {
-    property: 'og:description',
-    content: 'How Vapourism protects your personal data in compliance with UK GDPR.'
-  },
-  {
-    name: 'robots',
-    content: 'index, follow'
-  }
-];
+export const meta: MetaFunction = () => {
+  const title = 'Privacy Policy | Data Protection & GDPR | Vapourism';
+  const description = 'Vapourism privacy policy. Learn how we collect, use, and protect your personal data in compliance with UK GDPR. Transparent data handling for vaping customers.';
+  
+  return [
+    {title},
+    {
+      name: 'description',
+      content: description
+    },
+    {
+      name: 'keywords',
+      content: 'privacy policy, GDPR, data protection, personal information, UK privacy law, customer data, vape shop privacy'
+    },
+    {
+      property: 'og:title',
+      content: title
+    },
+    {
+      property: 'og:description',
+      content: description
+    },
+    {
+      name: 'robots',
+      content: 'index, follow'
+    },
+    {name: 'twitter:card', content: 'summary_large_image'},
+    {name: 'twitter:site', content: '@vapourismuk'},
+    {name: 'twitter:title', content: title},
+    {name: 'twitter:description', content: description},
+  ];
+};
 
 export async function loader({context}: LoaderFunctionArgs) {
   return json({

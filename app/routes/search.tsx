@@ -405,8 +405,16 @@ export async function loader({request, context}: LoaderFunctionArgs) {
         {!data.hero && (
           <div className="mb-10 space-y-3 text-center lg:text-left">
             <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-400">Search</p>
-            <h1 className="text-4xl font-semibold text-slate-900">Browse {data.totalCount.toLocaleString()} Vaping Products at Vapourism: Fast Delivery & Filters</h1>
-            <p className="text-slate-600">Matching products powered by Shopify native search.</p>
+            <h1 className="text-4xl font-semibold text-slate-900">
+              {data.totalCount > 0 
+                ? `Browse ${data.totalCount.toLocaleString()} Vaping Products at Vapourism: Fast Delivery & Filters`
+                : 'Browse Vaping Products at Vapourism: Fast Delivery & Filters'}
+            </h1>
+            <p className="text-slate-600">
+              {data.totalCount > 0 
+                ? 'Matching products powered by Shopify native search.'
+                : 'No matching products found. Try adjusting your filters or search terms.'}
+            </p>
           </div>
         )}
 

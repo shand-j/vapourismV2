@@ -198,14 +198,18 @@ function formatProductH1(title: string, vendor: string): string {
   let formatted = title;
   
   // Remove "by [vendor]" pattern (case insensitive)
-  const byVendorPattern = new RegExp(`\\s+by\\s+${vendor.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'gi');
+  const escapedVendor = vendor.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const byVendorPattern = new RegExp(`\\s+by\\s+${escapedVendor}`, 'gi');
   formatted = formatted.replace(byVendorPattern, '');
   
   // Clean up promotional text: (BUY 1 GET 1 FREE) -> Buy 1 Get 1 Free
   formatted = formatted.replace(/\(BUY\s+(\d+)\s+GET\s+(\d+)\s+FREE\)/gi, '– Buy $1 Get $2 Free');
   
-  // Remove excessive hyphens and clean up spacing
-  formatted = formatted.replace(/\s*-\s*/g, ' ');
+  // Only remove hyphens that are surrounded by spaces (not part of compound words like "E-liquid")
+  // This preserves legitimate hyphenated terms while cleaning up separator hyphens
+  formatted = formatted.replace(/\s+-\s+/g, ' ');
+  
+  // Clean up multiple spaces
   formatted = formatted.replace(/\s+/g, ' ').trim();
   
   return formatted;

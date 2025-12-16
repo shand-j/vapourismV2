@@ -27,7 +27,7 @@ export const meta: MetaFunction = () => [
   {title: 'Vape Shop UK | Premium Vaping Products | Vapourism 2025'},
   {
     name: 'description',
-    content: 'UK\'s leading vape shop. ✓ Disposable Vapes ✓ E-Liquids ✓ Nicotine Pouches ✓ Pod Kits ✓ Fast Delivery ✓ Best Prices. Shop premium vaping products with next-day UK delivery.',
+    content: 'Vapourism: UK\'s leading vape shop. Buy disposable vapes, e-liquids, and kits with fast delivery and best prices. Shop now!',
   },
   {
     name: 'keywords',

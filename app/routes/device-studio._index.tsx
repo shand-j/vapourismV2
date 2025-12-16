@@ -15,7 +15,7 @@ export const meta: MetaFunction = () => [
   {
     name: 'description',
     content:
-      'Take our device finder quiz to discover the perfect vape kit for your needs. Compare pod systems, vape pens, and box mods with expert guidance. Get personalised device recommendations.',
+      'Discover your ideal vape kit with Vapourism\'s Device Studio. Get personalized recommendations and find the perfect pod system or vape pen today!',
   },
   {
     name: 'keywords',

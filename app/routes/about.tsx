@@ -4,7 +4,7 @@ export const meta: MetaFunction = () => [
   {title: 'About Vapourism | Premium UK Vape Shop | Est. 2015'},
   {
     name: 'description',
-    content: 'Learn about Vapourism - UK premium vape shop since 2015. Compliance-first retail with rigorous age verification, authentic products, and fast UK delivery. Built on Shopify for trusted shopping.',
+    content: 'Vapourism: Your trusted UK vape shop since 2015. We offer authentic products, rigorous age verification, and fast UK delivery.',
   },
   {
     name: 'keywords',

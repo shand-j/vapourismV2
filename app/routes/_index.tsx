@@ -39,7 +39,7 @@ export const meta: MetaFunction = () => [
   },
   {
     property: 'og:description',
-    content: 'UK\'s leading vape shop. Shop disposable vapes, e-liquids, nicotine pouches, and pod kits with fast UK delivery and best prices.',
+    content: 'UK\'s leading vape shop. Fast delivery, best prices.',
   },
   {
     property: 'og:type',

@@ -49,7 +49,7 @@ export const meta: MetaFunction = () => {
     },
     {
       property: 'og:description',
-      content: 'Get in touch with Vapourism for product help, order support, and expert vaping advice. Multiple contact methods available.'
+      content: 'Get expert help & support from Vapourism.'
     },
     {
       property: 'og:type',

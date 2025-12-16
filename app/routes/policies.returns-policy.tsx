@@ -19,7 +19,7 @@ export const meta: MetaFunction = () => [
   },
   {
     property: 'og:description',
-    content: '14-day return period for unopened vaping products. Learn about our hassle-free returns process.'
+    content: 'Easy 14-day returns for unopened vaping products.'
   },
   {
     name: 'robots',

@@ -6,6 +6,10 @@ export const meta: MetaFunction = () => [
     name: 'description',
     content: 'Customer account management is moving to Shopify’s native experience.',
   },
+  {
+    property: 'og:description',
+    content: 'Access your account: view orders, subscriptions & more.',
+  },
 ];
 
 export default function AccountRoute() {

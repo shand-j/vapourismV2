@@ -12,6 +12,10 @@ export const meta: MetaFunction = () => [
     content: 'Complete age verification to proceed with your vaping products order. UK law requires customers to be 18+ to purchase vaping products.'
   },
   {
+    property: 'og:description',
+    content: 'Verify your age to access vaping products.'
+  },
+  {
     name: 'robots',
     content: 'noindex, nofollow'
   }

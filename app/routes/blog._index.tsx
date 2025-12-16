@@ -12,6 +12,7 @@ export const meta: MetaFunction = () => {
     },
     {property: 'og:title', content: 'Blog | Vapourism'},
     {property: 'og:type', content: 'website'},
+    {property: 'og:url', content: 'https://www.vapourism.co.uk/blog'},
   ];
 };
 

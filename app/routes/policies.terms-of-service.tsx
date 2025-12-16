@@ -22,6 +22,10 @@ export const meta: MetaFunction = () => [
     content: 'Read our terms of service and conditions for purchasing vaping products.'
   },
   {
+    property: 'og:url',
+    content: 'https://www.vapourism.co.uk/policies/terms-of-service'
+  },
+  {
     name: 'robots',
     content: 'index, follow'
   }

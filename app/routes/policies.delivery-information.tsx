@@ -22,6 +22,10 @@ export const meta: MetaFunction = () => [
     content: 'Fast UK delivery for vaping products via DPD Local. Free shipping over £20. Next-day delivery available with full tracking.'
   },
   {
+    property: 'og:url',
+    content: 'https://www.vapourism.co.uk/policies/delivery-information'
+  },
+  {
     name: 'robots',
     content: 'index, follow'
   }

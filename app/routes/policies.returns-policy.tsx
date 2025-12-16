@@ -22,6 +22,10 @@ export const meta: MetaFunction = () => [
     content: '14-day return period for unopened vaping products. Learn about our hassle-free returns process.'
   },
   {
+    property: 'og:url',
+    content: 'https://www.vapourism.co.uk/policies/returns-policy'
+  },
+  {
     name: 'robots',
     content: 'index, follow'
   }

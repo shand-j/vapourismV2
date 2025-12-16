@@ -6,6 +6,10 @@ export const meta: MetaFunction = () => [
     name: 'description',
     content: 'Customer account management is moving to Shopify’s native experience.',
   },
+  {
+    property: 'og:url',
+    content: 'https://www.vapourism.co.uk/account',
+  },
 ];
 
 export default function AccountRoute() {

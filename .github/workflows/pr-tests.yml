@@ -44,7 +44,7 @@ jobs:
     uses: ./.github/workflows/oxygen-deployment-1000063397.yml
     secrets:
       OXYGEN_DEPLOYMENT_TOKEN_1000063397: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_1000063397 }}
-
+      
   e2e-tests:
     name: E2E Tests
     needs: [deploy-preview]
@@ -79,7 +79,7 @@ jobs:
       - name: Wait for preview deployment to be ready
         run: |
           PREVIEW_URL="${{ needs.deploy-preview.outputs.preview_url }}"
-          AUTH_TOKEN="${{ needs.deploy-preview.outputs.auth_bypass_token }}"
+          AUTH_TOKEN="${{ needs.deploy-preview.outputs.bypass_token }}"
           
           # Mask the auth token in logs
           if [ -n "$AUTH_TOKEN" ]; then
@@ -108,7 +108,7 @@ jobs:
         run: npm run test:e2e
         env:
           PLAYWRIGHT_BASE_URL: ${{ needs.deploy-preview.outputs.preview_url }}
-          OXYGEN_AUTH_BYPASS_TOKEN: ${{ needs.deploy-preview.outputs.auth_bypass_token }}
+          OXYGEN_AUTH_BYPASS_TOKEN: ${{ needs.deploy-preview.outputs.bypass_token }}
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4

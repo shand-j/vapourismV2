@@ -52,6 +52,7 @@ export default async function handleRequest(
         "'self'",
         'https://cdn.shopify.com',
         'https://dashboard.searchatlas.com',
+        'data:',
       ],
       connectSrc: [
         "'self'",

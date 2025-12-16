@@ -1,5 +1,31 @@
 name: Storefront 1000063397
-on: [push]
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      generate_auth_bypass_token:
+        description: 'Generate auth bypass token for E2E testing'
+        required: false
+        default: false
+        type: boolean
+  workflow_call:
+    inputs:
+      generate_auth_bypass_token:
+        description: 'Generate auth bypass token for E2E testing'
+        required: false
+        default: false
+        type: boolean
+    outputs:
+      preview_url:
+        description: 'The deployed preview URL'
+        value: ${{ jobs.deploy.outputs.preview_url }}
+      auth_bypass_token:
+        description: 'Auth bypass token for accessing private preview'
+        value: ${{ jobs.deploy.outputs.auth_bypass_token }}
+    secrets:
+      OXYGEN_DEPLOYMENT_TOKEN_1000063397:
+        required: true
 
 permissions:
   contents: read
@@ -10,6 +36,9 @@ jobs:
     name: Deploy to Oxygen
     timeout-minutes: 30
     runs-on: ubuntu-latest
+    outputs:
+      preview_url: ${{ steps.deploy.outputs.preview_url }}
+      auth_bypass_token: ${{ steps.deploy.outputs.auth_bypass_token }}
     steps:
       - uses: actions/checkout@v4
 
@@ -36,6 +65,46 @@ jobs:
         run: npm ci
 
       - name: Build and Publish to Oxygen
-        run: npx shopify hydrogen deploy
+        id: deploy
+        run: |
+          # Determine if we need auth bypass token
+          NEED_TOKEN="${{ inputs.generate_auth_bypass_token }}"
+          
+          if [ "$NEED_TOKEN" = "true" ]; then
+            # Deploy with auth bypass token for testing
+            DEPLOY_OUTPUT=$(npx shopify hydrogen deploy --auth-bypass-token --json-output 2>&1) || {
+              echo "::error::Deployment failed"
+              echo "$DEPLOY_OUTPUT"
+              exit 1
+            }
+            
+            # Parse the JSON to get URL and token
+            PREVIEW_URL=$(echo "$DEPLOY_OUTPUT" | jq -r '.url // empty')
+            AUTH_TOKEN=$(echo "$DEPLOY_OUTPUT" | jq -r '.authBypassToken // empty')
+            
+            # Validate we got the required values
+            if [ -z "$PREVIEW_URL" ]; then
+              echo "::error::Failed to extract preview URL from deployment output"
+              echo "Deployment output:"
+              echo "$DEPLOY_OUTPUT"
+              exit 1
+            fi
+            
+            if [ -z "$AUTH_TOKEN" ]; then
+              echo "::warning::Auth bypass token not found in deployment output - preview may require manual auth"
+            else
+              # Mask the auth token in logs
+              echo "::add-mask::$AUTH_TOKEN"
+            fi
+            
+            echo "preview_url=$PREVIEW_URL" >> $GITHUB_OUTPUT
+            echo "auth_bypass_token=$AUTH_TOKEN" >> $GITHUB_OUTPUT
+            
+            echo "Preview URL: $PREVIEW_URL"
+            echo "Auth token obtained: $([ -n "$AUTH_TOKEN" ] && echo 'yes' || echo 'no')"
+          else
+            # Standard deployment without auth bypass token
+            npx shopify hydrogen deploy
+          fi
         env:
           SHOPIFY_HYDROGEN_DEPLOYMENT_TOKEN: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_1000063397 }}

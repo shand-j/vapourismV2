@@ -13,6 +13,19 @@ describe('html-sanitizer', () => {
       expect(isExternalUrl('https://competitor.com/products')).toBe(true);
     });
 
+    it('should block dangerous URL schemes', () => {
+      expect(isExternalUrl('javascript:alert(1)')).toBe(true);
+      expect(isExternalUrl('data:text/html,<script>alert(1)</script>')).toBe(true);
+      expect(isExternalUrl('vbscript:msgbox(1)')).toBe(true);
+      expect(isExternalUrl('file:///etc/passwd')).toBe(true);
+    });
+
+    it('should treat protocol-relative URLs correctly', () => {
+      expect(isExternalUrl('//example.com')).toBe(true);
+      expect(isExternalUrl('//vapourism.co.uk')).toBe(false);
+      expect(isExternalUrl('//www.vapourism.co.uk')).toBe(false);
+    });
+
     it('should not flag internal domain URLs as external', () => {
       expect(isExternalUrl('https://vapourism.co.uk')).toBe(false);
       expect(isExternalUrl('https://vapourism.co.uk/products')).toBe(false);
@@ -164,6 +177,29 @@ describe('html-sanitizer', () => {
       expect(result).toBe(html);
     });
 
+    it('should remove dangerous URL schemes for security', () => {
+      const cases = [
+        {
+          input: '<a href="javascript:alert(1)">Click me</a>',
+          expected: 'Click me',
+        },
+        {
+          input: '<a href="data:text/html,<script>alert(1)</script>">Data URL</a>',
+          expected: 'Data URL',
+        },
+        {
+          input: '<a href="vbscript:msgbox(1)">VBScript</a>',
+          expected: 'VBScript',
+        },
+      ];
+
+      cases.forEach(({input, expected}) => {
+        const result = removeExternalLinks(input);
+        expect(result).toBe(expected);
+        expect(result).not.toContain('href');
+      });
+    });
+
     it('should handle nested HTML in link content', () => {
       const html = '<a href="https://external.com"><strong>Bold</strong> Link</a>';
       const result = removeExternalLinks(html);
@@ -181,9 +217,8 @@ describe('html-sanitizer', () => {
       // Protocol-relative URLs like //example.com should be treated as external
       const html = '<a href="//example.com">Link</a>';
       const result = removeExternalLinks(html);
-      // Since our regex looks for http/https, this will be preserved
-      // but that's acceptable as it's a rare edge case
-      // For now, we document this behavior
+      expect(result).toBe('Link'); // Should be filtered
+      expect(result).not.toContain('example.com');
     });
   });
 

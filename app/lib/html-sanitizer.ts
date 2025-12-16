@@ -25,12 +25,37 @@ export function isExternalUrl(
     return false;
   }
 
-  // Relative URLs are not external
+  // Trim whitespace
+  url = url.trim();
+
+  // Protocol-relative URLs (//example.com) should be checked first before single slash
+  if (url.startsWith('//')) {
+    try {
+      const urlObj = new URL(`https:${url}`);
+      const hostname = urlObj.hostname.toLowerCase();
+      return !allowedDomains.some(domain => 
+        hostname === domain.toLowerCase() || 
+        hostname.endsWith(`.${domain.toLowerCase()}`)
+      );
+    } catch {
+      // If parsing fails, treat as external for safety
+      return true;
+    }
+  }
+
+  // Relative URLs are not external (check after protocol-relative URLs)
   if (url.startsWith('/') || url.startsWith('#') || url.startsWith('?')) {
     return false;
   }
 
-  // Check if it's an absolute URL
+  // Block dangerous URL schemes
+  const dangerousSchemes = ['javascript:', 'data:', 'vbscript:', 'file:'];
+  const lowerUrl = url.toLowerCase();
+  if (dangerousSchemes.some(scheme => lowerUrl.startsWith(scheme))) {
+    return true; // Treat dangerous schemes as external (will be filtered)
+  }
+
+  // Check if it's an absolute URL with http/https
   try {
     const urlObj = new URL(url);
     const hostname = urlObj.hostname.toLowerCase();
@@ -66,8 +91,9 @@ export function removeExternalLinks(
 
   // Simple regex-based approach for link removal
   // This handles most common cases without requiring a full HTML parser
+  // Pattern matches: <a [attrs] href="url" [attrs]>content</a>
   return html.replace(
-    /<a\s+([^>]*?)href=["']([^"']+)["']([^>]*?)>(.*?)<\/a>/gi,
+    /<a\s+([^>]*?\s+)?href=["']([^"']+)["']([^>]*?)>(.*?)<\/a>/gi,
     (match, beforeHref, url, afterHref, content) => {
       // Keep the link if it's internal
       if (!isExternalUrl(url, allowedDomains)) {

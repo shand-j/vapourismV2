@@ -47,6 +47,18 @@ export default async function handleRequest(
       checkoutDomain,
       storeDomain,
     },
+    directives: {
+      scriptSrc: [
+        "'self'",
+        'https://cdn.shopify.com',
+        'https://dashboard.searchatlas.com',
+      ],
+      connectSrc: [
+        "'self'",
+        'https://monorail-edge.shopifysvc.com',
+        'https://dashboard.searchatlas.com',
+      ],
+    },
   });
 
   let body: any;

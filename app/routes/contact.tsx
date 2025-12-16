@@ -57,7 +57,7 @@ export const meta: MetaFunction = () => {
     },
     {
       property: 'og:url',
-      content: 'https://vapourism.co.uk/contact'
+      content: 'https://www.vapourism.co.uk/contact'
     },
     {
       property: 'og:site_name',

@@ -123,7 +123,7 @@ function truncateDescription(description: string, maxLength = 5000): string {
 }
 
 export async function loader({context}: LoaderFunctionArgs) {
-  const siteUrl = 'https://vapourism.co.uk';
+  const siteUrl = 'https://www.vapourism.co.uk';
   const allProducts: ProductNode[] = [];
   let hasNextPage = true;
   let cursor: string | null = null;

@@ -24,7 +24,7 @@ export const meta: MetaFunction = () => [
   },
   {
     property: 'og:url',
-    content: 'https://vapourism.co.uk/about',
+    content: 'https://www.vapourism.co.uk/about',
   },
   {
     name: 'twitter:card',

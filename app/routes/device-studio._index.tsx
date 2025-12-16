@@ -35,7 +35,7 @@ export const meta: MetaFunction = () => [
   },
   {
     property: 'og:url',
-    content: 'https://vapourism.co.uk/device-studio',
+    content: 'https://www.vapourism.co.uk/device-studio',
   },
   {
     property: 'og:image',

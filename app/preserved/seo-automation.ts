@@ -232,7 +232,7 @@ export class SEOAutomationService {
         "@type": "ListItem",
         "position": index + 1,
         "name": crumb.name,
-        "item": `https://vapourism.co.uk${crumb.url}`
+        "item": `https://www.vapourism.co.uk${crumb.url}`
       }))
     };
   }

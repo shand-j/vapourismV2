@@ -16,7 +16,7 @@ export const meta: MetaFunction = () => [
   },
   {
     name: 'twitter:description',
-    content: 'Streamline your vape shop experience! Vapourism\'s account management just got a Shopify upgrade. #Vaping #Shopify',
+    content: "Streamline your vape shop experience! Vapourism's account management just got a Shopify upgrade. #Vaping #Shopify",
   },
 ];
 

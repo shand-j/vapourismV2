@@ -77,6 +77,21 @@ export function isExternalUrl(
  * This function parses HTML and removes <a> tags that point to external URLs,
  * while preserving the link text content. Internal links and relative URLs are kept.
  * 
+ * **Implementation Note**: Uses regex-based parsing for simplicity and to avoid
+ * additional dependencies. This covers the vast majority of real-world Shopify
+ * product descriptions. For edge cases with deeply nested or malformed HTML,
+ * consider migrating to a proper HTML parser library (jsdom, node-html-parser, etc.)
+ * 
+ * **Known Limitations**:
+ * - Self-closing anchor tags (rare in practice)
+ * - Malformed HTML with unclosed tags
+ * - Extremely complex nested structures within links
+ * 
+ * These limitations are acceptable for the current use case because:
+ * 1. Shopify's WYSIWYG editor generates well-formed HTML
+ * 2. The regex is conservative and preserves ambiguous content
+ * 3. The security impact is minimal (worst case: we don't filter a malformed link)
+ * 
  * @param html - The HTML string to sanitize
  * @param allowedDomains - List of domains considered internal
  * @returns Sanitized HTML string with external links removed
@@ -89,8 +104,7 @@ export function removeExternalLinks(
     return '';
   }
 
-  // Simple regex-based approach for link removal
-  // This handles most common cases without requiring a full HTML parser
+  // Regex-based approach for link removal
   // Pattern matches: <a [attrs] href="url" [attrs]>content</a>
   return html.replace(
     /<a\s+([^>]*?\s+)?href=["']([^"']+)["']([^>]*?)>(.*?)<\/a>/gi,

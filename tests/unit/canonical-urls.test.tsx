@@ -21,7 +21,6 @@ describe('Canonical URL Configuration', () => {
   });
 
   it('should use www.vapourism.co.uk as the canonical domain', () => {
-    const expectedDomain = 'https://www.vapourism.co.uk';
     const testPath = '/products/test-product';
     
     // Simulate the canonical URL generation logic from root.tsx

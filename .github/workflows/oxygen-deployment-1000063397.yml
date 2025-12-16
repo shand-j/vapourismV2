@@ -50,14 +50,8 @@ jobs:
         run: npm ci
 
       - name: Build and Publish to Oxygen
-        run: npx shopify hydrogen deploy --auth-bypass-token
-        env:
-          SHOPIFY_HYDROGEN_DEPLOYMENT_TOKEN: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_1000063397 }}
-      
-      - name: Save deployment log
-        id: save_deployment_log
-        run: |
-          echo h2_deploy_log=$(npx shopify hydrogen deploy --log-output h2_deploy_log.json || true) >> $GITHUB_OUTPUT
+        run: npx shopify hydrogen deploy --auth-bypass-token && \
+              echo h2_deploy_log=$(npx shopify hydrogen deploy --log-output h2_deploy_log.json) >> $GITHUB_OUTPUT
         env:
           SHOPIFY_HYDROGEN_DEPLOYMENT_TOKEN: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_1000063397 }}
       

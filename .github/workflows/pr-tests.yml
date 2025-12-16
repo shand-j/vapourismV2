@@ -46,31 +46,39 @@ jobs:
         id: deploy
         run: |
           # Deploy to Oxygen with auth bypass token for testing
-          npx shopify hydrogen deploy --auth-bypass-token --json-output > h2_deploy_log.json 2>&1 || true
+          DEPLOY_OUTPUT=$(npx shopify hydrogen deploy --auth-bypass-token --json-output 2>&1) || {
+            echo "::error::Deployment failed"
+            echo "$DEPLOY_OUTPUT"
+            exit 1
+          }
           
-          # Extract deployment info from JSON output
-          if [ -f h2_deploy_log.json ]; then
-            # Parse the JSON to get URL and token
-            PREVIEW_URL=$(cat h2_deploy_log.json | jq -r '.url // empty')
-            AUTH_TOKEN=$(cat h2_deploy_log.json | jq -r '.authBypassToken // empty')
-            
-            # If jq parsing fails, try alternative parsing
-            if [ -z "$PREVIEW_URL" ]; then
-              PREVIEW_URL=$(grep -oP '"url"\s*:\s*"\K[^"]+' h2_deploy_log.json | head -1)
-            fi
-            if [ -z "$AUTH_TOKEN" ]; then
-              AUTH_TOKEN=$(grep -oP '"authBypassToken"\s*:\s*"\K[^"]+' h2_deploy_log.json | head -1)
-            fi
-            
-            echo "preview_url=$PREVIEW_URL" >> $GITHUB_OUTPUT
-            echo "auth_bypass_token=$AUTH_TOKEN" >> $GITHUB_OUTPUT
-            
-            echo "Preview URL: $PREVIEW_URL"
-            echo "Auth token obtained: $([ -n "$AUTH_TOKEN" ] && echo 'yes' || echo 'no')"
-          else
-            echo "::error::Deployment log file not found"
+          # Write output to file for parsing
+          echo "$DEPLOY_OUTPUT" > h2_deploy_log.json
+          
+          # Parse the JSON to get URL and token
+          PREVIEW_URL=$(echo "$DEPLOY_OUTPUT" | jq -r '.url // empty')
+          AUTH_TOKEN=$(echo "$DEPLOY_OUTPUT" | jq -r '.authBypassToken // empty')
+          
+          # Validate we got the required values
+          if [ -z "$PREVIEW_URL" ]; then
+            echo "::error::Failed to extract preview URL from deployment output"
+            echo "Deployment output:"
+            cat h2_deploy_log.json
             exit 1
           fi
+          
+          if [ -z "$AUTH_TOKEN" ]; then
+            echo "::warning::Auth bypass token not found in deployment output - preview may require manual auth"
+          else
+            # Mask the auth token in logs
+            echo "::add-mask::$AUTH_TOKEN"
+          fi
+          
+          echo "preview_url=$PREVIEW_URL" >> $GITHUB_OUTPUT
+          echo "auth_bypass_token=$AUTH_TOKEN" >> $GITHUB_OUTPUT
+          
+          echo "Preview URL: $PREVIEW_URL"
+          echo "Auth token obtained: $([ -n "$AUTH_TOKEN" ] && echo 'yes' || echo 'no')"
         env:
           SHOPIFY_HYDROGEN_DEPLOYMENT_TOKEN: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_1000063397 }}
 
@@ -138,16 +146,26 @@ jobs:
       - name: Wait for preview deployment to be ready
         run: |
           PREVIEW_URL="${{ needs.deploy-preview.outputs.preview_url }}"
+          AUTH_TOKEN="${{ needs.deploy-preview.outputs.auth_bypass_token }}"
+          
+          # Mask the auth token in logs
+          if [ -n "$AUTH_TOKEN" ]; then
+            echo "::add-mask::$AUTH_TOKEN"
+          fi
+          
           echo "Waiting for preview deployment at: $PREVIEW_URL"
           
           # Wait up to 5 minutes for the deployment to be ready
-          for i in {1..30}; do
-            if curl -sf -o /dev/null -H "oxygen-auth-bypass-token: ${{ needs.deploy-preview.outputs.auth_bypass_token }}" "$PREVIEW_URL"; then
+          i=1
+          while [ $i -le 30 ]; do
+            # Use curl with header passed via variable to avoid token exposure in logs
+            if curl -sf -o /dev/null -H "oxygen-auth-bypass-token: ${AUTH_TOKEN}" "$PREVIEW_URL" 2>/dev/null; then
               echo "Preview deployment is ready!"
               exit 0
             fi
             echo "Attempt $i/30: Deployment not ready yet, waiting 10 seconds..."
             sleep 10
+            i=$((i + 1))
           done
           
           echo "::error::Preview deployment did not become ready in time"

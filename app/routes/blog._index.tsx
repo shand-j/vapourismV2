@@ -11,7 +11,11 @@ export const meta: MetaFunction = () => {
         'Expert guides and educational content about vaping, nicotine products, and harm reduction. Stay informed with the latest insights from Vapourism.',
     },
     {property: 'og:title', content: 'Blog | Vapourism'},
+    {property: 'og:description', content: 'Expert guides and educational content about vaping, nicotine products, and harm reduction. Stay informed with the latest insights from Vapourism.'},
     {property: 'og:type', content: 'website'},
+    {name: 'twitter:card', content: 'summary'},
+    {name: 'twitter:title', content: 'Blog | Vapourism'},
+    {name: 'twitter:description', content: 'Expert guides and educational content about vaping, nicotine products, and harm reduction. Stay informed with the latest insights from Vapourism.'},
   ];
 };
 

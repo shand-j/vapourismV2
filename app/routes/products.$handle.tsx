@@ -816,7 +816,7 @@ export const meta = ({data}: {data: {product: typeof import('storefrontapi.gener
     // Open Graph tags
     {
       property: 'og:title',
-      content: product.title,
+      content: SEOAutomationService.generateProductTitle(product.title, product.vendor, product.seo?.title),
     },
     {
       property: 'og:description',
@@ -887,7 +887,7 @@ export const meta = ({data}: {data: {product: typeof import('storefrontapi.gener
     },
     {
       name: 'twitter:title',
-      content: product.title,
+      content: SEOAutomationService.generateProductTitle(product.title, product.vendor, product.seo?.title),
     },
     {
       name: 'twitter:description',

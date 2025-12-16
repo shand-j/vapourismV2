@@ -22,6 +22,18 @@ export const meta: MetaFunction = () => [
     content: '14-day return period for unopened vaping products. Learn about our hassle-free returns process.'
   },
   {
+    name: 'twitter:card',
+    content: 'summary'
+  },
+  {
+    name: 'twitter:title',
+    content: 'Returns & Refunds Policy | Vapourism'
+  },
+  {
+    name: 'twitter:description',
+    content: '14-day return period for unopened vaping products. Learn about our hassle-free returns process.'
+  },
+  {
     name: 'robots',
     content: 'index, follow'
   }

@@ -22,6 +22,18 @@ export const meta: MetaFunction = () => [
     content: 'How Vapourism uses cookies to improve your shopping experience.'
   },
   {
+    name: 'twitter:card',
+    content: 'summary'
+  },
+  {
+    name: 'twitter:title',
+    content: 'Cookie Policy | Vapourism'
+  },
+  {
+    name: 'twitter:description',
+    content: 'How Vapourism uses cookies to improve your shopping experience.'
+  },
+  {
     name: 'robots',
     content: 'index, follow'
   }

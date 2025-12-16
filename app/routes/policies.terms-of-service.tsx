@@ -22,6 +22,18 @@ export const meta: MetaFunction = () => [
     content: 'Read our terms of service and conditions for purchasing vaping products.'
   },
   {
+    name: 'twitter:card',
+    content: 'summary'
+  },
+  {
+    name: 'twitter:title',
+    content: 'Terms of Service | Vapourism'
+  },
+  {
+    name: 'twitter:description',
+    content: 'Read our terms of service and conditions for purchasing vaping products.'
+  },
+  {
     name: 'robots',
     content: 'index, follow'
   }

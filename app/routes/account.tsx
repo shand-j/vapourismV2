@@ -4,7 +4,27 @@ export const meta: MetaFunction = () => [
   {title: 'Account access | Vapourism'},
   {
     name: 'description',
-    content: 'Customer account management is moving to Shopify’s native experience.',
+    content: "Customer account management is moving to Shopify's native experience.",
+  },
+  {
+    property: 'og:title',
+    content: 'Account Access | Vapourism'
+  },
+  {
+    property: 'og:description',
+    content: "Customer account management is moving to Shopify's native experience."
+  },
+  {
+    name: 'twitter:card',
+    content: 'summary'
+  },
+  {
+    name: 'twitter:title',
+    content: 'Account Access | Vapourism'
+  },
+  {
+    name: 'twitter:description',
+    content: "Customer account management is moving to Shopify's native experience."
   },
 ];
 
@@ -22,7 +42,7 @@ export default function AccountRoute() {
           <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-400">Accounts</p>
           <h1 className="mt-4 text-4xl font-semibold text-slate-900">Customer portal in progress</h1>
           <p className="mt-3 text-slate-600">
-            We are wiring Shopify’s Customer Account API directly into the Hydrogen experience so
+            We are wiring Shopify's Customer Account API directly into the Hydrogen experience so
             logins, subscriptions, and loyalty perks feel seamless across channels.
           </p>
         </div>

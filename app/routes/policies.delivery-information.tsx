@@ -3,7 +3,7 @@ import {useLoaderData, Link} from '@remix-run/react';
 
 export const meta: MetaFunction = () => [
   {
-    title: 'Delivery Information | Fast UK Delivery | DPD & Royal Mail | Vapourism'
+    title: 'Vapourism Delivery: Fast UK Shipping & Tracking'
   },
   {
     name: 'description',

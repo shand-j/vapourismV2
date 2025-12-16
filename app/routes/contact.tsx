@@ -40,7 +40,7 @@ export const meta: MetaFunction = () => {
     },
     {
       name: 'keywords',
-      content: 'contact vapourism, vape shop customer service, UK vape support, order help, product inquiries, vaping advice, customer support UK, contact details'
+      content: 'vapourism contact, customer support, vaping products, e-liquids, delivery options, return policy, age verification, UK vaping retailer'
     },
     // Open Graph
     {

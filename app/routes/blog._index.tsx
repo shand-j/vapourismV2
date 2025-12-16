@@ -10,6 +10,10 @@ export const meta: MetaFunction = () => {
       content:
         'Expert guides and educational content about vaping, nicotine products, and harm reduction. Stay informed with the latest insights from Vapourism.',
     },
+    {
+      name: 'keywords',
+      content: 'vaping, e-liquids, nicotine products, vaping guides, harm reduction, vape reviews, vaping trends, UK vaping, vape safety, vaping education',
+    },
     {property: 'og:title', content: 'Blog | Vapourism'},
     {property: 'og:type', content: 'website'},
   ];

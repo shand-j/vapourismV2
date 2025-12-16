@@ -546,6 +546,10 @@ export const meta = ({data}: {data: any}) => {
       content: `Found ${count} products matching "${query}". Shop premium vaping products at Vapourism with fast UK delivery.`,
     },
     {
+      name: 'keywords',
+      content: 'vaping products, e-liquids, vape devices, vape accessories, online vaping store, fast delivery vaping, vape discounts, same-day dispatch',
+    },
+    {
       name: 'robots',
       content: 'noindex, follow', // Don't index search results pages
     },

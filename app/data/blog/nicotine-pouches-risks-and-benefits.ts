@@ -11,6 +11,7 @@ export const nicotinePouchesArticle: BlogArticle = {
   slug: 'nicotine-pouches-risks-and-benefits',
   title: 'Nicotine Pouches Explained: Risks vs. Benefits',
   metaDescription: 'Explore \'Nicotine Pouches: Risks and Benefits Explained\' to discover if these tobacco-free, smokeless alternatives are safer. Learn about health impacts, usage, and safety.',
+  metaKeywords: 'nicotine pouches, vaping alternatives, tobacco-free products, harm reduction, benefits of nicotine pouches, risks of nicotine pouches, informed decision-making, vaping safety',
   publishedDate: '2024-12-15',
   lastModified: '2024-12-15',
   author: 'Vapourism Team',

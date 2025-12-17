@@ -307,7 +307,7 @@ While vaping is considered less harmful than smoking, nicotine itself carries he
 * **Gradual changes**: Don't rush nicotine reduction
 * **Seek support**: Join vaping communities for advice
 
-## Conclusion
+## Final Thoughts: Vape Nicotine Levels, UK Limits & Selection Tips
 
 The amount of nicotine in a vape varies significantly based on the device type, e-liquid chosen, and personal usage patterns. UK regulations cap nicotine at 20mg/ml, ensuring consistent standards across the market.
 

@@ -94,7 +94,7 @@ export default function PrivacyPolicy() {
               </section>
 
               <section>
-                <h2>4. Data Security</h2>
+                <h2>How We Secure Your Personal Data at Vapourism</h2>
                 <p>We implement appropriate technical and organizational security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. Our security practices include SSL encryption for data transmission, secure servers with firewall protection, regular security audits, and restricted access to personal data on a need-to-know basis.</p>
                 <p>Payment information is processed through PCI DSS compliant payment gateways and never stored on our servers. Age verification data is encrypted both in transit and at rest, with access limited to authorized personnel for compliance verification purposes. We maintain comprehensive backup systems and incident response procedures to protect against data loss and security breaches.</p>
                 <p>While we implement industry-standard security measures, no method of internet transmission or electronic storage is completely secure. We cannot guarantee absolute security but continually update our security practices to align with current best practices and regulatory requirements.</p>

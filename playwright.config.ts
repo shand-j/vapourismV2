@@ -1,11 +1,12 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const baseURL = process.env.PLAYWRIGHT_BASE_URL || process.env.BASE_URL || 'http://localhost:3000';
-const isCI = !!process.env.CI;
-const isRemote = baseURL.includes('oxygen.myshopify.com') || baseURL.includes('vapourism.co.uk');
 
-// Oxygen preview password for accessing private preview deployments
-const oxygenPreviewPassword = process.env.OXYGEN_PREVIEW_PASSWORD;
+const authBypassToken = process.env.OXYGEN_AUTH_BYPASS_TOKEN;
+
+// Check if we're targeting a remote preview environment (not localhost)
+const isRemotePreview = baseURL && !baseURL.includes('localhost') && !baseURL.includes('127.0.0.1');
+const isCI = !!process.env.CI;
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -23,20 +24,25 @@ export default defineConfig({
     trace: 'on-first-retry',
     video: isCI ? 'on-first-retry' : 'on',
     screenshot: 'only-on-failure',
-    // Add extra HTTP headers for Oxygen preview authentication
-    extraHTTPHeaders: oxygenPreviewPassword ? {
-      'X-Shopify-Oxygen-Preview-Password': oxygenPreviewPassword,
-    } : {},
+    // Add auth bypass token header for Oxygen preview environments
+    ...(authBypassToken && {
+      extraHTTPHeaders: {
+        'oxygen-auth-bypass-token': authBypassToken,
+      },
+    }),
   },
+  // Only start local webServer when not targeting a remote preview
+  ...(isRemotePreview
+    ? {}
+    : {
+        webServer: {
+          command: 'npm run preview',
+          url: baseURL,
+          reuseExistingServer: true,
+          timeout: 120_000,
+        },
+      }),
   // Only start local webServer when not testing against remote deployment
-  ...(isRemote ? {} : {
-    webServer: {
-      command: 'npm run preview',
-      url: baseURL,
-      reuseExistingServer: true,
-      timeout: 120_000,
-    },
-  }),
   projects: [
     {
       name: 'chromium',
@@ -45,7 +51,7 @@ export default defineConfig({
     // Add mobile testing in CI
     ...(isCI ? [{
       name: 'mobile-chrome',
-      use: { ...devices['Pixel 5'] },
+      use: { ...devices['iPhone 12'] },
     }] : []),
   ],
-});
+} );

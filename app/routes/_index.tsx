@@ -27,7 +27,7 @@ export const meta: MetaFunction = () => [
   {title: 'Vape Shop UK | Premium Vaping Products | Vapourism 2025'},
   {
     name: 'description',
-    content: 'UK\'s leading vape shop. ✓ Disposable Vapes ✓ E-Liquids ✓ Nicotine Pouches ✓ Pod Kits ✓ Fast Delivery ✓ Best Prices. Shop premium vaping products with next-day UK delivery.',
+    content: 'Vapourism: UK\'s leading vape shop. Buy disposable vapes, e-liquids, and kits with fast delivery and best prices. Shop now!',
   },
   {
     name: 'keywords',
@@ -39,7 +39,7 @@ export const meta: MetaFunction = () => [
   },
   {
     property: 'og:description',
-    content: 'UK\'s leading vape shop. Shop disposable vapes, e-liquids, nicotine pouches, and pod kits with fast UK delivery and best prices.',
+    content: 'UK\'s leading vape shop. Fast delivery, best prices.',
   },
   {
     property: 'og:type',
@@ -47,7 +47,7 @@ export const meta: MetaFunction = () => [
   },
   {
     property: 'og:url',
-    content: 'https://vapourism.co.uk',
+    content: 'https://www.vapourism.co.uk',
   },
   {
     property: 'og:site_name',
@@ -288,7 +288,7 @@ export default function IndexRoute() {
   const organizationSchema = generateOrganizationSchema({
     name: 'Vapourism',
     url: 'https://www.vapourism.co.uk',
-    logo: 'https://vapourism.co.uk/logo.png',
+    logo: 'https://www.vapourism.co.uk/logo.png',
     description: 'Premium vaping essentials with trusted age verification and next-day UK delivery.',
     address: {
       '@type': 'PostalAddress',
@@ -484,7 +484,7 @@ export default function IndexRoute() {
           <div className="container-custom">
             <div className="text-center">
               <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-400">Just landed</p>
-              <h2 className="mt-3 mb-4">New arrivals</h2>
+              <h2 className="mt-3 mb-4">Discover the Latest Vape Arrivals from Top UK & EU Brands</h2>
               <p className="text-slate-600">The latest products to hit our shelves, fresh from the best UK and EU brands.</p>
             </div>
 

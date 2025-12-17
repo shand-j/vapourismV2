@@ -23,7 +23,54 @@ export interface ProductSEOData {
   sku?: string;
 }
 
+/**
+ * Custom SEO title overrides for specific products
+ * Maps product handle to optimized meta title
+ */
+const PRODUCT_TITLE_OVERRIDES: Record<string, string> = {
+  'realest-cbd-4000mg-cbg-isolate-buy-1-get-1-free': 'Realest CBD 4000mg CBG Isolate: BOGO at Vapourism',
+  'celtic-wind-crops-500mg-cbd-multi-complex-hemp-oil-10ml': 'Celtic Wind Crops 500mg CBD Oil 10ml: Buy Now | Vapourism',
+  'joule-150mg-cbd-herbal-anti-oxi-conditioner-250ml': 'Joul\'e CBD Conditioner: Restore & Revive Hair | Vapourism',
+  'realest-cbd-6000mg-cbd-10ml-raw-paste-buy-1-get-1-free': 'Realest CBD 6000mg Raw Paste (Buy 1 Get 1 Free) | Vapourism',
+  'realest-cbd-1000mg-80-broad-spectrum-cbd-crumble-buy-1-get-1-free': 'Realest CBD Crumble: Buy 1 Get 1 Free – Vapourism 2025',
+  '20mg-just-nic-it-nic-salt-10ml-50vg-50pg': '20mg Just Nic It Nic Salt 10ml: Fast Delivery at Vapourism',
+  '12mg-ohm-boy-longfill-booster-kit-freebase-50vg-50pg': '12mg Ohm Boy Longfill Booster Kit (50VG/50PG) | Vapourism UK',
+  'cbd-by-british-cannabis-1000mg-cbd-raw-cannabis-oil-drops-10ml': 'Buy British Cannabis CBD Oil Drops 1000mg | 2025',
+  'realest-cbd-5000mg-80-broad-spectrum-cbd-crumble-buy-1-get-1-free': 'Realest CBD Crumble: Buy 1 Get 1 Free at Vapourism',
+  'cbd-asylum-infuse-10000mg-cbd-cola-oil-30ml-buy-1-get-2-free': 'CBD Asylum Cola Oil 10000mg: Buy 1 Get 2 Free at Vapourism',
+};
+
 export class SEOAutomationService {
+  
+  /**
+   * Product type keywords for title optimization
+   * Order matters - more specific types should come first
+   */
+  private static readonly PRODUCT_TYPE_KEYWORDS = [
+    'Drops',      // More specific than "Oil"
+    'Crumble',
+    'Oil',
+    'Tea',
+    'Gummies',
+    'Capsules',
+    'Vape',
+    'E-Liquid'
+  ];
+  
+  /**
+   * Product category mappings for og:title generation
+   * Maps product types to their display names
+   */
+  private static readonly PRODUCT_CATEGORIES: Record<string, string> = {
+    'Drops': 'CBD Oil Drops',
+    'Oil': 'CBD Oil',
+    'Crumble': 'CBD Crumble',
+    'Tea': 'CBD Tea',
+    'E-Liquid': 'E-Liquid',
+    'Vape': 'Vape',
+    'Gummies': 'CBD Gummies',
+    'Capsules': 'CBD Capsules',
+  };
   
   /**
    * Generate comprehensive keywords for products
@@ -232,7 +279,7 @@ export class SEOAutomationService {
         "@type": "ListItem",
         "position": index + 1,
         "name": crumb.name,
-        "item": `https://vapourism.co.uk${crumb.url}`
+        "item": `https://www.vapourism.co.uk${crumb.url}`
       }))
     };
   }
@@ -349,13 +396,19 @@ export class SEOAutomationService {
   /**
    * Generate optimized product title for meta tags
    * Ensures title fits within 70 character SEO limit
-   * Priority: Product title > Vendor > "Vapourism"
+   * Priority: Custom override > Shopify SEO title > Product title > Vendor > "Vapourism"
    * @param productTitle The product title
    * @param vendor The vendor/brand name
    * @param seoTitle Optional SEO title override from Shopify
+   * @param handle Optional product handle for custom title overrides
    * @returns Optimized title string ≤70 characters
    */
-  static generateProductTitle(productTitle: string, vendor: string, seoTitle?: string | null): string {
+  static generateProductTitle(productTitle: string, vendor: string, seoTitle?: string | null, handle?: string | null): string {
+    // Check for custom title override by product handle
+    if (handle && PRODUCT_TITLE_OVERRIDES[handle]) {
+      return this.truncateTitle(PRODUCT_TITLE_OVERRIDES[handle]);
+    }
+
     // Use SEO title from Shopify if available
     if (seoTitle) {
       return this.truncateTitle(seoTitle);
@@ -386,6 +439,114 @@ export class SEOAutomationService {
     }
     
     return truncatedProduct + '…' + suffix;
+  }
+
+  /**
+   * Generate marketing-friendly Open Graph title for products
+   * Creates engaging, concise titles optimized for social sharing
+   * Handles promotional text (BUY 1 GET 1 FREE, etc.) by reordering for impact
+   * @param productTitle The raw product title from Shopify
+   * @param vendor The vendor/brand name
+   * @returns Marketing-optimized og:title (no suffix, ready for social sharing)
+   */
+  static generateOGTitle(productTitle: string, vendor: string): string {
+    // Extract all parenthesized content and find promotional text
+    const allParentheses = productTitle.match(/\([^)]+\)/g) || [];
+    const promoText = allParentheses.find(p => /buy\s+\d+\s+get\s+\d+\s+free/i.test(p))?.replace(/[()]/g, '') || null;
+    
+    // Clean title by removing parentheses content and extra whitespace
+    let cleanTitle = productTitle.replace(/\s*\([^)]*\)\s*/g, ' ').trim();
+    
+    // Handle "BUY X GET Y FREE" promotions - move to front with colon
+    if (promoText && /buy\s+\d+\s+get\s+\d+\s+free/i.test(promoText)) {
+      const match = promoText.match(/buy\s+(\d+)\s+get\s+(\d+)\s+free/i);
+      if (match) {
+        const [, buy, get] = match;
+        const buyNum = parseInt(buy);
+        const getNum = parseInt(get);
+        
+        // Extract key product info (strength, size, type)
+        const strengthMatch = cleanTitle.match(/(\d+mg)/i);
+        const strength = strengthMatch ? strengthMatch[1] : '';
+        
+        // Get product type using class constant with word boundary matching
+        const words = cleanTitle.split(/\s+/);
+        const productType = words.find(w => 
+          this.PRODUCT_TYPE_KEYWORDS.some(t => w.toLowerCase() === t.toLowerCase())
+        ) || '';
+        
+        // Format promotional title based on offer type
+        const promoPrefix = `Buy ${buy} Get ${get} Free`;
+        const suffix = (buyNum === 1 && getNum === 1) ? ' Deal' : '';
+        return `${promoPrefix}: ${vendor} ${strength} ${productType}${suffix}`.replace(/\s+/g, ' ').trim();
+      }
+    }
+    
+    // For standard products, create format: "Strength/Key Feature + Product Type + by Vendor + Unique Selling Point"
+    
+    // Extract numeric strength (mg, ml, g)
+    const strengthMatch = cleanTitle.match(/(\d+(?:mg|ml|g))/i);
+    const strength = strengthMatch ? strengthMatch[1] : '';
+    
+    // Identify product category using class constant
+    // Categories are checked in order of specificity (Drops before Oil)
+    const isCBDProduct = /\bcbd\b/i.test(cleanTitle);
+    let productCategory = '';
+    for (const [key, value] of Object.entries(this.PRODUCT_CATEGORIES)) {
+      // Use case-insensitive matching to catch all variations
+      if (cleanTitle.toLowerCase().includes(key.toLowerCase())) {
+        // Only add CBD prefix for CBD products; use base type for others
+        productCategory = isCBDProduct ? value : key;
+        break;
+      }
+    }
+    
+    // Extract key descriptors (Broad Spectrum, Full Spectrum, Raw, Cold Pressed, etc.)
+    const descriptors: string[] = [];
+    if (/broad\s+spectrum/i.test(cleanTitle)) descriptors.push('Broad Spectrum');
+    if (/full\s+spectrum/i.test(cleanTitle)) descriptors.push('Full Spectrum');
+    if (/raw/i.test(cleanTitle)) descriptors.push('Raw Extract');
+    if (/cold\s+pressed/i.test(cleanTitle)) descriptors.push('Cold Pressed');
+    
+    // Build optimized title based on available components
+    if (strength && productCategory && vendor) {
+      if (descriptors.length > 0) {
+        return `${strength} ${productCategory} by ${vendor} - ${descriptors[0]}`;
+      }
+      return `${strength} ${productCategory} by ${vendor}`;
+    }
+    
+    // If we have product category without strength, still try to build a good title
+    if (productCategory && vendor) {
+      if (descriptors.length > 0) {
+        return `${productCategory} by ${vendor} - ${descriptors[0]}`;
+      }
+      return `${productCategory} by ${vendor}`;
+    }
+    
+    // Fallback: try to create a concise version
+    // Remove redundant "CBD" repetitions
+    let optimized = cleanTitle.replace(/\bCBD\s+by\s+(\w+)\s+(\w+)\s+CBD\b/gi, 'CBD by $1 $2');
+    
+    // If title is too long, extract key parts
+    if (optimized.length > 60) {
+      const parts = [];
+      if (strength) parts.push(strength);
+      if (productCategory) parts.push(productCategory);
+      if (vendor && !optimized.toLowerCase().includes('by')) parts.push(`by ${vendor}`);
+      if (descriptors.length > 0) parts.push(`- ${descriptors[0]}`);
+      
+      if (parts.length > 0) {
+        return parts.join(' ');
+      }
+    }
+    
+    // Final fallback: use cleaned title, truncated if needed
+    if (optimized.length > 60) {
+      return optimized.substring(0, 57) + '...';
+    }
+    
+    return optimized;
   }
 }
 

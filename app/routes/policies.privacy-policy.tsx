@@ -1,38 +1,62 @@
 import {json, type LoaderFunctionArgs, type MetaFunction} from '@remix-run/server-runtime';
 import {useLoaderData, Link} from '@remix-run/react';
 
-export const meta: MetaFunction = () => {
-  const title = 'Privacy Policy | Data Protection & GDPR | Vapourism';
-  const description = 'Vapourism privacy policy. Learn how we collect, use, and protect your personal data in compliance with UK GDPR. Transparent data handling for vaping customers.';
-  
-  return [
-    {title},
-    {
-      name: 'description',
-      content: description
-    },
-    {
-      name: 'keywords',
-      content: 'privacy policy, GDPR, data protection, personal information, UK privacy law, customer data, vape shop privacy'
-    },
-    {
-      property: 'og:title',
-      content: title
-    },
-    {
-      property: 'og:description',
-      content: description
-    },
-    {
-      name: 'robots',
-      content: 'index, follow'
-    },
-    {name: 'twitter:card', content: 'summary_large_image'},
-    {name: 'twitter:site', content: '@vapourismuk'},
-    {name: 'twitter:title', content: title},
-    {name: 'twitter:description', content: description},
-  ];
-};
+export const meta: MetaFunction = () => [
+  {
+    title: 'Privacy Policy | Data Protection & GDPR | Vapourism'
+  },
+  {
+    name: 'description',
+    content: 'Vapourism privacy policy. Learn how we collect, use, and protect your personal data in compliance with UK GDPR. Transparent data handling for vaping customers.'
+  },
+  {
+    name: 'keywords',
+    content: 'privacy policy, GDPR, data protection, personal information, UK privacy law, customer data, vape shop privacy'
+  },
+  {
+    property: 'og:title',
+    content: 'Privacy Policy | Vapourism'
+  },
+  {
+    property: 'og:description',
+    content: 'Vapourism: Protecting your personal data in line with UK GDPR.'
+  },
+  {
+    name: 'twitter:card',
+    content: 'summary_large_image'
+  },
+
+  {
+    name: 'twitter:site',
+    content: '@vapourismuk'
+  },  {
+    name: 'twitter:title',
+    content: 'Privacy Policy | Vapourism'
+  },
+  {
+    name: 'twitter:description',
+    content: 'How Vapourism protects your personal data in compliance with UK GDPR.'
+  },
+  {
+    property: 'og:url',
+    content: 'https://www.vapourism.co.uk/policies/privacy-policy'
+  },
+  {
+    name: 'robots',
+    content: 'index, follow'
+  },
+  {
+  {
+    name: 'twitter:title',
+    content: 'Privacy Policy | Vapourism'
+  },
+  {
+    name: 'twitter:description',
+    content: 'Learn how Vapourism handles your data & our UK GDPR compliance practices. #DataProtection'
+  }
+];
+
+
 
 export async function loader({context}: LoaderFunctionArgs) {
   return json({
@@ -72,7 +96,7 @@ export default function PrivacyPolicy() {
       <main className="flex-1">
         <div className="container mx-auto px-4 py-12 max-w-4xl">
           <div className="prose prose-lg max-w-none">
-            <h1>Privacy Policy</h1>
+            <h1>Vapourism UK GDPR Privacy Policy: Data Collection, Use & Rights</h1>
             
             <p className="lead text-xl text-gray-600 mb-8">
               At Vapourism, we take your privacy seriously. This Privacy Policy explains how we collect, use, store, and protect your personal information in compliance with UK GDPR and Data Protection Act 2018. We are committed to transparency about our data practices and your privacy rights.
@@ -101,7 +125,7 @@ export default function PrivacyPolicy() {
               </section>
 
               <section>
-                <h2>4. Data Security</h2>
+                <h2>How We Secure Your Personal Data at Vapourism</h2>
                 <p>We implement appropriate technical and organizational security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. Our security practices include SSL encryption for data transmission, secure servers with firewall protection, regular security audits, and restricted access to personal data on a need-to-know basis.</p>
                 <p>Payment information is processed through PCI DSS compliant payment gateways and never stored on our servers. Age verification data is encrypted both in transit and at rest, with access limited to authorized personnel for compliance verification purposes. We maintain comprehensive backup systems and incident response procedures to protect against data loss and security breaches.</p>
                 <p>While we implement industry-standard security measures, no method of internet transmission or electronic storage is completely secure. We cannot guarantee absolute security but continually update our security practices to align with current best practices and regulatory requirements.</p>

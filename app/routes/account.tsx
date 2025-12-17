@@ -1,21 +1,48 @@
 import type {MetaFunction} from '@shopify/remix-oxygen';
 
-export const meta: MetaFunction = () => {
-  const title = 'Account access | Vapourism';
-  const description = 'Customer account management is moving to Shopify native experience.';
-  
-  return [
-    {title},
-    {
-      name: 'description',
-      content: description,
-    },
-    {name: 'twitter:card', content: 'summary_large_image'},
-    {name: 'twitter:site', content: '@vapourismuk'},
-    {name: 'twitter:title', content: title},
-    {name: 'twitter:description', content: description},
-  ];
-};
+export const meta: MetaFunction = () => [
+  {title: 'Vapourism Account: Manage Your Account & More'},
+  {
+    name: 'description',
+    content: "Customer account management is moving to Shopify's native experience.",
+  },
+  {
+    property: 'og:title',
+    content: 'Vapourism Account Management Made Easy',
+  },
+  {
+    property: 'og:description',
+    content: "Customer account management is moving to Shopify's native experience."
+  },
+  {
+    name: 'twitter:card',
+    content: 'summary_large_image'
+  },
+  {
+    name: 'twitter:site',
+    content: '@vapourismuk'
+  },
+  {
+    name: 'twitter:title',
+    content: 'Account Access | Vapourism'
+  },
+  {
+    name: 'twitter:description',
+    content: "Customer account management is moving to Shopify's native experience."
+  },
+  {
+    name: 'keywords',
+    content: 'customer account management, Shopify integration, order history, subscriptions management, age verification, delivery policies, returns process, user experience',
+  },
+  {
+    property: 'og:url',
+    content: 'https://www.vapourism.co.uk/account',
+  },
+  {
+    property: 'og:description',
+    content: 'Access your account: view orders, subscriptions & more.',
+  },
+];
 
 export default function AccountRoute() {
   const steps = [
@@ -31,7 +58,7 @@ export default function AccountRoute() {
           <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-400">Accounts</p>
           <h1 className="mt-4 text-4xl font-semibold text-slate-900">Customer portal in progress</h1>
           <p className="mt-3 text-slate-600">
-            We are wiring Shopify’s Customer Account API directly into the Hydrogen experience so
+            We are wiring Shopify's Customer Account API directly into the Hydrogen experience so
             logins, subscriptions, and loyalty perks feel seamless across channels.
           </p>
         </div>

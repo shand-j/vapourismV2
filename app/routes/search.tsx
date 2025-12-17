@@ -405,8 +405,16 @@ export async function loader({request, context}: LoaderFunctionArgs) {
         {!data.hero && (
           <div className="mb-10 space-y-3 text-center lg:text-left">
             <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-400">Search</p>
-            <h1 className="text-4xl font-semibold text-slate-900">Results for "{data.query || '...'}"</h1>
-            <p className="text-slate-600">{data.totalCount} matching products powered by Shopify native search.</p>
+            <h1 className="text-4xl font-semibold text-slate-900">
+              {data.totalCount > 0 
+                ? `Browse ${data.totalCount.toLocaleString()} Vaping Products at Vapourism: Fast Delivery & Filters`
+                : 'Browse Vaping Products at Vapourism: Fast Delivery & Filters'}
+            </h1>
+            <p className="text-slate-600">
+              {data.totalCount > 0 
+                ? 'Matching products powered by Shopify native search.'
+                : 'No matching products found. Try adjusting your filters or search terms.'}
+            </p>
           </div>
         )}
 
@@ -538,7 +546,6 @@ export const meta = ({data}: {data: any}) => {
 
   // Use centralized truncation for consistency
   const title = SEOAutomationService.truncateTitle(`Search Results for "${query}" | Vapourism`);
-
   const description = `Found ${count} products matching "${query}". Shop premium vaping products at Vapourism with fast UK delivery.`;
 
   return [
@@ -548,12 +555,38 @@ export const meta = ({data}: {data: any}) => {
       content: description,
     },
     {
+      property: 'og:title',
+      content: query 
+        ? `Find Your Vape: ${query} - ${count} Products Available`
+        : `Find Your Vape: ${count} Products to Choose From - Fast Delivery`,
+    },
+    {
+      property: 'og:description',
+      content: 'Vaping products at your fingertips. Fast delivery, great deals.',
+    },
+    {
+      name: 'keywords',
+      content: 'vaping products, e-liquids, vape devices, vape accessories, online vaping store, fast delivery vaping, vape discounts, same-day dispatch',
+    },
+    {
       name: 'robots',
       content: 'noindex, follow', // Don't index search results pages
     },
-    {name: 'twitter:card', content: 'summary_large_image'},
-    {name: 'twitter:site', content: '@vapourismuk'},
-    {name: 'twitter:title', content: title},
-    {name: 'twitter:description', content: description},
+    {
+      name: 'twitter:card',
+      content: 'summary_large_image',
+    },
+    {
+      name: 'twitter:site',
+      content: '@vapourismuk',
+    },
+    {
+      name: 'twitter:title',
+      content: title,
+    },
+    {
+      name: 'twitter:description',
+      content: `Find your perfect vape! ${count > 0 ? count : '1929'} products to choose from. Fast delivery & great prices! #VapingDeals #Eliquids`,
+    },
   ];
 };

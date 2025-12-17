@@ -15,7 +15,7 @@ export const meta: MetaFunction = () => [
   {
     name: 'description',
     content:
-      'Take our flavour quiz to discover personalised e-liquid recommendations. Find your perfect fruity, menthol, dessert, or tobacco vape flavours. Get tailored flavour suggestions based on your taste preferences.',
+      'Find your perfect e-liquid flavour! Vapourism\'s Flavour Lab offers personalised vape recommendations. Take the quiz and discover your ideal flavour.',
   },
   {
     name: 'keywords',
@@ -35,7 +35,7 @@ export const meta: MetaFunction = () => [
   },
   {
     property: 'og:url',
-    content: 'https://vapourism.co.uk/flavour-lab',
+    content: 'https://www.vapourism.co.uk/flavour-lab',
   },
   {
     property: 'og:image',

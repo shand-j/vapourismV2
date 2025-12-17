@@ -3,26 +3,51 @@ import {json, type LoaderFunctionArgs, type MetaFunction} from '@shopify/remix-o
 import {useLoaderData, useNavigate} from '@remix-run/react';
 import {useAgeVerif} from '~/preserved/useAgeVerification';
 
-export const meta: MetaFunction = () => {
-  const title = 'Age Verification Required | Vapourism';
-  const description = 'Complete age verification to proceed with your vaping products order. UK law requires customers to be 18+ to purchase vaping products.';
-  
-  return [
-    {title},
-    {
-      name: 'description',
-      content: description
-    },
-    {
-      name: 'robots',
-      content: 'noindex, nofollow'
-    },
-    {name: 'twitter:card', content: 'summary_large_image'},
-    {name: 'twitter:site', content: '@vapourismuk'},
-    {name: 'twitter:title', content: title},
-    {name: 'twitter:description', content: description},
-  ];
-};
+export const meta: MetaFunction = () => [
+  {
+    title: 'Age Verification Required | Vapourism'
+  },
+  {
+    name: 'description',
+    content: 'Complete age verification to proceed with your vaping products order. UK law requires customers to be 18+ to purchase vaping products.'
+  },
+  {
+    property: 'og:title',
+    content: 'Verify Your Age for Vaping Products at Vapourism',
+  },
+  {
+    property: 'og:url',
+    content: 'https://www.vapourism.co.uk/age-verification',
+  },
+  {
+    name: 'keywords',
+    content: 'age verification, vaping products, UK vaping retailer, Vapourism, order number verification, confirmation code, age check, compliance with UK law',
+  },
+  {
+    property: 'og:description',
+    content: 'Complete age verification to proceed with your vaping products order. UK law requires customers to be 18+ to purchase vaping products.'
+  },
+  {
+    name: 'twitter:card',
+    content: 'summary_large_image'
+  },
+  {
+    name: 'twitter:site',
+    content: '@vapourismuk'
+  },
+  {
+    name: 'twitter:title',
+    content: 'Age Verification | Vapourism'
+  },
+  {
+    name: 'twitter:description',
+    content: 'Complete age verification to proceed with your vaping products order. UK law requires customers to be 18+ to purchase vaping products.'
+  },
+  {
+    name: 'robots',
+    content: 'noindex, nofollow'
+  }
+];
 
 export async function loader({request, context}: LoaderFunctionArgs) {
   const url = new URL(request.url);
@@ -193,7 +218,7 @@ export default function AgeVerificationPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
-      <h1 className="text-2xl font-semibold">Verify your age</h1>
+      <h1 className="text-2xl font-semibold">Vapourism Age Verification: Complete Your Vape Order</h1>
       <p className="mt-4 text-sm text-slate-600">
         To complete your order verification, open the link sent in your confirmation email. This page accepts an
         order number and confirmation code and starts the age verification widget when you click the button below.
@@ -229,7 +254,7 @@ export default function AgeVerificationPage() {
       </div>
 
       <div className="mt-6 rounded-lg border border-slate-200 bg-slate-50 p-6">
-        <h2 className="text-sm font-semibold text-slate-700">Having trouble?</h2>
+        <h2 className="text-sm font-semibold text-slate-700">Having Trouble Verifying Your Age? Contact Our Support Team</h2>
         <p className="mt-2 text-sm text-slate-600">
           If you need assistance with age verification, our support team is here to help.
         </p>

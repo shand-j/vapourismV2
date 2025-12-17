@@ -1,38 +1,62 @@
 import {json, type LoaderFunctionArgs, type MetaFunction} from '@remix-run/server-runtime';
 import {useLoaderData, Link} from '@remix-run/react';
 
-export const meta: MetaFunction = () => {
-  const title = 'Returns & Refunds Policy | 14-Day Returns | Vapourism';
-  const description = 'Vapourism returns policy. 14-day return period for unopened items. Learn about our refund process, return conditions, and how to return vaping products.';
-  
-  return [
-    {title},
-    {
-      name: 'description',
-      content: description
-    },
-    {
-      name: 'keywords',
-      content: 'returns policy, refunds, vape returns, product returns UK, 14 day returns, exchange policy, return conditions'
-    },
-    {
-      property: 'og:title',
-      content: title
-    },
-    {
-      property: 'og:description',
-      content: description
-    },
-    {
-      name: 'robots',
-      content: 'index, follow'
-    },
-    {name: 'twitter:card', content: 'summary_large_image'},
-    {name: 'twitter:site', content: '@vapourismuk'},
-    {name: 'twitter:title', content: title},
-    {name: 'twitter:description', content: description},
-  ];
-};
+export const meta: MetaFunction = () => [
+  {
+    title: 'Returns & Refunds Policy | 14-Day Returns | Vapourism'
+  },
+  {
+    name: 'description',
+    content: 'Vapourism returns policy. 14-day return period for unopened items. Learn about our refund process, return conditions, and how to return vaping products.'
+  },
+  {
+    name: 'keywords',
+    content: 'returns policy, refunds, vape returns, product returns UK, 14 day returns, exchange policy, return conditions'
+  },
+  {
+    property: 'og:title',
+    content: 'Returns & Refunds Policy | Vapourism'
+  },
+  {
+    property: 'og:description',
+    content: 'Easy 14-day returns for unopened vaping products.'
+  },
+  {
+    name: 'twitter:card',
+    content: 'summary_large_image'
+  },
+
+  {
+    name: 'twitter:site',
+    content: '@vapourismuk'
+  },  {
+    name: 'twitter:title',
+    content: 'Returns & Refunds Policy | Vapourism'
+  },
+  {
+    name: 'twitter:description',
+    content: '14-day return period for unopened vaping products. Learn about our hassle-free returns process.'
+  },
+  {
+    property: 'og:url',
+    content: 'https://www.vapourism.co.uk/policies/returns-policy'
+  },
+  {
+    name: 'robots',
+    content: 'index, follow'
+  },
+  {
+  {
+    name: 'twitter:title',
+    content: 'Returns Policy | Vapourism'
+  },
+  {
+    name: 'twitter:description',
+    content: 'Return vaping products within 14 days! Know your rights and our refund process #VapingReturns'
+  }
+];
+
+
 
 export async function loader({context}: LoaderFunctionArgs) {
   return json({
@@ -80,7 +104,7 @@ export default function ReturnsPolicy() {
 
             <div className="space-y-8">
               <section>
-                <h2>1. Returns Period</h2>
+                <h2>14-Day Returns Period: UK Cooling-Off Rights Explained</h2>
                 <p>You have 14 days from the date of delivery to return items for a refund. This cooling-off period is your legal right under UK Distance Selling Regulations. The 14-day period begins the day after you receive your order, not the day you place it. To qualify for a return, you must notify us of your intention to return within this 14-day window.</p>
                 <p>We recommend initiating returns as soon as possible to ensure you don't miss the deadline. Returns initiated on the 14th day are accepted, but items must be shipped back to us within a reasonable timeframe (typically within 14 days of notifying us). Keep proof of postage as evidence of return date if any disputes arise.</p>
               </section>

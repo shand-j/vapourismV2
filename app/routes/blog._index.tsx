@@ -12,8 +12,14 @@ export const meta: MetaFunction = () => {
       name: 'description',
       content: description,
     },
-    {property: 'og:title', content: title},
+    {
+      name: 'keywords',
+      content: 'vaping, e-liquids, nicotine products, vaping guides, harm reduction, vape reviews, vaping trends, UK vaping, vape safety, vaping education',
+    },
+    {property: 'og:title', content: 'Blog | Vapourism'},
+    {property: 'og:description', content: description},
     {property: 'og:type', content: 'website'},
+    {property: 'og:url', content: 'https://www.vapourism.co.uk/blog'},
     {name: 'twitter:card', content: 'summary_large_image'},
     {name: 'twitter:site', content: '@vapourismuk'},
     {name: 'twitter:title', content: title},
@@ -36,7 +42,7 @@ export default function BlogIndex() {
     <div className="container mx-auto px-4 py-12">
       <header className="mb-12 text-center">
         <h1 className="text-4xl font-bold text-slate-900 mb-4">
-          Vapourism Blog
+          Vapourism Blog: Expert UK Vaping, Nicotine & Harm Reduction Guides
         </h1>
         <p className="text-lg text-slate-600 max-w-2xl mx-auto">
           Expert guides, educational content, and insights about vaping,

@@ -24,6 +24,18 @@ export const meta: MetaFunction = () => [
   {
     name: 'robots',
     content: 'index, follow'
+  },
+  {
+    name: 'twitter:card',
+    content: 'summary'
+  },
+  {
+    name: 'twitter:title',
+    content: 'Delivery Information | Fast UK Delivery | Vapourism'
+  },
+  {
+    name: 'twitter:description',
+    content: 'Get fast UK delivery on vaping products! Learn about our shipping options, costs & tracking. #VapingUK #DeliveryInfo'
   }
 ];
 

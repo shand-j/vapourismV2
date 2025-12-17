@@ -16,6 +16,18 @@ export const meta: MetaFunction = () => {
     },
     {property: 'og:title', content: 'Blog | Vapourism'},
     {property: 'og:type', content: 'website'},
+    {
+      name: 'twitter:card',
+      content: 'summary',
+    },
+    {
+      name: 'twitter:title',
+      content: 'Blog | Vapourism',
+    },
+    {
+      name: 'twitter:description',
+      content: 'Vaping made easy! Expert guides, reviews & updates on e-liquids, devices & harm reduction. #VapingUK #HarmReduction',
+    },
   ];
 };
 

@@ -561,5 +561,17 @@ export const meta = ({data}: {data: any}) => {
       name: 'robots',
       content: 'noindex, follow', // Don't index search results pages
     },
+    {
+      name: 'twitter:card',
+      content: 'summary',
+    },
+    {
+      name: 'twitter:title',
+      content: title,
+    },
+    {
+      name: 'twitter:description',
+      content: `Find your perfect vape! ${count > 0 ? count : '1929'} products to choose from. Fast delivery & great prices! #VapingDeals #Eliquids`,
+    },
   ];
 };

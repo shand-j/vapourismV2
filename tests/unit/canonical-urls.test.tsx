@@ -38,7 +38,9 @@ describe('Canonical URL Configuration', () => {
     const canonicalUrl = `${productionDomainWithSlash.replace(/\/$/, '')}${testPath}`;
     
     expect(canonicalUrl).toBe('https://www.vapourism.co.uk/products/test');
-    expect(canonicalUrl).not.toMatch(/\/\//); // No double slashes
+    // Check for double slashes after the protocol (https://)
+    const pathPart = canonicalUrl.replace(/^https?:\/\//, '');
+    expect(pathPart).not.toMatch(/\/\//); // No double slashes in path
   });
 
   it('should fallback to www.vapourism.co.uk when PRODUCTION_DOMAIN is not set', () => {

@@ -1,6 +1,9 @@
 name: Storefront 1000063397
 
 on:
+  push:
+    branches:
+      - main
   workflow_call:
     secrets:
       OXYGEN_DEPLOYMENT_TOKEN_1000063397:

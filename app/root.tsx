@@ -597,9 +597,10 @@ function SiteFooter({
             © {new Date().getFullYear()} {shopName}. All rights reserved.
           </div>
           <div className="flex items-center space-x-4 text-sm text-gray-400">
-            <span>Company Number: GB 504 6116 26</span>
+            {/* TODO: Company registration details - update as necessary */}
+            <span>Company Number: </span>
             <span>•</span>
-            <span>VAT Number: GB 123 4567 89</span>
+            <span>VAT Number: GB 504 6116 26</span>
           </div>
         </div>
       </div>

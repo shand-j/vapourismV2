@@ -575,6 +575,10 @@ export const meta = ({data}: {data: any}) => {
       content: description,
     },
     {
+      property: 'og:url',
+      content: 'https://www.vapourism.co.uk/search',
+    },
+    {
       name: 'keywords',
       content: 'vaping products, e-liquids, vape devices, vape accessories, online vaping store, fast delivery vaping, vape discounts, same-day dispatch',
     },

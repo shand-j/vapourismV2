@@ -34,6 +34,10 @@ export const meta: MetaFunction = () => [
     content: 'How Vapourism uses cookies to improve your shopping experience.'
   },
   {
+    property: 'og:url',
+    content: 'https://www.vapourism.co.uk/policies/cookie-policy'
+  },
+  {
     name: 'robots',
     content: 'index, follow'
   },

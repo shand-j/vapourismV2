@@ -20,6 +20,7 @@ export const meta: MetaFunction = () => {
     {name: 'twitter:card', content: 'summary'},
     {name: 'twitter:title', content: 'Blog | Vapourism'},
     {name: 'twitter:description', content: 'Expert guides and educational content about vaping, nicotine products, and harm reduction. Stay informed with the latest insights from Vapourism.'},
+    {property: 'og:url', content: 'https://www.vapourism.co.uk/blog'},
   ];
 };
 

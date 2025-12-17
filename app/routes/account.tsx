@@ -4,7 +4,7 @@ export const meta: MetaFunction = () => [
   {title: 'Account access | Vapourism'},
   {
     name: 'description',
-    content: 'Customer account management is moving to Shopify's native experience.',
+    content: "Customer account management is moving to Shopify's native experience.",
   },
   {
     name: 'twitter:card',

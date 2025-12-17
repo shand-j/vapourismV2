@@ -11,6 +11,7 @@ export const crystalBarGuideArticle: BlogArticle = {
   slug: 'crystal-bar-vape-guide',
   title: 'Crystal Bar Vape: Complete Guide to Flavours & Models 2025',
   metaDescription: 'Discover everything about Crystal Bar vapes. Reviews of all flavours, models, and the complete SKE Crystal range. Find your perfect Crystal vape.',
+  metaKeywords: 'Crystal Bar vape, Crystal Bar vape review, Vapourism vapes, vaping products, vape flavors, vape comparisons, buy Crystal Bar, vape guides',
   publishedDate: '2025-01-04',
   lastModified: '2025-01-04',
   author: 'Vapourism Team',

@@ -11,6 +11,7 @@ export const bestVapes2025Article: BlogArticle = {
   slug: 'best-vapes-2025',
   title: 'Best Vapes 2025: Top UK Vape Kits & Devices Reviewed',
   metaDescription: 'Discover the best vapes of 2025. Expert reviews of top UK vape kits, disposables, and devices. Find your perfect vape with our comprehensive buying guide.',
+  metaKeywords: 'best vapes, vaping guide, vape reviews, vape kits, disposable vapes, beginner vapes, vape recommendations, vape buying guide',
   publishedDate: '2025-01-02',
   lastModified: '2025-01-02',
   author: 'Vapourism Team',

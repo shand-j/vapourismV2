@@ -9,7 +9,6 @@
 
 import {json, type LoaderFunctionArgs, type MetaFunction} from '@shopify/remix-oxygen';
 import {useLoaderData, Link} from '@remix-run/react';
-import {SEOAutomationService} from '~/preserved/seo-automation';
 import {searchProducts} from '~/lib/shopify-search';
 import {useCollectionTracking} from '~/lib/hooks/useCollectionTracking';
 

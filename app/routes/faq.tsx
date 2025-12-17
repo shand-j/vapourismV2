@@ -1,5 +1,5 @@
-import {json, type LoaderFunctionArgs, type MetaFunction} from '@remix-run/server-runtime';
-import {useLoaderData, Link} from '@remix-run/react';
+import {json, type LoaderFunctionArgs} from '@remix-run/server-runtime';
+import {useLoaderData, Link, type MetaFunction} from '@remix-run/react';
 import {useState} from 'react';
 import {Search, ChevronDown, ChevronUp, Package, CreditCard, Truck, HelpCircle, Shield, Zap} from 'lucide-react';
 

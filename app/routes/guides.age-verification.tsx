@@ -1,4 +1,3 @@
-import React from 'react';
 import {type LoaderFunctionArgs, type MetaFunction} from '@shopify/remix-oxygen';
 import {Link, useLoaderData} from '@remix-run/react';
 import {ContinueShoppingShowcase} from '~/components/ProductShowcase';

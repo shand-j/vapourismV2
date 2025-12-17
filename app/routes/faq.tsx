@@ -198,7 +198,7 @@ export const meta: MetaFunction = () => {
     },
     {
       name: 'description',
-      content: 'Get answers to common questions about vaping products, UK delivery, age verification, returns policy, and technical support. Fast help for all your vaping queries at Vapourism.'
+      content: 'Vapourism\'s FAQ answers your vaping questions! Get fast help on e-liquids, devices, UK delivery, age verification, and returns. Find what you need today.'
     },
     {
       name: 'keywords',
@@ -219,7 +219,7 @@ export const meta: MetaFunction = () => {
     },
     {
       property: 'og:url',
-      content: 'https://vapourism.co.uk/faq'
+      content: 'https://www.vapourism.co.uk/faq'
     },
     {
       property: 'og:site_name',

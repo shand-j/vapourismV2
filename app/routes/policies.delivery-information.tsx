@@ -7,7 +7,7 @@ export const meta: MetaFunction = () => [
   },
   {
     name: 'description',
-    content: 'Fast UK delivery for vaping products via DPD Local and Royal Mail. ✓ Free delivery over £20 ✓ Next-day delivery ✓ DPD tracking ✓ 1-3 day shipping. Order tracking included.'
+    content: 'Vapourism: Fast UK delivery for vaping products. Free delivery over £20 and next-day options available. Track your order today!'
   },
   {
     name: 'keywords',
@@ -36,6 +36,18 @@ export const meta: MetaFunction = () => [
   {
     name: 'robots',
     content: 'index, follow'
+  },
+  {
+    name: 'twitter:card',
+    content: 'summary'
+  },
+  {
+    name: 'twitter:title',
+    content: 'Delivery Information | Fast UK Delivery | Vapourism'
+  },
+  {
+    name: 'twitter:description',
+    content: 'Get fast UK delivery on vaping products! Learn about our shipping options, costs & tracking. #VapingUK #DeliveryInfo'
   }
 ];
 

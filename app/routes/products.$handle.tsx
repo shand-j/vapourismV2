@@ -420,7 +420,7 @@ export default function ProductPage() {
     sku: selectedVariant?.id?.replace('gid://shopify/ProductVariant/', '') ?? product.id.replace('gid://shopify/Product/', ''),
     offers: {
       '@type': 'Offer',
-      url: `https://vapourism.co.uk/products/${product.handle}`,
+      url: `https://www.vapourism.co.uk/products/${product.handle}`,
       priceCurrency: selectedVariant?.price.currencyCode ?? 'GBP',
       price: selectedVariant?.price.amount ?? product.priceRange.minVariantPrice.amount,
       availability: product.availableForSale 
@@ -444,19 +444,19 @@ export default function ProductPage() {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://vapourism.co.uk',
+        item: 'https://www.vapourism.co.uk',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Products',
-        item: 'https://vapourism.co.uk/search',
+        item: 'https://www.vapourism.co.uk/search',
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: product.title,
-        item: `https://vapourism.co.uk/products/${product.handle}`,
+        item: `https://www.vapourism.co.uk/products/${product.handle}`,
       },
     ],
   };
@@ -823,7 +823,7 @@ export const meta = ({data}: {data: {product: typeof import('storefrontapi.gener
   }
 
   const {product, metaDescription, keywords} = data;
-  const productUrl = `https://vapourism.co.uk/products/${product.handle}`;
+  const productUrl = `https://www.vapourism.co.uk/products/${product.handle}`;
   const price = product.priceRange.minVariantPrice;
 
   return [
@@ -916,7 +916,7 @@ export const meta = ({data}: {data: {product: typeof import('storefrontapi.gener
     },
     {
       name: 'twitter:description',
-      content: metaDescription,
+      content: `Shop ${product.title} by ${product.vendor} from £${price.amount} ${product.productType} in the UK. ✓ Fast UK Delivery ✓ Authentic Products ✓ Best prices`,
     },
     ...(product.featuredImage ? [
       {

@@ -26,6 +26,8 @@ declare global {
     SESSION_SECRET: string;
     PUBLIC_STORE_DOMAIN: string;
     PUBLIC_CHECKOUT_DOMAIN: string;
+    // Production domain for canonical URLs and SEO (e.g., https://www.vapourism.co.uk)
+    PRODUCTION_DOMAIN?: string;
     // Admin tokens (private) — allow spaces to access them via context.env in Oxygen/MiniOxygen
     PRIVATE_SHOPIFY_ADMIN_TOKEN?: string;
     SHOPIFY_ADMIN_TOKEN?: string;

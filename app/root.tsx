@@ -104,6 +104,7 @@ export async function loader({context}: LoaderFunctionArgs) {
     shop: shop ?? null,
     env: {
       PUBLIC_STORE_DOMAIN: env?.PUBLIC_STORE_DOMAIN,
+      PRODUCTION_DOMAIN: env?.PRODUCTION_DOMAIN,
       USE_SHOPIFY_SEARCH: env.USE_SHOPIFY_SEARCH,
       SHOPIFY_SEARCH_ROLLOUT: env.SHOPIFY_SEARCH_ROLLOUT,
       // Expose AgeVerif public keys to the client via window.ENV
@@ -141,7 +142,9 @@ export default function App() {
   const shopName = data.shop?.name ?? 'Vapourism';
   
   // Build canonical URL from current path (without query params for cleaner canonicals)
-  const siteUrl = data.shop?.primaryDomain?.url || 'https://vapourism.co.uk';
+  // ALWAYS use production domain from env for canonical URLs, never use myshopify.com domain
+  const productionDomain = data.env?.PRODUCTION_DOMAIN || 'https://www.vapourism.co.uk';
+  const siteUrl = productionDomain;
   const canonicalUrl = `${siteUrl.replace(/\/$/, '')}${location.pathname}`;
   
   // GA4 Measurement ID

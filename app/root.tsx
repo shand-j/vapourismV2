@@ -447,7 +447,7 @@ function SiteFooter({
   return (
     <footer className="bg-gray-900 text-white mt-16">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Company Info */}
           <div>
             <h3 className="text-lg font-semibold mb-4">{shopName}</h3>
@@ -459,11 +459,11 @@ function SiteFooter({
 
           {/* Shopping Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Shopping</h3>
+            <h3 className="text-lg font-semibold mb-4">Shop by Category</h3>
             <ul className="space-y-2">
               <li>
                 <Link to="/search?tag=disposable" className="text-gray-300 hover:text-white transition-colors">
-                  Reusables
+                  Disposable Vapes
                 </Link>
               </li>
               <li>
@@ -472,18 +472,60 @@ function SiteFooter({
                 </Link>
               </li>
               <li>
-                <Link to="/search?tag=device" className="text-gray-300 hover:text-white transition-colors">
-                  Devices
+                <Link to="/search?tag=pod_system" className="text-gray-300 hover:text-white transition-colors">
+                  Pod Systems
                 </Link>
               </li>
               <li>
-                <Link to="/search?tag=accessory" className="text-gray-300 hover:text-white transition-colors">
-                  Accessories
+                <Link to="/search?tag=coil" className="text-gray-300 hover:text-white transition-colors">
+                  Coils & Pods
                 </Link>
               </li>
               <li>
-                <Link to="/search" className="text-gray-300 hover:text-white transition-colors">
-                  All Products
+                <Link to="/search?tag=CBD" className="text-gray-300 hover:text-white transition-colors">
+                  CBD Products
+                </Link>
+              </li>
+              <li>
+                <Link to="/search?tag=nicotine_pouches" className="text-gray-300 hover:text-white transition-colors">
+                  Nicotine Pouches
+                </Link>
+              </li>
+            </ul>
+          </div>
+          
+          {/* Popular Brands - New column for internal linking */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Popular Brands</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/search?vendor=Lost+Mary" className="text-gray-300 hover:text-white transition-colors">
+                  Lost Mary
+                </Link>
+              </li>
+              <li>
+                <Link to="/search?vendor=Elf+Bar" className="text-gray-300 hover:text-white transition-colors">
+                  Elf Bar
+                </Link>
+              </li>
+              <li>
+                <Link to="/search?vendor=IVG" className="text-gray-300 hover:text-white transition-colors">
+                  IVG
+                </Link>
+              </li>
+              <li>
+                <Link to="/search?vendor=Hayati" className="text-gray-300 hover:text-white transition-colors">
+                  Hayati
+                </Link>
+              </li>
+              <li>
+                <Link to="/search?vendor=Vaporesso" className="text-gray-300 hover:text-white transition-colors">
+                  Vaporesso
+                </Link>
+              </li>
+              <li>
+                <Link to="/search?vendor=Aspire" className="text-gray-300 hover:text-white transition-colors">
+                  Aspire
                 </Link>
               </li>
             </ul>

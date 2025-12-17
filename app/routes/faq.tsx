@@ -453,12 +453,6 @@ export default function FAQ() {
               >
                 Contact Support
               </Link>
-              <Link
-                to="/help"
-                className="border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-purple-600 transition-colors"
-              >
-                Help Centre
-              </Link>
             </div>
             <div className="mt-6 text-sm opacity-80">
               <p>📞 Phone: 0123 456 7890 | ✉️ Email: hello@vapourism.co.uk</p>

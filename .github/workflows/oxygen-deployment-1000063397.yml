@@ -59,6 +59,7 @@ jobs:
           SHOPIFY_HYDROGEN_DEPLOYMENT_TOKEN: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_1000063397 }}
       
       - name: Output Deployment Details
+        if: github.ref_name != 'main'
         id: get_deployment_data
         run: |
           echo "bypass_token=$(jq -r '.authBypassToken' h2_deploy_log.json)" >> $GITHUB_OUTPUT

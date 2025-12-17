@@ -43,6 +43,36 @@ const PRODUCT_TITLE_OVERRIDES: Record<string, string> = {
 export class SEOAutomationService {
   
   /**
+   * Product type keywords for title optimization
+   * Order matters - more specific types should come first
+   */
+  private static readonly PRODUCT_TYPE_KEYWORDS = [
+    'Drops',      // More specific than "Oil"
+    'Crumble',
+    'Oil',
+    'Tea',
+    'Gummies',
+    'Capsules',
+    'Vape',
+    'E-Liquid'
+  ];
+  
+  /**
+   * Product category mappings for og:title generation
+   * Maps product types to their display names
+   */
+  private static readonly PRODUCT_CATEGORIES: Record<string, string> = {
+    'Drops': 'CBD Oil Drops',
+    'Oil': 'CBD Oil',
+    'Crumble': 'CBD Crumble',
+    'Tea': 'CBD Tea',
+    'E-Liquid': 'E-Liquid',
+    'Vape': 'Vape',
+    'Gummies': 'CBD Gummies',
+    'Capsules': 'CBD Capsules',
+  };
+  
+  /**
    * Generate comprehensive keywords for products
    * Enhanced with competitor keyword analysis
    */
@@ -439,10 +469,11 @@ export class SEOAutomationService {
         const strengthMatch = cleanTitle.match(/(\d+mg)/i);
         const strength = strengthMatch ? strengthMatch[1] : '';
         
-        // Get product type (last significant word before vendor)
+        // Get product type using class constant with word boundary matching
         const words = cleanTitle.split(/\s+/);
-        const typeWords = ['Crumble', 'Oil', 'Drops', 'Tea', 'Gummies', 'Capsules', 'Vape', 'E-Liquid'];
-        const productType = words.find(w => typeWords.some(t => w.toLowerCase().includes(t.toLowerCase()))) || '';
+        const productType = words.find(w => 
+          this.PRODUCT_TYPE_KEYWORDS.some(t => w.toLowerCase() === t.toLowerCase())
+        ) || '';
         
         if (buyNum === 1 && getNum === 1) {
           return `Buy 1 Get 1 Free: ${vendor} ${strength} ${productType} Deal`.replace(/\s+/g, ' ').trim();
@@ -458,23 +489,12 @@ export class SEOAutomationService {
     const strengthMatch = cleanTitle.match(/(\d+(?:mg|ml|g))/i);
     const strength = strengthMatch ? strengthMatch[1] : '';
     
-    // Extract percentage if present
-    const percentMatch = cleanTitle.match(/(\d+%)/);
-    const percent = percentMatch ? percentMatch[1] : '';
-    
-    // Identify product category
-    const categories: Record<string, string> = {
-      'Oil': 'CBD Oil',
-      'Drops': 'CBD Oil Drops',
-      'Crumble': 'CBD Crumble',
-      'Tea': 'CBD Tea',
-      'E-Liquid': 'E-Liquid',
-      'Vape': 'Vape',
-    };
-    
+    // Identify product category using class constant
+    // Categories are checked in order of specificity (Drops before Oil)
     let productCategory = '';
-    for (const [key, value] of Object.entries(categories)) {
-      if (cleanTitle.includes(key)) {
+    for (const [key, value] of Object.entries(this.PRODUCT_CATEGORIES)) {
+      // Use case-insensitive matching to catch all variations
+      if (cleanTitle.toLowerCase().includes(key.toLowerCase())) {
         productCategory = value;
         break;
       }

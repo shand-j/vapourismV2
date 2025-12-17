@@ -30,7 +30,7 @@ export default function BlogIndex() {
     <div className="container mx-auto px-4 py-12">
       <header className="mb-12 text-center">
         <h1 className="text-4xl font-bold text-slate-900 mb-4">
-          Vapourism Blog
+          Vapourism Blog: Expert UK Vaping, Nicotine & Harm Reduction Guides
         </h1>
         <p className="text-lg text-slate-600 max-w-2xl mx-auto">
           Expert guides, educational content, and insights about vaping,

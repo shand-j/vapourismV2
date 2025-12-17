@@ -65,7 +65,7 @@ export default function CookiePolicy() {
       <main className="flex-1">
         <div className="container mx-auto px-4 py-12 max-w-4xl">
           <div className="prose prose-lg max-w-none">
-            <h1>Cookie Policy</h1>
+            <h1>Vapourism Cookie Policy: Types, Usage & Management Explained</h1>
             
             <p className="lead text-xl text-gray-600 mb-8">
               This Cookie Policy explains how Vapourism uses cookies and similar tracking technologies when you visit our website. We're committed to transparency about how we collect and use data to improve your shopping experience while respecting your privacy choices.

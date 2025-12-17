@@ -125,6 +125,24 @@ export default async function handleRequest(
   // routes like AgeVerif we will only add trusted hostnames (no 'unsafe-inline')
   // and rely on the per-request `nonce` produced by createContentSecurityPolicy
   // to allow legitimate inline scripts when required.
+
+  // Add SearchAtlas OTTO Pixel domains to CSP for SEO optimization
+  if (/script-src/.test(effectiveHeader)) {
+    effectiveHeader = effectiveHeader.replace(/script-src([^;]*)/, (match, v = '') => {
+      let existing = v;
+      if (!existing.includes('https://dashboard.searchatlas.com')) existing += ' https://dashboard.searchatlas.com';
+      if (!existing.includes('data:')) existing += ' data:';
+      return `script-src${existing}`;
+    });
+  }
+  if (/connect-src/.test(effectiveHeader)) {
+    effectiveHeader = effectiveHeader.replace(/connect-src([^;]*)/, (match, v = '') => {
+      let existing = v;
+      if (!existing.includes('https://dashboard.searchatlas.com')) existing += ' https://dashboard.searchatlas.com';
+      return `connect-src${existing}`;
+    });
+  }
+
   try {
     const url = new URL(request.url);
     if (url.pathname === '/age-verification/verify') {

@@ -29,9 +29,6 @@ export const meta: MetaFunction = () => [
   {
     name: 'twitter:site',
     content: '@vapourismuk'
-  },  {
-    name: 'twitter:title',
-    content: 'Terms of Service | Vapourism'
   },
   {
     name: 'twitter:description',
@@ -46,13 +43,8 @@ export const meta: MetaFunction = () => [
     content: 'index, follow'
   },
   {
-  {
     name: 'twitter:title',
     content: 'Terms of Service | Vapourism'
-  },
-  {
-    name: 'twitter:description',
-    content: 'Understand Vapourism\'s terms of service for vaping products. Know your rights & responsibilities. #VapingRegulations'
   }
 ];
 

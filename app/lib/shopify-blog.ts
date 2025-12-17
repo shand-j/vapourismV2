@@ -133,7 +133,9 @@ export async function getBlogArticles(
       };
     }
 
-    const articles = blog.articles.edges.map((edge: any) => edge.node);
+    const articles = blog.articles.edges.map(
+      (edge: {node: ShopifyArticle}) => edge.node,
+    );
 
     return {
       articles,

@@ -88,9 +88,9 @@ export default function BlogIndex() {
               ← First Page
             </Link>
           )}
-          {pageInfo.hasNextPage && (
+          {pageInfo.hasNextPage && pageInfo.endCursor && (
             <Link
-              to={`/blog?after=${encodeURIComponent(pageInfo.endCursor || '')}`}
+              to={`/blog?after=${encodeURIComponent(pageInfo.endCursor)}`}
               className="px-6 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors"
             >
               Next Page →

@@ -100,8 +100,8 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
       image: {
         '@type': 'ImageObject',
         url: article.image.url,
-        width: article.image.width,
-        height: article.image.height,
+        ...(article.image.width && {width: article.image.width}),
+        ...(article.image.height && {height: article.image.height}),
       },
     }),
   };

@@ -1,5 +1,17 @@
 name: Storefront 1000063397
-on: [push]
+
+on:
+  workflow_call:
+    secrets:
+      OXYGEN_DEPLOYMENT_TOKEN_1000063397:
+        required: true
+    outputs: 
+      preview_url:
+        description: 'The URL of the deployed preview'
+        value: ${{ jobs.deploy.outputs.preview_url }}
+      bypass_token:
+        description: 'The auth bypass token for the deployed preview'
+        value: ${{ jobs.deploy.outputs.bypass_token }}
 
 permissions:
   contents: read
@@ -8,8 +20,11 @@ permissions:
 jobs:
   deploy:
     name: Deploy to Oxygen
-    timeout-minutes: 30
+    timeout-minutes: 5
     runs-on: ubuntu-latest
+    outputs:
+      preview_url: ${{ steps.get_deployment_data.outputs.preview_url }}
+      bypass_token: ${{ steps.get_deployment_data.outputs.bypass_token }}
     steps:
       - uses: actions/checkout@v4
 
@@ -36,6 +51,12 @@ jobs:
         run: npm ci
 
       - name: Build and Publish to Oxygen
-        run: npx shopify hydrogen deploy
+        run: npx shopify hydrogen deploy --auth-bypass-token
         env:
           SHOPIFY_HYDROGEN_DEPLOYMENT_TOKEN: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_1000063397 }}
+      
+      - name: Output Deployment Details
+        id: get_deployment_data
+        run: |
+          echo "bypass_token=$(jq -r '.authBypassToken' h2_deploy_log.json)" >> $GITHUB_OUTPUT
+          echo "preview_url=$(jq -r '.url' h2_deploy_log.json)" >> $GITHUB_OUTPUT

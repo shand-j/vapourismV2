@@ -1,14 +1,17 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Vapourism V2 - user journeys', () => {
-  const base = process.env.PLAYWRIGHT_BASE_URL || process.env.BASE_URL || 'http://localhost:3000';
-  // Use the default test server (start dev server separately)
-  test.beforeEach(async ({ page }) => {
+  // Use Playwright's baseURL from config - accessed via page.goto('/')
+  
+  test.beforeEach(async ({ page, baseURL }) => {
+    // Extract hostname for cookie domain
+    const hostname = baseURL ? new URL(baseURL).hostname : 'localhost';
+    
     await page.context().addCookies([{
-    name: 'vapourism_age_verified',
-    value: 'true',
-    domain: new URL(base).hostname,  
-    path: '/',
+      name: 'vapourism_age_verified',
+      value: 'true',
+      domain: hostname,  
+      path: '/',
     }]);
     // Suppress the initial age verification modal by setting localStorage
     await page.addInitScript(() => {
@@ -22,7 +25,7 @@ test.describe('Vapourism V2 - user journeys', () => {
   });
 
   test('Homepage discovery — hero and CTAs visible', async ({ page }) => {
-    await page.goto(base + '/');
+    await page.goto('/');
     // Hero header exists and primary CTA visible
     await expect(page.locator('text=Vapourism').first()).toBeVisible();
     await expect(page.locator('header')).toBeVisible();
@@ -32,7 +35,7 @@ test.describe('Vapourism V2 - user journeys', () => {
   });
 
   test('Predictive search from header shows suggestions, products and collections', async ({ page }) => {
-    await page.goto(base + '/');
+    await page.goto('/');
     // Focus the header search input (header contains input with aria-label)
     const searchInput = page.getByRole('searchbox');
     await expect(searchInput).toBeVisible();
@@ -55,7 +58,7 @@ test.describe('Vapourism V2 - user journeys', () => {
   });
 
   test('Collections mega-menu appears and links work', async ({ page }) => {
-    await page.goto(base + '/');
+    await page.goto('/');
     // Hover the Shop/Collections trigger if present
     const collectionsTrigger = page.locator('text=Shop').first();
     await collectionsTrigger.hover();
@@ -65,7 +68,7 @@ test.describe('Vapourism V2 - user journeys', () => {
 
   test('Mobile menu drawer opens and shows search + nav', async ({ page }) => {
     // Emulate mobile viewport
-    await page.goto(base + '/');
+    await page.goto('/');
     await page.setViewportSize({ width: 375, height: 812 });
     const mobileToggle = page.locator('button[aria-label="Toggle navigation"]').first();
     await mobileToggle.click();
@@ -74,7 +77,7 @@ test.describe('Vapourism V2 - user journeys', () => {
   });
 
   test('Collections directory and collection detail pages render', async ({ page }) => {
-    await page.goto(base + '/collections');
+    await page.goto('/collections');
     await expect(page.locator('h1, h2')).toBeVisible();
     // Try opening a known collection if present (best-effort)
     const firstCollection = page.locator('a[href^="/collections/"]').first();
@@ -88,7 +91,7 @@ test.describe('Vapourism V2 - user journeys', () => {
 
   test('Product detail page shows gallery and purchase card', async ({ page }) => {
     // Try to find a product link from the homepage or collection pages
-    await page.goto(base + '/');
+    await page.goto('/');
     const productLink = page.locator('a[href^="/products/"]').first();
     await expect(productLink).toBeVisible({ timeout: 5000 });
     const href = await productLink.getAttribute('href');
@@ -100,13 +103,13 @@ test.describe('Vapourism V2 - user journeys', () => {
   });
 
   test('Search results page shows predictive summary chips and products', async ({ page }) => {
-    await page.goto(base + '/search?q=disposable');
+    await page.goto('/search?q=disposable');
     await expect(page.locator('text=Results for')).toBeVisible();
     await expect(page.locator('text=Products').first()).toBeVisible();
   });
 
   test('Filters and pagination work on search results', async ({ page }) => {
-    await page.goto(base + '/search?q=vape');
+    await page.goto('/search?q=vape');
     // Confirm search results are present and pagination exists
     const results = page.locator('main').locator('article, .product-card, .product-card__link');
     await expect(results.first()).toBeVisible({ timeout: 5000 }).catch(() => {});
@@ -117,7 +120,7 @@ test.describe('Vapourism V2 - user journeys', () => {
   });
 
   test('Add to cart flow from PDP opens cart slideout', async ({ page }) => {
-    await page.goto(base + '/');
+    await page.goto('/');
     // open a product and add to cart
     const productLink = page.locator('a[href^="/products/"]').first();
     await productLink.click();
@@ -142,7 +145,7 @@ test.describe('Vapourism V2 - user journeys', () => {
       localStorage.removeItem('initialAgeVerified');
     });
     await page.route('**/*', (route) => route.continue());
-    await page.goto(base + '/');
+    await page.goto('/');
     // Expect the AgeVerificationModal to possibly be visible
     const ageVerifVisible = (await page.locator('text=Age verification').first().count()) > 0 || (await page.locator('text=Enter your date of birth').count()) > 0;
     expect(ageVerifVisible).toBeTruthy();
@@ -152,7 +155,7 @@ test.describe('Vapourism V2 - user journeys', () => {
   test('Account login page redirects to Shopify auth', async ({ page }) => {
     // The /account/login route redirects to Shopify's hosted login
     // We verify the redirect happens (302/303) or we land on Shopify's auth domain
-    const response = await page.goto(base + '/account/login');
+    const response = await page.goto('/account/login');
     // Either we get redirected (status 302/303) or we're on Shopify's auth page
     const url = page.url();
     const isShopifyAuth = url.includes('shopify.com') || url.includes('accounts.shopify.com');
@@ -161,13 +164,13 @@ test.describe('Vapourism V2 - user journeys', () => {
   });
 
   test('404 page renders for unknown paths', async ({ page }) => {
-    await page.goto(base + '/__this-route-does-not-exist__');
+    await page.goto('/__this-route-does-not-exist__');
     const notFound = (await page.locator('text=Not Found').first().count()) > 0 || (await page.locator('text=404').count()) > 0;
     expect(notFound).toBeTruthy();
   });
 
   test('Post-payment age verification route loads VerifyPage', async ({ page }) => {
-    await page.goto(base + '/age-verification?order=TEST123&confirmationCode=abc');
+    await page.goto('/age-verification?order=TEST123&confirmationCode=abc');
     const verifyVisible = (await page.locator('text=Verify').first().count()) > 0 || (await page.locator('text=Start verification').count()) > 0;
     expect(verifyVisible).toBeTruthy();
   });
@@ -209,7 +212,7 @@ test.describe('Vapourism V2 - user journeys', () => {
         off: () => {},
       };
     });
-    await page.goto(base + '/age-verification?order=1001&confirmationCode=ULETWJUNV');
+    await page.goto('/age-verification?order=1001&confirmationCode=ULETWJUNV');
 
     // If the initial age verification modal appears, accept it
     const acceptButton = page.locator('button').filter({ hasText: 'Accept' }).or(page.locator('button').filter({ hasText: 'I am 18+' }));

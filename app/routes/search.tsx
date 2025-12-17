@@ -540,13 +540,44 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 }
 
 // SEO Meta Tags
-export const meta = ({data}: {data: any}) => {
+export const meta = ({data, location}: {data: any; location: any}) => {
   const query = data?.query || '';
   const count = data?.totalCount || 0;
-
-  // Use centralized truncation for consistency
-  const title = SEOAutomationService.truncateTitle(`Search Results for "${query}" | Vapourism`);
-  const description = `Found ${count} products matching "${query}". Shop premium vaping products at Vapourism with fast UK delivery.`;
+  const selectedTags = data?.selectedTags || [];
+  
+  // Extract vendor from URL if present
+  const url = new URL(location?.pathname || '/search', 'https://www.vapourism.co.uk');
+  if (location?.search) {
+    url.search = location.search;
+  }
+  const vendor = url.searchParams.get('vendor');
+  const tag = url.searchParams.get('tag');
+  
+  // Brand/vendor pages should be indexable (important for SEO)
+  const shouldIndex = !!vendor || selectedTags.length > 0;
+  
+  // Generate brand-specific title and description
+  let title = '';
+  let description = '';
+  
+  if (vendor) {
+    // Brand/vendor page - optimized for SEO
+    title = SEOAutomationService.truncateTitle(`${vendor} Vape Products (${count}) | Fast UK Delivery | Vapourism`);
+    description = `Shop ${count}+ authentic ${vendor} vaping products. ✓ Premium quality ✓ Fast UK delivery ✓ Competitive prices ✓ Genuine ${vendor} products from authorized UK retailer. Browse e-liquids, devices & accessories.`;
+  } else if (tag) {
+    // Category page by tag
+    const categoryLabel = getTagDisplayLabel(tag);
+    title = SEOAutomationService.truncateTitle(`${categoryLabel} (${count}) | UK Vape Shop | Vapourism`);
+    description = SEOAutomationService.generateCategoryMetaDescription(categoryLabel, count);
+  } else if (query) {
+    // Search query results
+    title = SEOAutomationService.truncateTitle(`Search: "${query}" (${count} Results) | Vapourism`);
+    description = `Found ${count} products matching "${query}". Shop premium vaping products at Vapourism with fast UK delivery.`;
+  } else {
+    // General search/browse page
+    title = SEOAutomationService.truncateTitle(`Browse All Vape Products (${count}+) | Vapourism`);
+    description = `Browse ${count}+ vaping products. ✓ E-liquids ✓ Devices ✓ Accessories ✓ Fast UK delivery ✓ Premium quality ✓ Best prices ${new Date().getFullYear()}.`;
+  }
 
   return [
     {title},
@@ -556,21 +587,28 @@ export const meta = ({data}: {data: any}) => {
     },
     {
       property: 'og:title',
-      content: query 
+      content: vendor 
+        ? `${vendor} Vape Products - Shop ${count}+ Items with Fast Delivery`
+        : query 
         ? `Find Your Vape: ${query} - ${count} Products Available`
         : `Find Your Vape: ${count} Products to Choose From - Fast Delivery`,
     },
     {
       property: 'og:description',
-      content: 'Vaping products at your fingertips. Fast delivery, great deals.',
+      content: vendor
+        ? `Authentic ${vendor} vaping products. Premium quality, fast UK delivery, competitive prices.`
+        : 'Vaping products at your fingertips. Fast delivery, great deals.',
     },
     {
       name: 'keywords',
-      content: 'vaping products, e-liquids, vape devices, vape accessories, online vaping store, fast delivery vaping, vape discounts, same-day dispatch',
+      content: vendor 
+        ? `${vendor}, ${vendor} vape, ${vendor} products, ${vendor} uk, buy ${vendor}, ${vendor} e-liquid, ${vendor} devices, official ${vendor} stockist`
+        : 'vaping products, e-liquids, vape devices, vape accessories, online vaping store, fast delivery vaping, vape discounts, same-day dispatch',
     },
     {
       name: 'robots',
-      content: 'noindex, follow', // Don't index search results pages
+      // Index brand/vendor pages and category pages, but not general search results
+      content: shouldIndex ? 'index, follow' : 'noindex, follow',
     },
     {
       name: 'twitter:card',
@@ -586,7 +624,9 @@ export const meta = ({data}: {data: any}) => {
     },
     {
       name: 'twitter:description',
-      content: `Find your perfect vape! ${count > 0 ? count : '1929'} products to choose from. Fast delivery & great prices! #VapingDeals #Eliquids`,
+      content: vendor
+        ? `Shop authentic ${vendor} products in the UK. ${count} items available with fast delivery!`
+        : `Find your perfect vape! ${count > 0 ? count : '1929'} products to choose from. Fast delivery & great prices! #VapingDeals #Eliquids`,
     },
   ];
 };

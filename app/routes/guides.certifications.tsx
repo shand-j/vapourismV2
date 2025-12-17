@@ -36,7 +36,7 @@ export const meta: MetaFunction = () => {
     {
       name: 'description',
       content:
-        'Vapourism\'s UK and EU regulatory certifications, MHRA registration, TPD compliance, and product safety standards. Learn how we ensure all vaping products meet strict quality and legal requirements.',
+        'Vapourism: Your guide to vaping certifications, compliance, and product safety. Explore our commitment to quality and regulations.',
     },
     {
       name: 'keywords',

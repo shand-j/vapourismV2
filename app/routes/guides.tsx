@@ -23,7 +23,7 @@ export const meta: MetaFunction = () => [
   {title: 'Vaping Guides & Resources | Expert Advice | Vapourism'},
   {
     name: 'description',
-    content: 'Expert vaping guides covering compliance, sustainability, age verification, certifications, and product education. Learn about UK vaping regulations and best practices.',
+    content: 'Vapourism provides expert vaping guides covering UK regulations, compliance, and sustainability. Stay informed about responsible vaping practices.',
   },
   {
     name: 'keywords',

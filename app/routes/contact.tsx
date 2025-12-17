@@ -36,7 +36,7 @@ export const meta: MetaFunction = () => {
     },
     {
       name: 'description',
-      content: 'Contact Vapourism for vaping product help, order support, and expert advice. Phone, email, and live chat available. Monday-Friday 9AM-6PM. Fast UK customer service.'
+      content: 'Need vaping help? Contact Vapourism for fast UK support. Get expert advice and assistance via phone, email, or live chat.'
     },
     {
       name: 'keywords',

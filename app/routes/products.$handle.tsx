@@ -13,6 +13,7 @@ import {BrandSection} from '../components/brand/BrandSection';
 import {SEOAutomationService} from '../preserved/seo-automation';
 import {cn} from '../lib/utils';
 import {trackViewItem, trackAddToCart, shopifyProductToGA4Item} from '../lib/analytics';
+import {sanitizeProductDescription} from '../lib/html-sanitizer';
 
 /**
  * UK VAT rate (20%)
@@ -158,6 +159,12 @@ export async function loader({params, context}: LoaderFunctionArgs) {
       throw new Response('Product Not Found', {status: 404});
     }
 
+    // Sanitize product description to remove external URLs
+    const sanitizedProduct = {
+      ...product,
+      descriptionHtml: sanitizeProductDescription(product.descriptionHtml),
+    };
+
     // Get brand assets if available
     const brandAssets = await getBrandAssets(product.vendor);
 
@@ -178,7 +185,7 @@ export async function loader({params, context}: LoaderFunctionArgs) {
     const imageAltText = SEOAutomationService.generateImageAltText(seoData, 'main');
 
     return json({
-      product,
+      product: sanitizedProduct,
       brandAssets,
       metaDescription,
       keywords,

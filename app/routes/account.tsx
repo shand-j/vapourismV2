@@ -34,6 +34,10 @@ export const meta: MetaFunction = () => [
     property: 'og:url',
     content: 'https://www.vapourism.co.uk/account',
   },
+  {
+    property: 'og:description',
+    content: 'Access your account: view orders, subscriptions & more.',
+  },
 ];
 
 export default function AccountRoute() {

@@ -19,7 +19,7 @@ export const meta: MetaFunction = () => [
   },
   {
     property: 'og:description',
-    content: 'Read our terms of service and conditions for purchasing vaping products.'
+    content: 'Learn our terms & conditions for vaping products.'
   },
   {
     name: 'twitter:card',

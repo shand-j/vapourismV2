@@ -490,11 +490,13 @@ export class SEOAutomationService {
     
     // Identify product category using class constant
     // Categories are checked in order of specificity (Drops before Oil)
+    const isCBDProduct = /\bcbd\b/i.test(cleanTitle);
     let productCategory = '';
     for (const [key, value] of Object.entries(this.PRODUCT_CATEGORIES)) {
       // Use case-insensitive matching to catch all variations
       if (cleanTitle.toLowerCase().includes(key.toLowerCase())) {
-        productCategory = value;
+        // Only add CBD prefix for CBD products; use base type for others
+        productCategory = isCBDProduct ? value : key;
         break;
       }
     }

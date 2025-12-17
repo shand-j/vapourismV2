@@ -103,6 +103,17 @@ describe('SEOAutomationService.generateOGTitle', () => {
       expect(result).toContain('5000mg');
       expect(result).toContain('CBD Asylum');
     });
+
+    it('should handle non-CBD vape products without CBD prefix', () => {
+      const result = SEOAutomationService.generateOGTitle(
+        'Premium Vape Kit 2000mAh E-Liquid Compatible',
+        'Vape Co'
+      );
+      // Should not add "CBD" prefix for non-CBD products
+      expect(result).not.toMatch(/CBD Vape/);
+      // Should include the base product type without CBD
+      expect(result).toContain('Vape Co');
+    });
   });
 
   describe('Edge cases and formatting', () => {

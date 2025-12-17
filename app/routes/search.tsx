@@ -546,12 +546,33 @@ export const meta = ({data}: {data: any}) => {
 
   // Use centralized truncation for consistency
   const title = SEOAutomationService.truncateTitle(`Search Results for "${query}" | Vapourism`);
+  const description = `Found ${count} products matching "${query}". Shop premium vaping products at Vapourism with fast UK delivery.`;
 
   return [
     {title},
     {
       name: 'description',
-      content: `Found ${count} products matching "${query}". Shop premium vaping products at Vapourism with fast UK delivery.`,
+      content: description,
+    },
+    {
+      property: 'og:title',
+      content: query ? `Search: ${query} | Vapourism` : 'Search | Vapourism',
+    },
+    {
+      property: 'og:description',
+      content: description,
+    },
+    {
+      name: 'twitter:card',
+      content: 'summary',
+    },
+    {
+      name: 'twitter:title',
+      content: query ? `Search: ${query} | Vapourism` : 'Search | Vapourism',
+    },
+    {
+      name: 'twitter:description',
+      content: description,
     },
     {
       property: 'og:description',

@@ -66,6 +66,7 @@ export default {
 
       // Set CSP for AgeVerif routes (/age-verification and subpaths).
       // Keep policy strict in production — do not add 'unsafe-inline'.
+      // Note: If we reach this point, the URL is already normalized (otherwise we'd have redirected above)
       if (normalizedUrl.pathname.startsWith('/age-verification')) {
         // Relax CSP for AgeVerif pages to allow checker scripts, frames and stats endpoints.
         // Also allow Google Tag Manager for analytics.

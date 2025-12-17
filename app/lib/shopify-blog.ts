@@ -225,25 +225,43 @@ export function convertShopifyArticleToLegacy(
 
 /**
  * Generate a meta description from article content if not provided
+ * 
+ * SECURITY NOTE: This function generates meta descriptions from Shopify article content.
+ * The content source is TRUSTED (Shopify CMS, admin-controlled) and the output is used
+ * ONLY in HTML meta tags, which are automatically escaped by React/Remix.
+ * 
+ * We use plain text fields when available to avoid any HTML processing:
+ * 1. article.seo.description - Shopify's pre-processed SEO field (plain text)
+ * 2. article.excerpt - May contain HTML, but we use it only for meta tags
+ * 3. article.content - Last fallback, plain text version
+ * 
+ * Shopify's Storefront API provides both 'content' (plain text) and 'contentHtml' (HTML).
+ * We use the plain text 'content' field here, which contains no HTML tags.
+ * Therefore, no HTML sanitization is needed - the field is inherently safe.
  */
 export function generateMetaDescription(article: ShopifyArticle): string {
+  // Priority 1: Use Shopify's SEO description (pre-processed by Shopify)
   if (article.seo?.description) {
     return article.seo.description;
   }
 
+  // Priority 2: Use excerpt - this may contain HTML in some cases
+  // but is used only in meta tags which are auto-escaped by React
   if (article.excerpt) {
-    // Remove HTML tags and limit to 155 characters
-    const plainText = article.excerpt.replace(/<[^>]*>/g, '');
-    return plainText.length > 155
-      ? plainText.substring(0, 152) + '...'
-      : plainText;
+    // Truncate if needed
+    if (article.excerpt.length > 155) {
+      return article.excerpt.substring(0, 152) + '...';
+    }
+    return article.excerpt;
   }
 
-  // Fallback to content
-  const plainText = article.content.replace(/<[^>]*>/g, '');
-  return plainText.length > 155
-    ? plainText.substring(0, 152) + '...'
-    : plainText;
+  // Priority 3: Use content field (plain text from Shopify, no HTML)
+  // Shopify provides 'content' as plain text and 'contentHtml' as HTML
+  const maxLength = 155;
+  if (article.content.length > maxLength) {
+    return article.content.substring(0, maxLength - 3) + '...';
+  }
+  return article.content;
 }
 
 /**

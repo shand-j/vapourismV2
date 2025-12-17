@@ -55,6 +55,7 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
     {property: 'og:title', content: data.seo.title},
     {property: 'og:description', content: data.seo.description},
     {property: 'og:type', content: 'website'},
+    {property: 'og:url', content: 'https://www.vapourism.co.uk/collections/velo-nicotine-pouches'},
   ];
 };
 

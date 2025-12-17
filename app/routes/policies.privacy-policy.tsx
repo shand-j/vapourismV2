@@ -22,6 +22,10 @@ export const meta: MetaFunction = () => [
     content: 'How Vapourism protects your personal data in compliance with UK GDPR.'
   },
   {
+    property: 'og:url',
+    content: 'https://www.vapourism.co.uk/policies/privacy-policy'
+  },
+  {
     name: 'robots',
     content: 'index, follow'
   },

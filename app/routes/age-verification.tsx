@@ -16,6 +16,10 @@ export const meta: MetaFunction = () => [
     content: 'Verify Your Age for Vaping Products at Vapourism',
   },
   {
+    property: 'og:url',
+    content: 'https://www.vapourism.co.uk/age-verification',
+  },
+  {
     name: 'keywords',
     content: 'age verification, vaping products, UK vaping retailer, Vapourism, order number verification, confirmation code, age check, compliance with UK law',
   },

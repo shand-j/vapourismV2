@@ -450,9 +450,9 @@ export class SEOAutomationService {
    * @returns Marketing-optimized og:title (no suffix, ready for social sharing)
    */
   static generateOGTitle(productTitle: string, vendor: string): string {
-    // Remove parentheses and their content first to extract promo text
-    const promoMatch = productTitle.match(/\(([^)]+)\)/);
-    const promoText = promoMatch ? promoMatch[1] : null;
+    // Extract all parenthesized content and find promotional text
+    const allParentheses = productTitle.match(/\([^)]+\)/g) || [];
+    const promoText = allParentheses.find(p => /buy\s+\d+\s+get\s+\d+\s+free/i.test(p))?.replace(/[()]/g, '') || null;
     
     // Clean title by removing parentheses content and extra whitespace
     let cleanTitle = productTitle.replace(/\s*\([^)]*\)\s*/g, ' ').trim();
@@ -475,11 +475,10 @@ export class SEOAutomationService {
           this.PRODUCT_TYPE_KEYWORDS.some(t => w.toLowerCase() === t.toLowerCase())
         ) || '';
         
-        if (buyNum === 1 && getNum === 1) {
-          return `Buy 1 Get 1 Free: ${vendor} ${strength} ${productType} Deal`.replace(/\s+/g, ' ').trim();
-        } else if (buyNum === 1 && getNum === 2) {
-          return `Buy 1 Get 2 Free: ${vendor} ${strength} ${productType}`.replace(/\s+/g, ' ').trim();
-        }
+        // Format promotional title based on offer type
+        const promoPrefix = `Buy ${buy} Get ${get} Free`;
+        const suffix = (buyNum === 1 && getNum === 1) ? ' Deal' : '';
+        return `${promoPrefix}: ${vendor} ${strength} ${productType}${suffix}`.replace(/\s+/g, ' ').trim();
       }
     }
     

@@ -555,7 +555,9 @@ export const meta = ({data}: {data: any}) => {
     },
     {
       property: 'og:title',
-      content: `Find Your Vape: ${count} Products to Choose From - Fast Delivery`,
+      content: query 
+        ? `Find Your Vape: ${query} - ${count} Products Available`
+        : `Find Your Vape: ${count} Products to Choose From - Fast Delivery`,
     },
     {
       name: 'keywords',

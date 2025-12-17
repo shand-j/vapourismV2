@@ -39,6 +39,25 @@ describe('SEOAutomationService.generateOGTitle', () => {
       expect(result).toContain('5000mg');
       expect(result).toContain('Crumble');
     });
+
+    it('should handle BUY 2 GET 1 FREE promotional pattern', () => {
+      const result = SEOAutomationService.generateOGTitle(
+        'Test Product 1000mg CBD Oil (BUY 2 GET 1 FREE)',
+        'Test Brand'
+      );
+      expect(result).toContain('Buy 2 Get 1 Free');
+      expect(result).toContain('1000mg');
+      expect(result).toContain('Test Brand');
+    });
+
+    it('should find promo text even when not first parentheses', () => {
+      const result = SEOAutomationService.generateOGTitle(
+        'Product (Free Shipping) 1000mg Oil (BUY 1 GET 1 FREE)',
+        'Brand'
+      );
+      expect(result).toContain('Buy 1 Get 1 Free');
+      expect(result).toContain('1000mg');
+    });
   });
 
   describe('Standard product title optimization', () => {

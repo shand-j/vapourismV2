@@ -6,7 +6,7 @@
  */
 
 import {useCallback, useEffect, useMemo, useState} from 'react';
-import {json, type ActionFunctionArgs, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {json, defer, type ActionFunctionArgs, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useLoaderData, Link, useFetcher} from '@remix-run/react';
 import {getBrandAssets} from '../lib/brand-assets';
 import {BrandSection} from '../components/brand/BrandSection';
@@ -14,6 +14,8 @@ import {SEOAutomationService} from '../preserved/seo-automation';
 import {cn} from '../lib/utils';
 import {trackViewItem, trackAddToCart, shopifyProductToGA4Item} from '../lib/analytics';
 import {sanitizeProductDescription} from '../lib/html-sanitizer';
+import {findRelatedProducts, buildProductBreadcrumb} from '../lib/related-products';
+import {RelatedProducts, VendorProductsLink, ProductBreadcrumb, PopularCategories} from '../components/RelatedProducts';
 
 /**
  * UK VAT rate (20%)
@@ -184,12 +186,33 @@ export async function loader({params, context}: LoaderFunctionArgs) {
     const keywords = SEOAutomationService.generateProductKeywords(seoData);
     const imageAltText = SEOAutomationService.generateImageAltText(seoData, 'main');
 
-    return json({
+    // Fetch related products asynchronously (deferred for faster page load)
+    const relatedProductsPromise = findRelatedProducts({
+      storefront: context.storefront,
+      currentProductId: product.id,
+      vendor: product.vendor,
+      productType: product.productType,
+      tags: product.tags,
+      limit: 8,
+    });
+
+    // Build breadcrumb navigation
+    const breadcrumbItems = buildProductBreadcrumb(
+      product.productType,
+      product.vendor,
+      product.tags,
+    );
+
+    return defer({
       product: sanitizedProduct,
       brandAssets,
       metaDescription,
       keywords,
       imageAltText,
+      relatedProducts: relatedProductsPromise.then((result) => result.products),
+      strategy: relatedProductsPromise.then((result) => result.strategy),
+      currentProductId: product.id,
+      breadcrumbItems,
     });
   } catch (error) {
     console.error(`Product fetch error for "${handle}":`, error);
@@ -481,24 +504,12 @@ export default function ProductPage() {
       />
       
       <div className="container-custom py-10 lg:py-16">
-        {/* Breadcrumbs */}
-        <nav className="mb-8 text-sm text-slate-500">
-          <ol className="flex flex-wrap items-center gap-2">
-            <li>
-              <Link to="/" className="hover:text-slate-900">
-                Home
-              </Link>
-            </li>
-            <li>/</li>
-            <li>
-              <Link to="/search" className="hover:text-slate-900">
-                Products
-              </Link>
-            </li>
-            <li>/</li>
-            <li className="font-medium text-slate-900">{product.title}</li>
-          </ol>
-        </nav>
+        {/* Enhanced Breadcrumbs - Improves internal linking structure */}
+        <ProductBreadcrumb
+          items={useLoaderData<typeof loader>().breadcrumbItems}
+          currentPage={product.title}
+          className="mb-8"
+        />
 
         {/* Product Main Section */}
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_460px]">
@@ -754,6 +765,17 @@ export default function ProductPage() {
           </p>
         </div>
       </div>
+
+      {/* Related Products Section - Improves internal linking and reduces orphan pages */}
+      <RelatedProducts title="You May Also Like" className="mt-16" />
+
+      {/* Vendor Products Link - Direct internal link to all products by this brand */}
+      <div className="container mx-auto px-4">
+        <VendorProductsLink vendor={product.vendor} />
+      </div>
+
+      {/* Popular Categories - Additional internal linking opportunities */}
+      <PopularCategories className="mt-12" />
     </div>
   );
 }

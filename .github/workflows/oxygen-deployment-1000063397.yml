@@ -51,8 +51,7 @@ jobs:
         run: npm ci
 
       - name: Build and Publish to Oxygen
-        run: npx shopify hydrogen deploy --auth-bypass-token && \
-             echo h2_deploy_log=$(cat h2_deploy_log.json) >> $GITHUB_OUTPUT
+        run: npx shopify hydrogen deploy --auth-bypass-token
         env:
           SHOPIFY_HYDROGEN_DEPLOYMENT_TOKEN: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_1000063397 }}
       

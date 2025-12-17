@@ -30,6 +30,10 @@ export const meta: MetaFunction = () => [
   {
     name: 'twitter:description',
     content: 'Complete age verification to proceed with your vaping products order. UK law requires customers to be 18+ to purchase vaping products.'
+
+    name: 'keywords',
+    content: 'age verification, vaping products, UK vaping retailer, Vapourism, order number verification, confirmation code, age check, compliance with UK law',
+
   },
   {
     name: 'robots',
@@ -206,7 +210,7 @@ export default function AgeVerificationPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
-      <h1 className="text-2xl font-semibold">Verify your age</h1>
+      <h1 className="text-2xl font-semibold">Vapourism Age Verification: Complete Your Vape Order</h1>
       <p className="mt-4 text-sm text-slate-600">
         To complete your order verification, open the link sent in your confirmation email. This page accepts an
         order number and confirmation code and starts the age verification widget when you click the button below.
@@ -242,7 +246,7 @@ export default function AgeVerificationPage() {
       </div>
 
       <div className="mt-6 rounded-lg border border-slate-200 bg-slate-50 p-6">
-        <h2 className="text-sm font-semibold text-slate-700">Having trouble?</h2>
+        <h2 className="text-sm font-semibold text-slate-700">Having Trouble Verifying Your Age? Contact Our Support Team</h2>
         <p className="mt-2 text-sm text-slate-600">
           If you need assistance with age verification, our support team is here to help.
         </p>

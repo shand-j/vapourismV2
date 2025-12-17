@@ -7,7 +7,7 @@ import {Search, ChevronDown, ChevronUp, Package, CreditCard, Truck, HelpCircle, 
 const faqCategories = [
   {
     id: 'ordering',
-    title: 'Ordering & Payment',
+    title: 'Ordering, Payment & Subscriptions',
     icon: CreditCard,
     color: 'purple',
     questions: [

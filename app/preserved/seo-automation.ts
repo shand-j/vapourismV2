@@ -23,6 +23,23 @@ export interface ProductSEOData {
   sku?: string;
 }
 
+/**
+ * Custom SEO title overrides for specific products
+ * Maps product handle to optimized meta title
+ */
+const PRODUCT_TITLE_OVERRIDES: Record<string, string> = {
+  'realest-cbd-4000mg-cbg-isolate-buy-1-get-1-free': 'Realest CBD 4000mg CBG Isolate: BOGO at Vapourism',
+  'celtic-wind-crops-500mg-cbd-multi-complex-hemp-oil-10ml': 'Celtic Wind Crops 500mg CBD Oil 10ml: Buy Now | Vapourism',
+  'joule-150mg-cbd-herbal-anti-oxi-conditioner-250ml': 'Joul\'e CBD Conditioner: Restore & Revive Hair | Vapourism',
+  'realest-cbd-6000mg-cbd-10ml-raw-paste-buy-1-get-1-free': 'Realest CBD 6000mg Raw Paste (Buy 1 Get 1 Free) | Vapourism',
+  'realest-cbd-1000mg-80-broad-spectrum-cbd-crumble-buy-1-get-1-free': 'Realest CBD Crumble: Buy 1 Get 1 Free – Vapourism 2025',
+  '20mg-just-nic-it-nic-salt-10ml-50vg-50pg': '20mg Just Nic It Nic Salt 10ml: Fast Delivery at Vapourism',
+  '12mg-ohm-boy-longfill-booster-kit-freebase-50vg-50pg': '12mg Ohm Boy Longfill Booster Kit (50VG/50PG) | Vapourism UK',
+  'cbd-by-british-cannabis-1000mg-cbd-raw-cannabis-oil-drops-10ml': 'Buy British Cannabis CBD Oil Drops 1000mg | 2025',
+  'realest-cbd-5000mg-80-broad-spectrum-cbd-crumble-buy-1-get-1-free': 'Realest CBD Crumble: Buy 1 Get 1 Free at Vapourism',
+  'cbd-asylum-infuse-10000mg-cbd-cola-oil-30ml-buy-1-get-2-free': 'CBD Asylum Cola Oil 10000mg: Buy 1 Get 2 Free at Vapourism',
+};
+
 export class SEOAutomationService {
   
   /**
@@ -349,13 +366,19 @@ export class SEOAutomationService {
   /**
    * Generate optimized product title for meta tags
    * Ensures title fits within 70 character SEO limit
-   * Priority: Product title > Vendor > "Vapourism"
+   * Priority: Custom override > Shopify SEO title > Product title > Vendor > "Vapourism"
    * @param productTitle The product title
    * @param vendor The vendor/brand name
    * @param seoTitle Optional SEO title override from Shopify
+   * @param handle Optional product handle for custom title overrides
    * @returns Optimized title string ≤70 characters
    */
-  static generateProductTitle(productTitle: string, vendor: string, seoTitle?: string | null): string {
+  static generateProductTitle(productTitle: string, vendor: string, seoTitle?: string | null, handle?: string | null): string {
+    // Check for custom title override by product handle
+    if (handle && PRODUCT_TITLE_OVERRIDES[handle]) {
+      return this.truncateTitle(PRODUCT_TITLE_OVERRIDES[handle]);
+    }
+
     // Use SEO title from Shopify if available
     if (seoTitle) {
       return this.truncateTitle(seoTitle);

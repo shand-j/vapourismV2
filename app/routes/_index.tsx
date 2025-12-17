@@ -484,7 +484,7 @@ export default function IndexRoute() {
           <div className="container-custom">
             <div className="text-center">
               <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-400">Just landed</p>
-              <h2 className="mt-3 mb-4">New arrivals</h2>
+              <h2 className="mt-3 mb-4">Discover the Latest Vape Arrivals from Top UK & EU Brands</h2>
               <p className="text-slate-600">The latest products to hit our shelves, fresh from the best UK and EU brands.</p>
             </div>
 

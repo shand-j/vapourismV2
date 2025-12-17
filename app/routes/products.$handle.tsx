@@ -190,6 +190,31 @@ export async function loader({params, context}: LoaderFunctionArgs) {
   }
 }
 
+/**
+ * Format product title for H1 tag to be more SEO-friendly
+ * Removes redundant vendor names and cleans up promotional text
+ */
+function formatProductH1(title: string, vendor: string): string {
+  let formatted = title;
+  
+  // Remove "by [vendor]" pattern (case insensitive)
+  const escapedVendor = vendor.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const byVendorPattern = new RegExp(`\\s+by\\s+${escapedVendor}`, 'gi');
+  formatted = formatted.replace(byVendorPattern, '');
+  
+  // Clean up promotional text: (BUY 1 GET 1 FREE) -> Buy 1 Get 1 Free
+  formatted = formatted.replace(/\(BUY\s+(\d+)\s+GET\s+(\d+)\s+FREE\)/gi, '– Buy $1 Get $2 Free');
+  
+  // Only remove hyphens that are surrounded by spaces (not part of compound words like "E-liquid")
+  // This preserves legitimate hyphenated terms while cleaning up separator hyphens
+  formatted = formatted.replace(/\s+-\s+/g, ' ');
+  
+  // Clean up multiple spaces
+  formatted = formatted.replace(/\s+/g, ' ').trim();
+  
+  return formatted;
+}
+
 export default function ProductPage() {
   const {product, brandAssets} = useLoaderData<typeof loader>();
   const cartFetcher = useFetcher<{status?: string; message?: string; lineId?: string | null; quantity?: number}>();
@@ -517,7 +542,7 @@ export default function ProductPage() {
         <div className="space-y-6 rounded-[32px] border border-slate-200 bg-white/95 p-8 shadow-[0_25px_60px_rgba(15,23,42,0.12)]">
           <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500">{product.vendor}</p>
-            <h1 className="text-4xl font-semibold text-slate-900">{product.title}</h1>
+            <h1 className="text-4xl font-semibold text-slate-900">{formatProductH1(product.title, product.vendor)}</h1>
             <p className="text-sm text-slate-500">{product.productType || 'Premium vape hardware'}</p>
           </div>
 
@@ -803,7 +828,7 @@ export const meta = ({data}: {data: {product: typeof import('storefrontapi.gener
 
   return [
     {
-      title: SEOAutomationService.generateProductTitle(product.title, product.vendor, product.seo?.title),
+      title: SEOAutomationService.generateProductTitle(product.title, product.vendor, product.seo?.title, product.handle),
     },
     {
       name: 'description',

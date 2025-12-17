@@ -17,7 +17,7 @@ import {cn} from '~/lib/utils';
 
 export interface RelatedProductsLoaderData {
   relatedProducts: Promise<ProductCardProduct[]>;
-  strategy: 'vendor' | 'productType' | 'tags' | 'mixed';
+  strategy: 'vendor' | 'productType' | 'tags' | 'mixed' | 'popular';
   currentProductId: string;
 }
 

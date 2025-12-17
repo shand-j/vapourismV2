@@ -259,3 +259,102 @@ export const FOOTER_QUERY = `#graphql
   }
   ${MENU_FRAGMENT}
 ` as const;
+
+/**
+ * Blog Article Fragment
+ * Used for fetching blog article data from Shopify
+ */
+export const ARTICLE_FRAGMENT = `#graphql
+  fragment Article on Article {
+    id
+    title
+    handle
+    content
+    contentHtml
+    excerpt
+    excerptHtml
+    publishedAt
+    authorV2 {
+      name
+    }
+    image {
+      url
+      altText
+      width
+      height
+    }
+    seo {
+      title
+      description
+    }
+    tags
+    blog {
+      id
+      handle
+      title
+    }
+  }
+` as const;
+
+/**
+ * Query to fetch a single blog by handle
+ */
+export const BLOG_QUERY = `#graphql
+  query Blog($blogHandle: String!) {
+    blog(handle: $blogHandle) {
+      id
+      handle
+      title
+      seo {
+        title
+        description
+      }
+    }
+  }
+` as const;
+
+/**
+ * Query to fetch articles from a blog with pagination
+ */
+export const BLOG_ARTICLES_QUERY = `#graphql
+  query BlogArticles(
+    $blogHandle: String!
+    $first: Int
+    $after: String
+  ) {
+    blog(handle: $blogHandle) {
+      id
+      handle
+      title
+      articles(first: $first, after: $after) {
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+        }
+        edges {
+          cursor
+          node {
+            ...Article
+          }
+        }
+      }
+    }
+  }
+  ${ARTICLE_FRAGMENT}
+` as const;
+
+/**
+ * Query to fetch a single article by blog handle and article handle
+ */
+export const ARTICLE_QUERY = `#graphql
+  query Article($blogHandle: String!, $articleHandle: String!) {
+    blog(handle: $blogHandle) {
+      articleByHandle(handle: $articleHandle) {
+        ...Article
+      }
+    }
+  }
+  ${ARTICLE_FRAGMENT}
+` as const;

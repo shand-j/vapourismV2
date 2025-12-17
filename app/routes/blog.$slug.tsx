@@ -1,7 +1,13 @@
 import type {MetaFunction, LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useLoaderData, Link} from '@remix-run/react';
 import {useEffect, useRef} from 'react';
-import {getArticleBySlug} from '~/data/blog';
+import {
+  getArticle,
+  generateMetaDescription,
+  getCategoryFromArticle,
+  DEFAULT_BLOG_HANDLE,
+  type ShopifyArticle,
+} from '~/lib/shopify-blog';
 import {SEOAutomationService} from '~/preserved/seo-automation';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
@@ -12,35 +18,49 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
     ];
   }
 
-  const {article} = data;
+  const {article, category, metaDescription} = data;
   const fullTitle = `${article.title} | Vapourism Blog`;
 
-  return [
+  const metaTags = [
     {title: SEOAutomationService.truncateTitle(fullTitle)},
-    {name: 'description', content: article.metaDescription},
-    ...(article.metaKeywords ? [{name: 'keywords', content: article.metaKeywords}] : []),
+    {name: 'description', content: metaDescription},
     {property: 'og:title', content: article.title},
-    {property: 'og:description', content: article.metaDescription},
+    {property: 'og:description', content: metaDescription},
     {property: 'og:type', content: 'article'},
-    {property: 'og:url', content: `https://www.vapourism.co.uk/blog/${article.slug}`},
-    {property: 'article:published_time', content: article.publishedDate},
-    {property: 'article:modified_time', content: article.lastModified},
-    {property: 'article:author', content: article.author},
-    {property: 'article:section', content: article.category},
+    {property: 'og:url', content: `https://www.vapourism.co.uk/blog/${article.handle}`},
+    {property: 'article:published_time', content: article.publishedAt},
+    {property: 'article:author', content: article.authorV2?.name || 'Vapourism'},
+    {property: 'article:section', content: category},
     {name: 'twitter:card', content: 'summary_large_image'},
     {name: 'twitter:title', content: article.title},
-    {name: 'twitter:description', content: article.metaDescription},
+    {name: 'twitter:description', content: metaDescription},
   ];
+
+  // Add keywords if available
+  if (article.tags.length > 0) {
+    metaTags.push({name: 'keywords', content: article.tags.join(', ')});
+  }
+
+  // Add featured image if available
+  if (article.image?.url) {
+    metaTags.push(
+      {property: 'og:image', content: article.image.url},
+      {name: 'twitter:image', content: article.image.url},
+    );
+  }
+
+  return metaTags;
 };
 
-export async function loader({params, request}: LoaderFunctionArgs) {
+export async function loader({params, request, context}: LoaderFunctionArgs) {
   const {slug} = params;
 
   if (!slug) {
     throw new Response('Not Found', {status: 404});
   }
 
-  const article = getArticleBySlug(slug);
+  // Fetch article from Shopify
+  const article = await getArticle(context.storefront, slug, DEFAULT_BLOG_HANDLE);
 
   if (!article) {
     throw new Response('Not Found', {status: 404});
@@ -50,17 +70,21 @@ export async function loader({params, request}: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const origin = url.origin;
 
+  // Generate category and meta description
+  const category = getCategoryFromArticle(article);
+  const metaDescription = generateMetaDescription(article);
+
   // Generate JSON-LD structured data for the article
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: article.title,
-    description: article.metaDescription,
-    datePublished: article.publishedDate,
-    dateModified: article.lastModified,
+    description: metaDescription,
+    datePublished: article.publishedAt,
+    dateModified: article.publishedAt,
     author: {
       '@type': 'Organization',
-      name: article.author,
+      name: article.authorV2?.name || 'Vapourism',
     },
     publisher: {
       '@type': 'Organization',
@@ -70,115 +94,64 @@ export async function loader({params, request}: LoaderFunctionArgs) {
         url: `${origin}/favicon.svg`,
       },
     },
-    articleSection: article.category,
+    articleSection: category,
     keywords: article.tags.join(', '),
+    ...(article.image?.url && {
+      image: {
+        '@type': 'ImageObject',
+        url: article.image.url,
+        width: article.image.width,
+        height: article.image.height,
+      },
+    }),
   };
 
   return {
     article,
+    category,
+    metaDescription,
     structuredData,
   };
 }
 
 /**
  * ArticleContent component
- * Renders markdown content with proper HTML structure and styling
+ * Renders HTML content from Shopify with proper styling
  * 
- * SECURITY NOTE: This component uses dangerouslySetInnerHTML for performance and simplicity.
+ * SECURITY NOTE: This component uses dangerouslySetInnerHTML.
  * This is SAFE because:
- * 1. Content comes from TypeScript files in our codebase (not user input)
- * 2. Content is version-controlled and code-reviewed
- * 3. Content is known at build time
- * 4. Only basic markdown formatting is processed (bold, italic)
- * 5. No user-generated content or external sources
+ * 1. Content comes from Shopify's CMS (trusted source)
+ * 2. Shopify sanitizes all HTML content before storing
+ * 3. Content is managed by authorized store admins only
+ * 4. No user-generated content from untrusted sources
  * 
- * If you need to accept user-generated content in the future, use a proper
- * markdown library with sanitization (e.g., marked + DOMPurify).
+ * Shopify's HTML is pre-sanitized and safe to render.
  */
-function ArticleContent({content}: {content: string}) {
-  const lines = content.split('\n');
-  const elements: JSX.Element[] = [];
-  let listItems: string[] = [];
-
-  const flushList = () => {
-    if (listItems.length > 0) {
-      elements.push(
-        <ul key={`list-${elements.length}`} className="list-disc list-inside mb-4 space-y-1 text-slate-700">
-          {listItems.map((item, idx) => (
-            <li key={idx} dangerouslySetInnerHTML={{__html: item}} />
-          ))}
-        </ul>
-      );
-      listItems = [];
-    }
-  };
-
-  const processInlineFormatting = (text: string): string => {
-    // Only process bold and italic - content is from trusted source
-    // Use non-greedy patterns to prevent catastrophic backtracking
-    return text
-      .replace(/\*\*([^*]+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*([^*]+?)\*/g, '<em>$1</em>');
-  };
-
-  lines.forEach((line, index) => {
-    const trimmed = line.trim();
-    
-    if (!trimmed) {
-      flushList();
-      return;
-    }
-
-    // Headers
-    if (trimmed.startsWith('# ')) {
-      flushList();
-      elements.push(
-        <h1 key={index} className="text-3xl font-bold text-slate-900 mb-4 mt-8 first:mt-0">
-          {trimmed.substring(2)}
-        </h1>
-      );
-    } else if (trimmed.startsWith('## ')) {
-      flushList();
-      elements.push(
-        <h2 key={index} className="text-2xl font-bold text-slate-900 mb-3 mt-6">
-          {trimmed.substring(3)}
-        </h2>
-      );
-    } else if (trimmed.startsWith('### ')) {
-      flushList();
-      elements.push(
-        <h3 key={index} className="text-xl font-semibold text-slate-900 mb-2 mt-4">
-          {trimmed.substring(4)}
-        </h3>
-      );
-    } else if (trimmed === '---') {
-      flushList();
-      elements.push(
-        <hr key={index} className="border-t border-slate-300 my-8" />
-      );
-    } else if (trimmed.startsWith('* ')) {
-      // Collect list items
-      listItems.push(processInlineFormatting(trimmed.substring(2)));
-    } else {
-      // Regular paragraph
-      flushList();
-      elements.push(
-        <p 
-          key={index} 
-          className="text-slate-700 leading-relaxed mb-4"
-          dangerouslySetInnerHTML={{__html: processInlineFormatting(trimmed)}}
-        />
-      );
-    }
-  });
-
-  flushList(); // Flush any remaining list items
-
-  return <div className="article-content">{elements}</div>;
+function ArticleContent({contentHtml}: {contentHtml: string}) {
+  return (
+    <div 
+      className="article-content prose prose-slate max-w-none
+        prose-headings:font-bold prose-headings:text-slate-900
+        prose-h1:text-3xl prose-h1:mb-4 prose-h1:mt-8 first:prose-h1:mt-0
+        prose-h2:text-2xl prose-h2:mb-3 prose-h2:mt-6
+        prose-h3:text-xl prose-h3:mb-2 prose-h3:mt-4
+        prose-p:text-slate-700 prose-p:leading-relaxed prose-p:mb-4
+        prose-ul:list-disc prose-ul:list-inside prose-ul:mb-4 prose-ul:space-y-1 prose-ul:text-slate-700
+        prose-ol:list-decimal prose-ol:list-inside prose-ol:mb-4 prose-ol:space-y-1 prose-ol:text-slate-700
+        prose-li:text-slate-700
+        prose-a:text-violet-600 prose-a:hover:text-violet-700 prose-a:underline
+        prose-strong:text-slate-900 prose-strong:font-semibold
+        prose-em:italic
+        prose-img:rounded-lg prose-img:shadow-md prose-img:my-6
+        prose-blockquote:border-l-4 prose-blockquote:border-violet-600 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-slate-600
+        prose-hr:border-slate-300 prose-hr:my-8"
+      dangerouslySetInnerHTML={{__html: contentHtml}}
+    />
+  );
 }
 
 export default function BlogArticle() {
-  const {article, structuredData} = useLoaderData<typeof loader>();
+  const {article, category, structuredData} = useLoaderData<typeof loader>();
   const engagementTracked = useRef(false);
   const startTime = useRef<number>(0);
   const scrollDepthTracked = useRef<Set<number>>(new Set());
@@ -191,9 +164,9 @@ export default function BlogArticle() {
     if (typeof window !== 'undefined' && window.gtag && !engagementTracked.current) {
       window.gtag('event', 'view_blog_article', {
         article_title: article.title,
-        article_category: article.category,
-        article_slug: article.slug,
-        article_author: article.author,
+        article_category: category,
+        article_slug: article.handle,
+        article_author: article.authorV2?.name || 'Vapourism',
         article_tags: article.tags.join(','),
       });
       engagementTracked.current = true;
@@ -208,14 +181,14 @@ export default function BlogArticle() {
         if (timeSpent > 5) {
           window.gtag('event', 'blog_engagement', {
             article_title: article.title,
-            article_slug: article.slug,
+            article_slug: article.handle,
             engagement_time_seconds: timeSpent,
             value: timeSpent, // Use time as value for GA4
           });
         }
       }
     };
-  }, [article.title, article.category, article.slug, article.author, article.tags]);
+  }, [article.title, category, article.handle, article.authorV2?.name, article.tags]);
 
   // Track scroll depth
   useEffect(() => {
@@ -236,7 +209,7 @@ export default function BlogArticle() {
           if (window.gtag) {
             window.gtag('event', 'scroll_depth', {
               article_title: article.title,
-              article_slug: article.slug,
+              article_slug: article.handle,
               scroll_depth_percentage: milestone,
               value: milestone,
             });
@@ -250,7 +223,7 @@ export default function BlogArticle() {
     return () => {
       window.removeEventListener('scroll', trackScrollDepth);
     };
-  }, [article.title, article.slug]);
+  }, [article.title, article.handle]);
 
   return (
     <>
@@ -284,31 +257,33 @@ export default function BlogArticle() {
         <header className="mb-8 max-w-4xl mx-auto">
           <div className="flex items-center gap-2 text-sm text-slate-600 mb-4">
             <span className="bg-violet-100 text-violet-700 px-3 py-1 rounded-full">
-              {article.category}
+              {category}
             </span>
             <span>•</span>
-            <time dateTime={article.publishedDate}>
-              {new Date(article.publishedDate).toLocaleDateString('en-GB', {
+            <time dateTime={article.publishedAt}>
+              {new Date(article.publishedAt).toLocaleDateString('en-GB', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
               })}
             </time>
             <span>•</span>
-            <span>By {article.author}</span>
+            <span>By {article.authorV2?.name || 'Vapourism'}</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
             {article.title}
           </h1>
-          <p className="text-xl text-slate-600">{article.metaDescription}</p>
+          {article.excerpt && (
+            <p className="text-xl text-slate-600">{article.excerpt}</p>
+          )}
         </header>
 
         {/* Featured Image */}
-        {article.featuredImage && (
+        {article.image && (
           <div className="mb-8 max-w-4xl mx-auto">
             <img
-              src={article.featuredImage}
-              alt={article.title}
+              src={article.image.url}
+              alt={article.image.altText || article.title}
               className="w-full rounded-lg shadow-lg"
             />
           </div>
@@ -316,7 +291,7 @@ export default function BlogArticle() {
 
         {/* Article Content */}
         <article className="max-w-4xl mx-auto">
-          <ArticleContent content={article.content} />
+          <ArticleContent contentHtml={article.contentHtml} />
         </article>
 
         {/* Article Tags */}

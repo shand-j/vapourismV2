@@ -1,6 +1,12 @@
 import type {MetaFunction, LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Link, useLoaderData} from '@remix-run/react';
-import {getAllArticles, type BlogArticle} from '~/data/blog';
+import {Link, useLoaderData, useSearchParams} from '@remix-run/react';
+import {
+  getBlogArticles,
+  generateMetaDescription,
+  getCategoryFromArticle,
+  DEFAULT_BLOG_HANDLE,
+  type ShopifyArticle,
+} from '~/lib/shopify-blog';
 
 export const meta: MetaFunction = () => {
   const title = 'Blog | Vapourism - Vaping Guides & Education';
@@ -27,16 +33,25 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export async function loader({}: LoaderFunctionArgs) {
-  const articles = getAllArticles();
+export async function loader({context, request}: LoaderFunctionArgs) {
+  const url = new URL(request.url);
+  const after = url.searchParams.get('after') || undefined;
+  
+  // Fetch articles from Shopify
+  const {articles, pageInfo} = await getBlogArticles(context.storefront, {
+    blogHandle: DEFAULT_BLOG_HANDLE,
+    after,
+  });
   
   return {
     articles,
+    pageInfo,
   };
 }
 
 export default function BlogIndex() {
-  const {articles} = useLoaderData<typeof loader>();
+  const {articles, pageInfo} = useLoaderData<typeof loader>();
+  const [searchParams] = useSearchParams();
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -52,7 +67,7 @@ export default function BlogIndex() {
 
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
         {articles.map((article) => (
-          <ArticleCard key={article.slug} article={article} />
+          <ArticleCard key={article.id} article={article} />
         ))}
       </div>
 
@@ -61,19 +76,44 @@ export default function BlogIndex() {
           <p className="text-slate-600">No articles available yet. Check back soon!</p>
         </div>
       )}
+
+      {/* Pagination */}
+      {(pageInfo.hasNextPage || pageInfo.hasPreviousPage) && (
+        <div className="mt-12 flex justify-center gap-4">
+          {pageInfo.hasPreviousPage && (
+            <Link
+              to={`/blog`}
+              className="px-6 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors"
+            >
+              ← First Page
+            </Link>
+          )}
+          {pageInfo.hasNextPage && (
+            <Link
+              to={`/blog?after=${encodeURIComponent(pageInfo.endCursor || '')}`}
+              className="px-6 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors"
+            >
+              Next Page →
+            </Link>
+          )}
+        </div>
+      )}
     </div>
   );
 }
 
-function ArticleCard({article}: {article: BlogArticle}) {
+function ArticleCard({article}: {article: ShopifyArticle}) {
+  const category = getCategoryFromArticle(article);
+  const metaDescription = generateMetaDescription(article);
+
   return (
     <article className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden">
-      <Link to={`/blog/${article.slug}`} className="block">
-        {article.featuredImage && (
+      <Link to={`/blog/${article.handle}`} className="block">
+        {article.image && (
           <div className="aspect-video bg-slate-200">
             <img
-              src={article.featuredImage}
-              alt={article.title}
+              src={article.image.url}
+              alt={article.image.altText || article.title}
               className="w-full h-full object-cover"
             />
           </div>
@@ -81,11 +121,11 @@ function ArticleCard({article}: {article: BlogArticle}) {
         <div className="p-6">
           <div className="flex items-center gap-2 text-sm text-slate-600 mb-3">
             <span className="bg-violet-100 text-violet-700 px-2 py-1 rounded">
-              {article.category}
+              {category}
             </span>
             <span>•</span>
-            <time dateTime={article.publishedDate}>
-              {new Date(article.publishedDate).toLocaleDateString('en-GB', {
+            <time dateTime={article.publishedAt}>
+              {new Date(article.publishedAt).toLocaleDateString('en-GB', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
@@ -101,7 +141,7 @@ function ArticleCard({article}: {article: BlogArticle}) {
             WebkitBoxOrient: 'vertical',
             maxHeight: '4.5rem'
           }}>
-            {article.metaDescription}
+            {metaDescription}
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
             {article.tags.slice(0, 3).map((tag) => (

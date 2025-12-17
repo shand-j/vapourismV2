@@ -22,6 +22,10 @@ export const meta: MetaFunction = () => [
     name: 'keywords',
     content: 'customer account management, Shopify integration, order history, subscriptions management, age verification, delivery policies, returns process, user experience',
   },
+  {
+    property: 'og:url',
+    content: 'https://www.vapourism.co.uk/account',
+  },
 ];
 
 export default function AccountRoute() {

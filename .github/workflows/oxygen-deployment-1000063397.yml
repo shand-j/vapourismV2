@@ -23,7 +23,8 @@ jobs:
     timeout-minutes: 5
     runs-on: ubuntu-latest
     outputs:
-      h2_deploy_log: ${{ steps.save_deployment_log.outputs.h2_deploy_log }}
+      preview_url: ${{ steps.get_deployment_data.outputs.preview_url }}
+      bypass_token: ${{ steps.get_deployment_data.outputs.bypass_token }}
     steps:
       - uses: actions/checkout@v4
 
@@ -55,18 +56,8 @@ jobs:
         env:
           SHOPIFY_HYDROGEN_DEPLOYMENT_TOKEN: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_1000063397 }}
       
-  get_deployment_data:
-    name: Get Deployment Data
-    needs: deploy
-    runs-on: ubuntu-latest
-    outputs:
-      preview_url: ${{ steps.get_deployment_data.outputs.preview_url }}
-      bypass_token: ${{ steps.get_deployment_data.outputs.bypass_token }}
-    steps:
-      - name: Get Deployment Data
+      - name: Output Deployment Details
         id: get_deployment_data
         run: |
           echo "bypass_token=$(jq -r '.authBypassToken' h2_deploy_log.json)" >> $GITHUB_OUTPUT
           echo "preview_url=$(jq -r '.url' h2_deploy_log.json)" >> $GITHUB_OUTPUT
-        env:
-          SHOPIFY_HYDROGEN_DEPLOYMENT_TOKEN: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN_1000063397 }}

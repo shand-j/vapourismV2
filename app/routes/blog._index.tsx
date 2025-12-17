@@ -15,6 +15,10 @@ export const meta: MetaFunction = () => {
       content: 'vaping, e-liquids, nicotine products, vaping guides, harm reduction, vape reviews, vaping trends, UK vaping, vape safety, vaping education',
     },
     {property: 'og:title', content: 'Blog | Vapourism'},
+    {
+      property: 'og:description',
+      content: 'Vaping guides, reviews & trends | Vapourism\'s expert blog.',
+    },
     {property: 'og:type', content: 'website'},
     {property: 'og:url', content: 'https://www.vapourism.co.uk/blog'},
     {

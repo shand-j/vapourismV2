@@ -211,7 +211,7 @@ export const meta: MetaFunction = () => {
     },
     {
       property: 'og:description',
-      content: 'Get answers to common questions about vaping products, UK delivery, age verification, returns policy, and technical support.'
+      content: 'Vaping questions answered: UK delivery, returns & tech support.'
     },
     {
       property: 'og:type',

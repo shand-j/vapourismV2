@@ -24,8 +24,8 @@ export const meta: MetaFunction = () => [
     content: 'age verification, vaping products, UK vaping retailer, Vapourism, order number verification, confirmation code, age check, compliance with UK law',
   },
   {
-    name: 'robots',
-    content: 'noindex, nofollow'
+    property: 'og:description',
+    content: 'Complete age verification to proceed with your vaping products order. UK law requires customers to be 18+ to purchase vaping products.'
   },
   {
     name: 'twitter:card',
@@ -37,7 +37,11 @@ export const meta: MetaFunction = () => [
   },
   {
     name: 'twitter:description',
-    content: 'Verify your age easily for vaping products at Vapourism. Quick & secure age check. #VapingUK #AgeVerification'
+    content: 'Complete age verification to proceed with your vaping products order. UK law requires customers to be 18+ to purchase vaping products.'
+  },
+  {
+    name: 'robots',
+    content: 'noindex, nofollow'
   }
 ];
 

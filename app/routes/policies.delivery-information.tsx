@@ -15,10 +15,22 @@ export const meta: MetaFunction = () => [
   },
   {
     property: 'og:title',
-    content: 'Delivery Information | Fast UK Delivery | DPD | Vapourism'
+    content: 'Delivery Information | Fast UK Delivery | Vapourism'
   },
   {
     property: 'og:description',
+    content: 'Fast UK delivery for vaping products via DPD Local. Free shipping over £20. Next-day delivery available with full tracking.'
+  },
+  {
+    name: 'twitter:card',
+    content: 'summary'
+  },
+  {
+    name: 'twitter:title',
+    content: 'Delivery Information | Fast UK Delivery | Vapourism'
+  },
+  {
+    name: 'twitter:description',
     content: 'Fast UK delivery for vaping products via DPD Local. Free shipping over £20. Next-day delivery available with full tracking.'
   },
   {

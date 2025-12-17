@@ -19,6 +19,18 @@ export const meta: MetaFunction = () => [
   },
   {
     property: 'og:description',
+    content: 'Vapourism: Protecting your personal data in line with UK GDPR.'
+  },
+  {
+    name: 'twitter:card',
+    content: 'summary'
+  },
+  {
+    name: 'twitter:title',
+    content: 'Privacy Policy | Vapourism'
+  },
+  {
+    name: 'twitter:description',
     content: 'How Vapourism protects your personal data in compliance with UK GDPR.'
   },
   {

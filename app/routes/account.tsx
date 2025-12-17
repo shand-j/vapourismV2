@@ -11,16 +11,20 @@ export const meta: MetaFunction = () => [
     content: 'Vapourism Account Management Made Easy',
   },
   {
+    property: 'og:description',
+    content: "Customer account management is moving to Shopify's native experience."
+  },
+  {
     name: 'twitter:card',
-    content: 'summary',
+    content: 'summary'
   },
   {
     name: 'twitter:title',
-    content: 'Account Management | Vapourism',
+    content: 'Account Access | Vapourism'
   },
   {
     name: 'twitter:description',
-    content: "Streamline your vape shop experience! Vapourism's account management just got a Shopify upgrade. #Vaping #Shopify",
+    content: "Customer account management is moving to Shopify's native experience."
   },
   {
     name: 'keywords',
@@ -29,6 +33,10 @@ export const meta: MetaFunction = () => [
   {
     property: 'og:url',
     content: 'https://www.vapourism.co.uk/account',
+  },
+  {
+    property: 'og:description',
+    content: 'Access your account: view orders, subscriptions & more.',
   },
 ];
 

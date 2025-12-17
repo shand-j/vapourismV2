@@ -15,20 +15,12 @@ export const meta: MetaFunction = () => {
       content: 'vaping, e-liquids, nicotine products, vaping guides, harm reduction, vape reviews, vaping trends, UK vaping, vape safety, vaping education',
     },
     {property: 'og:title', content: 'Blog | Vapourism'},
+    {property: 'og:description', content: 'Expert guides and educational content about vaping, nicotine products, and harm reduction. Stay informed with the latest insights from Vapourism.'},
     {property: 'og:type', content: 'website'},
+    {name: 'twitter:card', content: 'summary'},
+    {name: 'twitter:title', content: 'Blog | Vapourism'},
+    {name: 'twitter:description', content: 'Expert guides and educational content about vaping, nicotine products, and harm reduction. Stay informed with the latest insights from Vapourism.'},
     {property: 'og:url', content: 'https://www.vapourism.co.uk/blog'},
-    {
-      name: 'twitter:card',
-      content: 'summary',
-    },
-    {
-      name: 'twitter:title',
-      content: 'Blog | Vapourism',
-    },
-    {
-      name: 'twitter:description',
-      content: 'Vaping made easy! Expert guides, reviews & updates on e-liquids, devices & harm reduction. #VapingUK #HarmReduction',
-    },
   ];
 };
 

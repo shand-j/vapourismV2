@@ -53,7 +53,13 @@ function classifyKeywordIntent(keyword: string): 'informational' | 'commercial' 
   const lower = keyword.toLowerCase();
   
   // Transactional intent (highest priority - clear purchase intent)
-  if (/(buy|shop|purchase|order|price|cheap|deal|sale|discount|coupon)/.test(lower)) {
+  // "shop" as a verb (action) is transactional, but "vape shop" (noun/place) is commercial
+  if (/(buy|purchase|order|price|cheap|deal|sale|discount|coupon)\b/.test(lower)) {
+    return 'transactional';
+  }
+  
+  // "shop" followed by a product term is transactional (action verb)
+  if (/\bshop\s+\w+/.test(lower)) {
     return 'transactional';
   }
   
@@ -63,7 +69,8 @@ function classifyKeywordIntent(keyword: string): 'informational' | 'commercial' 
   }
   
   // Commercial investigation (product comparison/evaluation)
-  if (/(best|top|review|vs|versus|alternative|comparison)/.test(lower)) {
+  // Also includes "vape shop" (a place/store) but not "shop vape" (action)
+  if (/(best|top|review|vs|versus|alternative|comparison|\bshop\b)/.test(lower)) {
     return 'commercial';
   }
   
@@ -82,6 +89,12 @@ function classifyKeywordIntent(keyword: string): 'informational' | 'commercial' 
 function classifyKeywordCategory(keyword: string): string {
   const lower = keyword.toLowerCase();
   
+  // Brand-specific (check first - higher priority than product types)
+  if (/(elf bar|elfbar)/i.test(lower)) return 'Brand - Elf Bar';
+  if (/(lost mary)/i.test(lower)) return 'Brand - Lost Mary';
+  if (/(geek bar|geekbar)/i.test(lower)) return 'Brand - Geek Bar';
+  
+  // Product types
   if (/(disposable|disposables)/i.test(lower)) return 'Disposable Vapes';
   if (/(e-liquid|eliquid|e liquid|vape juice|shortfill)/i.test(lower)) return 'E-Liquids';
   if (/(pod|pod kit|pod system)/i.test(lower)) return 'Pod Systems';
@@ -90,11 +103,6 @@ function classifyKeywordCategory(keyword: string): string {
   if (/(coil|coils|replacement coil)/i.test(lower)) return 'Coils';
   if (/(battery|batteries|charger)/i.test(lower)) return 'Accessories';
   if (/(kit|starter kit|vape kit)/i.test(lower)) return 'Kits';
-  
-  // Brand-specific
-  if (/(elf bar|elfbar)/i.test(lower)) return 'Brand - Elf Bar';
-  if (/(lost mary)/i.test(lower)) return 'Brand - Lost Mary';
-  if (/(geek bar|geekbar)/i.test(lower)) return 'Brand - Geek Bar';
   
   return 'General';
 }

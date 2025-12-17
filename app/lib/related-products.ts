@@ -86,6 +86,9 @@ const POPULAR_PRODUCTS_QUERY = `#graphql
   }
 ` as const;
 
+/**
+ * Product card data structure - matches ProductCardProduct from ProductCard.tsx
+ */
 export interface ProductCard {
   id: string;
   title: string;
@@ -102,6 +105,11 @@ export interface ProductCard {
     };
   };
 }
+
+/**
+ * Type alias for compatibility with ProductCard component
+ */
+export type ProductCardProduct = ProductCard;
 
 interface ProductsQueryResult {
   products: {
@@ -151,6 +159,7 @@ function deduplicateProducts(products: ProductCard[]): ProductCard[] {
 
 /**
  * Find related products using vendor match
+ * Fetches extra products to allow for filtering current product and provide variety
  */
 async function findProductsByVendor(
   storefront: Storefront,
@@ -159,8 +168,11 @@ async function findProductsByVendor(
 ): Promise<ProductCard[]> {
   try {
     const query = `vendor:${vendor}`;
+    // Fetch 50% more to account for current product filtering and provide shuffle variety
+    // For small catalogs (limit=8), this fetches 12 products which is reasonable
+    const fetchLimit = Math.min(limit + Math.ceil(limit * 0.5), 20);
     const result = await storefront.query<ProductsQueryResult>(PRODUCTS_BY_VENDOR_QUERY, {
-      variables: {vendor: query, first: limit * 2}, // Fetch more for filtering
+      variables: {vendor: query, first: fetchLimit},
       cache: storefront.CacheShort(),
     });
     return shuffleArray(result.products.nodes).slice(0, limit);
@@ -180,8 +192,9 @@ async function findProductsByType(
 ): Promise<ProductCard[]> {
   try {
     const query = `product_type:${productType}`;
+    const fetchLimit = Math.min(limit + Math.ceil(limit * 0.5), 20);
     const result = await storefront.query<ProductsQueryResult>(PRODUCTS_BY_TYPE_QUERY, {
-      variables: {productType: query, first: limit * 2},
+      variables: {productType: query, first: fetchLimit},
       cache: storefront.CacheShort(),
     });
     return shuffleArray(result.products.nodes).slice(0, limit);
@@ -201,8 +214,9 @@ async function findProductsByTag(
 ): Promise<ProductCard[]> {
   try {
     const query = `tag:${tag}`;
+    const fetchLimit = Math.min(limit + Math.ceil(limit * 0.5), 20);
     const result = await storefront.query<ProductsQueryResult>(PRODUCTS_BY_TAG_QUERY, {
-      variables: {tag: query, first: limit * 2},
+      variables: {tag: query, first: fetchLimit},
       cache: storefront.CacheShort(),
     });
     return shuffleArray(result.products.nodes).slice(0, limit);

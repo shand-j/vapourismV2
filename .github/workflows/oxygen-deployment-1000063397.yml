@@ -8,10 +8,10 @@ on:
     outputs: 
       preview_url:
         description: 'The URL of the deployed preview'
-        value: ${{ jobs.get_deployment_data.outputs.preview_url }}
+        value: ${{ jobs.deploy.outputs.preview_url }}
       bypass_token:
         description: 'The auth bypass token for the deployed preview'
-        value: ${{ jobs.get_deployment_data.outputs.bypass_token }}
+        value: ${{ jobs.deploy.outputs.bypass_token }}
 
 permissions:
   contents: read

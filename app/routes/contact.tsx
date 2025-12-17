@@ -12,8 +12,8 @@ export const meta: MetaFunction = () => {
     "mainEntity": {
       "@type": "Organization",
       "name": "Vapourism",
-      "url": "https://vapourism.co.uk",
-      "logo": "https://vapourism.co.uk/logo.png",
+      "url": "https://www.vapourism.co.uk",
+      "logo": "https://www.vapourism.co.uk/logo.png",
       "contactPoint": {
         "@type": "ContactPoint",
         "contactType": "Customer Service",
@@ -40,7 +40,7 @@ export const meta: MetaFunction = () => {
     },
     {
       name: 'keywords',
-      content: 'contact vapourism, vape shop customer service, UK vape support, order help, product inquiries, vaping advice, customer support UK, contact details'
+      content: 'vapourism contact, customer support, vaping products, e-liquids, delivery options, return policy, age verification, UK vaping retailer'
     },
     // Open Graph
     {
@@ -57,7 +57,7 @@ export const meta: MetaFunction = () => {
     },
     {
       property: 'og:url',
-      content: 'https://vapourism.co.uk/contact'
+      content: 'https://www.vapourism.co.uk/contact'
     },
     {
       property: 'og:site_name',
@@ -126,7 +126,7 @@ export default function Contact() {
         <div className="container mx-auto px-4 py-12 max-w-6xl">
           {/* Header Section */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4 text-gray-900">Contact Us</h1>
+            <h1 className="text-4xl font-bold mb-4 text-gray-900">Contact Vapourism: UK Vaping Support & Order Help</h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Need help with your order or have questions about our products? Our friendly customer service team is here to help.
             </p>
@@ -182,7 +182,7 @@ export default function Contact() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
             <div className="bg-white border border-gray-200 rounded-lg p-8">
-              <h2 className="text-2xl font-bold mb-6 text-gray-900">Send Us a Message</h2>
+              <h2 className="text-2xl font-bold mb-6 text-gray-900">Fill Out Our Contact Form for Fast Vaping Support</h2>
               <form className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>

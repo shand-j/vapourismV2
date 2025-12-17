@@ -12,6 +12,7 @@ export interface BlogArticle {
   slug: string;
   title: string;
   metaDescription: string;
+  metaKeywords?: string;
   publishedDate: string;
   lastModified: string;
   author: string;

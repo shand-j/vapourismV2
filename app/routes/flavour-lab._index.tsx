@@ -35,7 +35,7 @@ export const meta: MetaFunction = () => [
   },
   {
     property: 'og:url',
-    content: 'https://vapourism.co.uk/flavour-lab',
+    content: 'https://www.vapourism.co.uk/flavour-lab',
   },
   {
     property: 'og:image',

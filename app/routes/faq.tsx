@@ -7,7 +7,7 @@ import {Search, ChevronDown, ChevronUp, Package, CreditCard, Truck, HelpCircle, 
 const faqCategories = [
   {
     id: 'ordering',
-    title: 'Ordering & Payment',
+    title: 'Ordering, Payment & Subscriptions',
     icon: CreditCard,
     color: 'purple',
     questions: [
@@ -219,7 +219,7 @@ export const meta: MetaFunction = () => {
     },
     {
       property: 'og:url',
-      content: 'https://vapourism.co.uk/faq'
+      content: 'https://www.vapourism.co.uk/faq'
     },
     {
       property: 'og:site_name',

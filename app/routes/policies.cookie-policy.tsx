@@ -22,8 +22,24 @@ export const meta: MetaFunction = () => [
     content: 'How Vapourism uses cookies to improve your shopping experience.'
   },
   {
+    property: 'og:url',
+    content: 'https://www.vapourism.co.uk/policies/cookie-policy'
+  },
+  {
     name: 'robots',
     content: 'index, follow'
+  },
+  {
+    name: 'twitter:card',
+    content: 'summary'
+  },
+  {
+    name: 'twitter:title',
+    content: 'Cookie Policy | Vapourism'
+  },
+  {
+    name: 'twitter:description',
+    content: 'Learn how Vapourism uses cookies to enhance your shopping experience. Understand types & management. #Vaping #CookiePolicy'
   }
 ];
 
@@ -65,7 +81,7 @@ export default function CookiePolicy() {
       <main className="flex-1">
         <div className="container mx-auto px-4 py-12 max-w-4xl">
           <div className="prose prose-lg max-w-none">
-            <h1>Cookie Policy</h1>
+            <h1>Vapourism Cookie Policy: Types, Usage & Management Explained</h1>
             
             <p className="lead text-xl text-gray-600 mb-8">
               This Cookie Policy explains how Vapourism uses cookies and similar tracking technologies when you visit our website. We're committed to transparency about how we collect and use data to improve your shopping experience while respecting your privacy choices.
@@ -73,7 +89,7 @@ export default function CookiePolicy() {
 
             <div className="space-y-8">
               <section>
-                <h2>1. What Are Cookies</h2>
+                <h2>Understanding Cookies: A Guide to Vapourism's Cookie Usage</h2>
                 <p>Cookies are small text files that are stored on your computer or mobile device when you visit our website. They serve various purposes including remembering your preferences, understanding how you use our site, and providing you with a personalized shopping experience. Cookies can be "persistent" (remaining on your device until you delete them or they expire) or "session" cookies (deleted when you close your browser).</p>
                 <p>Modern websites rely on cookies to function effectively and provide the features users expect. Without cookies, e-commerce sites like Vapourism couldn't maintain shopping carts, remember login credentials, or provide personalized product recommendations. Understanding how we use cookies helps you make informed decisions about your online privacy.</p>
               </section>

@@ -18,9 +18,11 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
     {title: SEOAutomationService.truncateTitle(fullTitle)},
     {name: 'description', content: article.metaDescription},
+    ...(article.metaKeywords ? [{name: 'keywords', content: article.metaKeywords}] : []),
     {property: 'og:title', content: article.title},
     {property: 'og:description', content: article.metaDescription},
     {property: 'og:type', content: 'article'},
+    {property: 'og:url', content: `https://www.vapourism.co.uk/blog/${article.slug}`},
     {property: 'article:published_time', content: article.publishedDate},
     {property: 'article:modified_time', content: article.lastModified},
     {property: 'article:author', content: article.author},

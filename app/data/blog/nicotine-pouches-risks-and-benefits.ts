@@ -10,7 +10,7 @@ import type {BlogArticle} from './index';
 export const nicotinePouchesArticle: BlogArticle = {
   slug: 'nicotine-pouches-risks-and-benefits',
   title: 'Nicotine Pouches Explained: Risks vs. Benefits',
-  metaDescription: 'Explore \'Nicotine Pouches: Risks and Benefits Explained\' to discover if these tobacco-free, smokeless alternatives are safer. Learn about health impacts, usage, and safety.',
+  metaDescription: 'Discover if nicotine pouches are safer than smoking. Learn about health impacts, risks, benefits, and usage of these tobacco-free alternatives.',
   publishedDate: '2024-12-15',
   lastModified: '2024-12-15',
   author: 'Vapourism Team',

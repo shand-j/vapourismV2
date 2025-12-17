@@ -13,6 +13,7 @@ import {BrandSection} from '../components/brand/BrandSection';
 import {SEOAutomationService} from '../preserved/seo-automation';
 import {cn} from '../lib/utils';
 import {trackViewItem, trackAddToCart, shopifyProductToGA4Item} from '../lib/analytics';
+import {sanitizeProductDescription} from '../lib/html-sanitizer';
 
 /**
  * UK VAT rate (20%)
@@ -158,6 +159,12 @@ export async function loader({params, context}: LoaderFunctionArgs) {
       throw new Response('Product Not Found', {status: 404});
     }
 
+    // Sanitize product description to remove external URLs
+    const sanitizedProduct = {
+      ...product,
+      descriptionHtml: sanitizeProductDescription(product.descriptionHtml),
+    };
+
     // Get brand assets if available
     const brandAssets = await getBrandAssets(product.vendor);
 
@@ -178,7 +185,7 @@ export async function loader({params, context}: LoaderFunctionArgs) {
     const imageAltText = SEOAutomationService.generateImageAltText(seoData, 'main');
 
     return json({
-      product,
+      product: sanitizedProduct,
       brandAssets,
       metaDescription,
       keywords,
@@ -188,6 +195,31 @@ export async function loader({params, context}: LoaderFunctionArgs) {
     console.error(`Product fetch error for "${handle}":`, error);
     throw new Response('Error loading product', {status: 500});
   }
+}
+
+/**
+ * Format product title for H1 tag to be more SEO-friendly
+ * Removes redundant vendor names and cleans up promotional text
+ */
+function formatProductH1(title: string, vendor: string): string {
+  let formatted = title;
+  
+  // Remove "by [vendor]" pattern (case insensitive)
+  const escapedVendor = vendor.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const byVendorPattern = new RegExp(`\\s+by\\s+${escapedVendor}`, 'gi');
+  formatted = formatted.replace(byVendorPattern, '');
+  
+  // Clean up promotional text: (BUY 1 GET 1 FREE) -> Buy 1 Get 1 Free
+  formatted = formatted.replace(/\(BUY\s+(\d+)\s+GET\s+(\d+)\s+FREE\)/gi, '– Buy $1 Get $2 Free');
+  
+  // Only remove hyphens that are surrounded by spaces (not part of compound words like "E-liquid")
+  // This preserves legitimate hyphenated terms while cleaning up separator hyphens
+  formatted = formatted.replace(/\s+-\s+/g, ' ');
+  
+  // Clean up multiple spaces
+  formatted = formatted.replace(/\s+/g, ' ').trim();
+  
+  return formatted;
 }
 
 export default function ProductPage() {
@@ -395,7 +427,7 @@ export default function ProductPage() {
     sku: selectedVariant?.id?.replace('gid://shopify/ProductVariant/', '') ?? product.id.replace('gid://shopify/Product/', ''),
     offers: {
       '@type': 'Offer',
-      url: `https://vapourism.co.uk/products/${product.handle}`,
+      url: `https://www.vapourism.co.uk/products/${product.handle}`,
       priceCurrency: selectedVariant?.price.currencyCode ?? 'GBP',
       price: selectedVariant?.price.amount ?? product.priceRange.minVariantPrice.amount,
       availability: product.availableForSale 
@@ -419,19 +451,19 @@ export default function ProductPage() {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://vapourism.co.uk',
+        item: 'https://www.vapourism.co.uk',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Products',
-        item: 'https://vapourism.co.uk/search',
+        item: 'https://www.vapourism.co.uk/search',
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: product.title,
-        item: `https://vapourism.co.uk/products/${product.handle}`,
+        item: `https://www.vapourism.co.uk/products/${product.handle}`,
       },
     ],
   };
@@ -517,7 +549,7 @@ export default function ProductPage() {
         <div className="space-y-6 rounded-[32px] border border-slate-200 bg-white/95 p-8 shadow-[0_25px_60px_rgba(15,23,42,0.12)]">
           <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500">{product.vendor}</p>
-            <h1 className="text-4xl font-semibold text-slate-900">{product.title}</h1>
+            <h1 className="text-4xl font-semibold text-slate-900">{formatProductH1(product.title, product.vendor)}</h1>
             <p className="text-sm text-slate-500">{product.productType || 'Premium vape hardware'}</p>
           </div>
 
@@ -798,12 +830,12 @@ export const meta = ({data}: {data: {product: typeof import('storefrontapi.gener
   }
 
   const {product, metaDescription, keywords} = data;
-  const productUrl = `https://vapourism.co.uk/products/${product.handle}`;
+  const productUrl = `https://www.vapourism.co.uk/products/${product.handle}`;
   const price = product.priceRange.minVariantPrice;
 
   return [
     {
-      title: SEOAutomationService.generateProductTitle(product.title, product.vendor, product.seo?.title),
+      title: SEOAutomationService.generateProductTitle(product.title, product.vendor, product.seo?.title, product.handle),
     },
     {
       name: 'description',
@@ -891,7 +923,7 @@ export const meta = ({data}: {data: {product: typeof import('storefrontapi.gener
     },
     {
       name: 'twitter:description',
-      content: metaDescription,
+      content: `Shop ${product.title} by ${product.vendor} from £${price.amount} ${product.productType} in the UK. ✓ Fast UK Delivery ✓ Authentic Products ✓ Best prices`,
     },
     ...(product.featuredImage ? [
       {

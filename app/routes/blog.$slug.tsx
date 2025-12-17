@@ -18,6 +18,7 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
     {title: SEOAutomationService.truncateTitle(fullTitle)},
     {name: 'description', content: article.metaDescription},
+    ...(article.metaKeywords ? [{name: 'keywords', content: article.metaKeywords}] : []),
     {property: 'og:title', content: article.title},
     {property: 'og:description', content: article.metaDescription},
     {property: 'og:type', content: 'article'},

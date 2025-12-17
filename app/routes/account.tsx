@@ -1,10 +1,26 @@
 import type {MetaFunction} from '@shopify/remix-oxygen';
 
 export const meta: MetaFunction = () => [
-  {title: 'Account access | Vapourism'},
+  {title: 'Vapourism Account: Manage Your Account & More'},
   {
     name: 'description',
-    content: 'Customer account management is moving to Shopify’s native experience.',
+    content: "Customer account management is moving to Shopify's native experience.",
+  },
+  {
+    name: 'twitter:card',
+    content: 'summary',
+  },
+  {
+    name: 'twitter:title',
+    content: 'Account Management | Vapourism',
+  },
+  {
+    name: 'twitter:description',
+    content: "Streamline your vape shop experience! Vapourism's account management just got a Shopify upgrade. #Vaping #Shopify",
+  },
+  {
+    name: 'keywords',
+    content: 'customer account management, Shopify integration, order history, subscriptions management, age verification, delivery policies, returns process, user experience',
   },
   {
     property: 'og:url',

@@ -12,8 +12,8 @@ export const meta: MetaFunction = () => {
     "mainEntity": {
       "@type": "Organization",
       "name": "Vapourism",
-      "url": "https://vapourism.co.uk",
-      "logo": "https://vapourism.co.uk/logo.png",
+      "url": "https://www.vapourism.co.uk",
+      "logo": "https://www.vapourism.co.uk/logo.png",
       "contactPoint": {
         "@type": "ContactPoint",
         "contactType": "Customer Service",
@@ -57,7 +57,7 @@ export const meta: MetaFunction = () => {
     },
     {
       property: 'og:url',
-      content: 'https://vapourism.co.uk/contact'
+      content: 'https://www.vapourism.co.uk/contact'
     },
     {
       property: 'og:site_name',

@@ -219,7 +219,7 @@ export const meta: MetaFunction = () => {
     },
     {
       property: 'og:url',
-      content: 'https://vapourism.co.uk/faq'
+      content: 'https://www.vapourism.co.uk/faq'
     },
     {
       property: 'og:site_name',

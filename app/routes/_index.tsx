@@ -47,7 +47,7 @@ export const meta: MetaFunction = () => [
   },
   {
     property: 'og:url',
-    content: 'https://vapourism.co.uk',
+    content: 'https://www.vapourism.co.uk',
   },
   {
     property: 'og:site_name',
@@ -288,7 +288,7 @@ export default function IndexRoute() {
   const organizationSchema = generateOrganizationSchema({
     name: 'Vapourism',
     url: 'https://www.vapourism.co.uk',
-    logo: 'https://vapourism.co.uk/logo.png',
+    logo: 'https://www.vapourism.co.uk/logo.png',
     description: 'Premium vaping essentials with trusted age verification and next-day UK delivery.',
     address: {
       '@type': 'PostalAddress',

@@ -8,7 +8,7 @@ export const meta: MetaFunction = () => [
   },
   {
     property: 'og:title',
-    content: 'Account Access | Vapourism'
+    content: 'Vapourism Account Management Made Easy',
   },
   {
     property: 'og:description',

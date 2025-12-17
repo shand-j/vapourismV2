@@ -43,6 +43,36 @@ const PRODUCT_TITLE_OVERRIDES: Record<string, string> = {
 export class SEOAutomationService {
   
   /**
+   * Product type keywords for title optimization
+   * Order matters - more specific types should come first
+   */
+  private static readonly PRODUCT_TYPE_KEYWORDS = [
+    'Drops',      // More specific than "Oil"
+    'Crumble',
+    'Oil',
+    'Tea',
+    'Gummies',
+    'Capsules',
+    'Vape',
+    'E-Liquid'
+  ];
+  
+  /**
+   * Product category mappings for og:title generation
+   * Maps product types to their display names
+   */
+  private static readonly PRODUCT_CATEGORIES: Record<string, string> = {
+    'Drops': 'CBD Oil Drops',
+    'Oil': 'CBD Oil',
+    'Crumble': 'CBD Crumble',
+    'Tea': 'CBD Tea',
+    'E-Liquid': 'E-Liquid',
+    'Vape': 'Vape',
+    'Gummies': 'CBD Gummies',
+    'Capsules': 'CBD Capsules',
+  };
+  
+  /**
    * Generate comprehensive keywords for products
    * Enhanced with competitor keyword analysis
    */
@@ -409,6 +439,114 @@ export class SEOAutomationService {
     }
     
     return truncatedProduct + '…' + suffix;
+  }
+
+  /**
+   * Generate marketing-friendly Open Graph title for products
+   * Creates engaging, concise titles optimized for social sharing
+   * Handles promotional text (BUY 1 GET 1 FREE, etc.) by reordering for impact
+   * @param productTitle The raw product title from Shopify
+   * @param vendor The vendor/brand name
+   * @returns Marketing-optimized og:title (no suffix, ready for social sharing)
+   */
+  static generateOGTitle(productTitle: string, vendor: string): string {
+    // Extract all parenthesized content and find promotional text
+    const allParentheses = productTitle.match(/\([^)]+\)/g) || [];
+    const promoText = allParentheses.find(p => /buy\s+\d+\s+get\s+\d+\s+free/i.test(p))?.replace(/[()]/g, '') || null;
+    
+    // Clean title by removing parentheses content and extra whitespace
+    let cleanTitle = productTitle.replace(/\s*\([^)]*\)\s*/g, ' ').trim();
+    
+    // Handle "BUY X GET Y FREE" promotions - move to front with colon
+    if (promoText && /buy\s+\d+\s+get\s+\d+\s+free/i.test(promoText)) {
+      const match = promoText.match(/buy\s+(\d+)\s+get\s+(\d+)\s+free/i);
+      if (match) {
+        const [, buy, get] = match;
+        const buyNum = parseInt(buy);
+        const getNum = parseInt(get);
+        
+        // Extract key product info (strength, size, type)
+        const strengthMatch = cleanTitle.match(/(\d+mg)/i);
+        const strength = strengthMatch ? strengthMatch[1] : '';
+        
+        // Get product type using class constant with word boundary matching
+        const words = cleanTitle.split(/\s+/);
+        const productType = words.find(w => 
+          this.PRODUCT_TYPE_KEYWORDS.some(t => w.toLowerCase() === t.toLowerCase())
+        ) || '';
+        
+        // Format promotional title based on offer type
+        const promoPrefix = `Buy ${buy} Get ${get} Free`;
+        const suffix = (buyNum === 1 && getNum === 1) ? ' Deal' : '';
+        return `${promoPrefix}: ${vendor} ${strength} ${productType}${suffix}`.replace(/\s+/g, ' ').trim();
+      }
+    }
+    
+    // For standard products, create format: "Strength/Key Feature + Product Type + by Vendor + Unique Selling Point"
+    
+    // Extract numeric strength (mg, ml, g)
+    const strengthMatch = cleanTitle.match(/(\d+(?:mg|ml|g))/i);
+    const strength = strengthMatch ? strengthMatch[1] : '';
+    
+    // Identify product category using class constant
+    // Categories are checked in order of specificity (Drops before Oil)
+    const isCBDProduct = /\bcbd\b/i.test(cleanTitle);
+    let productCategory = '';
+    for (const [key, value] of Object.entries(this.PRODUCT_CATEGORIES)) {
+      // Use case-insensitive matching to catch all variations
+      if (cleanTitle.toLowerCase().includes(key.toLowerCase())) {
+        // Only add CBD prefix for CBD products; use base type for others
+        productCategory = isCBDProduct ? value : key;
+        break;
+      }
+    }
+    
+    // Extract key descriptors (Broad Spectrum, Full Spectrum, Raw, Cold Pressed, etc.)
+    const descriptors: string[] = [];
+    if (/broad\s+spectrum/i.test(cleanTitle)) descriptors.push('Broad Spectrum');
+    if (/full\s+spectrum/i.test(cleanTitle)) descriptors.push('Full Spectrum');
+    if (/raw/i.test(cleanTitle)) descriptors.push('Raw Extract');
+    if (/cold\s+pressed/i.test(cleanTitle)) descriptors.push('Cold Pressed');
+    
+    // Build optimized title based on available components
+    if (strength && productCategory && vendor) {
+      if (descriptors.length > 0) {
+        return `${strength} ${productCategory} by ${vendor} - ${descriptors[0]}`;
+      }
+      return `${strength} ${productCategory} by ${vendor}`;
+    }
+    
+    // If we have product category without strength, still try to build a good title
+    if (productCategory && vendor) {
+      if (descriptors.length > 0) {
+        return `${productCategory} by ${vendor} - ${descriptors[0]}`;
+      }
+      return `${productCategory} by ${vendor}`;
+    }
+    
+    // Fallback: try to create a concise version
+    // Remove redundant "CBD" repetitions
+    let optimized = cleanTitle.replace(/\bCBD\s+by\s+(\w+)\s+(\w+)\s+CBD\b/gi, 'CBD by $1 $2');
+    
+    // If title is too long, extract key parts
+    if (optimized.length > 60) {
+      const parts = [];
+      if (strength) parts.push(strength);
+      if (productCategory) parts.push(productCategory);
+      if (vendor && !optimized.toLowerCase().includes('by')) parts.push(`by ${vendor}`);
+      if (descriptors.length > 0) parts.push(`- ${descriptors[0]}`);
+      
+      if (parts.length > 0) {
+        return parts.join(' ');
+      }
+    }
+    
+    // Final fallback: use cleaned title, truncated if needed
+    if (optimized.length > 60) {
+      return optimized.substring(0, 57) + '...';
+    }
+    
+    return optimized;
   }
 }
 

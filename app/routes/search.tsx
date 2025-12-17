@@ -579,8 +579,10 @@ export const meta = ({data}: {data: any}) => {
       content: 'Vaping products at your fingertips. Fast delivery, great deals.',
     },
     {
-      property: 'og:url',
-      content: 'https://www.vapourism.co.uk/search',
+      property: 'og:title',
+      content: query 
+        ? `Find Your Vape: ${query} - ${count} Products Available`
+        : `Find Your Vape: ${count} Products to Choose From - Fast Delivery`,
     },
     {
       name: 'keywords',

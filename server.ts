@@ -6,6 +6,28 @@ import {storefrontRedirect} from '@shopify/hydrogen';
 import {createRequestHandler} from '@shopify/remix-oxygen';
 import {createAppLoadContext} from './app/preserved/context';
 
+/**
+ * Normalize URL by converting all percent-encoded hex digits to lowercase.
+ * SEO best practices require lowercase URLs including percent-encoded characters.
+ * 
+ * @param url - The URL to normalize
+ * @returns Normalized URL with lowercase percent-encoded characters
+ */
+function normalizeUrl(url: URL): URL {
+  const normalizedPathname = url.pathname.replace(
+    /%[0-9A-F]{2}/g,
+    (match) => match.toLowerCase()
+  );
+  
+  if (normalizedPathname !== url.pathname) {
+    const normalizedUrl = new URL(url.toString());
+    normalizedUrl.pathname = normalizedPathname;
+    return normalizedUrl;
+  }
+  
+  return url;
+}
+
 export default {
   async fetch(
     request: Request,
@@ -13,6 +35,21 @@ export default {
     executionContext: ExecutionContext,
   ): Promise<Response> {
     try {
+      // Normalize URL for SEO compliance (lowercase percent-encoded characters)
+      const url = new URL(request.url);
+      const normalizedUrl = normalizeUrl(url);
+      
+      // If URL was changed during normalization, redirect to the normalized version
+      if (normalizedUrl.toString() !== url.toString()) {
+        return new Response(null, {
+          status: 301,
+          headers: {
+            'Location': normalizedUrl.toString(),
+            'Cache-Control': 'public, max-age=31536000, immutable',
+          },
+        });
+      }
+      
       const appLoadContext = await createAppLoadContext(
         request,
         env,
@@ -29,8 +66,7 @@ export default {
 
       // Set CSP for AgeVerif routes (/age-verification and subpaths).
       // Keep policy strict in production — do not add 'unsafe-inline'.
-      const url = new URL(request.url);
-      if (url.pathname.startsWith('/age-verification')) {
+      if (normalizedUrl.pathname.startsWith('/age-verification')) {
         // Relax CSP for AgeVerif pages to allow checker scripts, frames and stats endpoints.
         // Also allow Google Tag Manager for analytics.
         const defaultSrc = `default-src 'self' https://cdn.shopify.com https://shopify.com https://*.shopify.com https://accounts.shopify.com https://cdn.ageverif.com https://www.ageverif.com 'unsafe-inline';`;

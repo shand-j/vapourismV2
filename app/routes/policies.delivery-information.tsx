@@ -7,7 +7,7 @@ export const meta: MetaFunction = () => [
   },
   {
     name: 'description',
-    content: 'Fast UK delivery for vaping products via DPD Local and Royal Mail. ✓ Free delivery over £20 ✓ Next-day delivery ✓ DPD tracking ✓ 1-3 day shipping. Order tracking included.'
+    content: 'Vapourism: Fast UK delivery for vaping products. Free delivery over £20 and next-day options available. Track your order today!'
   },
   {
     name: 'keywords',
@@ -24,6 +24,18 @@ export const meta: MetaFunction = () => [
   {
     name: 'robots',
     content: 'index, follow'
+  },
+  {
+    name: 'twitter:card',
+    content: 'summary'
+  },
+  {
+    name: 'twitter:title',
+    content: 'Delivery Information | Fast UK Delivery | Vapourism'
+  },
+  {
+    name: 'twitter:description',
+    content: 'Get fast UK delivery on vaping products! Learn about our shipping options, costs & tracking. #VapingUK #DeliveryInfo'
   }
 ];
 
@@ -66,7 +78,7 @@ export default function DeliveryInformation() {
         <div className="container mx-auto px-4 py-12 max-w-5xl">
           {/* Hero Section */}
           <div className="text-center mb-12">
-            <h1 className="text-5xl font-bold mb-4">Fast UK Delivery</h1>
+            <h1 className="text-5xl font-bold mb-4">Vapourism UK Vaping Delivery: Fast, Tracked & Free over £20</h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Get your vaping products delivered fast via <strong>DPD Local</strong> and <strong>Royal Mail</strong>
             </p>

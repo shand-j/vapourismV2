@@ -24,6 +24,18 @@ export const meta: MetaFunction = () => [
   {
     name: 'robots',
     content: 'index, follow'
+  },
+  {
+    name: 'twitter:card',
+    content: 'summary'
+  },
+  {
+    name: 'twitter:title',
+    content: 'Terms of Service | Vapourism'
+  },
+  {
+    name: 'twitter:description',
+    content: 'Understand Vapourism\'s terms of service for vaping products. Know your rights & responsibilities. #VapingRegulations'
   }
 ];
 
@@ -66,7 +78,7 @@ export default function TermsOfService() {
       <main className="flex-1">
         <div className="container mx-auto px-4 py-12 max-w-4xl">
           <div className="prose prose-lg max-w-none">
-            <h1>Terms of Service</h1>
+            <h1>Vapourism Terms of Service: UK Vaping Purchase Policies</h1>
             
             <p className="lead text-xl text-gray-600 mb-8">
               These Terms of Service govern your use of the Vapourism website and purchase of products. By accessing our website or placing an order, you agree to be bound by these terms. Please read them carefully before making a purchase. If you disagree with any part of these terms, you must not use our website or services.
@@ -117,7 +129,7 @@ export default function TermsOfService() {
               </section>
 
               <section>
-                <h2>7. Account Terms</h2>
+                <h2>Vapourism Account Creation & Security: Your Responsibilities</h2>
                 <p>You may need to create an account to complete purchases on our website. You are responsible for maintaining the security of your account credentials and for all activities that occur under your account. You must provide accurate, complete, and current information when creating your account and keep this information updated.</p>
                 <p>You agree to immediately notify us of any unauthorized access to or use of your account. We cannot and will not be liable for any loss or damage arising from your failure to maintain account security. You may not use another person's account without permission or create false accounts.</p>
                 <p>We reserve the right to refuse service, terminate accounts, remove or edit content, or cancel orders at our sole discretion, particularly if we believe your actions violate these terms or applicable laws, harm other customers, or damage our business reputation.</p>

@@ -14,19 +14,19 @@ export const meta: MetaFunction = () => {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://vapourism.co.uk"
+        "item": "https://www.vapourism.co.uk"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Guides",
-        "item": "https://vapourism.co.uk/guides"
+        "item": "https://www.vapourism.co.uk/guides"
       },
       {
         "@type": "ListItem",
         "position": 3,
         "name": "Certifications & Compliance",
-        "item": "https://vapourism.co.uk/guides/certifications"
+        "item": "https://www.vapourism.co.uk/guides/certifications"
       }
     ]
   };
@@ -36,7 +36,7 @@ export const meta: MetaFunction = () => {
     {
       name: 'description',
       content:
-        'Vapourism\'s UK and EU regulatory certifications, MHRA registration, TPD compliance, and product safety standards. Learn how we ensure all vaping products meet strict quality and legal requirements.',
+        'Vapourism: Your guide to vaping certifications, compliance, and product safety. Explore our commitment to quality and regulations.',
     },
     {
       name: 'keywords',
@@ -57,7 +57,7 @@ export const meta: MetaFunction = () => {
     },
     {
       property: 'og:url',
-      content: 'https://vapourism.co.uk/guides/certifications',
+      content: 'https://www.vapourism.co.uk/guides/certifications',
     },
     {
       name: 'twitter:card',

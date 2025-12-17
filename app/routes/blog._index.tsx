@@ -10,8 +10,24 @@ export const meta: MetaFunction = () => {
       content:
         'Expert guides and educational content about vaping, nicotine products, and harm reduction. Stay informed with the latest insights from Vapourism.',
     },
+    {
+      name: 'keywords',
+      content: 'vaping, e-liquids, nicotine products, vaping guides, harm reduction, vape reviews, vaping trends, UK vaping, vape safety, vaping education',
+    },
     {property: 'og:title', content: 'Blog | Vapourism'},
     {property: 'og:type', content: 'website'},
+    {
+      name: 'twitter:card',
+      content: 'summary',
+    },
+    {
+      name: 'twitter:title',
+      content: 'Blog | Vapourism',
+    },
+    {
+      name: 'twitter:description',
+      content: 'Vaping made easy! Expert guides, reviews & updates on e-liquids, devices & harm reduction. #VapingUK #HarmReduction',
+    },
   ];
 };
 
@@ -30,7 +46,7 @@ export default function BlogIndex() {
     <div className="container mx-auto px-4 py-12">
       <header className="mb-12 text-center">
         <h1 className="text-4xl font-bold text-slate-900 mb-4">
-          Vapourism Blog
+          Vapourism Blog: Expert UK Vaping, Nicotine & Harm Reduction Guides
         </h1>
         <p className="text-lg text-slate-600 max-w-2xl mx-auto">
           Expert guides, educational content, and insights about vaping,

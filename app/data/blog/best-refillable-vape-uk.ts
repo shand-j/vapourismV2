@@ -14,6 +14,7 @@ export const bestRefillableVapeArticle: BlogArticle = {
   slug: 'best-refillable-vape-uk',
   title: '7 Reasons Why the Best Refillable Vape Kit UK Will Change Your Vaping Experience',
   metaDescription: 'Discover the best refillable vape kit UK! Learn how it enhances flavor, offers savings, and supports eco-friendly vaping.',
+  metaKeywords: 'refillable vapes, best refillable vapes UK, vaping reviews, pod systems, cost savings vapes, environmentally friendly vaping, vape buying guide, Vapourism vapes',
   publishedDate: '2025-01-05',
   lastModified: '2025-01-05',
   author: 'Vapourism Team',

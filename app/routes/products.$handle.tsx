@@ -803,7 +803,7 @@ export const meta = ({data}: {data: {product: typeof import('storefrontapi.gener
 
   return [
     {
-      title: SEOAutomationService.generateProductTitle(product.title, product.vendor, product.seo?.title),
+      title: SEOAutomationService.generateProductTitle(product.title, product.vendor, product.seo?.title, product.handle),
     },
     {
       name: 'description',

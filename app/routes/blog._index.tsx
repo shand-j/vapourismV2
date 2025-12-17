@@ -3,24 +3,27 @@ import {Link, useLoaderData} from '@remix-run/react';
 import {getAllArticles, type BlogArticle} from '~/data/blog';
 
 export const meta: MetaFunction = () => {
+  const title = 'Blog | Vapourism - Vaping Guides & Education';
+  const description = 'Expert guides and educational content about vaping, nicotine products, and harm reduction. Stay informed with the latest insights from Vapourism.';
+  
   return [
-    {title: 'Blog | Vapourism - Vaping Guides & Education'},
+    {title},
     {
       name: 'description',
-      content:
-        'Expert guides and educational content about vaping, nicotine products, and harm reduction. Stay informed with the latest insights from Vapourism.',
+      content: description,
     },
     {
       name: 'keywords',
       content: 'vaping, e-liquids, nicotine products, vaping guides, harm reduction, vape reviews, vaping trends, UK vaping, vape safety, vaping education',
     },
     {property: 'og:title', content: 'Blog | Vapourism'},
-    {property: 'og:description', content: 'Expert guides and educational content about vaping, nicotine products, and harm reduction. Stay informed with the latest insights from Vapourism.'},
+    {property: 'og:description', content: description},
     {property: 'og:type', content: 'website'},
-    {name: 'twitter:card', content: 'summary'},
-    {name: 'twitter:title', content: 'Blog | Vapourism'},
-    {name: 'twitter:description', content: 'Expert guides and educational content about vaping, nicotine products, and harm reduction. Stay informed with the latest insights from Vapourism.'},
     {property: 'og:url', content: 'https://www.vapourism.co.uk/blog'},
+    {name: 'twitter:card', content: 'summary_large_image'},
+    {name: 'twitter:site', content: '@vapourismuk'},
+    {name: 'twitter:title', content: title},
+    {name: 'twitter:description', content: description},
   ];
 };
 

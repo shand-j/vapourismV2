@@ -22,18 +22,6 @@ export const meta: MetaFunction = () => [
     content: 'How Vapourism uses cookies to improve your shopping experience.'
   },
   {
-    name: 'twitter:card',
-    content: 'summary'
-  },
-  {
-    name: 'twitter:title',
-    content: 'Cookie Policy | Vapourism'
-  },
-  {
-    name: 'twitter:description',
-    content: 'How Vapourism uses cookies to improve your shopping experience.'
-  },
-  {
     property: 'og:url',
     content: 'https://www.vapourism.co.uk/policies/cookie-policy'
   },
@@ -43,7 +31,11 @@ export const meta: MetaFunction = () => [
   },
   {
     name: 'twitter:card',
-    content: 'summary'
+    content: 'summary_large_image'
+  },
+  {
+    name: 'twitter:site',
+    content: '@vapourismuk'
   },
   {
     name: 'twitter:title',

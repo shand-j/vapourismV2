@@ -556,33 +556,13 @@ export const meta = ({data}: {data: any}) => {
     },
     {
       property: 'og:title',
-      content: query ? `Search: ${query} | Vapourism` : 'Search | Vapourism',
-    },
-    {
-      property: 'og:description',
-      content: description,
-    },
-    {
-      name: 'twitter:card',
-      content: 'summary',
-    },
-    {
-      name: 'twitter:title',
-      content: query ? `Search: ${query} | Vapourism` : 'Search | Vapourism',
-    },
-    {
-      name: 'twitter:description',
-      content: description,
+      content: query 
+        ? `Find Your Vape: ${query} - ${count} Products Available`
+        : `Find Your Vape: ${count} Products to Choose From - Fast Delivery`,
     },
     {
       property: 'og:description',
       content: 'Vaping products at your fingertips. Fast delivery, great deals.',
-    },
-    {
-      property: 'og:title',
-      content: query 
-        ? `Find Your Vape: ${query} - ${count} Products Available`
-        : `Find Your Vape: ${count} Products to Choose From - Fast Delivery`,
     },
     {
       name: 'keywords',
@@ -594,7 +574,11 @@ export const meta = ({data}: {data: any}) => {
     },
     {
       name: 'twitter:card',
-      content: 'summary',
+      content: 'summary_large_image',
+    },
+    {
+      name: 'twitter:site',
+      content: '@vapourismuk',
     },
     {
       name: 'twitter:title',

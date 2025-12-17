@@ -1,5 +1,5 @@
-import {json, type LoaderFunctionArgs, type MetaFunction} from '@remix-run/server-runtime';
-import {useLoaderData, Link} from '@remix-run/react';
+import {json, type LoaderFunctionArgs} from '@remix-run/server-runtime';
+import {useLoaderData, Link, type MetaFunction} from '@remix-run/react';
 
 export const meta: MetaFunction = () => [
   {
@@ -23,11 +23,12 @@ export const meta: MetaFunction = () => [
   },
   {
     name: 'twitter:card',
-    content: 'summary'
+    content: 'summary_large_image'
   },
+
   {
-    name: 'twitter:title',
-    content: 'Terms of Service | Vapourism'
+    name: 'twitter:site',
+    content: '@vapourismuk'
   },
   {
     name: 'twitter:description',
@@ -42,18 +43,12 @@ export const meta: MetaFunction = () => [
     content: 'index, follow'
   },
   {
-    name: 'twitter:card',
-    content: 'summary'
-  },
-  {
     name: 'twitter:title',
     content: 'Terms of Service | Vapourism'
-  },
-  {
-    name: 'twitter:description',
-    content: 'Understand Vapourism\'s terms of service for vaping products. Know your rights & responsibilities. #VapingRegulations'
   }
 ];
+
+
 
 export async function loader({context}: LoaderFunctionArgs) {
   return json({

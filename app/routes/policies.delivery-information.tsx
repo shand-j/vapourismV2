@@ -1,5 +1,5 @@
-import {json, type LoaderFunctionArgs, type MetaFunction} from '@remix-run/server-runtime';
-import {useLoaderData, Link} from '@remix-run/react';
+import {json, type LoaderFunctionArgs} from '@remix-run/server-runtime';
+import {useLoaderData, Link, type MetaFunction} from '@remix-run/react';
 
 export const meta: MetaFunction = () => [
   {
@@ -22,18 +22,6 @@ export const meta: MetaFunction = () => [
     content: 'Fast UK delivery for vaping products via DPD Local. Free shipping over £20. Next-day delivery available with full tracking.'
   },
   {
-    name: 'twitter:card',
-    content: 'summary'
-  },
-  {
-    name: 'twitter:title',
-    content: 'Delivery Information | Fast UK Delivery | Vapourism'
-  },
-  {
-    name: 'twitter:description',
-    content: 'Fast UK delivery for vaping products via DPD Local. Free shipping over £20. Next-day delivery available with full tracking.'
-  },
-  {
     property: 'og:url',
     content: 'https://www.vapourism.co.uk/policies/delivery-information'
   },
@@ -43,7 +31,11 @@ export const meta: MetaFunction = () => [
   },
   {
     name: 'twitter:card',
-    content: 'summary'
+    content: 'summary_large_image'
+  },
+  {
+    name: 'twitter:site',
+    content: '@vapourismuk'
   },
   {
     name: 'twitter:title',

@@ -57,7 +57,10 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
     {property: 'og:title', content: data.seo.title},
     {property: 'og:description', content: data.seo.description},
     {property: 'og:type', content: 'website'},
-    {property: 'og:url', content: 'https://www.vapourism.co.uk/collections/nicotine-pouches'},
+    {name: 'twitter:card', content: 'summary_large_image'},
+    {name: 'twitter:site', content: '@vapourismuk'},
+    {name: 'twitter:title', content: data.seo.title},
+    {name: 'twitter:description', content: data.seo.description},
   ];
 };
 

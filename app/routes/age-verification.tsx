@@ -29,7 +29,11 @@ export const meta: MetaFunction = () => [
   },
   {
     name: 'twitter:card',
-    content: 'summary'
+    content: 'summary_large_image'
+  },
+  {
+    name: 'twitter:site',
+    content: '@vapourismuk'
   },
   {
     name: 'twitter:title',

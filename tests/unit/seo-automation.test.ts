@@ -111,8 +111,9 @@ describe('SEOAutomationService.generateOGTitle', () => {
       );
       // Should not add "CBD" prefix for non-CBD products
       expect(result).not.toMatch(/CBD Vape/);
-      // Should include the base product type without CBD
+      // Should include vendor and product type when detected
       expect(result).toContain('Vape Co');
+      expect(result).toContain('Vape');
     });
   });
 

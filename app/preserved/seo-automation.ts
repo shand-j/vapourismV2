@@ -516,6 +516,14 @@ export class SEOAutomationService {
       return `${strength} ${productCategory} by ${vendor}`;
     }
     
+    // If we have product category without strength, still try to build a good title
+    if (productCategory && vendor) {
+      if (descriptors.length > 0) {
+        return `${productCategory} by ${vendor} - ${descriptors[0]}`;
+      }
+      return `${productCategory} by ${vendor}`;
+    }
+    
     // Fallback: try to create a concise version
     // Remove redundant "CBD" repetitions
     let optimized = cleanTitle.replace(/\bCBD\s+by\s+(\w+)\s+(\w+)\s+CBD\b/gi, 'CBD by $1 $2');

@@ -266,12 +266,12 @@ describe('SEOAutomationService.generateOGTitle', () => {
 
 describe('SEOAutomationService.formatProductH1', () => {
   describe('Heading length optimization', () => {
-    it('should truncate titles longer than 70 characters', () => {
+    it('should truncate titles longer than 60 characters', () => {
       const result = SEOAutomationService.formatProductH1(
-        'This is a very long product title that exceeds seventy characters and should be truncated for SEO',
+        'This is a very long product title that exceeds sixty characters and should be truncated for SEO',
         'TestBrand'
       );
-      expect(result.length).toBeLessThanOrEqual(70);
+      expect(result.length).toBeLessThanOrEqual(60);
       expect(result).toContain('…');
     });
 
@@ -284,12 +284,12 @@ describe('SEOAutomationService.formatProductH1', () => {
       expect(result.length).toBeGreaterThanOrEqual(20);
     });
 
-    it('should not modify titles within SEO-recommended range (20-70 chars)', () => {
+    it('should not modify titles within SEO-recommended range (20-60 chars)', () => {
       const title = 'Perfect Length Product Title Here';
       const result = SEOAutomationService.formatProductH1(title, 'TestBrand');
       expect(result).toBe(title);
       expect(result.length).toBeGreaterThanOrEqual(20);
-      expect(result.length).toBeLessThanOrEqual(70);
+      expect(result.length).toBeLessThanOrEqual(60);
     });
   });
 
@@ -369,10 +369,10 @@ describe('SEOAutomationService.formatProductH1', () => {
       expect(result).toBe('Short');
     });
 
-    it('should handle title at exactly 70 characters', () => {
-      const title = 'A'.repeat(70);
+    it('should handle title at exactly 60 characters', () => {
+      const title = 'A'.repeat(60);
       const result = SEOAutomationService.formatProductH1(title, 'TestBrand');
-      expect(result.length).toBeLessThanOrEqual(70);
+      expect(result.length).toBeLessThanOrEqual(60);
     });
 
     it('should handle title at exactly 20 characters without adding vendor', () => {

@@ -406,12 +406,12 @@ export class SEOAutomationService {
    * Google typically displays 50-60 characters in search results
    */
   private static readonly H1_MIN_LENGTH = 20;
-  private static readonly H1_MAX_LENGTH = 70;
+  private static readonly H1_MAX_LENGTH = 60;
 
   /**
    * Format product title for H1 tag to be more SEO-friendly
    * Removes redundant vendor names and cleans up promotional text
-   * Ensures heading length is within SEO-recommended range (20-70 chars)
+   * Ensures heading length is within SEO-recommended range (20-60 chars)
    * @param title The raw product title
    * @param vendor The vendor/brand name
    * @returns SEO-optimized H1 heading string

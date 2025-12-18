@@ -8,11 +8,15 @@ import {
   type ShopifyArticle,
 } from '~/lib/shopify-blog';
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction<typeof loader> = ({data, location}) => {
   const title = 'Blog | Vapourism - Vaping Guides & Education';
   const description = 'Expert guides and educational content about vaping, nicotine products, and harm reduction. Stay informed with the latest insights from Vapourism.';
   
-  return [
+  // Build canonical URL for this specific page
+  const baseUrl = 'https://www.vapourism.co.uk';
+  const canonicalUrl = `${baseUrl}${location.pathname}${location.search}`;
+  
+  const metaTags: Array<any> = [
     {title},
     {
       name: 'description',
@@ -25,12 +29,32 @@ export const meta: MetaFunction = () => {
     {property: 'og:title', content: 'Blog | Vapourism'},
     {property: 'og:description', content: description},
     {property: 'og:type', content: 'website'},
-    {property: 'og:url', content: 'https://www.vapourism.co.uk/blog'},
+    {property: 'og:url', content: canonicalUrl},
     {name: 'twitter:card', content: 'summary_large_image'},
     {name: 'twitter:site', content: '@vapourismuk'},
     {name: 'twitter:title', content: title},
     {name: 'twitter:description', content: description},
   ];
+  
+  // Add self-referencing canonical tag for SEO
+  metaTags.push({tagName: 'link', rel: 'canonical', href: canonicalUrl});
+  
+  // Add pagination link tags for better crawlability
+  if (data?.pageInfo) {
+    // Add rel="next" if there's a next page
+    if (data.pageInfo.hasNextPage && data.pageInfo.endCursor) {
+      const nextUrl = `${baseUrl}/blog?after=${encodeURIComponent(data.pageInfo.endCursor)}`;
+      metaTags.push({tagName: 'link', rel: 'next', href: nextUrl});
+    }
+    
+    // Add rel="prev" if we're not on the first page
+    if (data.pageInfo.hasPreviousPage) {
+      const prevUrl = `${baseUrl}/blog`;
+      metaTags.push({tagName: 'link', rel: 'prev', href: prevUrl});
+    }
+  }
+  
+  return metaTags;
 };
 
 export async function loader({context, request}: LoaderFunctionArgs) {
@@ -43,9 +67,15 @@ export async function loader({context, request}: LoaderFunctionArgs) {
     after,
   });
   
+  // Return data with pageInfo for meta function to access
   return {
     articles,
-    pageInfo,
+    pageInfo: {
+      hasNextPage: pageInfo.hasNextPage,
+      hasPreviousPage: pageInfo.hasPreviousPage,
+      startCursor: pageInfo.startCursor,
+      endCursor: pageInfo.endCursor,
+    },
   };
 }
 

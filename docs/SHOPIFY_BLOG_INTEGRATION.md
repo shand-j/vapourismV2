@@ -74,6 +74,34 @@ The blog uses cursor-based pagination (Shopify's standard):
 
 Pagination controls appear at the bottom of the blog index when multiple pages exist.
 
+### SEO-Optimized Pagination
+
+The implementation follows SEO best practices for cursor-based pagination:
+
+1. **Self-Referencing Canonical Tags**: Each paginated page includes a canonical tag pointing to itself, ensuring search engines treat each page as unique and indexable.
+   ```html
+   <link rel="canonical" href="https://www.vapourism.co.uk/blog?after=cursor123" />
+   ```
+
+2. **Pagination Link Tags**: Next/prev relationship tags help crawlers understand the pagination sequence:
+   ```html
+   <link rel="next" href="https://www.vapourism.co.uk/blog?after=nextCursor" />
+   <link rel="prev" href="https://www.vapourism.co.uk/blog" />
+   ```
+
+3. **Crawlable URLs**: All pagination uses query parameters (not fragment identifiers), making pages fully crawlable by search engines.
+
+4. **No Orphan Pages**: All paginated pages are linked via Next/Previous buttons, ensuring crawlers can discover the entire sequence.
+
+5. **Clean URL Structure**: URLs are descriptive and use standard query parameters that search engines recognize.
+
+This approach ensures:
+- All blog articles are discoverable and indexable
+- Each paginated page has unique canonical signals
+- No duplicate content issues
+- Proper link equity distribution across pages
+- Efficient crawl budget usage
+
 ## Analytics
 
 ### Google Analytics 4 Events
@@ -191,11 +219,41 @@ Tests in `tests/unit/blog.test.ts` need to be updated to work with Shopify integ
 1. Verify SEO fields are filled in Shopify admin
 2. Check page source for meta tags
 3. Use Google's Rich Results Test for structured data validation
+4. Verify canonical tags are self-referencing for each paginated page
+5. Check for rel="next" and rel="prev" link tags in pagination
 
 ### Pagination Not Working
 1. Verify `pageInfo.endCursor` is being passed correctly
 2. Check browser console for errors
 3. Ensure GraphQL query includes pageInfo fields
+
+### SEO Concerns with Cursor Pagination
+
+**Q: Will cursor pagination hurt SEO?**  
+No, when implemented correctly. Our implementation follows SEO best practices:
+
+- **Self-referencing canonicals**: Each paginated page has a canonical tag pointing to itself, preventing duplicate content issues
+- **Pagination link tags**: rel="next" and rel="prev" tags help search engines understand the sequence
+- **Crawlable URLs**: Query parameters (not fragment identifiers) ensure full crawlability
+- **Internal linking**: Next/Previous buttons provide clear navigation paths
+- **No orphan pages**: All pages are discoverable through sequential links
+
+**Q: Will paginated pages be indexed?**  
+Yes. Each page has unique canonical signals and is fully crawlable. Search engines will index all pages in the pagination sequence.
+
+**Q: Should I use a "View All" page instead?**  
+No. For blogs with many articles, a single "View All" page would:
+- Load slowly with all articles
+- Reduce per-article visibility
+- Waste crawl budget on a single large page
+
+Paginated listing is the recommended approach for blog content.
+
+**Q: How do I verify pagination SEO in Google Search Console?**  
+1. Submit `/blog` sitemap URL
+2. Monitor Index Coverage report
+3. Check URL Inspection tool for paginated URLs
+4. Verify canonical tags are recognized correctly
 
 ## Future Enhancements
 

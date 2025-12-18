@@ -17,13 +17,29 @@ export const howMuchNicotineArticle: BlogArticle = {
   author: 'Vapourism Team',
   category: 'Education',
   tags: ['nicotine', 'vaping guide', 'nicotine strength', 'beginners', 'health'],
-  featuredImage: 'https://images.unsplash.com/photo-1611158317464-0f2e6ab88a9f?w=1200&h=630&fit=crop',
+  featuredImage: 'https://picsum.photos/seed/nicotineguide/1200/630',
+  inlineImages: [
+    {
+      id: 'nicotine-comparison',
+      src: 'https://picsum.photos/seed/nicotinelevels/800/450',
+      alt: 'Comparison chart of nicotine levels in different vape devices',
+      caption: 'Understanding nicotine strengths across different vape types',
+    },
+    {
+      id: 'vape-vs-cigarette',
+      src: 'https://picsum.photos/seed/vapevscig/800/450',
+      alt: 'Visual comparison of vaping vs smoking nicotine delivery',
+      caption: 'How vape nicotine compares to traditional cigarettes',
+    },
+  ],
   content: `
 # How Much Nicotine is in a Vape? Complete UK Guide 2025
 
 Understanding nicotine levels in vapes is crucial for both new and experienced vapers. Whether you're transitioning from smoking or adjusting your current setup, knowing how much nicotine you're consuming helps you make informed decisions about your vaping experience.
 
 This comprehensive guide explains everything about vape nicotine content, from measurement units to choosing the right strength for your needs.
+
+{{image:nicotine-comparison}}
 
 ## Understanding Nicotine Measurements
 
@@ -50,17 +66,17 @@ Most disposable vapes in the UK contain **20mg/ml nicotine**, the legal maximum.
 
 | Device | Nicotine | E-liquid | Total Nicotine | Puffs | Shop |
 |--------|----------|----------|----------------|-------|------|
-| [Hayati Pro Ultra](/collections/hayati-pro-ultra) | 20mg/ml | 28ml | 560mg | 25,000 | [View →](/collections/hayati-pro-ultra) |
-| [Lost Mary BM6000](/collections/lost-mary-bm6000) | 20mg/ml | 12ml | 240mg | 6,000 | [View →](/collections/lost-mary-bm6000) |
-| [Crystal Bar](/collections/crystal-bar) | 20mg/ml | 2ml | 40mg | 600 | [View →](/collections/crystal-bar) |
+| [Hayati Pro Ultra](/collections/hayati-pro-ultra) | 20mg/ml | 28ml | 560mg | 25,000 | [View](/collections/hayati-pro-ultra) |
+| [Lost Mary BM6000](/collections/lost-mary-bm6000) | 20mg/ml | 12ml | 240mg | 6,000 | [View](/collections/lost-mary-bm6000) |
+| [Crystal Bar](/collections/crystal-bar) | 20mg/ml | 2ml | 40mg | 600 | [View](/collections/crystal-bar) |
 
-**[→ Browse All Disposable Vapes](/search?q=disposable+vape)**
+[Browse All Disposable Vapes](/search?q=disposable+vape)
 
 ### Understanding These Numbers
 
-- **20mg/ml** = Maximum legal strength in UK
-- **Higher e-liquid capacity** = More total nicotine, but delivered over more puffs
-- **Per-puff nicotine** remains consistent across devices
+* **20mg/ml** = Maximum legal strength in UK
+* **Higher e-liquid capacity** = More total nicotine, but delivered over more puffs
+* **Per-puff nicotine** remains consistent across devices
 
 ## Nicotine in Refillable Vapes
 
@@ -77,6 +93,8 @@ Refillable vapes allow you to choose your nicotine strength based on your prefer
 * Available in: 10mg, 20mg
 * Best for: Mouth-to-lung (MTL) vaping
 * Characteristics: Smoother throat hit, faster absorption
+
+{{image:vape-vs-cigarette}}
 
 ## How Much Nicotine Compared to Cigarettes?
 
@@ -117,7 +135,7 @@ Your ideal nicotine strength depends on several factors:
 * Device type: MTL pod system
 * Gradually reduce to: 6-12mg after 1-2 months
 
-**Light Smokers (<10 cigarettes/day)**:
+**Light Smokers (under 10 cigarettes/day)**:
 * Start with: 6-12mg/ml
 * Device type: MTL pod system
 * Gradually reduce to: 3-6mg after 1-2 months
@@ -148,9 +166,7 @@ Your ideal nicotine strength depends on several factors:
 
 ## Signs Your Nicotine Strength is Wrong
 
-### Too High (Overdo
-
-ing Nicotine)
+### Too High (Overdoing Nicotine)
 
 Symptoms include:
 * Headaches
@@ -205,11 +221,11 @@ Symptoms include:
 To monitor your nicotine consumption:
 
 **Formula**: 
-(ml of e-liquid used per day) × (nicotine strength in mg/ml) = daily nicotine intake
+(ml of e-liquid used per day) x (nicotine strength in mg/ml) = daily nicotine intake
 
 **Example**:
 * Using 3ml per day of 18mg/ml e-liquid
-* 3ml × 18mg/ml = 54mg nicotine per day
+* 3ml x 18mg/ml = 54mg nicotine per day
 
 ### Recommended Daily Limits
 
@@ -317,7 +333,7 @@ Choosing the right nicotine strength is a personal decision based on your smokin
 
 ---
 
-*Last Updated: January 2025*  
+*Last Updated: January 2025*
 *Disclaimer: This article is for informational purposes only. Consult healthcare professionals for personal advice. Nicotine is highly addictive. 18+ only.*
 `,
 };

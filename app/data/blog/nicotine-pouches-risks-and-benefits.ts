@@ -17,7 +17,21 @@ export const nicotinePouchesArticle: BlogArticle = {
   author: 'Vapourism Team',
   category: 'Education',
   tags: ['nicotine pouches', 'health', 'tobacco alternatives', 'harm reduction'],
-  featuredImage: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=1200&h=630&fit=crop',
+  featuredImage: 'https://picsum.photos/seed/nicotinepouches/1200/630',
+  inlineImages: [
+    {
+      id: 'pouch-usage',
+      src: 'https://picsum.photos/seed/pouchuse/800/450',
+      alt: 'How nicotine pouches are used and positioned',
+      caption: 'Nicotine pouches are placed between the gum and lip for discreet use',
+    },
+    {
+      id: 'brands-comparison',
+      src: 'https://picsum.photos/seed/pouchbrands/800/450',
+      alt: 'Popular nicotine pouch brands available in the UK',
+      caption: 'Leading nicotine pouch brands including Zyn, Velo, and Nordic Spirit',
+    },
+  ],
   content: `
 # Nicotine Pouches: Risks and Benefits Explained
 
@@ -32,6 +46,8 @@ This article will explore the ins and outs of nicotine pouches. We'll discuss th
 Nicotine pouches are a smokeless, tobacco-free product designed for oral use. They contain nicotine derived from tobacco, but none of the tobacco leaf. This distinction makes them different from traditional chewing tobacco options.
 
 These pouches are small, discreet, and easy to use. Typically, users place them between their gum and lip. Nicotine is then released and absorbed through the lining of the mouth.
+
+{{image:pouch-usage}}
 
 ### Features of Nicotine Pouches
 
@@ -56,6 +72,8 @@ As the pouch sits in the mouth, nicotine is gradually released. The user experie
 
 This delivery method avoids many harmful by-products of smoking, offering an alternative way to enjoy nicotine. However, it's important for users to be aware of proper usage techniques to ensure safety.
 
+{{image:brands-comparison}}
+
 ## Popular Brands and Types of Nicotine Pouches
 
 Several brands offer nicotine pouches, each with unique formulations and flavors. Popular choices include Zyn, Velo, and Nordic Spirit. These brands are known for their quality and variety.
@@ -66,11 +84,11 @@ Consumers can select different nicotine strengths and flavors to suit their pref
 
 | Brand | Strengths | Best For | Shop |
 |-------|-----------|----------|------|
-| **[Zyn](/collections/zyn-nicotine-pouches)** | 3-6mg | Clean flavors, subtle taste | [View →](/collections/zyn-nicotine-pouches) |
-| **[Velo](/collections/velo-nicotine-pouches)** | 4-11mg | Multiple levels, variety | [View →](/collections/velo-nicotine-pouches) |
-| **Nordic Spirit** | 6-9mg | Innovative tastes | [Browse →](/collections/nicotine-pouches) |
+| [Zyn](/collections/zyn-nicotine-pouches) | 3-6mg | Clean flavors, subtle taste | [View](/collections/zyn-nicotine-pouches) |
+| [Velo](/collections/velo-nicotine-pouches) | 4-11mg | Multiple levels, variety | [View](/collections/velo-nicotine-pouches) |
+| Nordic Spirit | 6-9mg | Innovative tastes | [Browse](/collections/nicotine-pouches) |
 
-**[→ Shop All Nicotine Pouches](/collections/nicotine-pouches)**
+[Shop All Nicotine Pouches](/collections/nicotine-pouches)
 
 Each brand has distinct characteristics, allowing users to find the best match for their needs. When choosing, consider factors like taste, strength, and quality.
 

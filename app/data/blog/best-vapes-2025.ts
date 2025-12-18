@@ -17,7 +17,21 @@ export const bestVapes2025Article: BlogArticle = {
   author: 'Vapourism Team',
   category: 'Buying Guides',
   tags: ['best vapes', 'vape kits', 'buying guide', '2025', 'reviews'],
-  featuredImage: 'https://images.unsplash.com/photo-1580328740188-50e9db26829c?w=1200&h=630&fit=crop',
+  featuredImage: 'https://picsum.photos/seed/vapes2025/1200/630',
+  inlineImages: [
+    {
+      id: 'vape-devices',
+      src: 'https://picsum.photos/seed/vapedevices/800/450',
+      alt: 'Selection of modern vape devices and kits available in the UK',
+      caption: 'A range of popular vape devices from leading UK brands',
+    },
+    {
+      id: 'beginner-vapes',
+      src: 'https://picsum.photos/seed/beginnervape/800/450',
+      alt: 'Beginner-friendly vape kits perfect for those new to vaping',
+      caption: 'User-friendly devices ideal for ex-smokers making the switch',
+    },
+  ],
   content: `
 # Best Vapes 2025: Top UK Vape Kits & Devices Reviewed
 
@@ -25,9 +39,11 @@ Choosing the best vape in 2025 can be overwhelming with hundreds of options avai
 
 The vaping landscape has evolved significantly, with new innovations in battery technology, pod systems, and flavor delivery. From budget-friendly disposables to advanced mod systems, we'll explore the best vapes available in the UK market this year.
 
+{{image:vape-devices}}
+
 ---
 
-## 🏆 Quick Picks: Best Vapes at a Glance
+## Quick Picks: Best Vapes at a Glance
 
 | Category | Product | Price Range | Best For |
 |----------|---------|-------------|----------|
@@ -37,7 +53,7 @@ The vaping landscape has evolved significantly, with new innovations in battery 
 | **Best Value** | IVG Air Pods | £14.99 | Budget conscious |
 | **Best Premium** | Vaporesso Gen PT60 | £44.99 | Enthusiasts |
 
-[**→ Browse All Vape Kits**](/search?q=vape+kit)
+[Browse All Vape Kits](/search?q=vape+kit)
 
 ## What Makes a Great Vape in 2025?
 
@@ -67,6 +83,8 @@ The XROS 3's build quality is exceptional, featuring a durable zinc-alloy constr
 
 **Hayati Remix** takes the crown for best beginner vape. This user-friendly device requires no button pressing—simply inhale to activate. The refillable pods are easy to fill, and the device provides clear LED indicators for battery and pod status.
 
+{{image:beginner-vapes}}
+
 ### Why Hayati Remix Excels for Beginners
 
 * Draw-activated firing (no buttons)
@@ -81,15 +99,15 @@ While reusable devices offer better long-term value, **[Hayati Pro Ultra 25000](
 
 The Pro Ultra features a smart display showing battery and e-liquid levels, ensuring you're never caught off guard. Its mesh coil technology delivers consistent flavor from first puff to last.
 
-**[→ Shop Hayati Pro Ultra Collection](/collections/hayati-pro-ultra)**
+[Shop Hayati Pro Ultra Collection](/collections/hayati-pro-ultra)
 
 ### Why Choose Hayati Pro Ultra?
 
-✅ **25,000 puffs** - Longest-lasting disposable  
-✅ **Rechargeable battery** - Use every drop of e-liquid  
-✅ **Smart display** - Always know battery and e-liquid levels  
-✅ **Mesh coil technology** - Consistent flavor throughout  
-✅ **28ml e-liquid capacity** - Maximum value
+* **25,000 puffs** - Longest-lasting disposable
+* **Rechargeable battery** - Use every drop of e-liquid
+* **Smart display** - Always know battery and e-liquid levels
+* **Mesh coil technology** - Consistent flavor throughout
+* **28ml e-liquid capacity** - Maximum value
 
 ## Best Refillable Pod Vape UK
 
@@ -227,44 +245,31 @@ Remember to consider your nicotine requirements, usage patterns, and desired fea
 
 ---
 
-## 🛒 Shop Top-Rated Vape Collections
+## Shop Top-Rated Vape Collections
 
 Ready to find your perfect vape? Explore our curated collections:
 
-<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem; border-radius: 1rem; color: white; margin: 2rem 0;">
-
 ### Featured Collections
 
-- **[Hayati Pro Ultra Collection →](/collections/hayati-pro-ultra)**  
-  *The UK's highest-capacity disposable vapes with 25,000+ puffs*
-
-- **[Hayati Pro Max Collection →](/collections/hayati-pro-max)**  
-  *Premium e-liquids and long-lasting devices*
-
-- **[Lost Mary BM6000 →](/collections/lost-mary-bm6000)**  
-  *Popular 6000-puff refillable system*
-
-- **[Crystal Bar Collection →](/collections/crystal-bar)**  
-  *Premium flavors and reliable performance*
-
-- **[All Vape Kits →](/search?q=vape+kit)**  
-  *Browse our complete range with fast UK delivery*
-
-</div>
+* [Hayati Pro Ultra Collection](/collections/hayati-pro-ultra) - The UK's highest-capacity disposable vapes with 25,000+ puffs
+* [Hayati Pro Max Collection](/collections/hayati-pro-max) - Premium e-liquids and long-lasting devices
+* [Lost Mary BM6000](/collections/lost-mary-bm6000) - Popular 6000-puff refillable system
+* [Crystal Bar Collection](/collections/crystal-bar) - Premium flavors and reliable performance
+* [All Vape Kits](/search?q=vape+kit) - Browse our complete range with fast UK delivery
 
 ### Why Shop at Vapourism?
 
-✅ **Authentic Products Only** - Direct from manufacturers  
-✅ **Expert Support** - Knowledgeable team ready to help  
-✅ **Fast UK Delivery** - Next-day shipping available  
-✅ **Best Prices** - Competitive pricing guaranteed  
-✅ **Full Warranties** - Manufacturer warranties on all devices
+* **Authentic Products Only** - Direct from manufacturers
+* **Expert Support** - Knowledgeable team ready to help
+* **Fast UK Delivery** - Next-day shipping available
+* **Best Prices** - Competitive pricing guaranteed
+* **Full Warranties** - Manufacturer warranties on all devices
 
 **Have questions?** Our team is here to help you choose the perfect vape for your needs.
 
 ---
 
-*Last Updated: January 2025*  
+*Last Updated: January 2025*
 *Disclaimer: Vaping products contain nicotine, a highly addictive substance. Must be 18+ to purchase.*
 `,
 };

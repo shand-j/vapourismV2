@@ -17,7 +17,21 @@ export const crystalBarGuideArticle: BlogArticle = {
   author: 'Vapourism Team',
   category: 'Product Guides',
   tags: ['crystal bar', 'disposable vapes', 'SKE', 'flavours', 'reviews'],
-  featuredImage: 'https://images.unsplash.com/photo-1610796386159-a1f96cb4e2e3?w=1200&h=630&fit=crop',
+  featuredImage: 'https://picsum.photos/seed/crystalbar/1200/630',
+  inlineImages: [
+    {
+      id: 'crystal-models',
+      src: 'https://picsum.photos/seed/crystalmodels/800/450',
+      alt: 'Crystal Bar vape models comparison showing different device options',
+      caption: 'The complete Crystal Bar range from SKE',
+    },
+    {
+      id: 'crystal-flavours',
+      src: 'https://picsum.photos/seed/crystalflavours/800/450',
+      alt: 'Popular Crystal Bar flavour options available in the UK',
+      caption: 'Popular Crystal Bar flavours including Blue Razz Lemonade and Strawberry Ice',
+    },
+  ],
   content: `
 # Crystal Bar Vape: Complete Guide to Flavours & Models 2025
 
@@ -25,20 +39,22 @@ Crystal Bar has become one of the UK's most popular disposable vape brands, know
 
 From the original Crystal Bar 600 to the advanced Crystal Pro Max, we'll explore every model, review the best flavours, and help you choose the perfect Crystal vape for your needs.
 
-**[→ Shop Crystal Bar Collection](/collections/crystal-bar)**
+[Shop Crystal Bar Collection](/collections/crystal-bar)
 
 ---
 
-## 📊 Crystal Bar Models Quick Comparison
+## Crystal Bar Models Quick Comparison
 
 | Model | Puffs | Price | Rechargeable | Best For |
 |-------|-------|-------|--------------|----------|
-| Crystal Bar 600 | 600 | £4.99-5.99 | ❌ | Trying flavors |
-| Crystal Pro 600 | 600 | £5.99-6.99 | ✅ | Daily use |
-| Crystal Pro Max 4000 | 4,000 | £12.99-14.99 | ✅ | Heavy vapers |
-| Crystal Prime 7000 | 7,000 | £14.99-16.99 | ✅ | Maximum value |
+| Crystal Bar 600 | 600 | £4.99-5.99 | No | Trying flavors |
+| Crystal Pro 600 | 600 | £5.99-6.99 | Yes | Daily use |
+| Crystal Pro Max 4000 | 4,000 | £12.99-14.99 | Yes | Heavy vapers |
+| Crystal Prime 7000 | 7,000 | £14.99-16.99 | Yes | Maximum value |
 
-[**→ View All Crystal Bar Products**](/collections/crystal-bar)
+[View All Crystal Bar Products](/collections/crystal-bar)
+
+{{image:crystal-models}}
 
 ## What is Crystal Bar?
 
@@ -65,7 +81,7 @@ The original that started it all:
 * **Battery**: 500mAh (non-rechargeable)
 * **Best for**: Trying new flavors, occasional vaping
 
-**Price**: £4.99-£5.99  
+**Price**: £4.99-£5.99
 **Duration**: 1-2 days for average users
 
 ### Crystal Pro 600
@@ -118,87 +134,89 @@ Latest addition to the lineup:
 * Enhanced mesh coil technology
 * Premium leather-effect finish
 
+{{image:crystal-flavours}}
+
 ## Best Crystal Bar Flavours 2025
 
 ### Top 10 Most Popular Flavours
 
 #### 1. Blue Razz Lemonade
-**Profile**: Sweet blue raspberry with tangy lemonade  
-**Intensity**: Medium  
-**Best for**: All-day vaping  
-**Rating**: ⭐⭐⭐⭐⭐
+**Profile**: Sweet blue raspberry with tangy lemonade
+**Intensity**: Medium
+**Best for**: All-day vaping
+**Rating**: 5/5 stars
 
 A perfect balance of sweet and sour, this flavor delivers refreshing satisfaction with every puff. The raspberry provides fruity sweetness while lemonade adds zesty brightness.
 
 #### 2. Strawberry Ice
-**Profile**: Ripe strawberries with cooling menthol  
-**Intensity**: Light to medium  
-**Best for**: Fruit and menthol lovers  
-**Rating**: ⭐⭐⭐⭐⭐
+**Profile**: Ripe strawberries with cooling menthol
+**Intensity**: Light to medium
+**Best for**: Fruit and menthol lovers
+**Rating**: 5/5 stars
 
 Classic strawberry sweetness paired with a crisp menthol finish. Not overpowering, just perfectly balanced for a smooth vaping experience.
 
 #### 3. Cherry Ice
-**Profile**: Dark cherry with icy finish  
-**Intensity**: Medium  
-**Best for**: Bold fruit flavors  
-**Rating**: ⭐⭐⭐⭐½
+**Profile**: Dark cherry with icy finish
+**Intensity**: Medium
+**Best for**: Bold fruit flavors
+**Rating**: 4.5/5 stars
 
 Rich, authentic cherry taste with a refreshing cool exhale. One of the most popular menthol fruit combinations in the range.
 
 #### 4. Pink Lemonade
-**Profile**: Sweet and tangy citrus blend  
-**Intensity**: Medium  
-**Best for**: Citrus enthusiasts  
-**Rating**: ⭐⭐⭐⭐⭐
+**Profile**: Sweet and tangy citrus blend
+**Intensity**: Medium
+**Best for**: Citrus enthusiasts
+**Rating**: 5/5 stars
 
 Perfectly captures the taste of classic pink lemonade. Sweet, tart, and incredibly refreshing—a summer favorite.
 
 #### 5. Blueberry Sour Raspberry
-**Profile**: Mixed berries with sour kick  
-**Intensity**: Medium-high  
-**Best for**: Adventurous vapers  
-**Rating**: ⭐⭐⭐⭐½
+**Profile**: Mixed berries with sour kick
+**Intensity**: Medium-high
+**Best for**: Adventurous vapers
+**Rating**: 4.5/5 stars
 
 Complex berry blend with a tangy twist. Blueberry sweetness meets raspberry tartness for a unique experience.
 
 #### 6. Watermelon Ice
-**Profile**: Fresh watermelon with menthol  
-**Intensity**: Light  
-**Best for**: Refreshing all-day vape  
-**Rating**: ⭐⭐⭐⭐⭐
+**Profile**: Fresh watermelon with menthol
+**Intensity**: Light
+**Best for**: Refreshing all-day vape
+**Rating**: 5/5 stars
 
 Crisp, juicy watermelon with a cooling finish. One of the most refreshing options in the range.
 
 #### 7. Mango Ice
-**Profile**: Tropical mango with ice  
-**Intensity**: Medium  
-**Best for**: Tropical fruit fans  
-**Rating**: ⭐⭐⭐⭐½
+**Profile**: Tropical mango with ice
+**Intensity**: Medium
+**Best for**: Tropical fruit fans
+**Rating**: 4.5/5 stars
 
 Authentic mango flavor that tastes like biting into fresh fruit. The ice element adds perfect refreshment.
 
 #### 8. Cotton Candy Ice
-**Profile**: Sweet fairground treat with menthol  
-**Intensity**: High sweetness  
-**Best for**: Dessert vapor lovers  
-**Rating**: ⭐⭐⭐⭐
+**Profile**: Sweet fairground treat with menthol
+**Intensity**: High sweetness
+**Best for**: Dessert vapor lovers
+**Rating**: 4/5 stars
 
 Pure nostalgia in vape form. Sweet, fluffy cotton candy taste with a cool finish. Very sweet, perfect for those with a sweet tooth.
 
 #### 9. Apple Peach
-**Profile**: Crisp apple and juicy peach blend  
-**Intensity**: Medium  
-**Best for**: Balanced fruit lovers  
-**Rating**: ⭐⭐⭐⭐⭐
+**Profile**: Crisp apple and juicy peach blend
+**Intensity**: Medium
+**Best for**: Balanced fruit lovers
+**Rating**: 5/5 stars
 
 Harmonious combination of two classic fruits. Crisp apple meets sweet peach for all-day satisfaction.
 
 #### 10. Grape Ice
-**Profile**: Purple grape with cooling finish  
-**Intensity**: Medium  
-**Best for**: Grape candy fans  
-**Rating**: ⭐⭐⭐⭐
+**Profile**: Purple grape with cooling finish
+**Intensity**: Medium
+**Best for**: Grape candy fans
+**Rating**: 4/5 stars
 
 Rich grape flavor with candy-like sweetness. The ice adds refreshment without overpowering the fruit.
 
@@ -247,22 +265,22 @@ Consider these factors when selecting:
 
 ### Taste Preferences
 
-**Sweet Tooth**: Cotton Candy Ice, Pink Lemonade, Gummy Bear  
-**Fresh & Light**: Watermelon Ice, Apple, Lemon Lime  
-**Bold Fruit**: Cherry Ice, Mango, Grape  
+**Sweet Tooth**: Cotton Candy Ice, Pink Lemonade, Gummy Bear
+**Fresh & Light**: Watermelon Ice, Apple, Lemon Lime
+**Bold Fruit**: Cherry Ice, Mango, Grape
 **Complex Blends**: Blue Razz Lemonade, Blueberry Sour Raspberry
 
 ### Menthol Preference
 
-**Love Menthol**: Any "Ice" variant  
-**Dislike Menthol**: Pure fruit options (Strawberry, Blueberry, Cherry)  
-**Mild Cooling**: Watermelon Ice, Strawberry Ice  
+**Love Menthol**: Any "Ice" variant
+**Dislike Menthol**: Pure fruit options (Strawberry, Blueberry, Cherry)
+**Mild Cooling**: Watermelon Ice, Strawberry Ice
 **Strong Cooling**: Menthol, Ice, Peppermint
 
 ### Time of Day
 
-**Morning**: Fresh options like Lemon Lime, Apple Peach  
-**Afternoon**: Blue Razz Lemonade, Pink Lemonade  
+**Morning**: Fresh options like Lemon Lime, Apple Peach
+**Afternoon**: Blue Razz Lemonade, Pink Lemonade
 **Evening**: Richer flavors like Grape, Cherry, Mango
 
 ## Crystal Bar vs. Competitors
@@ -421,36 +439,32 @@ The extensive flavor range ensures there's a perfect option for every preference
 
 ---
 
-## 🛒 Shop Crystal Bar at Vapourism
-
-<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem; border-radius: 1rem; color: white; margin: 2rem 0;">
+## Shop Crystal Bar at Vapourism
 
 ### Experience Crystal-Clear Flavors
 
-**[→ Shop Full Crystal Bar Collection](/collections/crystal-bar)**
+[Shop Full Crystal Bar Collection](/collections/crystal-bar)
 
 Choose from 30+ authentic flavors, all models, and enjoy:
 
-✅ **Authentic Products** - Direct from SKE  
-✅ **Best Prices** - Competitive UK pricing  
-✅ **Fast Delivery** - Next-day shipping available  
-✅ **Expert Support** - Help choosing your perfect flavor  
-✅ **Quality Guarantee** - 100% genuine Crystal Bar products
+* **Authentic Products** - Direct from SKE
+* **Best Prices** - Competitive UK pricing
+* **Fast Delivery** - Next-day shipping available
+* **Expert Support** - Help choosing your perfect flavor
+* **Quality Guarantee** - 100% genuine Crystal Bar products
 
 ### Popular Collections
 
-- **[All Disposable Vapes →](/search?q=disposable+vape)**
-- **[Elux Legend Collection →](/collections/elux-legend)**
-- **[Lost Mary Range →](/collections/lost-mary-bm6000)**
-- **[Hayati Pro Ultra →](/collections/hayati-pro-ultra)**
-
-</div>
+* [All Disposable Vapes](/search?q=disposable+vape)
+* [Elux Legend Collection](/collections/elux-legend)
+* [Lost Mary Range](/collections/lost-mary-bm6000)
+* [Hayati Pro Ultra](/collections/hayati-pro-ultra)
 
 **Questions about Crystal Bar?** Our expert team is ready to help you find your perfect vape and flavor combination.
 
 ---
 
-*Last Updated: January 2025*  
+*Last Updated: January 2025*
 *Disclaimer: Vaping products contain nicotine. Highly addictive. 18+ only.*
 `,
 };

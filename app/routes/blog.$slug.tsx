@@ -1,7 +1,7 @@
 import type {MetaFunction, LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useLoaderData, Link} from '@remix-run/react';
 import {useEffect, useRef} from 'react';
-import {getArticleBySlug} from '~/data/blog';
+import {getArticleBySlug, type BlogArticle} from '~/data/blog';
 import {SEOAutomationService} from '~/preserved/seo-automation';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
@@ -89,16 +89,19 @@ export async function loader({params, request}: LoaderFunctionArgs) {
  * 1. Content comes from TypeScript files in our codebase (not user input)
  * 2. Content is version-controlled and code-reviewed
  * 3. Content is known at build time
- * 4. Only basic markdown formatting is processed (bold, italic)
+ * 4. Only basic markdown formatting is processed (bold, italic, links)
  * 5. No user-generated content or external sources
  * 
  * If you need to accept user-generated content in the future, use a proper
  * markdown library with sanitization (e.g., marked + DOMPurify).
  */
-function ArticleContent({content}: {content: string}) {
+function ArticleContent({content, inlineImages}: {content: string; inlineImages?: BlogArticle['inlineImages']}) {
   const lines = content.split('\n');
   const elements: JSX.Element[] = [];
   let listItems: string[] = [];
+
+  // Create a map for quick image lookup
+  const imageMap = new Map(inlineImages?.map(img => [img.id, img]) || []);
 
   const flushList = () => {
     if (listItems.length > 0) {
@@ -114,10 +117,14 @@ function ArticleContent({content}: {content: string}) {
   };
 
   const processInlineFormatting = (text: string): string => {
-    // Only process bold and italic - content is from trusted source
+    // Process markdown formatting - content is from trusted source
     // Use non-greedy patterns to prevent catastrophic backtracking
     return text
+      // Links: [text](url) -> <a href="url">text</a>
+      .replace(/\[([^\]]+?)\]\(([^)]+?)\)/g, '<a href="$2" class="text-violet-600 hover:text-violet-700 underline">$1</a>')
+      // Bold: **text** -> <strong>text</strong>
       .replace(/\*\*([^*]+?)\*\*/g, '<strong>$1</strong>')
+      // Italic: *text* -> <em>text</em>
       .replace(/\*([^*]+?)\*/g, '<em>$1</em>');
   };
 
@@ -126,6 +133,32 @@ function ArticleContent({content}: {content: string}) {
     
     if (!trimmed) {
       flushList();
+      return;
+    }
+
+    // Check for inline image marker: {{image:id}}
+    const imageMatch = trimmed.match(/^\{\{image:([^}]+)\}\}$/);
+    if (imageMatch) {
+      flushList();
+      const imageId = imageMatch[1];
+      const image = imageMap.get(imageId);
+      if (image) {
+        elements.push(
+          <figure key={index} className="my-8">
+            <img
+              src={image.src}
+              alt={image.alt}
+              className="w-full rounded-lg shadow-md"
+              loading="lazy"
+            />
+            {image.caption && (
+              <figcaption className="mt-2 text-sm text-slate-500 text-center italic">
+                {image.caption}
+              </figcaption>
+            )}
+          </figure>
+        );
+      }
       return;
     }
 
@@ -316,7 +349,7 @@ export default function BlogArticle() {
 
         {/* Article Content */}
         <article className="max-w-4xl mx-auto">
-          <ArticleContent content={article.content} />
+          <ArticleContent content={article.content} inlineImages={article.inlineImages} />
         </article>
 
         {/* Article Tags */}

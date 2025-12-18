@@ -20,6 +20,17 @@ export interface BlogArticle {
   tags: string[];
   content: string;
   featuredImage?: string;
+  /** Optional inline images to display within the article body */
+  inlineImages?: {
+    /** Unique identifier to reference in content, e.g., "section-1" */
+    id: string;
+    /** Image URL */
+    src: string;
+    /** Alt text for accessibility */
+    alt: string;
+    /** Optional caption */
+    caption?: string;
+  }[];
 }
 
 import {nicotinePouchesArticle} from './nicotine-pouches-risks-and-benefits';

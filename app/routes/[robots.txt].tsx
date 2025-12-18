@@ -50,10 +50,22 @@ Disallow: /orders/*
 Disallow: /carts/*
 Disallow: /search
 Disallow: /search?*
+
+# Block query parameter variations to prevent duplicate content
 Disallow: /*?*variant=*
 Disallow: /*?*oseid=*
 Disallow: /*?*preview_theme_id*
 Disallow: /*?*currency=*
+Disallow: /*?*after=*
+Disallow: /*?*sort=*
+Disallow: /*?*tag=*
+Disallow: /*?*vendor=*
+Disallow: /*?*price_min=*
+Disallow: /*?*price_max=*
+Disallow: /*?*availability=*
+Disallow: /*?*type=*
+Disallow: /*?utm_*
+Disallow: /*?*utm_*
 
 # Allow crawling of products and pages
 Allow: /products/

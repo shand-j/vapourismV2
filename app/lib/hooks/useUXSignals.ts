@@ -127,15 +127,20 @@ export function useUXSignals(options: UseUXSignalsOptions = {}): UseUXSignalsRet
     // Set initial device type
     setDeviceType(getDeviceType());
 
+    // Helper function to update all metrics
+    const updateAllMetrics = () => {
+      setMetrics(getCoreWebVitals());
+      setEngagement(getEngagementMetrics());
+      setEngaged(isUserEngaged());
+      setVitalsRating(getCoreWebVitalsSummary());
+      setDeviceType(getDeviceType());
+    };
+
     // Set up periodic metric updates
-    const intervalId = setInterval(() => {
-      refreshMetrics();
-    }, updateInterval);
+    const intervalId = setInterval(updateAllMetrics, updateInterval);
 
     // Initial metrics fetch (after a short delay to allow observers to fire)
-    const initialFetchTimeout = setTimeout(() => {
-      refreshMetrics();
-    }, 100);
+    const initialFetchTimeout = setTimeout(updateAllMetrics, 100);
 
     return () => {
       cleanup();
@@ -148,7 +153,7 @@ export function useUXSignals(options: UseUXSignalsOptions = {}): UseUXSignalsRet
         sendEngagementMetricsToGA4();
       }
     };
-  }, [enabled, updateInterval, refreshMetrics, sendToGA4OnUnmount]);
+  }, [enabled, updateInterval, sendToGA4OnUnmount]);
 
   // Track scroll milestones
   useEffect(() => {

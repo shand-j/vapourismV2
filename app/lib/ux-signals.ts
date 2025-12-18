@@ -66,7 +66,8 @@ export interface EngagementMetrics {
 }
 
 export interface InteractionEvent {
-  type: 'click' | 'scroll' | 'form_start' | 'form_submit' | 'search' | 'video_play' | 'download';
+  /** Currently tracked interaction types */
+  type: 'click' | 'form_start' | 'form_submit';
   element?: string;
   value?: string | number;
   timestamp: number;
@@ -638,7 +639,7 @@ export function getConnectionType(): string | undefined {
  * Uses the recommended event structure for Google Analytics
  */
 export function sendCoreWebVitalsToGA4(): void {
-  if (!hasAnalyticsConsent() || typeof window === 'undefined' || !window.gtag) {
+  if (!hasAnalyticsConsent() || globalThis.window === undefined || typeof globalThis.window.gtag !== 'function') {
     return;
   }
   
@@ -647,7 +648,7 @@ export function sendCoreWebVitalsToGA4(): void {
   // Send LCP
   if (metrics.lcp !== undefined) {
     const rating = rateCoreWebVital('lcp', metrics.lcp);
-    window.gtag('event', 'web_vitals', {
+    globalThis.window.gtag('event', 'web_vitals', {
       metric_name: 'LCP',
       metric_value: Math.round(metrics.lcp),
       metric_rating: rating.rating,
@@ -658,7 +659,7 @@ export function sendCoreWebVitalsToGA4(): void {
   // Send INP
   if (metrics.inp !== undefined) {
     const rating = rateCoreWebVital('inp', metrics.inp);
-    window.gtag('event', 'web_vitals', {
+    globalThis.window.gtag('event', 'web_vitals', {
       metric_name: 'INP',
       metric_value: Math.round(metrics.inp),
       metric_rating: rating.rating,
@@ -669,7 +670,7 @@ export function sendCoreWebVitalsToGA4(): void {
   // Send CLS
   if (metrics.cls !== undefined) {
     const rating = rateCoreWebVital('cls', metrics.cls);
-    window.gtag('event', 'web_vitals', {
+    globalThis.window.gtag('event', 'web_vitals', {
       metric_name: 'CLS',
       metric_value: Math.round(metrics.cls * 1000), // CLS is usually a decimal, scale for GA4
       metric_rating: rating.rating,
@@ -679,7 +680,7 @@ export function sendCoreWebVitalsToGA4(): void {
   
   // Send FCP (auxiliary)
   if (metrics.fcp !== undefined) {
-    window.gtag('event', 'web_vitals', {
+    globalThis.window.gtag('event', 'web_vitals', {
       metric_name: 'FCP',
       metric_value: Math.round(metrics.fcp),
       metric_delta: Math.round(metrics.fcp),
@@ -688,7 +689,7 @@ export function sendCoreWebVitalsToGA4(): void {
   
   // Send TTFB (auxiliary)
   if (metrics.ttfb !== undefined) {
-    window.gtag('event', 'web_vitals', {
+    globalThis.window.gtag('event', 'web_vitals', {
       metric_name: 'TTFB',
       metric_value: Math.round(metrics.ttfb),
       metric_delta: Math.round(metrics.ttfb),
@@ -700,13 +701,13 @@ export function sendCoreWebVitalsToGA4(): void {
  * Send engagement metrics to GA4
  */
 export function sendEngagementMetricsToGA4(): void {
-  if (!hasAnalyticsConsent() || typeof window === 'undefined' || !window.gtag) {
+  if (!hasAnalyticsConsent() || globalThis.window === undefined || typeof globalThis.window.gtag !== 'function') {
     return;
   }
   
   const engagement = getEngagementMetrics();
   
-  window.gtag('event', 'page_engagement', {
+  globalThis.window.gtag('event', 'page_engagement', {
     scroll_depth: engagement.maxScrollDepth,
     time_on_page: engagement.timeOnPage,
     interaction_count: engagement.interactionCount,
@@ -723,14 +724,14 @@ export function sendEngagementMetricsToGA4(): void {
  * Useful for tracking specific engagement points (25%, 50%, 75%, 100%)
  */
 export function trackScrollMilestone(depth: number): void {
-  if (!hasAnalyticsConsent() || typeof window === 'undefined' || !window.gtag) {
+  if (!hasAnalyticsConsent() || globalThis.window === undefined || typeof globalThis.window.gtag !== 'function') {
     return;
   }
   
-  window.gtag('event', 'scroll_milestone', {
+  globalThis.window.gtag('event', 'scroll_milestone', {
     scroll_depth: depth,
-    page_path: window.location.pathname,
-    page_title: document.title,
+    page_path: globalThis.window.location.pathname,
+    page_title: globalThis.document.title,
   });
 }
 

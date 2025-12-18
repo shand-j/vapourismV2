@@ -1,4 +1,5 @@
 import type {MetaFunction} from '@shopify/remix-oxygen';
+import {generateAboutPageSchema, generateOrganizationSchema, structuredDataScript} from '~/lib/structured-data';
 
 export const meta: MetaFunction = () => [
   {title: 'About Vapourism | Premium UK Vape Shop | Est. 2015'},
@@ -138,6 +139,23 @@ export default function AboutRoute() {
             </div>
           </div>
         </div>
+
+        {/* Structured Data for SEO */}
+        <script {...structuredDataScript(generateAboutPageSchema({
+          name: 'Vapourism',
+          description: 'UK premium vape shop since 2015. Compliance-first retail with authentic products, rigorous age verification, and fast delivery.',
+          url: 'https://www.vapourism.co.uk/about',
+          foundingDate: '2015',
+        }))} />
+        <script {...structuredDataScript(generateOrganizationSchema({
+          name: 'Vapourism',
+          url: 'https://www.vapourism.co.uk',
+          logo: 'https://www.vapourism.co.uk/logo.png',
+          description: 'Premium UK vape shop established in 2015, offering authentic vaping products with rigorous age verification and compliance-first retail approach.',
+          addressCountry: 'GB',
+          addressRegion: 'England',
+          email: 'hello@vapourism.co.uk',
+        }))} />
       </div>
     </div>
   );

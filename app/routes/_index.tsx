@@ -696,6 +696,27 @@ export default function IndexRoute() {
           </div>
         </div>
       </section>
+
+      {/* Structured Data for SEO */}
+      <script {...structuredDataScript(generateOrganizationSchema({
+        name: 'Vapourism',
+        url: 'https://www.vapourism.co.uk',
+        logo: 'https://www.vapourism.co.uk/logo.png',
+        description: 'UK\'s leading vape shop offering authentic vaping products, fast delivery, and best prices. Premium e-liquids, disposables, and vape kits.',
+        addressCountry: 'GB',
+        addressRegion: 'England',
+        email: 'hello@vapourism.co.uk',
+        socialLinks: [
+          'https://twitter.com/vapourismuk',
+          'https://www.facebook.com/vapourism',
+          'https://www.instagram.com/vapourismuk',
+        ],
+      }))} />
+      <script {...structuredDataScript(generateWebsiteSchema({
+        name: 'Vapourism',
+        url: 'https://www.vapourism.co.uk',
+        searchUrlTemplate: 'https://www.vapourism.co.uk/search?q={search_term_string}',
+      }))} />
     </div>
   );
 }

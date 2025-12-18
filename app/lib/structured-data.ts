@@ -142,3 +142,122 @@ export function structuredDataScript(schema: Record<string, unknown>) {
     dangerouslySetInnerHTML: { __html: JSON.stringify(schema) },
   };
 }
+
+/**
+ * Generate FAQ Page Schema
+ */
+export interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+export function generateFAQSchema(faqs: FAQItem[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(faq => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
+  };
+}
+
+/**
+ * Generate ItemList Schema for Collection Pages
+ */
+export interface ItemListProduct {
+  name: string;
+  url: string;
+  image?: string;
+  description?: string;
+  price?: string;
+  priceCurrency?: string;
+}
+
+export function generateItemListSchema(params: {
+  name: string;
+  description?: string;
+  items: ItemListProduct[];
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: params.name,
+    ...(params.description && { description: params.description }),
+    numberOfItems: params.items.length,
+    itemListElement: params.items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'Product',
+        name: item.name,
+        url: item.url,
+        ...(item.image && { image: item.image }),
+        ...(item.description && { description: item.description }),
+        ...(item.price && item.priceCurrency && {
+          offers: {
+            '@type': 'Offer',
+            price: item.price,
+            priceCurrency: item.priceCurrency,
+          },
+        }),
+      },
+    })),
+  };
+}
+
+/**
+ * Generate CollectionPage Schema
+ */
+export function generateCollectionPageSchema(params: {
+  name: string;
+  description: string;
+  url: string;
+  numberOfItems: number;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: params.name,
+    description: params.description,
+    url: params.url,
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: params.numberOfItems,
+    },
+  };
+}
+
+/**
+ * Generate AboutPage Schema
+ */
+export function generateAboutPageSchema(params: {
+  name: string;
+  description: string;
+  url: string;
+  foundingDate?: string;
+  founders?: string[];
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    name: params.name,
+    description: params.description,
+    url: params.url,
+    mainEntity: {
+      '@type': 'Organization',
+      name: params.name,
+      ...(params.foundingDate && { foundingDate: params.foundingDate }),
+      ...(params.founders && params.founders.length > 0 && {
+        founders: params.founders.map(founder => ({
+          '@type': 'Person',
+          name: founder,
+        })),
+      }),
+    },
+  };
+}

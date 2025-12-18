@@ -319,6 +319,49 @@ export default function DeliveryInformation() {
                 <p>Response within 24 hours (working days)</p>
               </div>
             </div>
+
+            {/* Related Resources */}
+            <div className="mt-12">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Related Information</h2>
+              <div className="grid gap-6 md:grid-cols-3">
+                <Link to="/policies/returns-policy" className="p-6 bg-white border border-gray-200 rounded-xl hover:border-blue-500 hover:shadow-lg transition-all">
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z" />
+                      </svg>
+                    </div>
+                    <h3 className="font-semibold text-gray-900 mb-2">Returns Policy</h3>
+                    <p className="text-sm text-gray-600">14-day returns for unopened items. Learn about our hassle-free returns process.</p>
+                  </div>
+                </Link>
+                <Link to="/faq" className="p-6 bg-white border border-gray-200 rounded-xl hover:border-blue-500 hover:shadow-lg transition-all">
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <h3 className="font-semibold text-gray-900 mb-2">Frequently Asked Questions</h3>
+                    <p className="text-sm text-gray-600">Quick answers to common questions about ordering and delivery.</p>
+                  </div>
+                </Link>
+                <Link to="/contact" className="p-6 bg-white border border-gray-200 rounded-xl hover:border-blue-500 hover:shadow-lg transition-all">
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <h3 className="font-semibold text-gray-900 mb-2">Contact Support</h3>
+                    <p className="text-sm text-gray-600">Get in touch with our team for order or delivery assistance.</p>
+                  </div>
+                </Link>
+              </div>
+              <div className="mt-6 text-center text-sm text-gray-600">
+                Browse <Link to="/search" className="text-blue-600 hover:underline font-medium">our products</Link> or learn <Link to="/about" className="text-blue-600 hover:underline font-medium">about Vapourism</Link>
+              </div>
+            </div>
           </div>
         </div>
       </main>

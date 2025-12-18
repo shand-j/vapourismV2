@@ -11,6 +11,7 @@ import {useLoaderData, Link} from '@remix-run/react';
 import {SEOAutomationService} from '~/preserved/seo-automation';
 import {searchProducts} from '~/lib/shopify-search';
 import {useCollectionTracking} from '~/lib/hooks/useCollectionTracking';
+import {generateCollectionPageSchema, generateBreadcrumbSchema, structuredDataScript, SITE_URL} from '~/lib/structured-data';
 
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
@@ -235,6 +236,19 @@ export default function LostMaryBM6000Collection() {
           </Link>
         </div>
       </div>
+
+      {/* Structured Data for SEO */}
+      <script {...structuredDataScript(generateCollectionPageSchema({
+        name: 'Lost Mary BM6000 | Premium Disposable Vapes UK',
+        description: 'Shop Lost Mary BM6000 disposable vapes with exceptional flavor and long-lasting performance.',
+        url: `${SITE_URL}/collections/lost-mary-bm6000`,
+        numberOfItems: totalCount,
+      }))} />
+      <script {...structuredDataScript(generateBreadcrumbSchema([
+        { name: 'Home', url: SITE_URL },
+        { name: 'Collections', url: `${SITE_URL}/search` },
+        { name: 'Lost Mary BM6000', url: `${SITE_URL}/collections/lost-mary-bm6000` },
+      ]))} />
     </div>
   );
 }

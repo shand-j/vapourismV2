@@ -94,14 +94,14 @@ describe('Shopify Blog Integration', () => {
       expect(description.endsWith('...')).toBe(true);
     });
 
-    it('should remove HTML tags from excerpt', () => {
+    it('should use plain text excerpt from Shopify', () => {
       const article: ShopifyArticle = {
         id: '1',
         title: 'Test Article',
         handle: 'test-article',
         content: 'Content',
         contentHtml: '<p>Content</p>',
-        excerpt: '<strong>Bold</strong> and <em>italic</em> text',
+        excerpt: 'Bold and italic text', // Shopify provides plain text in excerpt field
         excerptHtml: '<p><strong>Bold</strong> and <em>italic</em> text</p>',
         publishedAt: '2024-01-01',
         seo: null,

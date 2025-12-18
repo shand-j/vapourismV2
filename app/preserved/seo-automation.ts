@@ -2,9 +2,46 @@
  * SEO Automation Service for Vapourism
  * Provides automated SEO optimization for products and content
  * Note: Collections are not used in this store - all navigation is tag-based
+ * 
+ * Enhanced with Dynamic Keyword Service for intelligent keyword optimization
  */
 
 import { KeywordOptimizer, generateKeywordVariations } from '~/lib/keyword-optimizer';
+import { 
+  DynamicKeywordService,
+  getProductKeywords,
+  getCategoryKeywords,
+  getBrandKeywords,
+  getSearchKeywords,
+  getContentKeywords,
+  getIntentKeywords,
+  getRelatedKeywords,
+  generateKeywordSnippet,
+  type PageContext,
+  type DynamicKeywordResult,
+  type PageType,
+  type SearchIntent,
+  INTENT_KEYWORD_CLUSTERS,
+  LSI_KEYWORD_CLUSTERS,
+  SEASONAL_KEYWORDS,
+} from '~/lib/dynamic-keywords';
+
+// Re-export dynamic keyword types and utilities for easy access
+export type { PageContext, DynamicKeywordResult, PageType, SearchIntent };
+export {
+  DynamicKeywordService,
+  getProductKeywords,
+  getCategoryKeywords,
+  getBrandKeywords,
+  getSearchKeywords,
+  getContentKeywords,
+  getIntentKeywords,
+  getRelatedKeywords,
+  generateKeywordSnippet,
+  INTENT_KEYWORD_CLUSTERS,
+  LSI_KEYWORD_CLUSTERS,
+  SEASONAL_KEYWORDS,
+};
 
 export interface ProductSEOData {
   title: string;
@@ -608,6 +645,120 @@ export class SEOAutomationService {
     }
     
     return optimized;
+  }
+
+  // ============================================================================
+  // Dynamic Keyword Integration - The SEO Cheatcode
+  // ============================================================================
+
+  /**
+   * Generate complete dynamic SEO data for a product page
+   * This is the "cheatcode" - provides all keywords, titles, and meta automatically
+   */
+  static getDynamicProductSEO(product: ProductSEOData): DynamicKeywordResult {
+    return getProductKeywords(
+      product.title,
+      product.vendor,
+      product.productType,
+      product.tags,
+      product.price
+    );
+  }
+
+  /**
+   * Generate complete dynamic SEO data for a category page
+   */
+  static getDynamicCategorySEO(
+    categoryName: string,
+    productCount?: number,
+    topBrands?: string[]
+  ): DynamicKeywordResult {
+    return getCategoryKeywords(categoryName, productCount, topBrands);
+  }
+
+  /**
+   * Generate complete dynamic SEO data for a brand page
+   */
+  static getDynamicBrandSEO(
+    brandName: string,
+    productCount?: number,
+    productTypes?: string[]
+  ): DynamicKeywordResult {
+    return getBrandKeywords(brandName, productCount, productTypes);
+  }
+
+  /**
+   * Generate complete dynamic SEO data for a search results page
+   */
+  static getDynamicSearchSEO(
+    query: string,
+    resultCount?: number
+  ): DynamicKeywordResult {
+    return getSearchKeywords(query, resultCount);
+  }
+
+  /**
+   * Generate complete dynamic SEO data for blog/guide content
+   */
+  static getDynamicContentSEO(
+    title: string,
+    pageType: 'blog' | 'guide' = 'blog',
+    tags?: string[]
+  ): DynamicKeywordResult {
+    return getContentKeywords(title, pageType, tags);
+  }
+
+  /**
+   * Get intent-based keywords for any page
+   */
+  static getIntentBasedKeywords(intent: SearchIntent): string[] {
+    return getIntentKeywords(intent);
+  }
+
+  /**
+   * Get LSI (related) keywords for better context
+   */
+  static getRelatedKeywordsFor(topic: string): string[] {
+    return getRelatedKeywords(topic);
+  }
+
+  /**
+   * Generate a keyword-rich snippet for any content
+   */
+  static generateKeywordRichSnippet(
+    topic: string,
+    intent: SearchIntent = 'commercial',
+    maxLength: number = 160
+  ): string {
+    return generateKeywordSnippet(topic, intent, maxLength);
+  }
+
+  /**
+   * Get the full Dynamic Keyword Service for advanced usage
+   */
+  static getDynamicKeywordService(): typeof DynamicKeywordService {
+    return DynamicKeywordService;
+  }
+
+  /**
+   * Get keyword clusters by intent for content planning
+   */
+  static getIntentKeywordClusters() {
+    return INTENT_KEYWORD_CLUSTERS;
+  }
+
+  /**
+   * Get LSI keyword clusters for semantic optimization
+   */
+  static getLSIKeywordClusters() {
+    return LSI_KEYWORD_CLUSTERS;
+  }
+
+  /**
+   * Get seasonal keywords for time-sensitive content
+   */
+  static getSeasonalKeywords() {
+    return SEASONAL_KEYWORDS;
   }
 }
 

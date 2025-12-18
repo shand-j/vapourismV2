@@ -552,9 +552,14 @@ export const meta = ({data, location}: {data: any; location: any}) => {
   }
   const vendor = url.searchParams.get('vendor');
   const tag = url.searchParams.get('tag');
+  const after = url.searchParams.get('after'); // pagination cursor
+  const sort = url.searchParams.get('sort');
+  // Check for additional filters that create duplicate content
+  const hasFilters = url.searchParams.has('price_min') || url.searchParams.has('price_max') || url.searchParams.has('availability');
   
   // Brand/vendor pages should be indexable (important for SEO)
-  const shouldIndex = !!vendor || selectedTags.length > 0;
+  // But NOT paginated results, filtered results (except by vendor/tag), or sorted results
+  const shouldIndex = (!!vendor || selectedTags.length > 0) && !after && !sort && !hasFilters;
   
   // Generate brand-specific title and description
   let title = '';

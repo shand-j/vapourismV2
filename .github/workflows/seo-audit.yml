@@ -37,7 +37,7 @@ jobs:
         run: npm ci
 
       - name: Run SEO compliance tests
-        run: npm test -- --reporter=verbose tests/unit/seo-compliance.test.ts tests/unit/seo-automation.test.ts
+        run: npx vitest run --reporter=verbose tests/unit/seo-compliance.test.ts tests/unit/seo-automation.test.ts
 
   lighthouse-audit:
     name: Lighthouse SEO Audit

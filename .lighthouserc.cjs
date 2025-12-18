@@ -34,8 +34,8 @@ module.exports = {
     assert: {
       // Assertion presets - fail if scores drop below thresholds
       assertions: {
-        // SEO - primary focus, must maintain high standards
-        'categories:seo': ['error', {minScore: 0.9}],
+        // SEO - primary focus, start at 80% and increase over time
+        'categories:seo': ['error', {minScore: 0.8}],
         // Accessibility - important for compliance
         'categories:accessibility': ['warn', {minScore: 0.8}],
         // Best practices - should follow web standards

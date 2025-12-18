@@ -16,7 +16,10 @@ import {
   generateKeywordSnippet,
   INTENT_KEYWORD_CLUSTERS,
   LSI_KEYWORD_CLUSTERS,
-  PageContext,
+  SEO_TITLE_MAX_LENGTH,
+  SEO_DESCRIPTION_MAX_LENGTH,
+  SEO_H1_MAX_LENGTH,
+  type PageContext,
 } from '../../app/lib/dynamic-keywords';
 
 describe('DynamicKeywordService', () => {
@@ -38,9 +41,9 @@ describe('DynamicKeywordService', () => {
       expect(result.primaryKeywords).toContain('vape');
       expect(result.primaryKeywords).toContain('uk');
       expect(result.title).toBeTruthy();
-      expect(result.title.length).toBeLessThanOrEqual(70);
-      expect(result.metaDescription.length).toBeLessThanOrEqual(155);
-      expect(result.h1.length).toBeLessThanOrEqual(60);
+      expect(result.title.length).toBeLessThanOrEqual(SEO_TITLE_MAX_LENGTH);
+      expect(result.metaDescription.length).toBeLessThanOrEqual(SEO_DESCRIPTION_MAX_LENGTH);
+      expect(result.h1.length).toBeLessThanOrEqual(SEO_H1_MAX_LENGTH);
     });
 
     it('should include price-based keywords for budget products', () => {
@@ -290,7 +293,7 @@ describe('DynamicKeywordService', () => {
 
       const result = DynamicKeywordService.generateKeywords(context);
 
-      expect(result.title.length).toBeLessThanOrEqual(70);
+      expect(result.title.length).toBeLessThanOrEqual(SEO_TITLE_MAX_LENGTH);
     });
 
     it('should include year for product pages', () => {
@@ -318,7 +321,7 @@ describe('DynamicKeywordService', () => {
 
       const result = DynamicKeywordService.generateKeywords(context);
 
-      expect(result.metaDescription.length).toBeLessThanOrEqual(155);
+      expect(result.metaDescription.length).toBeLessThanOrEqual(SEO_DESCRIPTION_MAX_LENGTH);
     });
 
     it('should include price for product pages when available', () => {
@@ -357,7 +360,7 @@ describe('DynamicKeywordService', () => {
 
       const result = DynamicKeywordService.generateKeywords(context);
 
-      expect(result.h1.length).toBeLessThanOrEqual(60);
+      expect(result.h1.length).toBeLessThanOrEqual(SEO_H1_MAX_LENGTH);
     });
 
     it('should include vendor for product pages when not duplicated', () => {

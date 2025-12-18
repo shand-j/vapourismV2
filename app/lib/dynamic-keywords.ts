@@ -13,6 +13,25 @@
 import { VAPING_KEYWORDS, KeywordOptimizer } from './keyword-optimizer';
 
 // ============================================================================
+// SEO Constants - Character limits based on Google/search engine best practices
+// ============================================================================
+
+/** Maximum characters for SEO-optimized page title */
+export const SEO_TITLE_MAX_LENGTH = 70;
+/** Characters to reserve for title truncation ellipsis */
+export const SEO_TITLE_TRUNCATION_RESERVE = 3;
+
+/** Maximum characters for meta description */
+export const SEO_DESCRIPTION_MAX_LENGTH = 155;
+/** Characters to reserve for description truncation ellipsis */
+export const SEO_DESCRIPTION_TRUNCATION_RESERVE = 3;
+
+/** Maximum characters for H1 heading (SEO recommendation) */
+export const SEO_H1_MAX_LENGTH = 60;
+/** Characters to reserve for H1 truncation ellipsis */
+export const SEO_H1_TRUNCATION_RESERVE = 3;
+
+// ============================================================================
 // Types & Interfaces
 // ============================================================================
 
@@ -491,9 +510,9 @@ export class DynamicKeywordService {
         break;
     }
     
-    // Ensure title is within SEO limits (70 chars)
-    if (title.length > 70) {
-      title = title.substring(0, 67) + '...';
+    // Ensure title is within SEO limits
+    if (title.length > SEO_TITLE_MAX_LENGTH) {
+      title = title.substring(0, SEO_TITLE_MAX_LENGTH - SEO_TITLE_TRUNCATION_RESERVE) + '...';
     }
     
     return title;
@@ -546,9 +565,9 @@ export class DynamicKeywordService {
         break;
     }
     
-    // Ensure description is within SEO limits (155 chars)
-    if (description.length > 155) {
-      description = description.substring(0, 152) + '...';
+    // Ensure description is within SEO limits
+    if (description.length > SEO_DESCRIPTION_MAX_LENGTH) {
+      description = description.substring(0, SEO_DESCRIPTION_MAX_LENGTH - SEO_DESCRIPTION_TRUNCATION_RESERVE) + '...';
     }
     
     return description;
@@ -602,9 +621,9 @@ export class DynamicKeywordService {
         break;
     }
     
-    // Ensure H1 is within SEO limits (60 chars)
-    if (h1.length > 60) {
-      h1 = h1.substring(0, 57) + '...';
+    // Ensure H1 is within SEO limits
+    if (h1.length > SEO_H1_MAX_LENGTH) {
+      h1 = h1.substring(0, SEO_H1_MAX_LENGTH - SEO_H1_TRUNCATION_RESERVE) + '...';
     }
     
     return h1;
@@ -666,28 +685,28 @@ export class DynamicKeywordService {
   private static getTitleTemplates(pageType: PageType): TitleTemplate[] {
     const templates: Record<PageType, TitleTemplate[]> = {
       product: [
-        { template: '{name} | {type} UK | Vapourism {year}', variables: ['name', 'type', 'year'], maxLength: 70 },
-        { template: 'Buy {name} | {brand} | Fast UK Delivery', variables: ['name', 'brand'], maxLength: 70 },
+        { template: '{name} | {type} UK | Vapourism {year}', variables: ['name', 'type', 'year'], maxLength: SEO_TITLE_MAX_LENGTH },
+        { template: 'Buy {name} | {brand} | Fast UK Delivery', variables: ['name', 'brand'], maxLength: SEO_TITLE_MAX_LENGTH },
       ],
       category: [
-        { template: '{category} ({count}+) | UK Vape Shop | Vapourism', variables: ['category', 'count'], maxLength: 70 },
-        { template: 'Shop {category} UK | Best {category} {year}', variables: ['category', 'year'], maxLength: 70 },
+        { template: '{category} ({count}+) | UK Vape Shop | Vapourism', variables: ['category', 'count'], maxLength: SEO_TITLE_MAX_LENGTH },
+        { template: 'Shop {category} UK | Best {category} {year}', variables: ['category', 'year'], maxLength: SEO_TITLE_MAX_LENGTH },
       ],
       search: [
-        { template: '{query} - Search | Vapourism UK', variables: ['query'], maxLength: 70 },
-        { template: 'Browse {count}+ Products | Vapourism', variables: ['count'], maxLength: 70 },
+        { template: '{query} - Search | Vapourism UK', variables: ['query'], maxLength: SEO_TITLE_MAX_LENGTH },
+        { template: 'Browse {count}+ Products | Vapourism', variables: ['count'], maxLength: SEO_TITLE_MAX_LENGTH },
       ],
       blog: [
-        { template: '{title} | Vaping Blog | Vapourism', variables: ['title'], maxLength: 70 },
+        { template: '{title} | Vaping Blog | Vapourism', variables: ['title'], maxLength: SEO_TITLE_MAX_LENGTH },
       ],
       landing: [
-        { template: 'Vape Shop UK | Premium Products | Vapourism {year}', variables: ['year'], maxLength: 70 },
+        { template: 'Vape Shop UK | Premium Products | Vapourism {year}', variables: ['year'], maxLength: SEO_TITLE_MAX_LENGTH },
       ],
       brand: [
-        { template: '{brand} UK | Official Stockist | Vapourism', variables: ['brand'], maxLength: 70 },
+        { template: '{brand} UK | Official Stockist | Vapourism', variables: ['brand'], maxLength: SEO_TITLE_MAX_LENGTH },
       ],
       guide: [
-        { template: '{title} | UK Vaping Guide | Vapourism', variables: ['title'], maxLength: 70 },
+        { template: '{title} | UK Vaping Guide | Vapourism', variables: ['title'], maxLength: SEO_TITLE_MAX_LENGTH },
       ],
     };
     

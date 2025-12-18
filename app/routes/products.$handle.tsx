@@ -819,7 +819,9 @@ export async function action({request, context}: ActionFunctionArgs) {
 }
 
 // SEO Meta Tags
-// Define product type based on the GraphQL query shape
+// Note: This interface defines the subset of product data needed by the meta function.
+// It matches the shape returned by the loader's PRODUCT_QUERY.
+// The storefrontapi.generated.d.ts doesn't export a ProductFragment for this query.
 interface ProductMetaData {
   product: {
     id: string;

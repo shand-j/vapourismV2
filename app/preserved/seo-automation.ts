@@ -345,12 +345,15 @@ export class SEOAutomationService {
    * @param imageIndex - Optional index for gallery images (1-based) to create unique, deterministic alt text
    */
   static generateImageAltText(product: ProductSEOData, context: 'main' | 'thumbnail' | 'gallery' = 'main', imageIndex?: number): string {
+    // Build gallery alt text based on whether index is provided
+    const galleryAlt = imageIndex 
+      ? `${product.title} product image ${imageIndex}` 
+      : `${product.title} by ${product.vendor} - product gallery`;
+    
     const contextMap = {
       main: `${product.title} by ${product.vendor} | Premium ${product.productType} | Vapourism UK`,
       thumbnail: `${product.title} - ${product.vendor} thumbnail`,
-      gallery: imageIndex 
-        ? `${product.title} product image ${imageIndex}` 
-        : `${product.title} by ${product.vendor} - product gallery`
+      gallery: galleryAlt,
     };
 
     return contextMap[context];

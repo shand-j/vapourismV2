@@ -58,14 +58,15 @@ Disallow: /*?*preview_theme_id*
 Disallow: /*?*currency=*
 Disallow: /*?*after=*
 Disallow: /*?*sort=*
-Disallow: /*?*tag=*
-Disallow: /*?*vendor=*
 Disallow: /*?*price_min=*
 Disallow: /*?*price_max=*
 Disallow: /*?*availability=*
 Disallow: /*?*type=*
 Disallow: /*?utm_*
 Disallow: /*?*utm_*
+
+# Note: vendor and tag params are allowed on /search for SEO-important brand pages
+# These are controlled via noindex meta tags in search.tsx instead
 
 # Allow crawling of products and pages
 Allow: /products/

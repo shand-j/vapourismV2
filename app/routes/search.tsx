@@ -554,7 +554,8 @@ export const meta = ({data, location}: {data: any; location: any}) => {
   const tag = url.searchParams.get('tag');
   const after = url.searchParams.get('after'); // pagination cursor
   const sort = url.searchParams.get('sort');
-  const hasFilters = url.searchParams.get('price_min') || url.searchParams.get('price_max') || url.searchParams.get('availability');
+  // Check for additional filters that create duplicate content
+  const hasFilters = url.searchParams.has('price_min') || url.searchParams.has('price_max') || url.searchParams.has('availability');
   
   // Brand/vendor pages should be indexable (important for SEO)
   // But NOT paginated results, filtered results (except by vendor/tag), or sorted results

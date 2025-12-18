@@ -207,3 +207,52 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--gradient-start);
 }
+
+/* Blog-specific styles */
+@layer utilities {
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* Improve blog article content readability */
+.article-content {
+  /* Better paragraph spacing for long-form content */
+  & > p + p {
+    margin-top: 1.5rem;
+  }
+  
+  /* Ensure images don't break layout */
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+  
+  /* Better list styling */
+  ul li, ol li {
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Code blocks */
+  pre {
+    overflow-x: auto;
+  }
+  
+  /* Tables */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}

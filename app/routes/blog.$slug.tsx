@@ -130,21 +130,28 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 function ArticleContent({contentHtml}: {contentHtml: string}) {
   return (
     <div 
-      className="article-content prose prose-slate max-w-none
+      className="article-content prose prose-lg prose-slate max-w-none
         prose-headings:font-bold prose-headings:text-slate-900
-        prose-h1:text-3xl prose-h1:mb-4 prose-h1:mt-8 first:prose-h1:mt-0
-        prose-h2:text-2xl prose-h2:mb-3 prose-h2:mt-6
-        prose-h3:text-xl prose-h3:mb-2 prose-h3:mt-4
-        prose-p:text-slate-700 prose-p:leading-relaxed prose-p:mb-4
-        prose-ul:list-disc prose-ul:list-inside prose-ul:mb-4 prose-ul:space-y-1 prose-ul:text-slate-700
-        prose-ol:list-decimal prose-ol:list-inside prose-ol:mb-4 prose-ol:space-y-1 prose-ol:text-slate-700
-        prose-li:text-slate-700
-        prose-a:text-violet-600 prose-a:hover:text-violet-700 prose-a:underline
+        prose-h1:text-4xl prose-h1:mb-6 prose-h1:mt-12 first:prose-h1:mt-0 prose-h1:leading-tight
+        prose-h2:text-3xl prose-h2:mb-5 prose-h2:mt-10 prose-h2:leading-tight
+        prose-h3:text-2xl prose-h3:mb-4 prose-h3:mt-8 prose-h3:leading-snug
+        prose-h4:text-xl prose-h4:mb-3 prose-h4:mt-6
+        prose-p:text-slate-700 prose-p:leading-[1.8] prose-p:mb-6 prose-p:text-[1.125rem]
+        prose-ul:list-disc prose-ul:ml-6 prose-ul:mb-6 prose-ul:space-y-2 prose-ul:text-slate-700
+        prose-ol:list-decimal prose-ol:ml-6 prose-ol:mb-6 prose-ol:space-y-2 prose-ol:text-slate-700
+        prose-li:text-slate-700 prose-li:leading-[1.8] prose-li:text-[1.125rem]
+        prose-a:text-violet-600 prose-a:hover:text-violet-700 prose-a:underline prose-a:decoration-2 prose-a:underline-offset-2
         prose-strong:text-slate-900 prose-strong:font-semibold
-        prose-em:italic
-        prose-img:rounded-lg prose-img:shadow-md prose-img:my-6
-        prose-blockquote:border-l-4 prose-blockquote:border-violet-600 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-slate-600
-        prose-hr:border-slate-300 prose-hr:my-8"
+        prose-em:italic prose-em:text-slate-600
+        prose-code:bg-slate-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:text-slate-800 prose-code:font-mono
+        prose-pre:bg-slate-900 prose-pre:text-slate-100 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto prose-pre:my-6
+        prose-img:rounded-xl prose-img:shadow-lg prose-img:my-8 prose-img:w-full prose-img:h-auto
+        prose-blockquote:border-l-4 prose-blockquote:border-violet-500 prose-blockquote:pl-6 prose-blockquote:pr-4 prose-blockquote:py-2 prose-blockquote:italic prose-blockquote:text-slate-600 prose-blockquote:bg-slate-50 prose-blockquote:rounded-r-lg prose-blockquote:my-6
+        prose-hr:border-slate-300 prose-hr:my-10
+        prose-table:border-collapse prose-table:w-full prose-table:my-6
+        prose-th:bg-slate-100 prose-th:p-3 prose-th:text-left prose-th:font-semibold prose-th:text-slate-900 prose-th:border prose-th:border-slate-300
+        prose-td:p-3 prose-td:border prose-td:border-slate-300 prose-td:text-slate-700
+        prose-video:rounded-xl prose-video:shadow-lg prose-video:my-8 prose-video:w-full"
       dangerouslySetInnerHTML={{__html: contentHtml}}
     />
   );
@@ -254,12 +261,12 @@ export default function BlogArticle() {
         </nav>
 
         {/* Article Header */}
-        <header className="mb-8 max-w-4xl mx-auto">
-          <div className="flex items-center gap-2 text-sm text-slate-600 mb-4">
-            <span className="bg-violet-100 text-violet-700 px-3 py-1 rounded-full">
+        <header className="mb-12 max-w-4xl mx-auto">
+          <div className="flex items-center gap-3 text-sm text-slate-600 mb-6">
+            <span className="bg-violet-100 text-violet-700 px-3 py-1.5 rounded-full font-medium">
               {category}
             </span>
-            <span>•</span>
+            <span className="text-slate-400">•</span>
             <time dateTime={article.publishedAt}>
               {new Date(article.publishedAt).toLocaleDateString('en-GB', {
                 year: 'numeric',
@@ -267,24 +274,34 @@ export default function BlogArticle() {
                 day: 'numeric',
               })}
             </time>
-            <span>•</span>
-            <span>By {article.authorV2?.name || 'Vapourism'}</span>
+            {article.authorV2?.name && (
+              <>
+                <span className="text-slate-400">•</span>
+                <span>By {article.authorV2.name}</span>
+              </>
+            )}
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 mb-6 leading-tight">
             {article.title}
           </h1>
           {article.excerpt && (
-            <p className="text-xl text-slate-600">{article.excerpt}</p>
+            <p className="text-xl md:text-2xl text-slate-600 leading-relaxed">{article.excerpt}</p>
           )}
         </header>
 
         {/* Featured Image */}
-        {article.image && (
-          <div className="mb-8 max-w-4xl mx-auto">
+        {article.image?.url && (
+          <div className="mb-12 max-w-4xl mx-auto">
             <img
               src={article.image.url}
               alt={article.image.altText || article.title}
-              className="w-full rounded-lg shadow-lg"
+              className="w-full rounded-xl shadow-2xl"
+              loading="eager"
+              onError={(e) => {
+                // Hide image if it fails to load
+                e.currentTarget.style.display = 'none';
+                console.error('Failed to load featured image:', article.image?.url);
+              }}
             />
           </div>
         )}

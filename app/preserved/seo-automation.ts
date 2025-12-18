@@ -340,12 +340,20 @@ export class SEOAutomationService {
 
   /**
    * Generate optimized alt text for images
+   * @param product - Product SEO data
+   * @param context - Image context: 'main' for primary image, 'thumbnail' for gallery thumbnails, 'gallery' for gallery images
+   * @param imageIndex - Optional index for gallery images (1-based) to create unique, deterministic alt text
    */
-  static generateImageAltText(product: ProductSEOData, context: 'main' | 'thumbnail' | 'gallery' = 'main'): string {
+  static generateImageAltText(product: ProductSEOData, context: 'main' | 'thumbnail' | 'gallery' = 'main', imageIndex?: number): string {
+    // Build gallery alt text based on whether index is provided
+    const galleryAlt = imageIndex 
+      ? `${product.title} product image ${imageIndex}` 
+      : `${product.title} by ${product.vendor} - product gallery`;
+    
     const contextMap = {
       main: `${product.title} by ${product.vendor} | Premium ${product.productType} | Vapourism UK`,
       thumbnail: `${product.title} - ${product.vendor} thumbnail`,
-      gallery: `${product.title} product image ${Math.floor(Math.random() * 5) + 1}`
+      gallery: galleryAlt,
     };
 
     return contextMap[context];
@@ -391,6 +399,59 @@ export class SEOAutomationService {
     }
     
     return truncated + '…';
+  }
+
+  /**
+   * H1 heading length constraints for SEO
+   * Google typically displays 50-60 characters in search results
+   */
+  private static readonly H1_MIN_LENGTH = 20;
+  private static readonly H1_MAX_LENGTH = 60;
+
+  /**
+   * Format product title for H1 tag to be more SEO-friendly
+   * Removes redundant vendor names and cleans up promotional text
+   * Ensures heading length is within SEO-recommended range (20-60 chars)
+   * @param title The raw product title
+   * @param vendor The vendor/brand name
+   * @returns SEO-optimized H1 heading string
+   */
+  static formatProductH1(title: string, vendor: string): string {
+    let formatted = title;
+    
+    // Remove "by [vendor]" pattern (case insensitive)
+    const escapedVendor = vendor.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const byVendorPattern = new RegExp(`\\s+by\\s+${escapedVendor}`, 'gi');
+    formatted = formatted.replace(byVendorPattern, '');
+    
+    // Clean up promotional text: (BUY 1 GET 1 FREE) -> Buy 1 Get 1 Free
+    formatted = formatted.replace(/\(BUY\s+(\d+)\s+GET\s+(\d+)\s+FREE\)/gi, '– Buy $1 Get $2 Free');
+    
+    // Only remove hyphens that are surrounded by spaces (not part of compound words like "E-liquid")
+    formatted = formatted.replace(/\s+-\s+/g, ' ');
+    
+    // Clean up multiple spaces
+    formatted = formatted.replace(/\s+/g, ' ').trim();
+    
+    // Handle heading length for SEO compliance
+    if (formatted.length > this.H1_MAX_LENGTH) {
+      // Truncate at word boundary, append ellipsis
+      const truncated = formatted.substring(0, this.H1_MAX_LENGTH - 1);
+      const lastSpace = truncated.lastIndexOf(' ');
+      if (lastSpace > this.H1_MAX_LENGTH - 15) {
+        formatted = truncated.substring(0, lastSpace) + '…';
+      } else {
+        formatted = truncated + '…';
+      }
+    } else if (formatted.length < this.H1_MIN_LENGTH && vendor) {
+      // If too short, add vendor name for context
+      const withVendor = `${formatted} by ${vendor}`;
+      if (withVendor.length <= this.H1_MAX_LENGTH) {
+        formatted = withVendor;
+      }
+    }
+    
+    return formatted;
   }
 
   /**

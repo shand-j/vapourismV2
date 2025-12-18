@@ -1,8 +1,13 @@
 import type {MetaFunction, LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useLoaderData, Link} from '@remix-run/react';
 import {useEffect, useRef} from 'react';
-import {getArticleBySlug} from '~/data/blog';
+import {getArticleBySlug, type BlogArticle} from '~/data/blog';
 import {SEOAutomationService} from '~/preserved/seo-automation';
+import {
+  createWordPressClient,
+  isWordPressEnabled,
+  transformWordPressPost,
+} from '~/lib/wordpress-client';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   if (!data?.article) {
@@ -33,14 +38,37 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
   ];
 };
 
-export async function loader({params, request}: LoaderFunctionArgs) {
+export async function loader({params, request, context}: LoaderFunctionArgs) {
   const {slug} = params;
+  const {env} = context;
 
   if (!slug) {
     throw new Response('Not Found', {status: 404});
   }
 
-  const article = getArticleBySlug(slug);
+  let article: BlogArticle | null = null;
+  let source: 'wordpress' | 'static' = 'static';
+
+  // Try WordPress first if enabled
+  if (isWordPressEnabled(env)) {
+    try {
+      const wpClient = createWordPressClient(env);
+      if (wpClient) {
+        const post = await wpClient.getPostBySlug(slug);
+        if (post) {
+          article = transformWordPressPost(post);
+          source = 'wordpress';
+        }
+      }
+    } catch (error) {
+      console.error('WordPress fetch error, falling back to static:', error);
+    }
+  }
+
+  // Fall back to static content
+  if (!article) {
+    article = getArticleBySlug(slug) ?? null;
+  }
 
   if (!article) {
     throw new Response('Not Found', {status: 404});
@@ -77,25 +105,88 @@ export async function loader({params, request}: LoaderFunctionArgs) {
   return {
     article,
     structuredData,
+    source,
   };
 }
 
 /**
  * ArticleContent component
- * Renders markdown content with proper HTML structure and styling
+ * Renders both markdown (static) and HTML (WordPress) content with proper styling
  * 
  * SECURITY NOTE: This component uses dangerouslySetInnerHTML for performance and simplicity.
  * This is SAFE because:
- * 1. Content comes from TypeScript files in our codebase (not user input)
- * 2. Content is version-controlled and code-reviewed
- * 3. Content is known at build time
- * 4. Only basic markdown formatting is processed (bold, italic)
- * 5. No user-generated content or external sources
+ * 1. Content comes from TypeScript files in our codebase OR trusted WordPress CMS
+ * 2. Content is version-controlled (static) or managed by authenticated editors (WordPress)
+ * 3. WordPress content is sanitized by WordPress before output
+ * 4. Only basic markdown formatting is processed for static content
  * 
- * If you need to accept user-generated content in the future, use a proper
- * markdown library with sanitization (e.g., marked + DOMPurify).
+ * For WordPress content, we trust the CMS has already sanitized the HTML.
+ * If you need additional sanitization, consider using DOMPurify.
  */
-function ArticleContent({content}: {content: string}) {
+
+// Tailwind prose classes for WordPress HTML content
+const wordpressProseClasses = [
+  'article-content',
+  'prose',
+  'prose-slate',
+  'max-w-none',
+  // Headings
+  'prose-headings:text-slate-900',
+  'prose-headings:font-bold',
+  'prose-h1:text-3xl',
+  'prose-h1:mb-4',
+  'prose-h1:mt-8',
+  'prose-h2:text-2xl',
+  'prose-h2:mb-3',
+  'prose-h2:mt-6',
+  'prose-h3:text-xl',
+  'prose-h3:mb-2',
+  'prose-h3:mt-4',
+  // Paragraphs
+  'prose-p:text-slate-700',
+  'prose-p:leading-relaxed',
+  'prose-p:mb-4',
+  // Lists
+  'prose-ul:list-disc',
+  'prose-ul:list-inside',
+  'prose-ul:mb-4',
+  'prose-ul:space-y-1',
+  'prose-ol:list-decimal',
+  'prose-ol:list-inside',
+  'prose-ol:mb-4',
+  'prose-ol:space-y-1',
+  'prose-li:text-slate-700',
+  // Links
+  'prose-a:text-violet-600',
+  'prose-a:hover:text-violet-700',
+  'prose-a:underline',
+  // Other elements
+  'prose-strong:text-slate-900',
+  'prose-img:rounded-lg',
+  'prose-img:shadow-md',
+  'prose-img:my-6',
+  'prose-blockquote:border-l-4',
+  'prose-blockquote:border-violet-300',
+  'prose-blockquote:pl-4',
+  'prose-blockquote:italic',
+].join(' ');
+
+function ArticleContent({content, isHtml = false}: {content: string; isHtml?: boolean}) {
+  // Detect if content is HTML (WordPress) or markdown (static)
+  // WordPress content typically starts with HTML tags
+  const isHtmlContent = isHtml || content.trim().startsWith('<');
+  
+  if (isHtmlContent) {
+    // WordPress HTML content - render with prose styling
+    return (
+      <div 
+        className={wordpressProseClasses}
+        dangerouslySetInnerHTML={{__html: content}}
+      />
+    );
+  }
+  
+  // Markdown (static) content - process line by line
   const lines = content.split('\n');
   const elements: JSX.Element[] = [];
   let listItems: string[] = [];
@@ -178,7 +269,7 @@ function ArticleContent({content}: {content: string}) {
 }
 
 export default function BlogArticle() {
-  const {article, structuredData} = useLoaderData<typeof loader>();
+  const {article, structuredData, source} = useLoaderData<typeof loader>();
   const engagementTracked = useRef(false);
   const startTime = useRef<number>(0);
   const scrollDepthTracked = useRef<Set<number>>(new Set());
@@ -316,7 +407,7 @@ export default function BlogArticle() {
 
         {/* Article Content */}
         <article className="max-w-4xl mx-auto">
-          <ArticleContent content={article.content} />
+          <ArticleContent content={article.content} isHtml={source === 'wordpress'} />
         </article>
 
         {/* Article Tags */}

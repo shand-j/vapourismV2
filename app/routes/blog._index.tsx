@@ -1,6 +1,11 @@
 import type {MetaFunction, LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Link, useLoaderData} from '@remix-run/react';
 import {getAllArticles, type BlogArticle} from '~/data/blog';
+import {
+  createWordPressClient,
+  isWordPressEnabled,
+  transformWordPressPost,
+} from '~/lib/wordpress-client';
 
 export const meta: MetaFunction = () => {
   const title = 'Blog | Vapourism - Vaping Guides & Education';
@@ -27,11 +32,34 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export async function loader({}: LoaderFunctionArgs) {
+export async function loader({context}: LoaderFunctionArgs) {
+  const {env} = context;
+  
+  // Check if WordPress integration is enabled
+  if (isWordPressEnabled(env)) {
+    try {
+      const wpClient = createWordPressClient(env);
+      if (wpClient) {
+        const {posts} = await wpClient.getPosts({perPage: 20});
+        const articles = posts.map(transformWordPressPost);
+        
+        return {
+          articles,
+          source: 'wordpress' as const,
+        };
+      }
+    } catch (error) {
+      console.error('WordPress fetch error, falling back to static:', error);
+      // Fall through to static articles
+    }
+  }
+  
+  // Fallback to static TypeScript articles
   const articles = getAllArticles();
   
   return {
     articles,
+    source: 'static' as const,
   };
 }
 

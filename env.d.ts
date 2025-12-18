@@ -40,6 +40,12 @@ declare global {
     AGE_VERIF_METAFIELD_KEY?: string;
     // Analytics
     GA4_MEASUREMENT_ID?: string;
+    // WordPress Blog Integration
+    WORDPRESS_ENABLED?: string;
+    WORDPRESS_API_URL?: string;
+    WORDPRESS_AUTH_TOKEN?: string;
+    WORDPRESS_CACHE_TTL?: string;
+    WORDPRESS_PREVIEW_MODE?: string;
   }
 }
 

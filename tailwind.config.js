@@ -106,5 +106,8 @@ export default {
       },
     },
   },
-  plugins: [import('tailwindcss-animate').then((mod) => mod.default ?? mod)],
+  plugins: [
+    import('tailwindcss-animate').then((mod) => mod.default ?? mod),
+    import('@tailwindcss/typography').then((mod) => mod.default ?? mod),
+  ],
 };

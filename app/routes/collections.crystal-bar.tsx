@@ -10,7 +10,7 @@ import {json, type LoaderFunctionArgs, type MetaFunction} from '@shopify/remix-o
 import {useLoaderData, Link} from '@remix-run/react';
 import {searchProducts} from '~/lib/shopify-search';
 import {useCollectionTracking} from '~/lib/hooks/useCollectionTracking';
-import {generateCollectionPageSchema, generateItemListSchema, generateBreadcrumbSchema, structuredDataScript, type ItemListProduct} from '~/lib/structured-data';
+import {generateCollectionPageSchema, generateItemListSchema, generateBreadcrumbSchema, structuredDataScript, SITE_URL, type ItemListProduct} from '~/lib/structured-data';
 
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
@@ -203,13 +203,13 @@ export default function CrystalBarCollection() {
       <script {...structuredDataScript(generateCollectionPageSchema({
         name: 'Crystal Bar | Premium Disposable Vapes UK',
         description: 'Experience crystal-clear flavor with the Crystal Bar range of premium disposable vapes. Smooth vapor production and exceptional taste in every puff.',
-        url: 'https://www.vapourism.co.uk/collections/crystal-bar',
+        url: `${SITE_URL}/collections/crystal-bar`,
         numberOfItems: totalCount,
       }))} />
       <script {...structuredDataScript(generateBreadcrumbSchema([
-        { name: 'Home', url: 'https://www.vapourism.co.uk' },
-        { name: 'Collections', url: 'https://www.vapourism.co.uk/search' },
-        { name: 'Crystal Bar', url: 'https://www.vapourism.co.uk/collections/crystal-bar' },
+        { name: 'Home', url: SITE_URL },
+        { name: 'Collections', url: `${SITE_URL}/search` },
+        { name: 'Crystal Bar', url: `${SITE_URL}/collections/crystal-bar` },
       ]))} />
       {products.length > 0 && (
         <script {...structuredDataScript(generateItemListSchema({
@@ -217,7 +217,7 @@ export default function CrystalBarCollection() {
           description: 'Premium Crystal Bar disposable vapes available at Vapourism',
           items: products.slice(0, 10).map((product): ItemListProduct => ({
             name: product.title,
-            url: `https://www.vapourism.co.uk/products/${product.handle}`,
+            url: `${SITE_URL}/products/${product.handle}`,
             image: product.featuredImage?.url,
             description: product.title,
             price: product.priceRange?.minVariantPrice.amount,

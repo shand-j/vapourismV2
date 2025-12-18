@@ -11,7 +11,7 @@ import {useLoaderData, Link} from '@remix-run/react';
 import {SEOAutomationService} from '~/preserved/seo-automation';
 import {searchProducts} from '~/lib/shopify-search';
 import {useCollectionTracking} from '~/lib/hooks/useCollectionTracking';
-import {generateCollectionPageSchema, generateBreadcrumbSchema, structuredDataScript} from '~/lib/structured-data';
+import {generateCollectionPageSchema, generateBreadcrumbSchema, structuredDataScript, SITE_URL} from '~/lib/structured-data';
 
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
@@ -237,13 +237,13 @@ export default function HayatiProMaxCollection() {
       <script {...structuredDataScript(generateCollectionPageSchema({
         name: 'Hayati Pro Max E-Liquids | Premium Vape Juice UK',
         description: 'Shop the complete Hayati Pro Max e-liquid range. Premium formulations with authentic flavors and smooth nicotine salt delivery.',
-        url: 'https://www.vapourism.co.uk/collections/hayati-pro-max',
+        url: `${SITE_URL}/collections/hayati-pro-max`,
         numberOfItems: totalCount,
       }))} />
       <script {...structuredDataScript(generateBreadcrumbSchema([
-        { name: 'Home', url: 'https://www.vapourism.co.uk' },
-        { name: 'Collections', url: 'https://www.vapourism.co.uk/search' },
-        { name: 'Hayati Pro Max', url: 'https://www.vapourism.co.uk/collections/hayati-pro-max' },
+        { name: 'Home', url: SITE_URL },
+        { name: 'Collections', url: `${SITE_URL}/search` },
+        { name: 'Hayati Pro Max', url: `${SITE_URL}/collections/hayati-pro-max` },
       ]))} />
     </div>
   );

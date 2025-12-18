@@ -3,6 +3,19 @@
  * Extracts JSON-LD schema generation to reduce inline script bloat in components
  */
 
+/**
+ * Site-wide constants for structured data
+ */
+export const SITE_URL = 'https://www.vapourism.co.uk';
+export const SITE_NAME = 'Vapourism';
+export const SITE_LOGO = `${SITE_URL}/logo.png`;
+export const SITE_EMAIL = 'hello@vapourism.co.uk';
+export const SOCIAL_LINKS = [
+  'https://twitter.com/vapourismuk',
+  'https://www.facebook.com/vapourism',
+  'https://www.instagram.com/vapourismuk',
+];
+
 export interface OrganizationSchemaParams {
   name: string;
   url: string;
@@ -227,6 +240,8 @@ export function generateCollectionPageSchema(params: {
     url: params.url,
     mainEntity: {
       '@type': 'ItemList',
+      name: params.name,
+      description: params.description,
       numberOfItems: params.numberOfItems,
     },
   };

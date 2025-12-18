@@ -9,6 +9,14 @@ import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
  * Standard: https://llmstxt.org/
  */
 
+/** Cache duration of 24 hours in seconds */
+const CACHE_DURATION_24_HOURS = 24 * 60 * 60;
+
+/** Format date as ISO string (YYYY-MM-DD) */
+function formatISODate(date: Date): string {
+  return date.toLocaleDateString('en-CA');
+}
+
 export async function loader({request}: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const baseUrl = url.origin;
@@ -299,7 +307,7 @@ For any questions not covered here:
 
 ---
 
-*Last updated: ${new Date().toISOString().split('T')[0]}*
+*Last updated: ${formatISODate(new Date())}*
 *For standard llms.txt, see: ${baseUrl}/llms.txt*
 `;
 
@@ -307,7 +315,7 @@ For any questions not covered here:
     status: 200,
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
-      'Cache-Control': 'public, max-age=86400', // Cache for 24 hours
+      'Cache-Control': `public, max-age=${CACHE_DURATION_24_HOURS}`,
     },
   });
 }

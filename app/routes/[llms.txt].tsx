@@ -9,6 +9,9 @@ import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
  * Standard: https://llmstxt.org/
  */
 
+/** Cache duration of 24 hours in seconds */
+const CACHE_DURATION_24_HOURS = 24 * 60 * 60;
+
 export async function loader({request}: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const baseUrl = url.origin;
@@ -97,7 +100,7 @@ For more detailed information about our products, services, and technical specif
     status: 200,
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
-      'Cache-Control': 'public, max-age=86400', // Cache for 24 hours
+      'Cache-Control': `public, max-age=${CACHE_DURATION_24_HOURS}`,
     },
   });
 }

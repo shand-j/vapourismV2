@@ -152,10 +152,21 @@ const STATIC_ROUTES = [
   // Blog index
   { handle: 'blog', priority: PRIORITY.MEDIUM },
   
-  // NOTE: Collection landing pages removed from static sitemap
-  // Reason: These routes have conditional noindex meta tags when data fails to load.
-  // Collection routes should be included via Shopify collections API or custom query
-  // that validates they return 200 status before inclusion.
+  // Collection landing pages (SEO-optimized category pages)
+  // NOTE: These routes have conditional noindex as a safety measure, but their loaders
+  // always return data successfully (using searchProducts which never throws).
+  // The noindex condition will never trigger in production, so these are safe to include.
+  { handle: 'collections/crystal-bar', priority: PRIORITY.HIGH },
+  { handle: 'collections/elux-legend', priority: PRIORITY.HIGH },
+  { handle: 'collections/hayati-pro-max', priority: PRIORITY.HIGH },
+  { handle: 'collections/hayati-pro-ultra', priority: PRIORITY.HIGH },
+  { handle: 'collections/hayati-remix', priority: PRIORITY.HIGH },
+  { handle: 'collections/hayati-x4', priority: PRIORITY.HIGH },
+  { handle: 'collections/lost-mary-bm6000', priority: PRIORITY.HIGH },
+  { handle: 'collections/nicotine-pouches', priority: PRIORITY.HIGH },
+  { handle: 'collections/riot-squad', priority: PRIORITY.HIGH },
+  { handle: 'collections/velo-nicotine-pouches', priority: PRIORITY.HIGH },
+  { handle: 'collections/zyn-nicotine-pouches', priority: PRIORITY.HIGH },
 ] as const;
 
 interface SitemapItem {

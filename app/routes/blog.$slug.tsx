@@ -150,9 +150,13 @@ function ArticleContent({content, inlineImages}: {content: string; inlineImages?
               alt={image.alt}
               className="w-full rounded-lg shadow-md"
               loading="lazy"
+              aria-describedby={image.caption ? `caption-${imageId}` : undefined}
             />
             {image.caption && (
-              <figcaption className="mt-2 text-sm text-slate-500 text-center italic">
+              <figcaption 
+                id={`caption-${imageId}`}
+                className="mt-2 text-sm text-slate-500 text-center italic"
+              >
                 {image.caption}
               </figcaption>
             )}

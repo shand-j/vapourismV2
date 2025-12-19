@@ -64,6 +64,21 @@ export default {
 
       const response = await handleRequest(request);
 
+      // Add performance optimizations based on content type and path
+      const pathname = normalizedUrl.pathname;
+      
+      // Cache static assets aggressively
+      if (pathname.match(/\.(js|css|woff|woff2|ttf|eot|ico|png|jpg|jpeg|gif|svg|webp)$/)) {
+        response.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+      }
+      // Cache HTML pages briefly to improve repeat visits without stale content
+      else if (response.headers.get('Content-Type')?.includes('text/html')) {
+        // Don't cache user-specific pages (cart, account, checkout)
+        if (!pathname.match(/\/(cart|account|checkout|age-verification)/)) {
+          response.headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
+        }
+      }
+
       // Set CSP for AgeVerif routes (/age-verification and subpaths).
       // Keep policy strict in production — do not add 'unsafe-inline'.
       // Note: If we reach this point, the URL is already normalized (otherwise we'd have redirected above)

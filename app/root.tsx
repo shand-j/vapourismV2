@@ -91,8 +91,10 @@ export async function loader({context}: LoaderFunctionArgs) {
 
   if (storefront) {
     const result = await Promise.all([
-      // SHOP_INFO_QUERY may fail when storefront is unavailable; only call when present
-      storefront.query(SHOP_INFO_QUERY),
+      // Cache shop info aggressively - it rarely changes (1 hour cache)
+      storefront.query(SHOP_INFO_QUERY, {
+        cache: storefront.CacheLong(),
+      }),
       hydrogenCart.get(),
     ]);
 
@@ -107,10 +109,8 @@ export async function loader({context}: LoaderFunctionArgs) {
       PRODUCTION_DOMAIN: env?.PRODUCTION_DOMAIN,
       USE_SHOPIFY_SEARCH: env.USE_SHOPIFY_SEARCH,
       SHOPIFY_SEARCH_ROLLOUT: env.SHOPIFY_SEARCH_ROLLOUT,
-      // Expose AgeVerif public keys to the client via window.ENV
-      AGEVERIF_PUBLIC_KEY: env?.['AGEVERIF_PUBLIC_KEY'] || env?.['PUBLIC_AGEVERIF_KEY'],
+      // Consolidate AgeVerif keys - only expose one to reduce payload
       PUBLIC_AGEVERIF_KEY: env?.['PUBLIC_AGEVERIF_KEY'] || env?.['AGEVERIF_PUBLIC_KEY'],
-      // GA4 Measurement ID for analytics
       GA4_MEASUREMENT_ID: env?.GA4_MEASUREMENT_ID,
     },
     cart: cart ?? null,
@@ -159,44 +159,26 @@ export default function App() {
         <Meta />
         <Links />
         
-        {/* Organization Schema for SEO */}
+        {/* Organization Schema for SEO - minified for performance */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              "name": "Vapourism",
-              "url": siteUrl,
-              "logo": `${siteUrl}/logo.png`,
-              "description": data.shop?.description || "Premium UK vape shop offering authentic vaping products, e-liquids, and accessories with fast delivery",
-              "address": {
-                "@type": "PostalAddress",
-                "addressCountry": "GB"
-              },
-              "contactPoint": {
-                "@type": "ContactPoint",
-                "contactType": "Customer Service",
-                "email": "hello@vapourism.co.uk",
-                "areaServed": "GB",
-                "availableLanguage": "English"
-              },
-              "sameAs": [
-                "https://twitter.com/vapourismuk"
-              ]
-            })
+            __html: JSON.stringify({"@context":"https://schema.org","@type":"Organization","name":"Vapourism","url":siteUrl,"logo":`${siteUrl}/logo.png`,"description":data.shop?.description||"Premium UK vape shop offering authentic vaping products, e-liquids, and accessories with fast delivery","address":{"@type":"PostalAddress","addressCountry":"GB"},"contactPoint":{"@type":"ContactPoint","contactType":"Customer Service","email":"hello@vapourism.co.uk","areaServed":"GB","availableLanguage":"English"},"sameAs":["https://twitter.com/vapourismuk"]})
           }}
         />
         
         {/* Google Analytics 4 */}
         {ga4MeasurementId && <GoogleAnalytics measurementId={ga4MeasurementId} />}
         
-        {/* SearchAtlas OTTO Pixel - SEO optimization */}
+        {/* SearchAtlas OTTO Pixel - SEO optimization - loaded async to not block HTML parsing */}
         <script
-          type="text/javascript"
-          id="sa-dynamic-optimization"
+          async
+          defer
+          id="sa-dynamic-optimization-loader"
           data-uuid="d709ea19-b642-442c-ab07-012003668401"
-          src="data:text/javascript;base64,dmFyIHNjcmlwdCA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoInNjcmlwdCIpO3NjcmlwdC5zZXRBdHRyaWJ1dGUoIm5vd3Byb2NrZXQiLCAiIik7c2NyaXB0LnNldEF0dHJpYnV0ZSgibml0cm8tZXhjbHVkZSIsICIiKTtzY3JpcHQuc3JjID0gImh0dHBzOi8vZGFzaGJvYXJkLnNlYXJjaGF0bGFzLmNvbS9zY3JpcHRzL2R5bmFtaWNfb3B0aW1pemF0aW9uLmpzIjtzY3JpcHQuZGF0YXNldC51dWlkID0gImQ3MDllYTE5LWI2NDItNDQyYy1hYjA3LTAxMjAwMzY2ODQwMSI7c2NyaXB0LmlkID0gInNhLWR5bmFtaWMtb3B0aW1pemF0aW9uLWxvYWRlciI7ZG9jdW1lbnQuaGVhZC5hcHBlbmRDaGlsZChzY3JpcHQpOw=="
+          data-nowprocket=""
+          data-nitro-exclude=""
+          src="https://dashboard.searchatlas.com/scripts/dynamic_optimization.js"
         />
       </head>
       <body className="bg-white text-slate-900 antialiased">

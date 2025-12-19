@@ -144,13 +144,28 @@ export default async function handleRequest(
   if (/connect-src/.test(effectiveHeader)) {
     effectiveHeader = effectiveHeader.replace(/connect-src([^;]*)/, (match, v = '') => {
       let existing = v;
-      // Allow connections to Google Analytics and Tag Manager
+      // Allow connections to Google Analytics and Tag Manager (including regional endpoints)
       if (!existing.includes('https://www.google-analytics.com')) existing += ' https://www.google-analytics.com';
+      // Wildcard for regional GA endpoints (region1, region2, etc.)
+      if (!existing.includes('https://*.google-analytics.com')) existing += ' https://*.google-analytics.com';
       if (!existing.includes('https://www.googletagmanager.com')) existing += ' https://www.googletagmanager.com';
       if (!existing.includes('https://analytics.google.com')) existing += ' https://analytics.google.com';
       // SearchAtlas connections (if re-enabling)
       if (!existing.includes('https://dashboard.searchatlas.com')) existing += ' https://dashboard.searchatlas.com';
+      // Shopify analytics endpoint
+      if (!existing.includes('https://monorail-edge.shopifysvc.com')) existing += ' https://monorail-edge.shopifysvc.com';
       return `connect-src${existing}`;
+    });
+  }
+
+  // Allow GA tracking pixels in img-src
+  if (/img-src/.test(effectiveHeader)) {
+    effectiveHeader = effectiveHeader.replace(/img-src([^;]*)/, (match, v = '') => {
+      let existing = v;
+      if (!existing.includes('https://www.google-analytics.com')) existing += ' https://www.google-analytics.com';
+      if (!existing.includes('https://*.google-analytics.com')) existing += ' https://*.google-analytics.com';
+      if (!existing.includes('https://www.googletagmanager.com')) existing += ' https://www.googletagmanager.com';
+      return `img-src${existing}`;
     });
   }
 

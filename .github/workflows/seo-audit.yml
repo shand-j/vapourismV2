@@ -20,8 +20,13 @@ on:
         description: 'Maximum crawl depth (1-5)'
         required: false
         default: '2'
-        type: string
-
+        type: choice
+        options:
+          - '1'
+          - '2'
+          - '3'
+          - '4'
+          - '5'
 concurrency:
   group: seo-audit-${{ github.ref }}
   cancel-in-progress: true

@@ -22,7 +22,8 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
     "seo:audit": "lhci autorun --config=.lighthouserc.cjs",
-    "seo:audit:local": "lhci collect --config=.lighthouserc.cjs"
+    "seo:audit:local": "lhci collect --config=.lighthouserc.cjs",
+    "seo:crawl": "lighthouse-parade"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -64,6 +65,7 @@
     "@eslint/js": "^9.18.0",
     "@graphql-codegen/cli": "5.0.2",
     "@lhci/cli": "^0.15.1",
+    "lighthouse-parade": "^3.1.0",
     "@playwright/test": "^1.56.1",
     "@remix-run/dev": "^2.16.1",
     "@remix-run/fs-routes": "^2.16.1",

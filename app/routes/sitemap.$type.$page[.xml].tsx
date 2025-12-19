@@ -77,23 +77,35 @@ const EXCLUDED_ROUTES = new Set([
   // Redirect routes (301/302 status codes)
   'help',                    // Redirects to /faq (301)
   'track-order',             // Redirects to external Shopify domain (301)
+  'track',                   // Alternative handle for track-order
   
   // Age verification routes (noindex, nofollow)
   'age-verification',        // Age verification flow
   'age-verification-fail',   // Age verification failure
   'age-verification-retry',  // Age verification retry
   'age-verification-success',// Age verification success
+  'age-verify',              // Alternative handle
   
   // Account/Auth routes (noindex, require auth)
   'account',                 // Account portal
   'account-login',           // Login page
   'account-authorize',       // OAuth authorize
   'account-orders',          // Order history (requires auth)
+  'login',                   // Alternative handle for login
+  'register',                // Registration page
+  'signup',                  // Alternative handle for signup
   
   // Utility/Search routes (dynamic content, not canonical)
   'search',                  // Search results page (dynamic)
   'device-studio-results',   // Device recommendation results
   'flavour-lab-results',     // Flavor recommendation results
+  
+  // Cart and checkout (handled by Shopify)
+  'cart',                    // Cart page (Remix-handled but dynamic)
+  'checkout',                // Checkout (Shopify-hosted)
+  
+  // API and utility routes
+  'api',                     // API routes
 ]);
 
 /**
@@ -109,6 +121,15 @@ const PRIORITY = {
 /**
  * Static Remix routes that should be included in the sitemap
  * These are routes that don't come from Shopify Pages but should be indexed
+ * 
+ * IMPORTANT: Only include routes that:
+ * 1. Always return 200 status (no redirects)
+ * 2. Never have noindex meta tags
+ * 3. Have stable, canonical URLs
+ * 4. Don't require authentication
+ * 
+ * Collection routes are excluded because they have conditional noindex
+ * when data fails to load, which violates SEMrush audit requirements.
  */
 const STATIC_ROUTES = [
   // Core information pages
@@ -131,18 +152,10 @@ const STATIC_ROUTES = [
   // Blog index
   { handle: 'blog', priority: PRIORITY.MEDIUM },
   
-  // Collection landing pages (SEO-optimized category pages)
-  { handle: 'collections/crystal-bar', priority: PRIORITY.HIGH },
-  { handle: 'collections/elux-legend', priority: PRIORITY.HIGH },
-  { handle: 'collections/hayati-pro-max', priority: PRIORITY.HIGH },
-  { handle: 'collections/hayati-pro-ultra', priority: PRIORITY.HIGH },
-  { handle: 'collections/hayati-remix', priority: PRIORITY.HIGH },
-  { handle: 'collections/hayati-x4', priority: PRIORITY.HIGH },
-  { handle: 'collections/lost-mary-bm6000', priority: PRIORITY.HIGH },
-  { handle: 'collections/nicotine-pouches', priority: PRIORITY.HIGH },
-  { handle: 'collections/riot-squad', priority: PRIORITY.HIGH },
-  { handle: 'collections/velo-nicotine-pouches', priority: PRIORITY.HIGH },
-  { handle: 'collections/zyn-nicotine-pouches', priority: PRIORITY.HIGH },
+  // NOTE: Collection landing pages removed from static sitemap
+  // Reason: These routes have conditional noindex meta tags when data fails to load.
+  // Collection routes should be included via Shopify collections API or custom query
+  // that validates they return 200 status before inclusion.
 ] as const;
 
 interface SitemapItem {

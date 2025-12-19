@@ -421,7 +421,7 @@ export default function ProductPage() {
   const productImages = [
     product.featuredImage?.url,
     ...product.images.edges.slice(0, 4).map(({node}: {node: {url: string}}) => node.url)
-  ].filter(Boolean);
+  ].filter((url): url is string => Boolean(url));
   
   // Calculate priceValidUntil (30 days from now for price validity)
   const priceValidUntil = new Date();
@@ -429,7 +429,11 @@ export default function ProductPage() {
   
   // Get GTIN (barcode) from selected variant if available
   const barcode = selectedVariant?.barcode;
-  const variantSku = selectedVariant?.sku;
+  
+  // Generate SKU: prefer Shopify SKU, fallback to variant ID, then product ID
+  const productSku = selectedVariant?.sku 
+    || selectedVariant?.id?.replace('gid://shopify/ProductVariant/', '') 
+    || product.id.replace('gid://shopify/Product/', '');
   
   const productSchema = {
     '@context': 'https://schema.org',
@@ -441,7 +445,7 @@ export default function ProductPage() {
       '@type': 'Brand',
       name: product.vendor,
     },
-    sku: variantSku || selectedVariant?.id?.replace('gid://shopify/ProductVariant/', '') || product.id.replace('gid://shopify/Product/', ''),
+    sku: productSku,
     // Include GTIN if available (helps with Google Shopping)
     ...(barcode && { gtin: barcode }),
     offers: {

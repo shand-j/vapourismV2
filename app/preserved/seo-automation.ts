@@ -492,6 +492,17 @@ export class SEOAutomationService {
   }
 
   /**
+   * Word boundary threshold for smart truncation
+   * When truncating, we try to break at word boundaries within this distance from the max length
+   */
+  private static readonly WORD_BOUNDARY_THRESHOLD = 15;
+  
+  /**
+   * Minimum available length for title content when preserving specs
+   */
+  private static readonly MIN_TITLE_LENGTH = 10;
+
+  /**
    * Extract unique identifying specs from product title (strength, volume, etc.)
    * These specs help differentiate similar products and should be preserved in titles
    * @param title The product title to extract specs from
@@ -508,8 +519,8 @@ export class SEOAutomationService {
     const volumeMatch = title.match(/\b(\d+)\s*ml\b/i);
     if (volumeMatch) specs.push(volumeMatch[1] + 'ml');
     
-    // Extract weight (e.g., "1g", "5g")
-    const weightMatch = title.match(/\b(\d+)\s*g\b/i);
+    // Extract weight (e.g., "1g", "5g") - use negative lookbehind to avoid matching "mg"
+    const weightMatch = title.match(/\b(\d+)\s*(?<!m)g\b/i);
     if (weightMatch) specs.push(weightMatch[1] + 'g');
     
     // Extract VG/PG ratio (e.g., "50/50", "70/30")
@@ -525,6 +536,17 @@ export class SEOAutomationService {
     if (percentMatch) specs.push(`${percentMatch[1]}%`);
     
     return specs;
+  }
+
+  /**
+   * Remove a spec from a title safely
+   * @param title The title to remove spec from
+   * @param spec The spec string to remove
+   * @returns Title with spec removed
+   */
+  private static removeSpecFromTitle(title: string, spec: string): string {
+    const escapedSpec = spec.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return title.replace(new RegExp('\\s*' + escapedSpec + '\\s*', 'gi'), ' ');
   }
 
   /**
@@ -557,16 +579,16 @@ export class SEOAutomationService {
         const truncated = productTitle.substring(0, availableLength);
         const lastSpace = truncated.lastIndexOf(' ');
         
-        if (lastSpace > availableLength - 15) {
+        if (lastSpace > availableLength - this.WORD_BOUNDARY_THRESHOLD) {
           return truncated.substring(0, lastSpace) + '…';
         }
         return truncated + '…';
-      } else if (specsLength < maxLength - 10) {
+      } else if (specsLength < maxLength - this.MIN_TITLE_LENGTH) {
         // Specs exist but not at end, extract and append them
         // Remove specs from title and truncate the remainder
         let baseTitle = productTitle;
         specs.forEach(spec => {
-          baseTitle = baseTitle.replace(new RegExp('\\s*' + spec.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*', 'gi'), ' ');
+          baseTitle = this.removeSpecFromTitle(baseTitle, spec);
         });
         baseTitle = baseTitle.replace(/\s+/g, ' ').trim();
         
@@ -574,7 +596,7 @@ export class SEOAutomationService {
         if (baseTitle.length > availableForBase) {
           const truncated = baseTitle.substring(0, availableForBase);
           const lastSpace = truncated.lastIndexOf(' ');
-          if (lastSpace > availableForBase - 15) {
+          if (lastSpace > availableForBase - this.WORD_BOUNDARY_THRESHOLD) {
             return truncated.substring(0, lastSpace) + '…' + specsText;
           }
           return truncated + '…' + specsText;
@@ -588,7 +610,7 @@ export class SEOAutomationService {
     const truncated = productTitle.substring(0, maxContentLength);
     const lastSpace = truncated.lastIndexOf(' ');
     
-    if (lastSpace > maxContentLength - 15) {
+    if (lastSpace > maxContentLength - this.WORD_BOUNDARY_THRESHOLD) {
       return truncated.substring(0, lastSpace) + '…';
     }
     

@@ -7,10 +7,10 @@
  * Run manually: npx lhci autorun --config=.lighthouserc.cjs
  * Run in CI: The SEO audit workflow will automatically use this config
  *
- * For comprehensive site-wide audits, use lighthouse-parade instead:
- *   npm run seo:crawl -- https://vapourism.co.uk
+ * For comprehensive site-wide audits, use unlighthouse instead:
+ *   npm run seo:crawl
  *
- * This will crawl the entire site and generate aggregated reports.
+ * This will crawl the entire site and generate aggregated reports with a UI dashboard.
  */
 
 module.exports = {
@@ -18,7 +18,7 @@ module.exports = {
     collect: {
       // URLs to audit - use environment variable for preview deployments
       // Fall back to production URLs for local testing
-      // Note: For full site crawl, use `npm run seo:crawl` with lighthouse-parade
+      // Note: For full site crawl, use `npm run seo:crawl` with unlighthouse
       url: process.env.LHCI_URLS?.split(',') || [
         'https://vapourism.co.uk/',
         'https://vapourism.co.uk/about',

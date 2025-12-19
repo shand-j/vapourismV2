@@ -48,8 +48,6 @@ Disallow: /cart
 Disallow: /cart/*
 Disallow: /orders/*
 Disallow: /carts/*
-Disallow: /search
-Disallow: /search?*
 
 # Block query parameter variations to prevent duplicate content
 Disallow: /*?*variant=*

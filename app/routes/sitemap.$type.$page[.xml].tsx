@@ -72,6 +72,11 @@ const PAGES_SITEMAP_QUERY = `#graphql
  * 
  * This list should include any Shopify page handles that correspond to
  * Remix routes that perform redirects, have noindex tags, or return non-200 status codes.
+ * 
+ * NOTE: This list is used to filter Shopify Pages queried from the Storefront API.
+ * Remix-only routes that don't correspond to Shopify Pages won't be affected by this list.
+ * For example, 'cart' is listed here in case there's a Shopify Page with handle "cart",
+ * but the Remix /cart route is not affected.
  */
 const EXCLUDED_ROUTES = new Set([
   // Redirect routes (301/302 status codes)
@@ -124,12 +129,9 @@ const PRIORITY = {
  * 
  * IMPORTANT: Only include routes that:
  * 1. Always return 200 status (no redirects)
- * 2. Never have noindex meta tags
+ * 2. Never have noindex meta tags (or only conditionally in error cases that won't occur)
  * 3. Have stable, canonical URLs
  * 4. Don't require authentication
- * 
- * Collection routes are excluded because they have conditional noindex
- * when data fails to load, which violates SEMrush audit requirements.
  */
 const STATIC_ROUTES = [
   // Core information pages

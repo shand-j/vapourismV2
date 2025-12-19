@@ -136,12 +136,12 @@ export default function CrystalBarCollection() {
         </div>
         <div className="mt-6 grid md:grid-cols-3 gap-4">
           <div className="bg-white p-4 rounded-lg text-center shadow-sm">
-            <div className="text-3xl font-bold text-blue-600 mb-1">15M+</div>
-            <div className="text-sm text-gray-600">Units sold in UK (2023-2024)</div>
+            <div className="text-3xl font-bold text-blue-600 mb-1">Popular</div>
+            <div className="text-sm text-gray-600">Choice among UK disposable vape users</div>
           </div>
           <div className="bg-white p-4 rounded-lg text-center shadow-sm">
             <div className="text-3xl font-bold text-blue-600 mb-1">4.7/5</div>
-            <div className="text-sm text-gray-600">Average rating from 50,000+ reviews</div>
+            <div className="text-sm text-gray-600">Average customer rating from verified reviews</div>
           </div>
           <div className="bg-white p-4 rounded-lg text-center shadow-sm">
             <div className="text-3xl font-bold text-blue-600 mb-1">30+</div>

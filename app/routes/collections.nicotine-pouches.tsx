@@ -190,11 +190,10 @@ export default function NicotinePouchesCollection() {
         <h2 className="text-3xl font-bold mb-6 text-gray-900">The Complete Guide to Nicotine Pouches in the UK</h2>
         <div className="grid md:grid-cols-2 gap-6">
           <div className="bg-white p-6 rounded-xl shadow-sm">
-            <h3 className="font-bold text-xl mb-3 text-gray-900">Why Nicotine Pouches Are Growing 300% Yearly</h3>
+            <h3 className="font-bold text-xl mb-3 text-gray-900">Why Nicotine Pouches Are Growing in Popularity</h3>
             <p className="text-gray-700 mb-3">
-              Nicotine pouches represent the fastest-growing tobacco-free nicotine category in the UK, with over 
-              2 million regular users in 2024. Unlike vaping, patches, or gum, pouches offer instant satisfaction 
-              with zero smoke, vapor, or visible consumption.
+              Nicotine pouches have seen remarkable growth in the UK market, becoming a preferred choice for many 
+              nicotine users. Their discreet nature and convenience make them ideal for modern lifestyles.
             </p>
             <ul className="space-y-2 text-sm text-gray-700">
               <li className="flex items-start">

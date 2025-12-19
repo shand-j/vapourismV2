@@ -98,16 +98,16 @@ export default function VeloPouchesCollection() {
           </p>
           <div className="grid md:grid-cols-3 gap-4 mt-6">
             <div className="bg-white p-4 rounded-lg shadow-sm">
-              <div className="text-2xl font-bold text-blue-600 mb-2">98%</div>
-              <div className="text-sm">Customer satisfaction rate among regular Velo users</div>
+              <div className="text-2xl font-bold text-blue-600 mb-2">High</div>
+              <div className="text-sm">Customer satisfaction among regular Velo users</div>
             </div>
             <div className="bg-white p-4 rounded-lg shadow-sm">
               <div className="text-2xl font-bold text-blue-600 mb-2">20+</div>
-              <div className="text-sm">Flavour variants across four strength levels</div>
+              <div className="text-sm">Flavor variants across four strength levels</div>
             </div>
             <div className="bg-white p-4 rounded-lg shadow-sm">
               <div className="text-2xl font-bold text-blue-600 mb-2">1st</div>
-              <div className="text-sm">To introduce flavoured nicotine pouches in the UK</div>
+              <div className="text-sm">To introduce flavored nicotine pouches in the UK</div>
             </div>
           </div>
         </div>
@@ -364,8 +364,8 @@ export default function VeloPouchesCollection() {
             <div>
               <p className="font-semibold mb-1">Q: Why choose Velo over Zyn or Nordic Spirit?</p>
               <p className="text-sm">
-                A: Velo offers the most consistent quality-to-price ratio in the UK market. With 98% customer 
-                satisfaction and the widest distribution network, you'll always find your preferred strength 
+                A: Velo offers the most consistent quality-to-price ratio in the UK market, with excellent customer 
+                satisfaction ratings and the widest distribution network. You'll always find your preferred strength 
                 and flavor. Velo's OptimalMoist technology prevents dry pouches—a common complaint with competitors.
               </p>
             </div>

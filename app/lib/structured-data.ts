@@ -98,6 +98,9 @@ export interface ProductSchemaParams {
 }
 
 export function generateProductSchema(params: ProductSchemaParams) {
+  // Ensure price is a number as required by Google
+  const priceValue = typeof params.price === 'string' ? parseFloat(params.price) : params.price;
+  
   return {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -112,7 +115,7 @@ export function generateProductSchema(params: ProductSchemaParams) {
     ...(params.gtin && { gtin: params.gtin }),
     offers: {
       '@type': 'Offer',
-      price: params.price,
+      price: priceValue,
       priceCurrency: params.priceCurrency,
       availability: `https://schema.org/${params.availability}`,
       url: params.url,

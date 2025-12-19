@@ -263,3 +263,160 @@ describe('SEOAutomationService.generateOGTitle', () => {
     });
   });
 });
+
+describe('SEOAutomationService.formatProductH1', () => {
+  describe('Heading length optimization', () => {
+    it('should truncate titles longer than 60 characters', () => {
+      const result = SEOAutomationService.formatProductH1(
+        'This is a very long product title that exceeds sixty characters and should be truncated for SEO',
+        'TestBrand'
+      );
+      expect(result.length).toBeLessThanOrEqual(60);
+      expect(result).toContain('…');
+    });
+
+    it('should add vendor name for titles shorter than 20 characters', () => {
+      const result = SEOAutomationService.formatProductH1(
+        'Short Title',
+        'TestBrand'
+      );
+      expect(result).toContain('by TestBrand');
+      expect(result.length).toBeGreaterThanOrEqual(20);
+    });
+
+    it('should not modify titles within SEO-recommended range (20-60 chars)', () => {
+      const title = 'Perfect Length Product Title Here';
+      const result = SEOAutomationService.formatProductH1(title, 'TestBrand');
+      expect(result).toBe(title);
+      expect(result.length).toBeGreaterThanOrEqual(20);
+      expect(result.length).toBeLessThanOrEqual(60);
+    });
+  });
+
+  describe('Promotional text cleanup', () => {
+    it('should convert (BUY 1 GET 1 FREE) to dash format', () => {
+      const result = SEOAutomationService.formatProductH1(
+        'Test Product (BUY 1 GET 1 FREE)',
+        'TestBrand'
+      );
+      expect(result).toContain('– Buy 1 Get 1 Free');
+      expect(result).not.toContain('(BUY');
+    });
+
+    it('should handle BUY 2 GET 1 FREE variants', () => {
+      const result = SEOAutomationService.formatProductH1(
+        'Test Product (BUY 2 GET 1 FREE)',
+        'TestBrand'
+      );
+      expect(result).toContain('– Buy 2 Get 1 Free');
+    });
+  });
+
+  describe('Vendor name deduplication', () => {
+    it('should remove "by [vendor]" pattern from title (and re-add if too short)', () => {
+      // "Premium E-Liquid" is 16 chars after removing "by TestBrand", so vendor gets re-added
+      const result = SEOAutomationService.formatProductH1(
+        'Premium E-Liquid by TestBrand',
+        'TestBrand'
+      );
+      // Since cleaned title is < 20 chars, vendor is added back
+      expect(result).toBe('Premium E-Liquid by TestBrand');
+    });
+
+    it('should remove "by [vendor]" from longer titles', () => {
+      const result = SEOAutomationService.formatProductH1(
+        'Premium High Quality E-Liquid 50ml by TestBrand',
+        'TestBrand'
+      );
+      expect(result).not.toContain('by TestBrand');
+      expect(result).toBe('Premium High Quality E-Liquid 50ml');
+    });
+
+    it('should be case insensitive when removing vendor', () => {
+      const result = SEOAutomationService.formatProductH1(
+        'Premium High Quality E-Liquid 50ml By TESTBRAND',
+        'TestBrand'
+      );
+      expect(result).not.toContain('By TESTBRAND');
+    });
+  });
+
+  describe('Whitespace cleanup', () => {
+    it('should clean up multiple spaces', () => {
+      const result = SEOAutomationService.formatProductH1(
+        'Test   Product   Title',
+        'TestBrand'
+      );
+      expect(result).not.toMatch(/\s{2,}/);
+    });
+
+    it('should remove isolated hyphens but preserve compound words', () => {
+      const result = SEOAutomationService.formatProductH1(
+        'E-Liquid - Premium Quality - 50ml',
+        'TestBrand'
+      );
+      expect(result).toContain('E-Liquid');
+      expect(result).not.toMatch(/\s-\s/);
+    });
+  });
+
+  describe('Edge cases', () => {
+    it('should handle empty vendor name', () => {
+      const result = SEOAutomationService.formatProductH1(
+        'Short',
+        ''
+      );
+      expect(result).toBe('Short');
+    });
+
+    it('should handle title at exactly 60 characters', () => {
+      const title = 'A'.repeat(60);
+      const result = SEOAutomationService.formatProductH1(title, 'TestBrand');
+      expect(result.length).toBeLessThanOrEqual(60);
+    });
+
+    it('should handle title at exactly 20 characters without adding vendor', () => {
+      const title = 'A'.repeat(20);
+      const result = SEOAutomationService.formatProductH1(title, 'TestBrand');
+      expect(result).toBe(title);
+    });
+  });
+});
+
+describe('SEOAutomationService.generateImageAltText', () => {
+  const mockProduct = {
+    title: 'Premium Vape Kit',
+    vendor: 'TestBrand',
+    productType: 'Vape Kit',
+    description: 'A high-quality vape kit',
+    tags: ['vape', 'kit'],
+    handle: 'premium-vape-kit',
+  };
+
+  it('should generate SEO-optimized alt text for main images', () => {
+    const result = SEOAutomationService.generateImageAltText(mockProduct, 'main');
+    expect(result).toContain('Premium Vape Kit');
+    expect(result).toContain('TestBrand');
+    expect(result).toContain('Vape Kit');
+    expect(result).toContain('Vapourism UK');
+  });
+
+  it('should generate thumbnail-specific alt text', () => {
+    const result = SEOAutomationService.generateImageAltText(mockProduct, 'thumbnail');
+    expect(result).toContain('Premium Vape Kit');
+    expect(result).toContain('TestBrand');
+    expect(result).toContain('thumbnail');
+  });
+
+  it('should generate gallery alt text with index', () => {
+    const result = SEOAutomationService.generateImageAltText(mockProduct, 'gallery', 3);
+    expect(result).toContain('Premium Vape Kit');
+    expect(result).toContain('product image 3');
+  });
+
+  it('should generate gallery alt text without index', () => {
+    const result = SEOAutomationService.generateImageAltText(mockProduct, 'gallery');
+    expect(result).toContain('Premium Vape Kit');
+    expect(result).toContain('product gallery');
+  });
+});

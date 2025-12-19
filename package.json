@@ -17,9 +17,12 @@
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
+    "test:seo": "vitest run tests/unit/seo-*.test.ts",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "test:e2e:debug": "playwright test --debug"
+    "test:e2e:debug": "playwright test --debug",
+    "seo:audit": "lhci autorun --config=.lighthouserc.cjs",
+    "seo:audit:local": "lhci collect --config=.lighthouserc.cjs"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -60,6 +63,7 @@
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
     "@graphql-codegen/cli": "5.0.2",
+    "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.56.1",
     "@remix-run/dev": "^2.16.1",
     "@remix-run/fs-routes": "^2.16.1",

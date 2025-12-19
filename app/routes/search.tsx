@@ -570,7 +570,7 @@ export const meta = ({data, location}: {data: any; location: any}) => {
     description = `Shop ${count}+ authentic ${vendor} vaping products. ✓ Premium quality ✓ Fast UK delivery ✓ Competitive prices ✓ Genuine ${vendor} products from authorized UK retailer. Browse e-liquids, devices & accessories.`;
   } else if (url.searchParams.get('tag')) {
     // Category page by tag - extract tag here where it's used for title generation
-    const tag = url.searchParams.get('tag');
+    const tag = url.searchParams.get('tag')!; // Non-null assertion: already checked in if condition
     const categoryLabel = getTagDisplayLabel(tag);
     title = SEOAutomationService.truncateTitle(`${categoryLabel} (${count}) | UK Vape Shop | Vapourism`);
     description = SEOAutomationService.generateCategoryMetaDescription(categoryLabel, count);

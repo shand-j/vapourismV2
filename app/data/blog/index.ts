@@ -20,15 +20,46 @@ export interface BlogArticle {
   tags: string[];
   content: string;
   featuredImage?: string;
-  /** Optional inline images to display within the article body */
+  /**
+   * Optional inline images to display within the article body.
+   * 
+   * To display an image in the article content, add a marker with the format
+   * `{{image:id}}` on its own line in the content string, where `id` matches
+   * an image's `id` property in this array.
+   * 
+   * If the marker references an ID that doesn't exist in this array, the marker
+   * is silently ignored (a warning is logged in development mode).
+   * 
+   * @example
+   * ```typescript
+   * // In the article definition:
+   * inlineImages: [
+   *   {
+   *     id: 'product-comparison',
+   *     src: '/images/blog/product-comparison.jpg',
+   *     alt: 'Comparison of vape devices',
+   *     caption: 'Side-by-side comparison of popular devices',
+   *   },
+   * ],
+   * content: `
+   * ## Product Comparison
+   * 
+   * Here's how the devices compare:
+   * 
+   * {{image:product-comparison}}
+   * 
+   * As you can see from the image above...
+   * `,
+   * ```
+   */
   inlineImages?: {
-    /** Unique identifier to reference in content, e.g., "section-1" */
+    /** Unique identifier to reference in content via {{image:id}} marker */
     id: string;
-    /** Image URL */
+    /** Image URL (use local paths like /images/blog/... for production) */
     src: string;
     /** Alt text for accessibility */
     alt: string;
-    /** Optional caption */
+    /** Optional caption displayed below the image */
     caption?: string;
   }[];
 }

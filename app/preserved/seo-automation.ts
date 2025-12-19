@@ -2,9 +2,46 @@
  * SEO Automation Service for Vapourism
  * Provides automated SEO optimization for products and content
  * Note: Collections are not used in this store - all navigation is tag-based
+ * 
+ * Enhanced with Dynamic Keyword Service for intelligent keyword optimization
  */
 
 import { KeywordOptimizer, generateKeywordVariations } from '~/lib/keyword-optimizer';
+import { 
+  DynamicKeywordService,
+  getProductKeywords,
+  getCategoryKeywords,
+  getBrandKeywords,
+  getSearchKeywords,
+  getContentKeywords,
+  getIntentKeywords,
+  getRelatedKeywords,
+  generateKeywordSnippet,
+  type PageContext,
+  type DynamicKeywordResult,
+  type PageType,
+  type SearchIntent,
+  INTENT_KEYWORD_CLUSTERS,
+  LSI_KEYWORD_CLUSTERS,
+  SEASONAL_KEYWORDS,
+} from '~/lib/dynamic-keywords';
+
+// Re-export dynamic keyword types and utilities for easy access
+export type { PageContext, DynamicKeywordResult, PageType, SearchIntent };
+export {
+  DynamicKeywordService,
+  getProductKeywords,
+  getCategoryKeywords,
+  getBrandKeywords,
+  getSearchKeywords,
+  getContentKeywords,
+  getIntentKeywords,
+  getRelatedKeywords,
+  generateKeywordSnippet,
+  INTENT_KEYWORD_CLUSTERS,
+  LSI_KEYWORD_CLUSTERS,
+  SEASONAL_KEYWORDS,
+};
 
 export interface ProductSEOData {
   title: string;
@@ -340,12 +377,20 @@ export class SEOAutomationService {
 
   /**
    * Generate optimized alt text for images
+   * @param product - Product SEO data
+   * @param context - Image context: 'main' for primary image, 'thumbnail' for gallery thumbnails, 'gallery' for gallery images
+   * @param imageIndex - Optional index for gallery images (1-based) to create unique, deterministic alt text
    */
-  static generateImageAltText(product: ProductSEOData, context: 'main' | 'thumbnail' | 'gallery' = 'main'): string {
+  static generateImageAltText(product: ProductSEOData, context: 'main' | 'thumbnail' | 'gallery' = 'main', imageIndex?: number): string {
+    // Build gallery alt text based on whether index is provided
+    const galleryAlt = imageIndex 
+      ? `${product.title} product image ${imageIndex}` 
+      : `${product.title} by ${product.vendor} - product gallery`;
+    
     const contextMap = {
       main: `${product.title} by ${product.vendor} | Premium ${product.productType} | Vapourism UK`,
       thumbnail: `${product.title} - ${product.vendor} thumbnail`,
-      gallery: `${product.title} product image ${Math.floor(Math.random() * 5) + 1}`
+      gallery: galleryAlt,
     };
 
     return contextMap[context];
@@ -391,6 +436,59 @@ export class SEOAutomationService {
     }
     
     return truncated + '…';
+  }
+
+  /**
+   * H1 heading length constraints for SEO
+   * Google typically displays 50-60 characters in search results
+   */
+  private static readonly H1_MIN_LENGTH = 20;
+  private static readonly H1_MAX_LENGTH = 60;
+
+  /**
+   * Format product title for H1 tag to be more SEO-friendly
+   * Removes redundant vendor names and cleans up promotional text
+   * Ensures heading length is within SEO-recommended range (20-60 chars)
+   * @param title The raw product title
+   * @param vendor The vendor/brand name
+   * @returns SEO-optimized H1 heading string
+   */
+  static formatProductH1(title: string, vendor: string): string {
+    let formatted = title;
+    
+    // Remove "by [vendor]" pattern (case insensitive)
+    const escapedVendor = vendor.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const byVendorPattern = new RegExp(`\\s+by\\s+${escapedVendor}`, 'gi');
+    formatted = formatted.replace(byVendorPattern, '');
+    
+    // Clean up promotional text: (BUY 1 GET 1 FREE) -> Buy 1 Get 1 Free
+    formatted = formatted.replace(/\(BUY\s+(\d+)\s+GET\s+(\d+)\s+FREE\)/gi, '– Buy $1 Get $2 Free');
+    
+    // Only remove hyphens that are surrounded by spaces (not part of compound words like "E-liquid")
+    formatted = formatted.replace(/\s+-\s+/g, ' ');
+    
+    // Clean up multiple spaces
+    formatted = formatted.replace(/\s+/g, ' ').trim();
+    
+    // Handle heading length for SEO compliance
+    if (formatted.length > this.H1_MAX_LENGTH) {
+      // Truncate at word boundary, append ellipsis
+      const truncated = formatted.substring(0, this.H1_MAX_LENGTH - 1);
+      const lastSpace = truncated.lastIndexOf(' ');
+      if (lastSpace > this.H1_MAX_LENGTH - 15) {
+        formatted = truncated.substring(0, lastSpace) + '…';
+      } else {
+        formatted = truncated + '…';
+      }
+    } else if (formatted.length < this.H1_MIN_LENGTH && vendor) {
+      // If too short, add vendor name for context
+      const withVendor = `${formatted} by ${vendor}`;
+      if (withVendor.length <= this.H1_MAX_LENGTH) {
+        formatted = withVendor;
+      }
+    }
+    
+    return formatted;
   }
 
   /**
@@ -547,6 +645,120 @@ export class SEOAutomationService {
     }
     
     return optimized;
+  }
+
+  // ============================================================================
+  // Dynamic Keyword Integration - The SEO Cheatcode
+  // ============================================================================
+
+  /**
+   * Generate complete dynamic SEO data for a product page
+   * This is the "cheatcode" - provides all keywords, titles, and meta automatically
+   */
+  static getDynamicProductSEO(product: ProductSEOData): DynamicKeywordResult {
+    return getProductKeywords(
+      product.title,
+      product.vendor,
+      product.productType,
+      product.tags,
+      product.price
+    );
+  }
+
+  /**
+   * Generate complete dynamic SEO data for a category page
+   */
+  static getDynamicCategorySEO(
+    categoryName: string,
+    productCount?: number,
+    topBrands?: string[]
+  ): DynamicKeywordResult {
+    return getCategoryKeywords(categoryName, productCount, topBrands);
+  }
+
+  /**
+   * Generate complete dynamic SEO data for a brand page
+   */
+  static getDynamicBrandSEO(
+    brandName: string,
+    productCount?: number,
+    productTypes?: string[]
+  ): DynamicKeywordResult {
+    return getBrandKeywords(brandName, productCount, productTypes);
+  }
+
+  /**
+   * Generate complete dynamic SEO data for a search results page
+   */
+  static getDynamicSearchSEO(
+    query: string,
+    resultCount?: number
+  ): DynamicKeywordResult {
+    return getSearchKeywords(query, resultCount);
+  }
+
+  /**
+   * Generate complete dynamic SEO data for blog/guide content
+   */
+  static getDynamicContentSEO(
+    title: string,
+    pageType: 'blog' | 'guide' = 'blog',
+    tags?: string[]
+  ): DynamicKeywordResult {
+    return getContentKeywords(title, pageType, tags);
+  }
+
+  /**
+   * Get intent-based keywords for any page
+   */
+  static getIntentBasedKeywords(intent: SearchIntent): string[] {
+    return getIntentKeywords(intent);
+  }
+
+  /**
+   * Get LSI (related) keywords for better context
+   */
+  static getRelatedKeywordsFor(topic: string): string[] {
+    return getRelatedKeywords(topic);
+  }
+
+  /**
+   * Generate a keyword-rich snippet for any content
+   */
+  static generateKeywordRichSnippet(
+    topic: string,
+    intent: SearchIntent = 'commercial',
+    maxLength: number = 160
+  ): string {
+    return generateKeywordSnippet(topic, intent, maxLength);
+  }
+
+  /**
+   * Get the full Dynamic Keyword Service for advanced usage
+   */
+  static getDynamicKeywordService(): typeof DynamicKeywordService {
+    return DynamicKeywordService;
+  }
+
+  /**
+   * Get keyword clusters by intent for content planning
+   */
+  static getIntentKeywordClusters() {
+    return INTENT_KEYWORD_CLUSTERS;
+  }
+
+  /**
+   * Get LSI keyword clusters for semantic optimization
+   */
+  static getLSIKeywordClusters() {
+    return LSI_KEYWORD_CLUSTERS;
+  }
+
+  /**
+   * Get seasonal keywords for time-sensitive content
+   */
+  static getSeasonalKeywords() {
+    return SEASONAL_KEYWORDS;
   }
 }
 

@@ -1,0 +1,161 @@
+name: SEO Audit
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  # Allow manual trigger for production audits
+  workflow_dispatch:
+    inputs:
+      audit_production:
+        description: 'Audit production site'
+        required: false
+        default: 'false'
+        type: boolean
+      full_crawl:
+        description: 'Run full site crawl with unlighthouse'
+        required: false
+        default: 'false'
+        type: boolean
+      max_crawl_depth:
+        description: 'Maximum crawl depth (1-5)'
+        required: false
+        default: '2'
+        type: choice
+        options:
+          - '1'
+          - '2'
+          - '3'
+          - '4'
+          - '5'
+concurrency:
+  group: seo-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  seo-unit-tests:
+    name: SEO Compliance Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run SEO compliance tests
+        run: npx vitest run --reporter=verbose tests/unit/seo-compliance.test.ts tests/unit/seo-automation.test.ts
+
+  lighthouse-audit:
+    name: Lighthouse SEO Audit
+    runs-on: ubuntu-latest
+    # Only run Lighthouse on PRs after preview deployment is available
+    # For now, skip if no preview URL is available
+    if: github.event_name == 'workflow_dispatch' || github.event.inputs.audit_production == 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Lighthouse CI
+        run: npx lhci autorun --config=.lighthouserc.cjs
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Lighthouse Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-report
+          path: .lighthouseci/
+          retention-days: 30
+
+  lighthouse-crawl:
+    name: Lighthouse Site Crawl (unlighthouse)
+    runs-on: ubuntu-latest
+    # Only run on manual trigger with full_crawl enabled
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.full_crawl == 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unlighthouse crawl
+        run: npx unlighthouse-ci
+
+      - name: Upload Crawl Reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: unlighthouse-report
+          path: .unlighthouse/
+          retention-days: 30
+
+  seo-summary:
+    name: SEO Audit Summary
+    runs-on: ubuntu-latest
+    needs: [seo-unit-tests]
+    if: always()
+    steps:
+      - name: Check results
+        run: |
+          if [ "${{ needs.seo-unit-tests.result }}" == "failure" ]; then
+            echo "❌ SEO compliance tests failed"
+            exit 1
+          fi
+          echo "✅ All SEO checks passed"
+
+      - name: Post PR Comment
+        if: github.event_name == 'pull_request'
+        uses: mshick/add-pr-comment@v2
+        with:
+          message-id: seo-audit-status
+          message: |
+            ## 🔍 SEO Audit Results
+
+            | Check | Status |
+            |-------|--------|
+            | SEO Compliance Tests | ${{ needs.seo-unit-tests.result == 'success' && '✅ Passed' || '❌ Failed' }} |
+
+            ### What was checked:
+            - ✓ Meta title length and format (max 70 chars)
+            - ✓ Meta description generation
+            - ✓ H1 heading optimization
+            - ✓ Image alt text generation
+            - ✓ Schema.org structured data validity
+            - ✓ Open Graph title generation
+            - ✓ Keyword generation
+
+            <details>
+            <summary>💡 SEO Best Practices</summary>
+
+            - Keep meta titles under 70 characters
+            - Meta descriptions should be 70-160 characters
+            - H1 headings should be 20-60 characters
+            - All images must have descriptive alt text
+            - Include Schema.org Product markup on PDPs
+            - Use canonical URLs to avoid duplicate content
+
+            </details>

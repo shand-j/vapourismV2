@@ -273,6 +273,25 @@ export default function GuideCertifications() {
             </div>
           </div>
 
+          {/* Related Resources */}
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-slate-900 mb-6">Related Resources</h3>
+            <div className="grid gap-4 md:grid-cols-3">
+              <Link to="/guides/age-verification" className="flex flex-col gap-2 p-5 rounded-xl border border-slate-200 hover:border-blue-500 hover:bg-slate-50 transition-colors">
+                <h4 className="font-semibold text-slate-900">Age Verification</h4>
+                <p className="text-sm text-slate-600">Learn about our two-stage age verification process</p>
+              </Link>
+              <Link to="/guides/sustainability" className="flex flex-col gap-2 p-5 rounded-xl border border-slate-200 hover:border-blue-500 hover:bg-slate-50 transition-colors">
+                <h4 className="font-semibold text-slate-900">Sustainability</h4>
+                <p className="text-sm text-slate-600">Our environmental commitments and recycling programs</p>
+              </Link>
+              <Link to="/about" className="flex flex-col gap-2 p-5 rounded-xl border border-slate-200 hover:border-blue-500 hover:bg-slate-50 transition-colors">
+                <h4 className="font-semibold text-slate-900">About Vapourism</h4>
+                <p className="text-sm text-slate-600">Our history and commitment to responsible retail</p>
+              </Link>
+            </div>
+          </div>
+
           {/* Call to action */}
           <div className="rounded-3xl bg-gradient-to-br from-blue-50 to-indigo-50 p-8 text-center">
             <h3 className="text-xl font-semibold text-slate-900">

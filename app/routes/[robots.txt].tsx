@@ -20,10 +20,11 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 
 function robotsTxtData({url, shopId}: {shopId?: string; url?: string}) {
   const sitemapUrl = url ? `${url}/sitemap.xml` : undefined;
+  const llmsTxtUrl = url ? `${url}/llms.txt` : undefined;
 
   return `
 User-agent: *
-${generalDisallowRules({shopId, sitemapUrl})}
+${generalDisallowRules({shopId, sitemapUrl, llmsTxtUrl})}
 `.trim();
 }
 
@@ -34,9 +35,11 @@ ${generalDisallowRules({shopId, sitemapUrl})}
 function generalDisallowRules({
   shopId,
   sitemapUrl,
+  llmsTxtUrl,
 }: {
   shopId?: string;
   sitemapUrl?: string;
+  llmsTxtUrl?: string;
 }) {
   return `
 # Block crawling of checkout and account pages
@@ -68,6 +71,9 @@ ${shopId ? `Disallow: /*/carts/` : ''}
 
 # Sitemap
 ${sitemapUrl ? `Sitemap: ${sitemapUrl}` : ''}
+
+# LLMs.txt - Guide for AI models
+${llmsTxtUrl ? `# AI/LLM Information: ${llmsTxtUrl}` : ''}
 `.trim();
 }
 

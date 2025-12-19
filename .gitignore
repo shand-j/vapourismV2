@@ -8,3 +8,9 @@ tests-*
 /playwright-report/
 coverage/
 h2_deploy_log.json
+
+# Lighthouse CI artifacts
+.lighthouseci/
+
+# Unlighthouse artifacts
+.unlighthouse/

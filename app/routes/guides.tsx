@@ -1,5 +1,6 @@
 import {Link} from '@remix-run/react';
 import type {MetaFunction} from '@shopify/remix-oxygen';
+import {generateBreadcrumbSchema, structuredDataScript, SITE_URL} from '~/lib/structured-data';
 
 const GUIDES = [
   {
@@ -75,7 +76,7 @@ export default function GuidesIndexRoute() {
                 Each guide addresses a specific aspect of our operations, from age verification protocols that ensure legal compliance to sustainability initiatives that minimize environmental impact. We maintain these as living documents, updating them as regulations evolve and our practices improve.
               </p>
               <p className="text-slate-700 leading-relaxed">
-                Whether you're a customer curious about how we verify age, a compliance officer reviewing our procedures, or an industry peer seeking best practices, these guides offer detailed insights into how Vapourism operates as a UK vaping retailer committed to regulatory compliance and customer safety.
+                Whether you're a customer curious about how we verify age, a compliance officer reviewing our procedures, or an industry peer seeking best practices, these guides offer detailed insights into how Vapourism operates as a UK vaping retailer committed to regulatory compliance and customer safety. For more information about our company, visit our <Link to="/about" className="text-[#5b2be0] hover:underline">About page</Link> or check our <Link to="/faq" className="text-[#5b2be0] hover:underline">FAQ section</Link> for common questions.
               </p>
             </div>
           </div>
@@ -115,7 +116,7 @@ export default function GuidesIndexRoute() {
             <div className="glass-morphism rounded-2xl border border-slate-100 p-6">
               <h3 className="text-lg font-semibold text-slate-900 mb-3">Regulatory Compliance</h3>
               <p className="text-slate-700 leading-relaxed mb-4">
-                Our compliance guides detail how we adhere to UK Tobacco and Related Products Regulations (TRPR), including TPD notification requirements, nicotine strength limitations, packaging standards, and product labelling mandates. We document every compliance checkpoint from product sourcing to customer delivery.
+                Our compliance guides detail how we adhere to UK Tobacco and Related Products Regulations (TRPR), including TPD notification requirements, nicotine strength limitations, packaging standards, and product labelling mandates. We document every compliance checkpoint from product sourcing to customer delivery. Read more in our <Link to="/guides/certifications" className="text-[#5b2be0] hover:underline">certifications guide</Link>.
               </p>
               <p className="text-sm text-slate-600">
                 Topics include: TPD compliance, MHRA notifications, Trading Standards requirements, ingredient disclosure, batch testing protocols, and quality assurance procedures.
@@ -125,7 +126,7 @@ export default function GuidesIndexRoute() {
             <div className="glass-morphism rounded-2xl border border-slate-100 p-6">
               <h3 className="text-lg font-semibold text-slate-900 mb-3">Age Verification</h3>
               <p className="text-slate-700 leading-relaxed mb-4">
-                Our age verification guide explains our two-stage verification process that ensures all customers are 18 or over as required by UK law. We detail the technology providers we use, the verification steps customers experience, and how we integrate age checks with courier delivery protocols.
+                Our <Link to="/guides/age-verification" className="text-[#5b2be0] hover:underline">age verification guide</Link> explains our two-stage verification process that ensures all customers are 18 or over as required by UK law. We detail the technology providers we use, the verification steps customers experience, and how we integrate age checks with courier delivery protocols. Learn more about our <Link to="/about" className="text-[#5b2be0] hover:underline">company values</Link>.
               </p>
               <p className="text-sm text-slate-600">
                 Topics include: Two-stage verification process, third-party verification partners, Shopify checkout integration, courier age verification, failed verification procedures, and customer data protection.
@@ -135,7 +136,7 @@ export default function GuidesIndexRoute() {
             <div className="glass-morphism rounded-2xl border border-slate-100 p-6">
               <h3 className="text-lg font-semibold text-slate-900 mb-3">Sustainability Practices</h3>
               <p className="text-slate-700 leading-relaxed mb-4">
-                Environmental responsibility guides document our recycling programs, courier carbon offset initiatives, packaging material choices, and waste reduction strategies. We explain how we balance fast delivery commitments with environmental sustainability goals in UK fulfillment operations.
+                Environmental responsibility guides document our recycling programs, courier carbon offset initiatives, packaging material choices, and waste reduction strategies. We explain how we balance fast <Link to="/policies/delivery-information" className="text-[#5b2be0] hover:underline">delivery commitments</Link> with environmental sustainability goals in UK fulfillment operations. Read our <Link to="/guides/sustainability" className="text-[#5b2be0] hover:underline">sustainability guide</Link> for details.
               </p>
               <p className="text-sm text-slate-600">
                 Topics include: Recycling schemes, carbon-neutral delivery options, sustainable packaging materials, battery disposal programs, e-liquid bottle recycling, and carbon footprint tracking.
@@ -159,7 +160,7 @@ export default function GuidesIndexRoute() {
           <div className="rounded-2xl border border-blue-100 bg-blue-50 p-8 text-center">
             <h3 className="text-xl font-semibold text-slate-900 mb-3">Have questions about our practices?</h3>
             <p className="text-slate-700 mb-6">
-              If you can't find the information you need in our guides, our customer service team can answer specific questions about our compliance procedures, verification processes, or sustainability initiatives.
+              If you can't find the information you need in our guides, our customer service team can answer specific questions about our compliance procedures, verification processes, or sustainability initiatives. Check our <Link to="/faq" className="text-[#5b2be0] hover:underline font-medium">FAQ section</Link> for quick answers or browse our <Link to="/blog" className="text-[#5b2be0] hover:underline font-medium">educational blog</Link> for in-depth articles.
             </p>
             <div className="flex flex-wrap gap-3 justify-center">
               <Link
@@ -177,6 +178,12 @@ export default function GuidesIndexRoute() {
             </div>
           </div>
         </div>
+
+        {/* Structured Data for SEO */}
+        <script {...structuredDataScript(generateBreadcrumbSchema([
+          { name: 'Home', url: SITE_URL },
+          { name: 'Guides', url: `${SITE_URL}/guides` },
+        ]))} />
       </div>
     </div>
   );

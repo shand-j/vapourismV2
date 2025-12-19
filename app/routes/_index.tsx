@@ -570,14 +570,14 @@ export default function IndexRoute() {
           <div className="glass-morphism rounded-2xl border border-slate-100 p-8">
             <h3 className="text-xl font-semibold text-slate-900 mb-3">Authentic Products Only</h3>
             <p className="text-slate-600 leading-relaxed">
-              Every product in our catalogue is sourced directly from authorized UK distributors and manufacturers. We verify authenticity certificates, batch numbers, and compliance documentation for complete peace of mind. Our quality control process ensures you receive genuine products that meet UK safety standards.
+              Every product in our catalogue is sourced directly from authorized UK distributors and manufacturers. We verify authenticity certificates, batch numbers, and compliance documentation for complete peace of mind. Our quality control process ensures you receive genuine products that meet UK safety standards. <Link to="/guides/certifications" className="text-[#5b2be0] hover:underline font-medium">Learn about our certifications →</Link>
             </p>
           </div>
 
           <div className="glass-morphism rounded-2xl border border-slate-100 p-8">
             <h3 className="text-xl font-semibold text-slate-900 mb-3">Regulatory Compliance</h3>
             <p className="text-slate-600 leading-relaxed">
-              We adhere strictly to UK Tobacco and Related Products Regulations (TRPR). All our e-liquids contain maximum 20mg/ml nicotine strength, comply with TPD notification requirements, and feature childproof packaging. Our two-stage age verification process ensures responsible retail practices.
+              We adhere strictly to UK Tobacco and Related Products Regulations (TRPR). All our e-liquids contain maximum 20mg/ml nicotine strength, comply with TPD notification requirements, and feature childproof packaging. Our <Link to="/guides/age-verification" className="text-[#5b2be0] hover:underline font-medium">two-stage age verification process</Link> ensures responsible retail practices.
             </p>
           </div>
 
@@ -598,14 +598,14 @@ export default function IndexRoute() {
           <div className="glass-morphism rounded-2xl border border-slate-100 p-8">
             <h3 className="text-xl font-semibold text-slate-900 mb-3">Fast UK Delivery</h3>
             <p className="text-slate-600 leading-relaxed">
-              Orders placed before 1pm are dispatched the same day from our Sussex warehouse. We offer free next-day delivery on orders over £50, with tracked courier services to mainland UK addresses. Express delivery options available for urgent orders.
+              Orders placed before 1pm are dispatched the same day from our Sussex warehouse. We offer free next-day delivery on orders over £50, with tracked courier services to mainland UK addresses. Express delivery options available for urgent orders. <Link to="/policies/delivery-information" className="text-[#5b2be0] hover:underline font-medium">View delivery options →</Link>
             </p>
           </div>
 
           <div className="glass-morphism rounded-2xl border border-slate-100 p-8">
             <h3 className="text-xl font-semibold text-slate-900 mb-3">Customer-First Service</h3>
             <p className="text-slate-600 leading-relaxed">
-              Our support team is available seven days a week to assist with product queries, order tracking, and technical advice. We maintain transparent policies on returns, warranty claims, and product troubleshooting to ensure complete customer satisfaction.
+              Our support team is available seven days a week to assist with product queries, order tracking, and technical advice. We maintain transparent <Link to="/policies/returns-policy" className="text-[#5b2be0] hover:underline font-medium">policies on returns</Link>, warranty claims, and product troubleshooting to ensure complete customer satisfaction. <Link to="/contact" className="text-[#5b2be0] hover:underline font-medium">Contact us →</Link>
             </p>
           </div>
         </div>
@@ -634,10 +634,10 @@ export default function IndexRoute() {
             <div className="glass-morphism rounded-2xl border border-slate-100 p-8">
               <h3 className="text-xl font-semibold text-slate-900 mb-4">Choosing your device</h3>
               <p className="leading-relaxed mb-4">
-                Starter kits and pod systems provide the easiest entry point for new vapers. These devices feature simple operation, minimal maintenance, and often include everything needed to begin vaping immediately. Popular options include refillable pod kits from brands like SMOK, Vaporesso, and Voopoo.
+                Starter kits and pod systems provide the easiest entry point for new vapers. These devices feature simple operation, minimal maintenance, and often include everything needed to begin vaping immediately. Popular options include refillable pod kits from brands like SMOK, Vaporesso, and Voopoo. <Link to="/blog" className="text-[#5b2be0] hover:underline font-medium">Read our buying guides →</Link>
               </p>
               <p className="leading-relaxed">
-                Disposable vapes offer maximum convenience for trying vaping without commitment. These single-use devices require no charging or refilling, making them ideal for testing different flavours and nicotine strengths before investing in a reusable system.
+                Disposable vapes offer maximum convenience for trying vaping without commitment. These single-use devices require no charging or refilling, making them ideal for testing different flavours and nicotine strengths before investing in a reusable system. <Link to="/search" className="text-[#5b2be0] hover:underline font-medium">Browse all devices →</Link>
               </p>
             </div>
 

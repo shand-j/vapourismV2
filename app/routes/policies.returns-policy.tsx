@@ -183,6 +183,30 @@ export default function ReturnsPolicy() {
                 This Returns Policy complies with the UK Consumer Rights Act 2015 and Distance Selling Regulations. For additional information about your rights, visit the Citizens Advice website or contact Trading Standards.
               </p>
             </div>
+
+            {/* Related Policies & Resources */}
+            <div className="mt-12">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Related Policies & Resources</h2>
+              <div className="grid gap-4 md:grid-cols-3">
+                <Link to="/policies/delivery-information" className="p-5 bg-white border border-gray-200 rounded-lg hover:border-purple-500 hover:shadow-md transition-all">
+                  <h3 className="font-semibold text-gray-900 mb-2">Delivery Information</h3>
+                  <p className="text-sm text-gray-600">Learn about shipping times, costs, and delivery options</p>
+                </Link>
+                <Link to="/contact" className="p-5 bg-white border border-gray-200 rounded-lg hover:border-purple-500 hover:shadow-md transition-all">
+                  <h3 className="font-semibold text-gray-900 mb-2">Contact Support</h3>
+                  <p className="text-sm text-gray-600">Get help with your return or refund inquiry</p>
+                </Link>
+                <Link to="/faq" className="p-5 bg-white border border-gray-200 rounded-lg hover:border-purple-500 hover:shadow-md transition-all">
+                  <h3 className="font-semibold text-gray-900 mb-2">FAQ</h3>
+                  <p className="text-sm text-gray-600">Quick answers to common questions about returns</p>
+                </Link>
+              </div>
+              <div className="mt-6 text-center">
+                <p className="text-sm text-gray-600">
+                  Need more information? Read our <Link to="/policies/terms-of-service" className="text-purple-600 hover:underline font-medium">Terms of Service</Link> or <Link to="/about" className="text-purple-600 hover:underline font-medium">learn about Vapourism</Link>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </main>

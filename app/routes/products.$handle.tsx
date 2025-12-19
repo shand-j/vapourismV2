@@ -71,6 +71,8 @@ const PRODUCT_QUERY = `#graphql
             id
             title
             availableForSale
+            barcode
+            sku
             image {
               url
               altText
@@ -126,6 +128,8 @@ type VariantNode = {
   id: string;
   title: string;
   availableForSale: boolean;
+  barcode?: string | null;
+  sku?: string | null;
   image?: {
     url: string;
     altText?: string | null;
@@ -412,22 +416,40 @@ export default function ProductPage() {
     : null;
 
   // Generate JSON-LD structured data for the product
+  // Google requires price as a number, not a string, and images as an array
+  const priceAmount = parseFloat(selectedVariant?.price.amount ?? product.priceRange.minVariantPrice.amount);
+  const productImages = [
+    product.featuredImage?.url,
+    ...product.images.edges.slice(0, 4).map(({node}: {node: {url: string}}) => node.url)
+  ].filter(Boolean);
+  
+  // Calculate priceValidUntil (30 days from now for price validity)
+  const priceValidUntil = new Date();
+  priceValidUntil.setDate(priceValidUntil.getDate() + 30);
+  
+  // Get GTIN (barcode) from selected variant if available
+  const barcode = selectedVariant?.barcode;
+  const variantSku = selectedVariant?.sku;
+  
   const productSchema = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: product.title,
     description: product.description,
-    image: product.featuredImage?.url,
+    image: productImages,
     brand: {
       '@type': 'Brand',
       name: product.vendor,
     },
-    sku: selectedVariant?.id?.replace('gid://shopify/ProductVariant/', '') ?? product.id.replace('gid://shopify/Product/', ''),
+    sku: variantSku || selectedVariant?.id?.replace('gid://shopify/ProductVariant/', '') || product.id.replace('gid://shopify/Product/', ''),
+    // Include GTIN if available (helps with Google Shopping)
+    ...(barcode && { gtin: barcode }),
     offers: {
       '@type': 'Offer',
       url: `https://www.vapourism.co.uk/products/${product.handle}`,
       priceCurrency: selectedVariant?.price.currencyCode ?? 'GBP',
-      price: selectedVariant?.price.amount ?? product.priceRange.minVariantPrice.amount,
+      price: priceAmount,
+      priceValidUntil: priceValidUntil.toISOString().split('T')[0],
       availability: product.availableForSale 
         ? 'https://schema.org/InStock' 
         : 'https://schema.org/OutOfStock',
@@ -435,6 +457,7 @@ export default function ProductPage() {
       seller: {
         '@type': 'Organization',
         name: 'Vapourism',
+        url: 'https://www.vapourism.co.uk',
       },
     },
     category: product.productType || 'Vaping Products',

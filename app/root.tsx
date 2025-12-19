@@ -46,9 +46,14 @@ const SHOP_INFO_QUERY = `#graphql
 ` as const;
 
 export const links: LinksFunction = () => [
+  // Preconnect to critical third-party domains for faster resource loading
   {rel: 'preconnect', href: 'https://cdn.shopify.com'},
   {rel: 'preconnect', href: 'https://fonts.googleapis.com'},
   {rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous'},
+  // DNS prefetch for analytics and optimization scripts (lower priority than preconnect)
+  {rel: 'dns-prefetch', href: 'https://www.googletagmanager.com'},
+  {rel: 'dns-prefetch', href: 'https://www.google-analytics.com'},
+  {rel: 'dns-prefetch', href: 'https://dashboard.searchatlas.com'},
   {rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg'},
   {rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'},
   {rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png'},

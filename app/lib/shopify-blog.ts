@@ -227,17 +227,16 @@ export function convertShopifyArticleToLegacy(
  * Generate a meta description from article content if not provided
  * 
  * SECURITY NOTE: This function generates meta descriptions from Shopify article content.
- * The content source is TRUSTED (Shopify CMS, admin-controlled) and the output is used
- * ONLY in HTML meta tags, which are automatically escaped by React/Remix.
+ * The content source is TRUSTED (Shopify CMS, admin-controlled).
  * 
- * We use plain text fields when available to avoid any HTML processing:
+ * Priority order for meta description sources:
  * 1. article.seo.description - Shopify's pre-processed SEO field (plain text)
- * 2. article.excerpt - May contain HTML, but we use it only for meta tags
- * 3. article.content - Last fallback, plain text version
+ * 2. article.excerpt - Plain text field per Shopify API specification
+ * 3. article.content - Plain text version (fallback)
  * 
- * Shopify's Storefront API provides both 'content' (plain text) and 'contentHtml' (HTML).
- * We use the plain text 'content' field here, which contains no HTML tags.
- * Therefore, no HTML sanitization is needed - the field is inherently safe.
+ * All outputs are used ONLY in HTML meta tags, which are automatically escaped by React/Remix,
+ * providing an additional layer of protection. Shopify's Storefront API provides plain text
+ * in the 'content' and 'excerpt' fields, ensuring no HTML sanitization is needed.
  */
 export function generateMetaDescription(article: ShopifyArticle): string {
   // Priority 1: Use Shopify's SEO description (pre-processed by Shopify)

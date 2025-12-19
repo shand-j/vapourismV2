@@ -232,7 +232,12 @@ html {
     margin-top: 1.5rem;
   }
   
-  /* Ensure images don't break layout and load properly */
+  /* 
+   * Ensure images don't break layout and load properly
+   * Using !important is necessary here because Shopify's contentHtml may include
+   * inline width/height attributes that override CSS. These overrides ensure
+   * responsive behavior and prevent layout breaks on mobile devices.
+   */
   img {
     max-width: 100% !important;
     width: auto !important;

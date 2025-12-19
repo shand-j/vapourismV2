@@ -1,5 +1,5 @@
 import type {MetaFunction, LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Link, useLoaderData, useSearchParams} from '@remix-run/react';
+import {Link, useLoaderData} from '@remix-run/react';
 import {
   getBlogArticles,
   generateMetaDescription,
@@ -16,7 +16,7 @@ export const meta: MetaFunction<typeof loader> = ({data, location}) => {
   const baseUrl = 'https://www.vapourism.co.uk';
   const canonicalUrl = `${baseUrl}${location.pathname}${location.search}`;
   
-  const metaTags: Array<any> = [
+  const metaTags = [
     {title},
     {
       name: 'description',
@@ -81,7 +81,6 @@ export async function loader({context, request}: LoaderFunctionArgs) {
 
 export default function BlogIndex() {
   const {articles, pageInfo} = useLoaderData<typeof loader>();
-  const [searchParams] = useSearchParams();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
@@ -153,7 +152,10 @@ function ArticleCard({article}: {article: ShopifyArticle}) {
               loading="lazy"
               onError={(e) => {
                 // Hide parent container if image fails to load
-                e.currentTarget.parentElement!.style.display = 'none';
+                const parent = e.currentTarget.parentElement;
+                if (parent) {
+                  parent.style.display = 'none';
+                }
               }}
             />
           </div>

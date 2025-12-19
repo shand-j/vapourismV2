@@ -135,6 +135,8 @@ function ArticleContent({contentHtml}: {contentHtml: string}) {
 
     // Add error handling to all images in the article content
     const images = contentRef.current.querySelectorAll('img');
+    const retryAttempts = new WeakMap<HTMLImageElement, boolean>();
+    const errorHandlers = new WeakMap<HTMLImageElement, EventListener>();
     
     images.forEach((img) => {
       // Add loading attribute if not present
@@ -142,45 +144,71 @@ function ArticleContent({contentHtml}: {contentHtml: string}) {
         img.setAttribute('loading', 'lazy');
       }
 
-      // Add error handler
-      img.addEventListener('error', function(this: HTMLImageElement) {
-        console.error('Failed to load image in article:', this.src);
+      // Create error handler for this specific image
+      const handleError = (event: Event) => {
+        const target = event.currentTarget as HTMLImageElement;
         
-        // Try to fix common Shopify CDN URL issues
-        const originalSrc = this.src;
+        // Only log in development
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Failed to load image in article:', target.src);
+        }
+        
+        // Try to fix common Shopify CDN URL issues (only once per image)
+        const originalSrc = target.src;
         
         // If the image is from Shopify CDN and using a size parameter, try without it
-        if (originalSrc.includes('cdn.shopify.com') && originalSrc.includes('?')) {
+        if (!retryAttempts.has(target) && 
+            originalSrc.includes('cdn.shopify.com') && 
+            originalSrc.includes('?')) {
+          retryAttempts.set(target, true);
           const baseUrl = originalSrc.split('?')[0];
-          console.log('Retrying image without query params:', baseUrl);
-          this.src = baseUrl;
+          if (process.env.NODE_ENV === 'development') {
+            console.log('Retrying image without query params:', baseUrl);
+          }
+          target.src = baseUrl;
         } else {
           // Hide the broken image with a placeholder
-          this.style.display = 'none';
+          target.style.display = 'none';
           
           // Create a placeholder message
           const placeholder = document.createElement('div');
           placeholder.className = 'bg-slate-100 rounded-xl p-8 text-center text-slate-500 my-8';
+          placeholder.setAttribute('role', 'img');
+          placeholder.setAttribute('aria-label', 'Image could not be loaded');
           placeholder.innerHTML = `
-            <svg class="w-16 h-16 mx-auto mb-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-16 h-16 mx-auto mb-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
             </svg>
             <p>Image could not be loaded</p>
           `;
           
-          // Insert placeholder after the broken image
-          this.parentNode?.insertBefore(placeholder, this.nextSibling);
+          // Insert placeholder after the broken image safely
+          const parent = target.parentNode;
+          if (parent && target.nextSibling) {
+            parent.insertBefore(placeholder, target.nextSibling);
+          } else if (parent) {
+            parent.appendChild(placeholder);
+          }
         }
-      });
+      };
 
-      // Log image URLs for debugging
-      console.log('Article image found:', img.src);
+      // Store the handler so we can remove it later
+      errorHandlers.set(img, handleError);
+      img.addEventListener('error', handleError);
+
+      // Log image URLs for debugging (development only)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Article image found:', img.src);
+      }
     });
 
     return () => {
-      // Cleanup event listeners
+      // Cleanup event listeners properly
       images.forEach((img) => {
-        img.removeEventListener('error', () => {});
+        const handler = errorHandlers.get(img);
+        if (handler) {
+          img.removeEventListener('error', handler);
+        }
       });
     };
   }, [contentHtml]);

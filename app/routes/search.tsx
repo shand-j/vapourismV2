@@ -545,13 +545,12 @@ export const meta = ({data, location}: {data: any; location: any}) => {
   const count = data?.totalCount || 0;
   const selectedTags = data?.selectedTags || [];
   
-  // Extract vendor from URL if present
+  // Extract URL parameters for indexing decisions
   const url = new URL(location?.pathname || '/search', 'https://www.vapourism.co.uk');
   if (location?.search) {
     url.search = location.search;
   }
   const vendor = url.searchParams.get('vendor');
-  const tag = url.searchParams.get('tag');
   const after = url.searchParams.get('after'); // pagination cursor
   const sort = url.searchParams.get('sort');
   // Check for additional filters that create duplicate content
@@ -569,8 +568,9 @@ export const meta = ({data, location}: {data: any; location: any}) => {
     // Brand/vendor page - optimized for SEO
     title = SEOAutomationService.truncateTitle(`${vendor} Vape Products (${count}) | Fast UK Delivery | Vapourism`);
     description = `Shop ${count}+ authentic ${vendor} vaping products. ✓ Premium quality ✓ Fast UK delivery ✓ Competitive prices ✓ Genuine ${vendor} products from authorized UK retailer. Browse e-liquids, devices & accessories.`;
-  } else if (tag) {
-    // Category page by tag
+  } else if (url.searchParams.get('tag')) {
+    // Category page by tag - extract tag here where it's used for title generation
+    const tag = url.searchParams.get('tag');
     const categoryLabel = getTagDisplayLabel(tag);
     title = SEOAutomationService.truncateTitle(`${categoryLabel} (${count}) | UK Vape Shop | Vapourism`);
     description = SEOAutomationService.generateCategoryMetaDescription(categoryLabel, count);

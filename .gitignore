@@ -11,3 +11,6 @@ h2_deploy_log.json
 
 # Lighthouse CI artifacts
 .lighthouseci/
+
+# Lighthouse Parade artifacts
+lighthouse-parade-data/

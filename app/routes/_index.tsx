@@ -8,6 +8,11 @@ import {
   generateOrganizationSchema,
   generateWebsiteSchema,
   structuredDataScript,
+  SITE_URL,
+  SITE_NAME,
+  SITE_LOGO,
+  SITE_EMAIL,
+  SOCIAL_LINKS,
 } from '~/lib/structured-data';
 import {
   fetchAllShowcases,
@@ -696,6 +701,23 @@ export default function IndexRoute() {
           </div>
         </div>
       </section>
+
+      {/* Structured Data for SEO */}
+      <script {...structuredDataScript(generateOrganizationSchema({
+        name: SITE_NAME,
+        url: SITE_URL,
+        logo: SITE_LOGO,
+        description: 'UK\'s leading vape shop offering authentic vaping products, fast delivery, and best prices. Premium e-liquids, disposables, and vape kits.',
+        addressCountry: 'GB',
+        addressRegion: 'England',
+        email: SITE_EMAIL,
+        socialLinks: SOCIAL_LINKS,
+      }))} />
+      <script {...structuredDataScript(generateWebsiteSchema({
+        name: SITE_NAME,
+        url: SITE_URL,
+        searchUrlTemplate: `${SITE_URL}/search?q={search_term_string}`,
+      }))} />
     </div>
   );
 }

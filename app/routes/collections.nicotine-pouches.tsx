@@ -13,6 +13,7 @@ import {json, type LoaderFunctionArgs, type MetaFunction} from '@shopify/remix-o
 import {useLoaderData, Link} from '@remix-run/react';
 import {SEOAutomationService} from '~/preserved/seo-automation';
 import {searchProducts} from '~/lib/shopify-search';
+import {generateCollectionPageSchema, generateBreadcrumbSchema, structuredDataScript, SITE_URL} from '~/lib/structured-data';
 import {useCollectionTracking} from '~/lib/hooks/useCollectionTracking';
 
 export async function loader({request, context}: LoaderFunctionArgs) {
@@ -324,6 +325,19 @@ export default function NicotinePouchesCollection() {
           </Link>
         </div>
       </div>
+
+      {/* Structured Data for SEO */}
+      <script {...structuredDataScript(generateCollectionPageSchema({
+        name: 'Nicotine Pouches UK | Tobacco-Free Nicotine',
+        description: 'Shop premium nicotine pouches including ZYN and VELO. Tobacco-free nicotine satisfaction with fast UK delivery.',
+        url: `${SITE_URL}/collections/nicotine-pouches`,
+        numberOfItems: totalCount,
+      }))} />
+      <script {...structuredDataScript(generateBreadcrumbSchema([
+        { name: 'Home', url: SITE_URL },
+        { name: 'Collections', url: `${SITE_URL}/search` },
+        { name: 'Nicotine Pouches', url: `${SITE_URL}/collections/nicotine-pouches` },
+      ]))} />
     </div>
   );
 }

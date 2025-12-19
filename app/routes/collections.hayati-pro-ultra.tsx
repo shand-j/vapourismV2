@@ -12,6 +12,7 @@ import {useLoaderData, Link} from '@remix-run/react';
 import {SEOAutomationService} from '~/preserved/seo-automation';
 import {searchProducts} from '~/lib/shopify-search';
 import {useCollectionTracking} from '~/lib/hooks/useCollectionTracking';
+import {generateCollectionPageSchema, generateBreadcrumbSchema, structuredDataScript, SITE_URL} from '~/lib/structured-data';
 
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
@@ -358,6 +359,19 @@ export default function HayatiProUltraCollection() {
           </Link>
         </div>
       </div>
+
+      {/* Structured Data for SEO */}
+      <script {...structuredDataScript(generateCollectionPageSchema({
+        name: 'Hayati Pro Ultra 25000 | Premium Disposable Vapes UK',
+        description: 'Shop Hayati Pro Ultra 25000 puff disposable vapes. Premium flavors with rechargeable battery and fast UK delivery.',
+        url: `${SITE_URL}/collections/hayati-pro-ultra`,
+        numberOfItems: totalCount,
+      }))} />
+      <script {...structuredDataScript(generateBreadcrumbSchema([
+        { name: 'Home', url: SITE_URL },
+        { name: 'Collections', url: `${SITE_URL}/search` },
+        { name: 'Hayati Pro Ultra', url: `${SITE_URL}/collections/hayati-pro-ultra` },
+      ]))} />
     </div>
   );
 }

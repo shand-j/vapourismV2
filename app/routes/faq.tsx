@@ -2,6 +2,7 @@ import {json, type LoaderFunctionArgs} from '@remix-run/server-runtime';
 import {useLoaderData, Link, type MetaFunction} from '@remix-run/react';
 import {useState} from 'react';
 import {Search, ChevronDown, ChevronUp, Package, CreditCard, Truck, HelpCircle, Shield, Zap} from 'lucide-react';
+import {generateFAQSchema, structuredDataScript} from '~/lib/structured-data';
 
 // FAQ Data Structure
 const faqCategories = [
@@ -525,6 +526,16 @@ export default function FAQ() {
           </div>
         </div>
       </footer>
+
+      {/* Structured Data for FAQ Page - helps with rich snippets in search results */}
+      <script {...structuredDataScript(generateFAQSchema(
+        faqCategories.flatMap(category => 
+          category.questions.map(q => ({
+            question: q.question,
+            answer: q.answer,
+          }))
+        )
+      ))} />
     </div>
   );
 }

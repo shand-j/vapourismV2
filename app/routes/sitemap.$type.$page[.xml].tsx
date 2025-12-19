@@ -155,9 +155,13 @@ const STATIC_ROUTES = [
   { handle: 'blog', priority: PRIORITY.MEDIUM },
   
   // Collection landing pages (SEO-optimized category pages)
-  // NOTE: These routes have conditional noindex as a safety measure, but their loaders
-  // always return data successfully (using searchProducts which never throws).
-  // The noindex condition will never trigger in production, so these are safe to include.
+  // NOTE: These routes have conditional noindex in their meta functions as a safety measure.
+  // The noindex only triggers if the loader fails to return data (if (!data)), which should
+  // never happen in production because:
+  // 1. searchProducts() catches all errors and returns empty arrays instead of throwing
+  // 2. The loaders always return json() responses with data structure
+  // The noindex would only trigger in catastrophic Remix framework failures.
+  // Therefore, these pages are safe to include in the sitemap.
   { handle: 'collections/crystal-bar', priority: PRIORITY.HIGH },
   { handle: 'collections/elux-legend', priority: PRIORITY.HIGH },
   { handle: 'collections/hayati-pro-max', priority: PRIORITY.HIGH },

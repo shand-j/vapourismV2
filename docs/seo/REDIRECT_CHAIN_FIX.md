@@ -192,7 +192,7 @@ After deployment and Semrush re-crawl, we should see:
 
 - Semrush Audit: https://www.semrush.com/siteaudit/campaign/27614008
 - Semrush Issue Details: `docs/seo/SEMrush _Issues/7f16a0cbf78b1c189c8bdca3e2357c34bea6388c`
-- PR: [Link to PR]
+- GitHub PR: See pull request for this branch in the repository
 - Shopify Redirect Docs: https://help.shopify.com/en/manual/online-store/menus-and-links/url-redirect
 
 ## Contact

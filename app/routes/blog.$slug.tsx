@@ -122,10 +122,10 @@ function ArticleContent({content, inlineImages}: {content: string; inlineImages?
     return text
       // Links: [text](url) -> <a href="url">text</a>
       .replace(/\[([^\]]+?)\]\(([^)]+?)\)/g, '<a href="$2" class="text-violet-600 hover:text-violet-700 underline">$1</a>')
-      // Bold: **text** -> <strong>text</strong>
-      .replace(/\*\*([^*]+?)\*\*/g, '<strong>$1</strong>')
-      // Italic: *text* -> <em>text</em>
-      .replace(/\*([^*]+?)\*/g, '<em>$1</em>');
+      // Bold: **text** -> <strong>text</strong> (allow * inside, ensure ** are true delimiters)
+      .replace(/(?<!\*)\*\*(.+?)\*\*(?!\*)/g, '<strong>$1</strong>')
+      // Italic: *text* -> <em>text</em> (match single-asterisk delimiters only)
+      .replace(/(?<!\*)\*([^*]+?)\*(?!\*)/g, '<em>$1</em>');
   };
 
   lines.forEach((line, index) => {

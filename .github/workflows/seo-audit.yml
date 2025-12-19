@@ -12,7 +12,7 @@ on:
         default: 'false'
         type: boolean
       full_crawl:
-        description: 'Run full site crawl with lighthouse-parade'
+        description: 'Run full site crawl with unlighthouse'
         required: false
         default: 'false'
         type: boolean
@@ -86,7 +86,7 @@ jobs:
           retention-days: 30
 
   lighthouse-crawl:
-    name: Lighthouse Site Crawl (lighthouse-parade)
+    name: Lighthouse Site Crawl (unlighthouse)
     runs-on: ubuntu-latest
     # Only run on manual trigger with full_crawl enabled
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.full_crawl == 'true'
@@ -102,18 +102,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run lighthouse-parade crawl
-        run: |
-          npx lighthouse-parade https://vapourism.co.uk \
-            --max-crawl-depth=${{ github.event.inputs.max_crawl_depth || '2' }} \
-            --lighthouse-concurrency=2
+      - name: Run unlighthouse crawl
+        run: npx unlighthouse-ci
 
       - name: Upload Crawl Reports
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: lighthouse-parade-report
-          path: lighthouse-parade-data/
+          name: unlighthouse-report
+          path: .unlighthouse/
           retention-days: 30
 
   seo-summary:

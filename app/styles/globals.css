@@ -232,11 +232,19 @@ html {
     margin-top: 1.5rem;
   }
   
-  /* Ensure images don't break layout */
+  /* Ensure images don't break layout and load properly */
   img {
-    max-width: 100%;
-    height: auto;
+    max-width: 100% !important;
+    width: auto !important;
+    height: auto !important;
     display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* Handle Shopify CDN images specifically */
+  img[src*="cdn.shopify.com"] {
+    object-fit: contain;
   }
   
   /* Better list styling */
@@ -254,5 +262,17 @@ html {
     display: block;
     overflow-x: auto;
     white-space: nowrap;
+  }
+  
+  /* Figure elements for images */
+  figure {
+    margin: 2rem 0;
+  }
+  
+  figcaption {
+    text-align: center;
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-top: 0.5rem;
   }
 }

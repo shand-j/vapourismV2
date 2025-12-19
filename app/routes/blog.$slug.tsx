@@ -116,7 +116,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
 /**
  * ArticleContent component
- * Renders HTML content from Shopify with proper styling
+ * Renders HTML content from Shopify with proper styling and error handling
  * 
  * SECURITY NOTE: This component uses dangerouslySetInnerHTML.
  * This is SAFE because:
@@ -128,8 +128,66 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
  * Shopify's HTML is pre-sanitized and safe to render.
  */
 function ArticleContent({contentHtml}: {contentHtml: string}) {
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !contentRef.current) return;
+
+    // Add error handling to all images in the article content
+    const images = contentRef.current.querySelectorAll('img');
+    
+    images.forEach((img) => {
+      // Add loading attribute if not present
+      if (!img.hasAttribute('loading')) {
+        img.setAttribute('loading', 'lazy');
+      }
+
+      // Add error handler
+      img.addEventListener('error', function(this: HTMLImageElement) {
+        console.error('Failed to load image in article:', this.src);
+        
+        // Try to fix common Shopify CDN URL issues
+        const originalSrc = this.src;
+        
+        // If the image is from Shopify CDN and using a size parameter, try without it
+        if (originalSrc.includes('cdn.shopify.com') && originalSrc.includes('?')) {
+          const baseUrl = originalSrc.split('?')[0];
+          console.log('Retrying image without query params:', baseUrl);
+          this.src = baseUrl;
+        } else {
+          // Hide the broken image with a placeholder
+          this.style.display = 'none';
+          
+          // Create a placeholder message
+          const placeholder = document.createElement('div');
+          placeholder.className = 'bg-slate-100 rounded-xl p-8 text-center text-slate-500 my-8';
+          placeholder.innerHTML = `
+            <svg class="w-16 h-16 mx-auto mb-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            <p>Image could not be loaded</p>
+          `;
+          
+          // Insert placeholder after the broken image
+          this.parentNode?.insertBefore(placeholder, this.nextSibling);
+        }
+      });
+
+      // Log image URLs for debugging
+      console.log('Article image found:', img.src);
+    });
+
+    return () => {
+      // Cleanup event listeners
+      images.forEach((img) => {
+        img.removeEventListener('error', () => {});
+      });
+    };
+  }, [contentHtml]);
+
   return (
     <div 
+      ref={contentRef}
       className="article-content prose prose-lg prose-slate max-w-none
         prose-headings:font-bold prose-headings:text-slate-900
         prose-h1:text-4xl prose-h1:mb-6 prose-h1:mt-12 first:prose-h1:mt-0 prose-h1:leading-tight
@@ -145,7 +203,7 @@ function ArticleContent({contentHtml}: {contentHtml: string}) {
         prose-em:italic prose-em:text-slate-600
         prose-code:bg-slate-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:text-slate-800 prose-code:font-mono
         prose-pre:bg-slate-900 prose-pre:text-slate-100 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto prose-pre:my-6
-        prose-img:rounded-xl prose-img:shadow-lg prose-img:my-8 prose-img:w-full prose-img:h-auto
+        prose-img:rounded-xl prose-img:shadow-lg prose-img:my-8 prose-img:w-full prose-img:h-auto prose-img:max-w-full
         prose-blockquote:border-l-4 prose-blockquote:border-violet-500 prose-blockquote:pl-6 prose-blockquote:pr-4 prose-blockquote:py-2 prose-blockquote:italic prose-blockquote:text-slate-600 prose-blockquote:bg-slate-50 prose-blockquote:rounded-r-lg prose-blockquote:my-6
         prose-hr:border-slate-300 prose-hr:my-10
         prose-table:border-collapse prose-table:w-full prose-table:my-6
@@ -242,7 +300,7 @@ export default function BlogArticle() {
 
       <div className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
-        <nav className="mb-8 text-sm">
+        <nav className="mb-8 text-sm max-w-6xl mx-auto">
           <ol className="flex items-center space-x-2 text-slate-600">
             <li>
               <Link to="/" className="hover:text-violet-600">
@@ -261,7 +319,7 @@ export default function BlogArticle() {
         </nav>
 
         {/* Article Header */}
-        <header className="mb-12 max-w-4xl mx-auto">
+        <header className="mb-12 max-w-6xl mx-auto">
           <div className="flex items-center gap-3 text-sm text-slate-600 mb-6">
             <span className="bg-violet-100 text-violet-700 px-3 py-1.5 rounded-full font-medium">
               {category}
@@ -291,7 +349,7 @@ export default function BlogArticle() {
 
         {/* Featured Image */}
         {article.image?.url && (
-          <div className="mb-12 max-w-4xl mx-auto">
+          <div className="mb-12 max-w-6xl mx-auto">
             <img
               src={article.image.url}
               alt={article.image.altText || article.title}
@@ -307,12 +365,12 @@ export default function BlogArticle() {
         )}
 
         {/* Article Content */}
-        <article className="max-w-4xl mx-auto">
+        <article className="max-w-6xl mx-auto">
           <ArticleContent contentHtml={article.contentHtml} />
         </article>
 
         {/* Article Tags */}
-        <div className="mt-12 max-w-4xl mx-auto">
+        <div className="mt-12 max-w-6xl mx-auto">
           <div className="flex flex-wrap gap-2">
             <span className="text-sm font-semibold text-slate-700">Tags:</span>
             {article.tags.map((tag) => (
@@ -327,7 +385,7 @@ export default function BlogArticle() {
         </div>
 
         {/* Back to Blog Link */}
-        <div className="mt-12 max-w-4xl mx-auto">
+        <div className="mt-12 max-w-6xl mx-auto">
           <Link
             to="/blog"
             className="inline-flex items-center text-violet-600 hover:text-violet-700 font-semibold"

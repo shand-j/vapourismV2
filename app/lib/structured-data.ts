@@ -3,6 +3,19 @@
  * Extracts JSON-LD schema generation to reduce inline script bloat in components
  */
 
+/**
+ * Site-wide constants for structured data
+ */
+export const SITE_URL = 'https://www.vapourism.co.uk';
+export const SITE_NAME = 'Vapourism';
+export const SITE_LOGO = `${SITE_URL}/logo.png`;
+export const SITE_EMAIL = 'hello@vapourism.co.uk';
+export const SOCIAL_LINKS = [
+  'https://twitter.com/vapourismuk',
+  'https://www.facebook.com/vapourism',
+  'https://www.instagram.com/vapourismuk',
+];
+
 export interface OrganizationSchemaParams {
   name: string;
   url: string;
@@ -140,5 +153,126 @@ export function structuredDataScript(schema: Record<string, unknown>) {
   return {
     type: 'application/ld+json' as const,
     dangerouslySetInnerHTML: { __html: JSON.stringify(schema) },
+  };
+}
+
+/**
+ * Generate FAQ Page Schema
+ */
+export interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+export function generateFAQSchema(faqs: FAQItem[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(faq => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
+  };
+}
+
+/**
+ * Generate ItemList Schema for Collection Pages
+ */
+export interface ItemListProduct {
+  name: string;
+  url: string;
+  image?: string;
+  description?: string;
+  price?: string;
+  priceCurrency?: string;
+}
+
+export function generateItemListSchema(params: {
+  name: string;
+  description?: string;
+  items: ItemListProduct[];
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: params.name,
+    ...(params.description && { description: params.description }),
+    numberOfItems: params.items.length,
+    itemListElement: params.items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'Product',
+        name: item.name,
+        url: item.url,
+        ...(item.image && { image: item.image }),
+        ...(item.description && { description: item.description }),
+        ...(item.price && item.priceCurrency && {
+          offers: {
+            '@type': 'Offer',
+            price: item.price,
+            priceCurrency: item.priceCurrency,
+          },
+        }),
+      },
+    })),
+  };
+}
+
+/**
+ * Generate CollectionPage Schema
+ */
+export function generateCollectionPageSchema(params: {
+  name: string;
+  description: string;
+  url: string;
+  numberOfItems: number;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: params.name,
+    description: params.description,
+    url: params.url,
+    mainEntity: {
+      '@type': 'ItemList',
+      name: params.name,
+      description: params.description,
+      numberOfItems: params.numberOfItems,
+    },
+  };
+}
+
+/**
+ * Generate AboutPage Schema
+ */
+export function generateAboutPageSchema(params: {
+  name: string;
+  description: string;
+  url: string;
+  foundingDate?: string;
+  founders?: string[];
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    name: params.name,
+    description: params.description,
+    url: params.url,
+    mainEntity: {
+      '@type': 'Organization',
+      name: params.name,
+      ...(params.foundingDate && { foundingDate: params.foundingDate }),
+      ...(params.founders && params.founders.length > 0 && {
+        founders: params.founders.map(founder => ({
+          '@type': 'Person',
+          name: founder,
+        })),
+      }),
+    },
   };
 }

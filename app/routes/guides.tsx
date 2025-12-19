@@ -1,5 +1,6 @@
 import {Link} from '@remix-run/react';
 import type {MetaFunction} from '@shopify/remix-oxygen';
+import {generateBreadcrumbSchema, structuredDataScript, SITE_URL} from '~/lib/structured-data';
 
 const GUIDES = [
   {
@@ -177,6 +178,12 @@ export default function GuidesIndexRoute() {
             </div>
           </div>
         </div>
+
+        {/* Structured Data for SEO */}
+        <script {...structuredDataScript(generateBreadcrumbSchema([
+          { name: 'Home', url: SITE_URL },
+          { name: 'Guides', url: `${SITE_URL}/guides` },
+        ]))} />
       </div>
     </div>
   );

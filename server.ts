@@ -28,6 +28,12 @@ function normalizeUrl(url: URL): URL {
   return url;
 }
 
+/**
+ * Static asset file extensions that should be cached immutably.
+ * Used for HTTP Cache-Control header optimization.
+ */
+const STATIC_ASSET_EXTENSIONS = /\.(js|css|woff|woff2|ttf|eot|ico|png|jpg|jpeg|gif|svg|webp)$/;
+
 export default {
   async fetch(
     request: Request,
@@ -67,8 +73,8 @@ export default {
       // Add performance optimizations based on content type and path
       const pathname = normalizedUrl.pathname;
       
-      // Cache static assets aggressively
-      if (pathname.match(/\.(js|css|woff|woff2|ttf|eot|ico|png|jpg|jpeg|gif|svg|webp)$/)) {
+      // Cache static assets aggressively (1 year immutable cache)
+      if (STATIC_ASSET_EXTENSIONS.test(pathname)) {
         response.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
       }
       // Cache HTML pages briefly to improve repeat visits without stale content

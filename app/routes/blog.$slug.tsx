@@ -158,6 +158,14 @@ function ArticleContent({content, inlineImages}: {content: string; inlineImages?
             )}
           </figure>
         );
+      } else if (process.env.NODE_ENV === 'development') {
+        console.warn(
+          `[blog.$slug] Inline image reference "${imageId}" not found in imageMap.`,
+          {
+            imageId,
+            availableImageIds: Array.from(imageMap.keys?.() ?? []),
+          }
+        );
       }
       return;
     }

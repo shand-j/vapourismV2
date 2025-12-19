@@ -163,6 +163,30 @@ export default function PrivacyPolicy() {
                 This Privacy Policy should be read in conjunction with our <Link to="/policies/cookie-policy" className="text-blue-600 hover:underline">Cookie Policy</Link> and <Link to="/policies/terms-of-service" className="text-blue-600 hover:underline">Terms of Service</Link>.
               </p>
             </div>
+
+            {/* Related Resources */}
+            <div className="mt-12">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Related Policies & Resources</h2>
+              <div className="grid gap-4 md:grid-cols-3">
+                <Link to="/policies/cookie-policy" className="p-5 bg-white border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md transition-all">
+                  <h3 className="font-semibold text-gray-900 mb-2">Cookie Policy</h3>
+                  <p className="text-sm text-gray-600">How we use cookies and tracking technologies</p>
+                </Link>
+                <Link to="/policies/terms-of-service" className="p-5 bg-white border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md transition-all">
+                  <h3 className="font-semibold text-gray-900 mb-2">Terms of Service</h3>
+                  <p className="text-sm text-gray-600">Terms and conditions for using our services</p>
+                </Link>
+                <Link to="/guides/age-verification" className="p-5 bg-white border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md transition-all">
+                  <h3 className="font-semibold text-gray-900 mb-2">Age Verification</h3>
+                  <p className="text-sm text-gray-600">Learn about our age verification process and data protection</p>
+                </Link>
+              </div>
+              <div className="mt-6 text-center">
+                <p className="text-sm text-gray-600">
+                  Have questions? <Link to="/contact" className="text-blue-600 hover:underline font-medium">Contact our support team</Link> or visit our <Link to="/faq" className="text-blue-600 hover:underline font-medium">FAQ page</Link>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </main>

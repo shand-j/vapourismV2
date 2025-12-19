@@ -214,6 +214,25 @@ export default function GuideSustainability() {
             </div>
           </div>
 
+          {/* Related Resources */}
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-slate-900 mb-6">Related Resources</h3>
+            <div className="grid gap-4 md:grid-cols-3">
+              <Link to="/guides/certifications" className="flex flex-col gap-2 p-5 rounded-xl border border-slate-200 hover:border-green-500 hover:bg-slate-50 transition-colors">
+                <h4 className="font-semibold text-slate-900">Certifications</h4>
+                <p className="text-sm text-slate-600">Our TPD compliance and product certifications</p>
+              </Link>
+              <Link to="/about" className="flex flex-col gap-2 p-5 rounded-xl border border-slate-200 hover:border-green-500 hover:bg-slate-50 transition-colors">
+                <h4 className="font-semibold text-slate-900">About Vapourism</h4>
+                <p className="text-sm text-slate-600">Learn about our company values and commitments</p>
+              </Link>
+              <Link to="/policies/delivery-information" className="flex flex-col gap-2 p-5 rounded-xl border border-slate-200 hover:border-green-500 hover:bg-slate-50 transition-colors">
+                <h4 className="font-semibold text-slate-900">Delivery Information</h4>
+                <p className="text-sm text-slate-600">Learn about our eco-friendly delivery options</p>
+              </Link>
+            </div>
+          </div>
+
           {/* Call to action */}
           <div className="rounded-3xl bg-gradient-to-br from-green-50 to-emerald-50 p-8 text-center">
             <h3 className="text-xl font-semibold text-slate-900">

@@ -60,7 +60,6 @@ Disallow: /*?*price_min=*
 Disallow: /*?*price_max=*
 Disallow: /*?*availability=*
 Disallow: /*?*type=*
-Disallow: /*?utm_*
 Disallow: /*?*utm_*
 
 # Note: vendor and tag params are allowed on /search for SEO-important brand pages

@@ -72,28 +72,45 @@ const PAGES_SITEMAP_QUERY = `#graphql
  * 
  * This list should include any Shopify page handles that correspond to
  * Remix routes that perform redirects, have noindex tags, or return non-200 status codes.
+ * 
+ * NOTE: This list is used to filter Shopify Pages queried from the Storefront API.
+ * Remix-only routes that don't correspond to Shopify Pages won't be affected by this list.
+ * For example, 'cart' is listed here in case there's a Shopify Page with handle "cart",
+ * but the Remix /cart route is not affected.
  */
 const EXCLUDED_ROUTES = new Set([
   // Redirect routes (301/302 status codes)
   'help',                    // Redirects to /faq (301)
   'track-order',             // Redirects to external Shopify domain (301)
+  'track',                   // Alternative handle for track-order
   
   // Age verification routes (noindex, nofollow)
   'age-verification',        // Age verification flow
   'age-verification-fail',   // Age verification failure
   'age-verification-retry',  // Age verification retry
   'age-verification-success',// Age verification success
+  'age-verify',              // Alternative handle
   
   // Account/Auth routes (noindex, require auth)
   'account',                 // Account portal
   'account-login',           // Login page
   'account-authorize',       // OAuth authorize
   'account-orders',          // Order history (requires auth)
+  'login',                   // Alternative handle for login
+  'register',                // Registration page
+  'signup',                  // Alternative handle for signup
   
   // Utility/Search routes (dynamic content, not canonical)
   'search',                  // Search results page (dynamic)
   'device-studio-results',   // Device recommendation results
   'flavour-lab-results',     // Flavor recommendation results
+  
+  // Cart and checkout (handled by Shopify)
+  'cart',                    // Cart page (Remix-handled but dynamic)
+  'checkout',                // Checkout (Shopify-hosted)
+  
+  // API and utility routes
+  'api',                     // API routes
 ]);
 
 /**
@@ -109,6 +126,12 @@ const PRIORITY = {
 /**
  * Static Remix routes that should be included in the sitemap
  * These are routes that don't come from Shopify Pages but should be indexed
+ * 
+ * IMPORTANT: Only include routes that:
+ * 1. Always return 200 status (no redirects)
+ * 2. Never have noindex meta tags (or only conditionally in error cases that won't occur)
+ * 3. Have stable, canonical URLs
+ * 4. Don't require authentication
  */
 const STATIC_ROUTES = [
   // Core information pages
@@ -132,6 +155,13 @@ const STATIC_ROUTES = [
   { handle: 'blog', priority: PRIORITY.MEDIUM },
   
   // Collection landing pages (SEO-optimized category pages)
+  // NOTE: These routes have conditional noindex in their meta functions as a safety measure.
+  // The noindex only triggers if the loader fails to return data (if (!data)), which should
+  // never happen in production because:
+  // 1. searchProducts() catches all errors and returns empty arrays instead of throwing
+  // 2. The loaders always return json() responses with data structure
+  // The noindex would only trigger in catastrophic Remix framework failures.
+  // Therefore, these pages are safe to include in the sitemap.
   { handle: 'collections/crystal-bar', priority: PRIORITY.HIGH },
   { handle: 'collections/elux-legend', priority: PRIORITY.HIGH },
   { handle: 'collections/hayati-pro-max', priority: PRIORITY.HIGH },

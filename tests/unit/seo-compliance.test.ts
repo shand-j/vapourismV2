@@ -244,7 +244,7 @@ describe('SEO Compliance Tests', () => {
     it('should include Offer schema with pricing', () => {
       const schema = SEOAutomationService.generateProductSchema(testProduct);
       expect(schema?.offers?.['@type']).toBe('Offer');
-      expect(schema?.offers?.price).toBe(testProduct.price.amount);
+      expect(schema?.offers?.price).toBe(parseFloat(testProduct.price.amount)); // Expect number format per Google 2025 requirements
       expect(schema?.offers?.priceCurrency).toBe('GBP');
     });
 

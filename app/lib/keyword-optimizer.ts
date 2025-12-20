@@ -378,6 +378,9 @@ export class KeywordOptimizer {
       product.productType
     );
     
+    // Ensure price is a number as required by Google
+    const priceValue = parseFloat(product.price.amount);
+    
     return {
       "@context": "https://schema.org",
       "@type": "Product",
@@ -391,7 +394,7 @@ export class KeywordOptimizer {
       "keywords": keywords.join(', '),
       "offers": {
         "@type": "Offer",
-        "price": product.price.amount,
+        "price": priceValue,
         "priceCurrency": product.price.currencyCode,
         "availability": product.availability 
           ? "https://schema.org/InStock" 
@@ -399,7 +402,8 @@ export class KeywordOptimizer {
         "url": product.url,
         "seller": {
           "@type": "Organization",
-          "name": "Vapourism"
+          "name": "Vapourism",
+          "url": "https://www.vapourism.co.uk"
         },
         "priceValidUntil": new Date(Date.now() + PRICE_VALIDITY_DAYS * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       },

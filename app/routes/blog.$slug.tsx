@@ -56,6 +56,7 @@ export async function loader({params, request}: LoaderFunctionArgs) {
     '@type': 'Article',
     headline: article.title,
     description: article.metaDescription,
+    image: article.featuredImage,
     datePublished: article.publishedDate,
     dateModified: article.lastModified,
     author: {
@@ -69,6 +70,10 @@ export async function loader({params, request}: LoaderFunctionArgs) {
         '@type': 'ImageObject',
         url: `${origin}/favicon.svg`,
       },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `${origin}/blog/${article.slug}`,
     },
     articleSection: article.category,
     keywords: article.tags.join(', '),

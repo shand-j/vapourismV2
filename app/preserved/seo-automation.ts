@@ -519,10 +519,6 @@ export class SEOAutomationService {
     const volumeMatch = title.match(/\b(\d+)\s*ml\b/i);
     if (volumeMatch) specs.push(volumeMatch[1] + 'ml');
     
-    // Extract weight (e.g., "1g", "5g") - use negative lookbehind to avoid matching "mg"
-    const weightMatch = title.match(/\b(\d+)\s*(?<!m)g\b/i);
-    if (weightMatch) specs.push(weightMatch[1] + 'g');
-    
     // Extract VG/PG ratio (e.g., "50/50", "70/30")
     const vgpgMatch = title.match(/\b(\d+)\s*\/\s*(\d+)\b/);
     if (vgpgMatch) specs.push(`${vgpgMatch[1]}/${vgpgMatch[2]}`);

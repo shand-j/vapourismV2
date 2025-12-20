@@ -25,14 +25,9 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     }
   );
 
-  const topBrands = [...new Set(searchResults.products.map(p => p.vendor))].slice(0, 5);
   const categoryTitle = 'Hayati Remix';
   const seoTitle = SEOAutomationService.generateCategoryTitle(categoryTitle, searchResults.totalCount);
-  const seoDescription = SEOAutomationService.generateCategoryMetaDescription(
-    categoryTitle,
-    searchResults.totalCount,
-    topBrands
-  );
+  const seoDescription = 'Shop Hayati Remix refillable pod systems UK. ✓ Premium pod device ✓ Adjustable airflow ✓ Long battery life ✓ Compatible pods & e-liquids ✓ Fast delivery. Modern design meets exceptional performance.';
 
   return json({
     products: searchResults.products,

@@ -150,7 +150,9 @@ export default function App() {
   // ALWAYS use production domain from env for canonical URLs, never use myshopify.com domain
   const productionDomain = data.env?.PRODUCTION_DOMAIN || 'https://www.vapourism.co.uk';
   const siteUrl = productionDomain;
-  const canonicalUrl = `${siteUrl.replace(/\/$/, '')}${location.pathname}`;
+  // Strip trailing slashes for consistent canonicals (except for homepage)
+  const cleanPath = location.pathname === '/' ? '/' : location.pathname.replace(/\/$/, '');
+  const canonicalUrl = `${siteUrl.replace(/\/$/, '')}${cleanPath}`;
   
   // GA4 Measurement ID
   const ga4MeasurementId = data.env?.GA4_MEASUREMENT_ID;
@@ -192,7 +194,7 @@ export default function App() {
         />
         
         {/* Google Analytics 4 */}
-        {ga4MeasurementId && <GoogleAnalytics measurementId={ga4MeasurementId} />}
+        {ga4MeasurementId && <GoogleAnalytics measurementId={ga4MeasurementId} nonce={nonce} />}
         
         {/* SearchAtlas OTTO Pixel - SEO optimization - loaded async to not block HTML parsing */}
         <script

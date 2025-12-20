@@ -191,15 +191,22 @@ export default function App() {
         />
         
         {/* Google Analytics 4 */}
-        {ga4MeasurementId && <GoogleAnalytics measurementId={ga4MeasurementId} />}
+        {ga4MeasurementId && <GoogleAnalytics measurementId={ga4MeasurementId} nonce={nonce} />}
         
-        {/* SearchAtlas OTTO Pixel - SEO optimization */}
-        <script
+        {/* SearchAtlas OTTO Pixel - SEO optimization 
+            NOTE: Disabled due to CSP violations with data: URLs
+            The base64 data URL violates Content Security Policy.
+            To re-enable, either:
+            1. Load the script from https://dashboard.searchatlas.com directly with nonce
+            2. Add 'data:' to CSP script-src (not recommended for security)
+            3. Convert to regular script tag with proper nonce attribute
+        */}
+        {/* <script
           type="text/javascript"
           id="sa-dynamic-optimization"
           data-uuid="d709ea19-b642-442c-ab07-012003668401"
           src="data:text/javascript;base64,dmFyIHNjcmlwdCA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoInNjcmlwdCIpO3NjcmlwdC5zZXRBdHRyaWJ1dGUoIm5vd3Byb2NrZXQiLCAiIik7c2NyaXB0LnNldEF0dHJpYnV0ZSgibml0cm8tZXhjbHVkZSIsICIiKTtzY3JpcHQuc3JjID0gImh0dHBzOi8vZGFzaGJvYXJkLnNlYXJjaGF0bGFzLmNvbS9zY3JpcHRzL2R5bmFtaWNfb3B0aW1pemF0aW9uLmpzIjtzY3JpcHQuZGF0YXNldC51dWlkID0gImQ3MDllYTE5LWI2NDItNDQyYy1hYjA3LTAxMjAwMzY2ODQwMSI7c2NyaXB0LmlkID0gInNhLWR5bmFtaWMtb3B0aW1pemF0aW9uLWxvYWRlciI7ZG9jdW1lbnQuaGVhZC5hcHBlbmRDaGlsZChzY3JpcHQpOw=="
-        />
+        /> */}
       </head>
       <body className="bg-white text-slate-900 antialiased">
         {isAgeGateActive && (

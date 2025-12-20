@@ -611,15 +611,4 @@ html {
   .emoji, [role="img"] {
     font-style: normal;
   }
-
-  /* =============================================== */
-  /* CHECKMARKS AND SPECIAL CHARACTERS */
-  /* =============================================== */
-  /* Style checkmark lists (✅) */
-  li:has(> :first-child:is(:contains("✅"))),
-  p:has(:first-child:is(:contains("✅"))) {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
 }

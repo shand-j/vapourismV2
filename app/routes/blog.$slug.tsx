@@ -202,6 +202,17 @@ function ArticleContent({contentHtml}: {contentHtml: string}) {
       }
     });
 
+    // Enhance internal product links with icons
+    const productLinks = contentRef.current.querySelectorAll(
+      'a[href^="/collections"], a[href^="/products"], a[href^="/search"]'
+    );
+    productLinks.forEach((link) => {
+      // Don't add icon if already has one or is inside a table
+      if (!link.querySelector('svg') && !link.closest('table')) {
+        link.setAttribute('data-product-link', 'true');
+      }
+    });
+
     return () => {
       // Cleanup event listeners properly
       images.forEach((img) => {
@@ -216,28 +227,7 @@ function ArticleContent({contentHtml}: {contentHtml: string}) {
   return (
     <div 
       ref={contentRef}
-      className="article-content prose prose-lg prose-slate max-w-none
-        prose-headings:font-bold prose-headings:text-slate-900
-        prose-h1:text-4xl prose-h1:mb-6 prose-h1:mt-12 first:prose-h1:mt-0 prose-h1:leading-tight
-        prose-h2:text-3xl prose-h2:mb-5 prose-h2:mt-10 prose-h2:leading-tight
-        prose-h3:text-2xl prose-h3:mb-4 prose-h3:mt-8 prose-h3:leading-snug
-        prose-h4:text-xl prose-h4:mb-3 prose-h4:mt-6
-        prose-p:text-slate-700 prose-p:leading-[1.8] prose-p:mb-6 prose-p:text-[1.125rem]
-        prose-ul:list-disc prose-ul:ml-6 prose-ul:mb-6 prose-ul:space-y-2 prose-ul:text-slate-700
-        prose-ol:list-decimal prose-ol:ml-6 prose-ol:mb-6 prose-ol:space-y-2 prose-ol:text-slate-700
-        prose-li:text-slate-700 prose-li:leading-[1.8] prose-li:text-[1.125rem]
-        prose-a:text-violet-600 prose-a:hover:text-violet-700 prose-a:underline prose-a:decoration-2 prose-a:underline-offset-2
-        prose-strong:text-slate-900 prose-strong:font-semibold
-        prose-em:italic prose-em:text-slate-600
-        prose-code:bg-slate-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:text-slate-800 prose-code:font-mono
-        prose-pre:bg-slate-900 prose-pre:text-slate-100 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto prose-pre:my-6
-        prose-img:rounded-xl prose-img:shadow-lg prose-img:my-8 prose-img:w-full prose-img:h-auto prose-img:max-w-full
-        prose-blockquote:border-l-4 prose-blockquote:border-violet-500 prose-blockquote:pl-6 prose-blockquote:pr-4 prose-blockquote:py-2 prose-blockquote:italic prose-blockquote:text-slate-600 prose-blockquote:bg-slate-50 prose-blockquote:rounded-r-lg prose-blockquote:my-6
-        prose-hr:border-slate-300 prose-hr:my-10
-        prose-table:border-collapse prose-table:w-full prose-table:my-6
-        prose-th:bg-slate-100 prose-th:p-3 prose-th:text-left prose-th:font-semibold prose-th:text-slate-900 prose-th:border prose-th:border-slate-300
-        prose-td:p-3 prose-td:border prose-td:border-slate-300 prose-td:text-slate-700
-        prose-video:rounded-xl prose-video:shadow-lg prose-video:my-8 prose-video:w-full"
+      className="article-content prose prose-lg prose-slate max-w-none"
       dangerouslySetInnerHTML={{__html: contentHtml}}
     />
   );

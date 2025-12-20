@@ -81,8 +81,7 @@ const PAGES_SITEMAP_QUERY = `#graphql
 const EXCLUDED_ROUTES = new Set([
   // Redirect routes (301/302 status codes)
   'help',                    // Redirects to /faq (301)
-  'track-order',             // Redirects to external Shopify domain (301)
-  'track',                   // Alternative handle for track-order
+  'track-order',             // Redirects to /account/orders (301)
   
   // Age verification routes (noindex, nofollow)
   'age-verification',        // Age verification flow

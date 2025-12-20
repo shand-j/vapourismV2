@@ -176,10 +176,11 @@ export class SEOAutomationService {
   /**
    * Generate category meta description (for tag-based search pages)
    * Enhanced with keyword mapping and category-specific variation
+   * Optimized to stay within 160 character SEO best practice
    */
   static generateCategoryMetaDescription(categoryTitle: string, productCount?: number, topBrands?: string[]): string {
     const productText = productCount ? `${productCount} products` : 'our range';
-    const brandsText = topBrands?.slice(0, 3).join(', ') || 'top brands';
+    const brandsText = topBrands?.slice(0, 2).join(', ') || 'top brands';
     const currentYear = new Date().getFullYear();
     
     // Generate category-specific keywords
@@ -194,40 +195,41 @@ export class SEOAutomationService {
     const primaryKeyword = keywordMapping.primary[0] || categoryTitle;
     
     // Create category-specific descriptions with variation to avoid duplicates
+    // Keep descriptions concise (under 160 chars ideally, max 200)
     const categoryLower = categoryTitle.toLowerCase();
     
     // Device-related categories
     if (categoryLower.includes('device') || categoryLower.includes('kit') || categoryLower.includes('mod') || categoryLower.includes('pod')) {
-      return `Discover ${productText} ${primaryKeyword} devices at Vapourism featuring ${brandsText}. Premium vaping hardware with ✓ Latest technology ✓ Reliable performance ✓ Fast UK shipping ✓ Competitive pricing. Shop authentic ${categoryTitle} ${currentYear}.`;
+      return `Shop ${productText} ${primaryKeyword} at Vapourism featuring ${brandsText}. Latest vaping technology with fast UK delivery. Browse ${currentYear} collection.`;
     }
     
     // E-liquid categories
     if (categoryLower.includes('e-liquid') || categoryLower.includes('juice') || categoryLower.includes('liquid')) {
-      return `Browse ${productText} ${primaryKeyword} at Vapourism from ${brandsText}. Quality e-liquids with ✓ Authentic flavors ✓ Multiple nicotine strengths ✓ Fast UK delivery ✓ Best prices. Explore premium ${categoryTitle} ${currentYear}.`;
+      return `Browse ${productText} ${primaryKeyword} from ${brandsText}. Authentic flavors, multiple strengths, fast UK delivery. Explore premium e-liquids ${currentYear}.`;
     }
     
     // Disposable categories
     if (categoryLower.includes('disposable') || categoryLower.includes('puff')) {
-      return `Shop ${productText} ${primaryKeyword} at Vapourism stocking ${brandsText}. Convenient disposables featuring ✓ Ready to use ✓ No maintenance ✓ Fast UK delivery ✓ Genuine products. Find your perfect ${categoryTitle} ${currentYear}.`;
+      return `Shop ${productText} ${primaryKeyword} from ${brandsText}. Ready to use disposables with fast UK delivery. Find your perfect vape ${currentYear}.`;
     }
     
     // Nicotine products
     if (categoryLower.includes('nicotine') || categoryLower.includes('nic salt') || categoryLower.includes('freebase')) {
-      return `Explore ${productText} ${primaryKeyword} at Vapourism including ${brandsText}. Quality nicotine solutions with ✓ Various strengths ✓ Smooth satisfaction ✓ Fast UK delivery ✓ Great value. Browse ${categoryTitle} options ${currentYear}.`;
+      return `Explore ${productText} ${primaryKeyword} from ${brandsText}. Various strengths, smooth satisfaction, fast UK delivery. Browse options ${currentYear}.`;
     }
     
     // Accessories
     if (categoryLower.includes('coil') || categoryLower.includes('tank') || categoryLower.includes('battery') || categoryLower.includes('accessory')) {
-      return `Find ${productText} ${primaryKeyword} at Vapourism from ${brandsText}. Essential vaping accessories with ✓ Compatible options ✓ Quality materials ✓ Fast UK delivery ✓ Expert support. Get your ${categoryTitle} today ${currentYear}.`;
+      return `Find ${productText} ${primaryKeyword} from ${brandsText}. Essential vaping accessories with fast UK delivery. Shop ${categoryTitle} ${currentYear}.`;
     }
     
     // Brand-specific pages (fallback with brand emphasis)
     if (topBrands && topBrands.length > 0) {
-      return `Shop ${productText} ${primaryKeyword} at Vapourism featuring authentic ${brandsText} products. ✓ Authorized retailer ✓ Genuine items ✓ Fast UK delivery ✓ Competitive prices ✓ Customer satisfaction. Browse ${categoryTitle} collection ${currentYear}.`;
+      return `Shop ${productText} ${primaryKeyword} featuring ${brandsText}. Authorized UK retailer with fast delivery and competitive prices. Browse ${currentYear}.`;
     }
     
     // Default fallback with unique phrasing
-    return `Shop ${primaryKeyword} at Vapourism. ${productText} from ${brandsText}. ✓ Premium quality ✓ Fast UK delivery ✓ Competitive prices ✓ Expert support. Browse the best ${categoryTitle} ${currentYear}.`;
+    return `Shop ${primaryKeyword} at Vapourism. ${productText} from ${brandsText}. Premium quality with fast UK delivery. Browse ${currentYear}.`;
   }
 
   /**

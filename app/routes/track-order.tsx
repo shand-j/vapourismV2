@@ -3,8 +3,8 @@ import {redirect, type LoaderFunctionArgs, type MetaFunction} from '@shopify/rem
 /**
  * Track Order Redirect
  * 
- * Redirects to Shopify's hosted order status page.
- * Users can enter their order number and email on Shopify's hosted page.
+ * Redirects to the account orders page where users can view their order history.
+ * Uses a relative redirect to avoid redirect chains that could occur with external URLs.
  */
 
 export const meta: MetaFunction = () => [
@@ -13,12 +13,11 @@ export const meta: MetaFunction = () => [
 ];
 
 export async function loader({context}: LoaderFunctionArgs) {
-  // Get shop domain from environment or context
-  const shopDomain = context.env?.PUBLIC_STORE_DOMAIN || 'vapourism.co.uk';
-  
-  // Redirect to Shopify's hosted order status lookup
-  // This is the standard Shopify order status URL pattern
-  return redirect(`https://${shopDomain}/account/orders`, {
+  // Redirect to the account orders page on the same domain
+  // Using a relative URL avoids redirect chains that would occur
+  // if we redirected to an external domain (e.g., myshopify.com)
+  // which would then redirect back to the canonical domain
+  return redirect('/account/orders', {
     status: 301,
   });
 }

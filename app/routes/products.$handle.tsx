@@ -151,10 +151,10 @@ export async function loader({params, context}: LoaderFunctionArgs) {
   }
 
   try {
-    // Fetch product data
+    // Fetch product data with longer cache (products don't change frequently)
     const {product} = await context.storefront.query(PRODUCT_QUERY, {
       variables: {handle},
-      cache: context.storefront.CacheShort(), // Cache for 1 minute
+      cache: context.storefront.CacheLong(), // Cache for 1 hour - products change infrequently
     });
 
     if (!product) {

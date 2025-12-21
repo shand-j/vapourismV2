@@ -112,6 +112,10 @@ export default async function handleRequest(
   }
 
   responseHeaders.set('Content-Type', 'text/html');
+  
+  // Add performance headers
+  responseHeaders.set('X-Content-Type-Options', 'nosniff');
+  
   // The createContentSecurityPolicy header is intentionally strict by default.
   // For a small set of verification-only routes we need to relax script-src so
   // partner widgets (e.g. AgeVerif) that create runtime inline scripts are

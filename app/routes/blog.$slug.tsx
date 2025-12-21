@@ -1,6 +1,7 @@
 import type {MetaFunction, LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useLoaderData, Link} from '@remix-run/react';
 import {useEffect, useRef} from 'react';
+import {useNonce} from '@shopify/hydrogen';
 import {
   getArticle,
   generateMetaDescription,
@@ -245,6 +246,7 @@ function ArticleContent({contentHtml}: {contentHtml: string}) {
 
 export default function BlogArticle() {
   const {article, category, structuredData} = useLoaderData<typeof loader>();
+  const nonce = useNonce();
   const engagementTracked = useRef(false);
   const startTime = useRef<number>(0);
   const scrollDepthTracked = useRef<Set<number>>(new Set());
@@ -320,9 +322,10 @@ export default function BlogArticle() {
 
   return (
     <>
-      {/* JSON-LD Structured Data */}
+      {/* JSON-LD Structured Data - nonce required for CSP compliance */}
       <script
         type="application/ld+json"
+        nonce={nonce}
         dangerouslySetInnerHTML={{__html: JSON.stringify(structuredData)}}
       />
 

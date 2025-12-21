@@ -159,14 +159,25 @@ export default async function handleRequest(
   }
 
   // Allow GA tracking pixels in img-src
+  // Also allow common external image sources for blog content (Unsplash, etc.)
   if (/img-src/.test(effectiveHeader)) {
     effectiveHeader = effectiveHeader.replace(/img-src([^;]*)/, (match, v = '') => {
       let existing = v;
       if (!existing.includes('https://www.google-analytics.com')) existing += ' https://www.google-analytics.com';
       if (!existing.includes('https://*.google-analytics.com')) existing += ' https://*.google-analytics.com';
       if (!existing.includes('https://www.googletagmanager.com')) existing += ' https://www.googletagmanager.com';
+      // Allow common external image sources for blog content
+      if (!existing.includes('https://images.unsplash.com')) existing += ' https://images.unsplash.com';
+      if (!existing.includes('https://*.unsplash.com')) existing += ' https://*.unsplash.com';
+      // Allow data: URLs for inline images (some blog content uses data URIs)
+      if (!existing.includes('data:')) existing += ' data:';
+      // Allow https: as a fallback for other external images
+      if (!existing.includes('https:')) existing += ' https:';
       return `img-src${existing}`;
     });
+  } else {
+    // If img-src is not present, add it with all needed sources
+    effectiveHeader += '; img-src \'self\' https://cdn.shopify.com https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://images.unsplash.com https://*.unsplash.com data: https:';
   }
 
   try {

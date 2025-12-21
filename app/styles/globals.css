@@ -25,6 +25,7 @@
   --radius: 1.5rem;
   --gradient-start: #5b2be0;
   --gradient-end: #1fb2ff;
+  --header-height: 72px;
 }
 
 @layer base {
@@ -307,6 +308,6 @@ html {
     margin-right: 0.75rem;
     margin-top: 0.125rem;
     color: #5b2be0;
-    font-family: 'SF Pro Display', 'Space Grotesk', serif;
+    font-family: 'SF Pro Display', 'Space Grotesk', system-ui, sans-serif;
   }
 }

@@ -332,7 +332,7 @@ export default function BlogArticle() {
 
       <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
         {/* Breadcrumb */}
-        <nav className="border-b border-slate-100 bg-white/80 backdrop-blur-sm sticky top-[72px] z-40">
+        <nav className="border-b border-slate-100 bg-white/80 backdrop-blur-sm sticky top-[var(--header-height,72px)] z-40">
           <div className="container mx-auto px-4 py-4">
             <ol className="flex items-center space-x-2 text-sm text-slate-500 max-w-4xl mx-auto">
               <li>
@@ -347,7 +347,7 @@ export default function BlogArticle() {
                 </Link>
               </li>
               <li className="text-slate-300">/</li>
-              <li className="text-slate-700 font-medium truncate max-w-[200px] md:max-w-none">{article.title}</li>
+              <li className="text-slate-700 font-medium truncate max-w-48 md:max-w-none">{article.title}</li>
             </ol>
           </div>
         </nav>

@@ -94,6 +94,10 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
         url: `${origin}/favicon.svg`,
       },
     },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `${origin}/blog/${article.handle}`,
+    },
     articleSection: category,
     keywords: article.tags.join(', '),
     ...(article.image?.url && {

@@ -150,7 +150,7 @@ describe('KeywordOptimizer', () => {
       expect(schema.name).toBe('Elf Bar 600');
       expect(schema.brand['@type']).toBe('Brand');
       expect(schema.brand.name).toBe('Elf Bar');
-      expect(schema.offers.price).toBe('5.99');
+      expect(schema.offers.price).toBe(5.99); // Changed to number for Google 2025 requirements
       expect(schema.offers.priceCurrency).toBe('GBP');
       expect(schema.offers.availability).toBe('https://schema.org/InStock');
     });

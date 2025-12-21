@@ -420,3 +420,190 @@ describe('SEOAutomationService.generateImageAltText', () => {
     expect(result).toContain('product gallery');
   });
 });
+
+describe('SEOAutomationService.generateProductTitle', () => {
+  describe('Unique spec preservation', () => {
+    it('should preserve nicotine strength (mg) in truncated titles', () => {
+      const longTitle = 'Super Amazing Extra Long Product Name That Goes On Forever 20mg Nicotine Salt E-Liquid With Many Words';
+      const result = SEOAutomationService.generateProductTitle(longTitle, 'Test Brand');
+      
+      expect(result).toContain('20mg');
+      expect(result.length).toBeLessThanOrEqual(70);
+    });
+
+    it('should preserve volume (ml) in truncated titles', () => {
+      const longTitle = 'Incredibly Descriptive Product Name With Many Adjectives 10ml Bottle Size That Needs Truncation';
+      const result = SEOAutomationService.generateProductTitle(longTitle, 'Test Brand');
+      
+      expect(result).toContain('10ml');
+      expect(result.length).toBeLessThanOrEqual(70);
+    });
+
+    it('should preserve puff count in truncated titles', () => {
+      const longTitle = 'Amazing Disposable Vape Device With Incredible Flavor Profile 4000 Puffs Long Lasting Battery';
+      const result = SEOAutomationService.generateProductTitle(longTitle, 'Test Brand');
+      
+      expect(result).toContain('4000 puffs');
+      expect(result.length).toBeLessThanOrEqual(70);
+    });
+
+    it('should preserve VG/PG ratio in truncated titles', () => {
+      const longTitle = 'Premium Quality E-Liquid With Exceptional Taste Profile 50/50 VG PG Ratio Perfect Balance';
+      const result = SEOAutomationService.generateProductTitle(longTitle, 'Test Brand');
+      
+      expect(result).toContain('50/50');
+      expect(result.length).toBeLessThanOrEqual(70);
+    });
+
+    it('should preserve multiple specs when present', () => {
+      const longTitle = 'High Quality Premium E-Liquid Product 20mg Nicotine Strength 10ml Bottle Size Description';
+      const result = SEOAutomationService.generateProductTitle(longTitle, 'Test Brand');
+      
+      expect(result).toContain('20mg');
+      expect(result).toContain('10ml');
+      expect(result.length).toBeLessThanOrEqual(70);
+    });
+  });
+
+  describe('Title uniqueness', () => {
+    it('should generate different titles for products with different strengths', () => {
+      const title1 = SEOAutomationService.generateProductTitle(
+        'Just Nic It Nic Salt 10ml 50VG/50PG 12mg',
+        'Just Nic It'
+      );
+      const title2 = SEOAutomationService.generateProductTitle(
+        'Just Nic It Nic Salt 10ml 50VG/50PG 20mg',
+        'Just Nic It'
+      );
+      
+      expect(title1).not.toBe(title2);
+      expect(title1).toContain('12mg');
+      expect(title2).toContain('20mg');
+    });
+
+    it('should generate different titles for products with different volumes', () => {
+      const title1 = SEOAutomationService.generateProductTitle(
+        'Premium CBD Oil 1000mg 10ml',
+        'Test Brand'
+      );
+      const title2 = SEOAutomationService.generateProductTitle(
+        'Premium CBD Oil 1000mg 30ml',
+        'Test Brand'
+      );
+      
+      expect(title1).not.toBe(title2);
+      expect(title1).toContain('10ml');
+      expect(title2).toContain('30ml');
+    });
+
+    it('should generate different titles for products with different puff counts', () => {
+      const title1 = SEOAutomationService.generateProductTitle(
+        'Disposable Vape Device 600 Puffs',
+        'Vape Brand'
+      );
+      const title2 = SEOAutomationService.generateProductTitle(
+        'Disposable Vape Device 4000 Puffs',
+        'Vape Brand'
+      );
+      
+      expect(title1).not.toBe(title2);
+      expect(title1.toLowerCase()).toContain('600');
+      expect(title2.toLowerCase()).toContain('4000');
+    });
+  });
+
+  describe('Standard title generation', () => {
+    it('should include vendor when title fits within 70 chars', () => {
+      const result = SEOAutomationService.generateProductTitle(
+        'Short Product Name 20mg',
+        'Test Brand'
+      );
+      
+      expect(result).toContain('Test Brand');
+      expect(result).toContain('Vapourism');
+      expect(result.length).toBeLessThanOrEqual(70);
+    });
+
+    it('should omit vendor when title is too long', () => {
+      const result = SEOAutomationService.generateProductTitle(
+        'Very Long Product Name That Needs Truncation But Has Important Specs 20mg 10ml',
+        'Very Long Brand Name'
+      );
+      
+      expect(result).toContain('Vapourism');
+      expect(result.length).toBeLessThanOrEqual(70);
+    });
+
+    it('should use custom override when handle matches', () => {
+      const result = SEOAutomationService.generateProductTitle(
+        'Regular Title',
+        'Brand',
+        null,
+        'realest-cbd-4000mg-cbg-isolate-buy-1-get-1-free'
+      );
+      
+      expect(result).toBe('Realest CBD 4000mg CBG Isolate: BOGO at Vapourism');
+    });
+
+    it('should use Shopify SEO title when provided', () => {
+      const result = SEOAutomationService.generateProductTitle(
+        'Regular Title',
+        'Brand',
+        'Custom SEO Title from Shopify'
+      );
+      
+      expect(result).toBe('Custom SEO Title from Shopify');
+    });
+
+    it('should always be 70 characters or less', () => {
+      const longTitle = 'A'.repeat(100) + ' 20mg 10ml'; // Very long title with specs
+      const result = SEOAutomationService.generateProductTitle(longTitle, 'Brand');
+      
+      expect(result.length).toBeLessThanOrEqual(70);
+    });
+  });
+
+  describe('Real-world product examples', () => {
+    it('should handle Realest CBD products uniquely', () => {
+      const title1 = SEOAutomationService.generateProductTitle(
+        'Realest CBD 4000mg CBG Isolate Buy 1 Get 1 Free',
+        'Realest CBD'
+      );
+      const title2 = SEOAutomationService.generateProductTitle(
+        'Realest CBD 6000mg CBD 10ml Raw Paste Buy 1 Get 1 Free',
+        'Realest CBD'
+      );
+      
+      expect(title1).not.toBe(title2);
+      expect(title1).toContain('4000mg');
+      expect(title2).toContain('6000mg');
+      expect(title2).toContain('10ml');
+    });
+
+    it('should handle Hayati products uniquely', () => {
+      const title1 = SEOAutomationService.generateProductTitle(
+        'Hayati Pro Max 4000 Puffs Disposable Vape - Blueberry',
+        'Hayati'
+      );
+      const title2 = SEOAutomationService.generateProductTitle(
+        'Hayati Pro Ultra 15000 Puffs Disposable Vape - Blueberry',
+        'Hayati'
+      );
+      
+      expect(title1).not.toBe(title2);
+      expect(title1.toLowerCase()).toContain('4000');
+      expect(title2.toLowerCase()).toContain('15000');
+    });
+
+    it('should handle Just Nic It products with multiple specs', () => {
+      const title = SEOAutomationService.generateProductTitle(
+        '20mg Just Nic It Nic Salt 10ml 50VG/50PG',
+        'Just Nic It'
+      );
+      
+      expect(title).toContain('20mg');
+      expect(title).toContain('10ml');
+      expect(title.length).toBeLessThanOrEqual(70);
+    });
+  });
+});

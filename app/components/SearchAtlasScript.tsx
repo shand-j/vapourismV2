@@ -41,12 +41,7 @@ export function SearchAtlasScript({
     // Append to document head
     document.head.appendChild(script);
 
-    // Cleanup on unmount (optional, script likely should persist)
-    return () => {
-      // Don't remove the script on unmount to avoid re-loading
-      // const existingScript = document.getElementById('sa-dynamic-optimization-loader');
-      // if (existingScript) existingScript.remove();
-    };
+    // No cleanup needed - the script should persist for the page lifetime
   }, [uuid]);
 
   // This component doesn't render anything

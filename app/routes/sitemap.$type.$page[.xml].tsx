@@ -104,8 +104,8 @@ const EXCLUDED_ROUTES = new Set([
   'device-studio-results',   // Device recommendation results
   'flavour-lab-results',     // Flavor recommendation results
   
-  // Cart and checkout (handled by Shopify)
-  'cart',                    // Cart page (Remix-handled but dynamic)
+  // Cart and checkout (Shopify pages / handles)
+  'cart',                    // Shopify Page with handle "cart" (would be non-canonical vs Remix /cart and should not be indexed)
   'checkout',                // Checkout (Shopify-hosted)
   
   // API and utility routes

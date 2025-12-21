@@ -104,7 +104,22 @@ export default {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            '--tw-prose-body': '#475569',
+            '--tw-prose-headings': '#0f172a',
+            '--tw-prose-links': '#5b2be0',
+            '--tw-prose-bold': '#0f172a',
+            '--tw-prose-quotes': '#475569',
+            '--tw-prose-quote-borders': '#5b2be0',
+          },
+        },
+      },
     },
   },
-  plugins: [import('tailwindcss-animate').then((mod) => mod.default ?? mod)],
+  plugins: [
+    import('tailwindcss-animate').then((mod) => mod.default ?? mod),
+    import('@tailwindcss/typography').then((mod) => mod.default ?? mod),
+  ],
 };

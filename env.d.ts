@@ -40,6 +40,8 @@ declare global {
     AGE_VERIF_METAFIELD_KEY?: string;
     // Analytics
     GA4_MEASUREMENT_ID?: string;
+    // Blog
+    BLOG_HANDLE?: string;
   }
 }
 

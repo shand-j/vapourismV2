@@ -171,13 +171,11 @@ export default async function handleRequest(
       if (!existing.includes('https://*.unsplash.com')) existing += ' https://*.unsplash.com';
       // Allow data: URLs for inline images (some blog content uses data URIs)
       if (!existing.includes('data:')) existing += ' data:';
-      // Allow https: as a fallback for other external images
-      if (!existing.includes('https:')) existing += ' https:';
       return `img-src${existing}`;
     });
   } else {
-    // If img-src is not present, add it with all needed sources
-    effectiveHeader += '; img-src \'self\' https://cdn.shopify.com https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://images.unsplash.com https://*.unsplash.com data: https:';
+    // If img-src is not present, add it with all needed sources (excluding overly permissive https:)
+    effectiveHeader += '; img-src \'self\' https://cdn.shopify.com https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://images.unsplash.com https://*.unsplash.com data:';
   }
 
   try {

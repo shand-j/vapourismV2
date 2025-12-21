@@ -27,14 +27,9 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     }
   );
 
-  const topBrands = [...new Set(searchResults.products.map(p => p.vendor))].slice(0, 5);
   const categoryTitle = 'Hayati Pro Max E-Liquids';
   const seoTitle = SEOAutomationService.generateCategoryTitle(categoryTitle, searchResults.totalCount);
-  const seoDescription = SEOAutomationService.generateCategoryMetaDescription(
-    categoryTitle,
-    searchResults.totalCount,
-    topBrands
-  );
+  const seoDescription = 'Shop Hayati Pro Max e-liquids with premium nic salt formulations. ✓ Authentic flavors ✓ Smooth throat hit ✓ 10ml bottles ✓ Multiple strengths ✓ Fast UK delivery. Perfect for pod systems and MTL vaping.';
 
   return json({
     products: searchResults.products,

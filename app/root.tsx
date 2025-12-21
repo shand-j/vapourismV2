@@ -46,9 +46,14 @@ const SHOP_INFO_QUERY = `#graphql
 ` as const;
 
 export const links: LinksFunction = () => [
+  // Preconnect to critical third-party domains for faster resource loading
   {rel: 'preconnect', href: 'https://cdn.shopify.com'},
   {rel: 'preconnect', href: 'https://fonts.googleapis.com'},
   {rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous'},
+  // DNS prefetch for analytics and optimization scripts (lower priority than preconnect)
+  {rel: 'dns-prefetch', href: 'https://www.googletagmanager.com'},
+  {rel: 'dns-prefetch', href: 'https://www.google-analytics.com'},
+  {rel: 'dns-prefetch', href: 'https://dashboard.searchatlas.com'},
   {rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg'},
   {rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'},
   {rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png'},
@@ -91,8 +96,10 @@ export async function loader({context}: LoaderFunctionArgs) {
 
   if (storefront) {
     const result = await Promise.all([
-      // SHOP_INFO_QUERY may fail when storefront is unavailable; only call when present
-      storefront.query(SHOP_INFO_QUERY),
+      // Cache shop info aggressively - it rarely changes (1 hour cache)
+      storefront.query(SHOP_INFO_QUERY, {
+        cache: storefront.CacheLong(),
+      }),
       hydrogenCart.get(),
     ]);
 
@@ -107,10 +114,8 @@ export async function loader({context}: LoaderFunctionArgs) {
       PRODUCTION_DOMAIN: env?.PRODUCTION_DOMAIN,
       USE_SHOPIFY_SEARCH: env.USE_SHOPIFY_SEARCH,
       SHOPIFY_SEARCH_ROLLOUT: env.SHOPIFY_SEARCH_ROLLOUT,
-      // Expose AgeVerif public keys to the client via window.ENV
-      AGEVERIF_PUBLIC_KEY: env?.['AGEVERIF_PUBLIC_KEY'] || env?.['PUBLIC_AGEVERIF_KEY'],
+      // Consolidate AgeVerif keys - only expose one to reduce payload
       PUBLIC_AGEVERIF_KEY: env?.['PUBLIC_AGEVERIF_KEY'] || env?.['AGEVERIF_PUBLIC_KEY'],
-      // GA4 Measurement ID for analytics
       GA4_MEASUREMENT_ID: env?.GA4_MEASUREMENT_ID,
     },
     cart: cart ?? null,
@@ -145,7 +150,9 @@ export default function App() {
   // ALWAYS use production domain from env for canonical URLs, never use myshopify.com domain
   const productionDomain = data.env?.PRODUCTION_DOMAIN || 'https://www.vapourism.co.uk';
   const siteUrl = productionDomain;
-  const canonicalUrl = `${siteUrl.replace(/\/$/, '')}${location.pathname}`;
+  // Strip trailing slashes for consistent canonicals (except for homepage)
+  const cleanPath = location.pathname === '/' ? '/' : location.pathname.replace(/\/$/, '');
+  const canonicalUrl = `${siteUrl.replace(/\/$/, '')}${cleanPath}`;
   
   // GA4 Measurement ID
   const ga4MeasurementId = data.env?.GA4_MEASUREMENT_ID;
@@ -159,7 +166,7 @@ export default function App() {
         <Meta />
         <Links />
         
-        {/* Organization Schema for SEO */}
+        {/* Organization Schema for SEO - object created first for maintainability, then minified */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -181,22 +188,23 @@ export default function App() {
                 "areaServed": "GB",
                 "availableLanguage": "English"
               },
-              "sameAs": [
-                "https://twitter.com/vapourismuk"
-              ]
+              "sameAs": ["https://twitter.com/vapourismuk"]
             })
           }}
         />
         
         {/* Google Analytics 4 */}
-        {ga4MeasurementId && <GoogleAnalytics measurementId={ga4MeasurementId} />}
+        {ga4MeasurementId && <GoogleAnalytics measurementId={ga4MeasurementId} nonce={nonce} />}
         
-        {/* SearchAtlas OTTO Pixel - SEO optimization */}
+        {/* SearchAtlas OTTO Pixel - SEO optimization - loaded async to not block HTML parsing */}
         <script
-          type="text/javascript"
-          id="sa-dynamic-optimization"
+          async
+          defer
+          id="sa-dynamic-optimization-loader"
           data-uuid="d709ea19-b642-442c-ab07-012003668401"
-          src="data:text/javascript;base64,dmFyIHNjcmlwdCA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoInNjcmlwdCIpO3NjcmlwdC5zZXRBdHRyaWJ1dGUoIm5vd3Byb2NrZXQiLCAiIik7c2NyaXB0LnNldEF0dHJpYnV0ZSgibml0cm8tZXhjbHVkZSIsICIiKTtzY3JpcHQuc3JjID0gImh0dHBzOi8vZGFzaGJvYXJkLnNlYXJjaGF0bGFzLmNvbS9zY3JpcHRzL2R5bmFtaWNfb3B0aW1pemF0aW9uLmpzIjtzY3JpcHQuZGF0YXNldC51dWlkID0gImQ3MDllYTE5LWI2NDItNDQyYy1hYjA3LTAxMjAwMzY2ODQwMSI7c2NyaXB0LmlkID0gInNhLWR5bmFtaWMtb3B0aW1pemF0aW9uLWxvYWRlciI7ZG9jdW1lbnQuaGVhZC5hcHBlbmRDaGlsZChzY3JpcHQpOw=="
+          data-nowprocket=""
+          data-nitro-exclude=""
+          src="https://dashboard.searchatlas.com/scripts/dynamic_optimization.js"
         />
       </head>
       <body className="bg-white text-slate-900 antialiased">

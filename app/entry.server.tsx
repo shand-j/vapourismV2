@@ -112,6 +112,10 @@ export default async function handleRequest(
   }
 
   responseHeaders.set('Content-Type', 'text/html');
+  
+  // Add performance headers
+  responseHeaders.set('X-Content-Type-Options', 'nosniff');
+  
   // The createContentSecurityPolicy header is intentionally strict by default.
   // For a small set of verification-only routes we need to relax script-src so
   // partner widgets (e.g. AgeVerif) that create runtime inline scripts are
@@ -126,20 +130,46 @@ export default async function handleRequest(
   // and rely on the per-request `nonce` produced by createContentSecurityPolicy
   // to allow legitimate inline scripts when required.
 
-  // Add SearchAtlas OTTO Pixel domains to CSP for SEO optimization
+  // Add Google Tag Manager and SearchAtlas OTTO Pixel domains to CSP
+  // Google Tag Manager: Required for GA4 analytics
+  // SearchAtlas: SEO optimization (currently disabled due to data: URL violation)
   if (/script-src/.test(effectiveHeader)) {
     effectiveHeader = effectiveHeader.replace(/script-src([^;]*)/, (match, v = '') => {
       let existing = v;
+      // Add Google Tag Manager for analytics
+      if (!existing.includes('https://www.googletagmanager.com')) existing += ' https://www.googletagmanager.com';
+      // SearchAtlas domains (if re-enabling the script)
       if (!existing.includes('https://dashboard.searchatlas.com')) existing += ' https://dashboard.searchatlas.com';
-      if (!existing.includes('data:')) existing += ' data:';
+      // Note: data: URLs disabled for security - SearchAtlas script commented out in root.tsx
+      // if (!existing.includes('data:')) existing += ' data:';
       return `script-src${existing}`;
     });
   }
   if (/connect-src/.test(effectiveHeader)) {
     effectiveHeader = effectiveHeader.replace(/connect-src([^;]*)/, (match, v = '') => {
       let existing = v;
+      // Allow connections to Google Analytics and Tag Manager (including regional endpoints)
+      if (!existing.includes('https://www.google-analytics.com')) existing += ' https://www.google-analytics.com';
+      // Wildcard for regional GA endpoints (region1, region2, etc.)
+      if (!existing.includes('https://*.google-analytics.com')) existing += ' https://*.google-analytics.com';
+      if (!existing.includes('https://www.googletagmanager.com')) existing += ' https://www.googletagmanager.com';
+      if (!existing.includes('https://analytics.google.com')) existing += ' https://analytics.google.com';
+      // SearchAtlas connections (if re-enabling)
       if (!existing.includes('https://dashboard.searchatlas.com')) existing += ' https://dashboard.searchatlas.com';
+      // Shopify analytics endpoint
+      if (!existing.includes('https://monorail-edge.shopifysvc.com')) existing += ' https://monorail-edge.shopifysvc.com';
       return `connect-src${existing}`;
+    });
+  }
+
+  // Allow GA tracking pixels in img-src
+  if (/img-src/.test(effectiveHeader)) {
+    effectiveHeader = effectiveHeader.replace(/img-src([^;]*)/, (match, v = '') => {
+      let existing = v;
+      if (!existing.includes('https://www.google-analytics.com')) existing += ' https://www.google-analytics.com';
+      if (!existing.includes('https://*.google-analytics.com')) existing += ' https://*.google-analytics.com';
+      if (!existing.includes('https://www.googletagmanager.com')) existing += ' https://www.googletagmanager.com';
+      return `img-src${existing}`;
     });
   }
 

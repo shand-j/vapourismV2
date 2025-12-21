@@ -28,6 +28,18 @@ function normalizeUrl(url: URL): URL {
   return url;
 }
 
+/**
+ * Static asset file extensions that should be cached immutably.
+ * Used for HTTP Cache-Control header optimization.
+ */
+const STATIC_ASSET_EXTENSIONS = /\.(js|css|woff|woff2|ttf|eot|ico|png|jpg|jpeg|gif|svg|webp)$/;
+
+/**
+ * User-specific pages that should not be cached.
+ * Used to prevent caching of personalized content.
+ */
+const USER_SPECIFIC_PAGES = /\/(cart|account|checkout|age-verification)/;
+
 export default {
   async fetch(
     request: Request,
@@ -63,6 +75,21 @@ export default {
       });
 
       const response = await handleRequest(request);
+
+      // Add performance optimizations based on content type and path
+      const pathname = normalizedUrl.pathname;
+      
+      // Cache static assets aggressively (1 year immutable cache)
+      if (STATIC_ASSET_EXTENSIONS.test(pathname)) {
+        response.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+      }
+      // Cache HTML pages briefly to improve repeat visits without stale content
+      else if (response.headers.get('Content-Type')?.includes('text/html')) {
+        // Don't cache user-specific pages (cart, account, checkout)
+        if (!USER_SPECIFIC_PAGES.test(pathname)) {
+          response.headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
+        }
+      }
 
       // Set CSP for AgeVerif routes (/age-verification and subpaths).
       // Keep policy strict in production — do not add 'unsafe-inline'.

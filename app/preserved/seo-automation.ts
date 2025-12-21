@@ -492,14 +492,136 @@ export class SEOAutomationService {
   }
 
   /**
+   * Word boundary threshold for smart truncation
+   * When truncating, we try to break at word boundaries within this distance from the max length
+   */
+  private static readonly WORD_BOUNDARY_THRESHOLD = 15;
+  
+  /**
+   * Minimum available length for title content when preserving specs
+   */
+  private static readonly MIN_TITLE_LENGTH = 10;
+
+  /**
+   * Extract unique identifying specs from product title (strength, volume, etc.)
+   * These specs help differentiate similar products and should be preserved in titles
+   * @param title The product title to extract specs from
+   * @returns Array of unique spec strings found in the title
+   */
+  private static extractProductSpecs(title: string): string[] {
+    const specs: string[] = [];
+    
+    // Extract nicotine strength (e.g., "20mg", "12mg")
+    const strengthMatch = title.match(/\b(\d+)\s*mg\b/i);
+    if (strengthMatch) specs.push(strengthMatch[1] + 'mg');
+    
+    // Extract volume (e.g., "10ml", "30ml", "100ml")
+    const volumeMatch = title.match(/\b(\d+)\s*ml\b/i);
+    if (volumeMatch) specs.push(volumeMatch[1] + 'ml');
+    
+    // Extract VG/PG ratio (e.g., "50/50", "70/30")
+    const vgpgMatch = title.match(/\b(\d+)\s*\/\s*(\d+)\b/);
+    if (vgpgMatch) specs.push(`${vgpgMatch[1]}/${vgpgMatch[2]}`);
+    
+    // Extract puff count for disposables (e.g., "600 puffs", "4000 puffs")
+    const puffMatch = title.match(/\b(\d+)\s*(?:puff|puffs)\b/i);
+    if (puffMatch) specs.push(`${puffMatch[1]} puffs`);
+    
+    // Extract percentage values (e.g., "80%", "100%")
+    const percentMatch = title.match(/\b(\d+)\s*%/);
+    if (percentMatch) specs.push(`${percentMatch[1]}%`);
+    
+    return specs;
+  }
+
+  /**
+   * Remove a spec from a title safely
+   * @param title The title to remove spec from
+   * @param spec The spec string to remove
+   * @returns Title with spec removed
+   */
+  private static removeSpecFromTitle(title: string, spec: string): string {
+    const escapedSpec = spec.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return title.replace(new RegExp('\\s*' + escapedSpec + '\\s*', 'gi'), ' ');
+  }
+
+  /**
+   * Build smart truncated title that preserves unique identifying information
+   * @param productTitle The full product title
+   * @param maxLength Maximum length for the truncated portion
+   * @param specs Unique product specs to preserve
+   * @returns Smartly truncated title string
+   */
+  private static smartTruncate(productTitle: string, maxLength: number, specs: string[]): string {
+    // If it fits, return as-is
+    if (productTitle.length <= maxLength) {
+      return productTitle;
+    }
+    
+    // If we have unique specs, try to preserve them at the end
+    if (specs.length > 0) {
+      // Reserve space for specs (e.g., " 20mg 10ml")
+      const specsText = ' ' + specs.join(' ');
+      const specsLength = specsText.length;
+      
+      // Check if the full title ends with these specs already
+      const endsWithSpecs = specs.some(spec => 
+        productTitle.toLowerCase().trim().endsWith(spec.toLowerCase())
+      );
+      
+      if (endsWithSpecs) {
+        // Specs are at the end, truncate from the beginning/middle
+        const availableLength = maxLength - 1; // Reserve 1 for ellipsis
+        const truncated = productTitle.substring(0, availableLength);
+        const lastSpace = truncated.lastIndexOf(' ');
+        
+        if (lastSpace > availableLength - this.WORD_BOUNDARY_THRESHOLD) {
+          return truncated.substring(0, lastSpace) + '…';
+        }
+        return truncated + '…';
+      } else if (specsLength < maxLength - this.MIN_TITLE_LENGTH) {
+        // Specs exist but not at end, extract and append them
+        // Remove specs from title and truncate the remainder
+        let baseTitle = productTitle;
+        specs.forEach(spec => {
+          baseTitle = this.removeSpecFromTitle(baseTitle, spec);
+        });
+        baseTitle = baseTitle.replace(/\s+/g, ' ').trim();
+        
+        const availableForBase = maxLength - specsLength - 1; // Reserve 1 for ellipsis
+        if (baseTitle.length > availableForBase) {
+          const truncated = baseTitle.substring(0, availableForBase);
+          const lastSpace = truncated.lastIndexOf(' ');
+          if (lastSpace > availableForBase - this.WORD_BOUNDARY_THRESHOLD) {
+            return truncated.substring(0, lastSpace) + '…' + specsText;
+          }
+          return truncated + '…' + specsText;
+        }
+        return baseTitle + specsText;
+      }
+    }
+    
+    // Standard truncation at word boundary
+    const maxContentLength = maxLength - 1;
+    const truncated = productTitle.substring(0, maxContentLength);
+    const lastSpace = truncated.lastIndexOf(' ');
+    
+    if (lastSpace > maxContentLength - this.WORD_BOUNDARY_THRESHOLD) {
+      return truncated.substring(0, lastSpace) + '…';
+    }
+    
+    return truncated + '…';
+  }
+
+  /**
    * Generate optimized product title for meta tags
-   * Ensures title fits within 70 character SEO limit
+   * Ensures title fits within 70 character SEO limit and preserves unique identifying information
    * Priority: Custom override > Shopify SEO title > Product title > Vendor > "Vapourism"
    * @param productTitle The product title
    * @param vendor The vendor/brand name
    * @param seoTitle Optional SEO title override from Shopify
    * @param handle Optional product handle for custom title overrides
-   * @returns Optimized title string ≤70 characters
+   * @returns Optimized title string ≤70 characters, guaranteed unique per product
    */
   static generateProductTitle(productTitle: string, vendor: string, seoTitle?: string | null, handle?: string | null): string {
     // Check for custom title override by product handle
@@ -514,6 +636,9 @@ export class SEOAutomationService {
 
     const suffix = ' | Vapourism';
     const maxProductLength = 70 - suffix.length;
+    
+    // Extract unique product specs that should be preserved
+    const specs = this.extractProductSpecs(productTitle);
 
     // Try full title with vendor
     const fullTitle = `${productTitle} | ${vendor}${suffix}`;
@@ -527,16 +652,9 @@ export class SEOAutomationService {
       return titleOnly;
     }
 
-    // Truncate product title to fit (reserve 1 char for ellipsis)
-    const maxContentLength = maxProductLength - 1;
-    const truncatedProduct = productTitle.substring(0, maxContentLength);
-    const lastSpace = truncatedProduct.lastIndexOf(' ');
-    
-    if (lastSpace > maxContentLength - 10) {
-      return truncatedProduct.substring(0, lastSpace) + '…' + suffix;
-    }
-    
-    return truncatedProduct + '…' + suffix;
+    // Smart truncation that preserves unique specs
+    const truncatedProduct = this.smartTruncate(productTitle, maxProductLength, specs);
+    return truncatedProduct + suffix;
   }
 
   /**

@@ -161,10 +161,9 @@ export default function App() {
         <Meta />
         <Links />
         
-        {/* Organization Schema for SEO - nonce required for CSP compliance */}
+        {/* Organization Schema for SEO */}
         <script
           type="application/ld+json"
-          nonce={nonce}
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",

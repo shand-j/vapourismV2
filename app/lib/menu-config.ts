@@ -1,9 +1,11 @@
 /**
  * Mega Menu Configuration
  *
- * Static menu structure using tag-based filtering.
- * All navigation links route to /search with tag query parameters.
+ * Static menu structure supporting both tag-based filtering and collection-based navigation.
+ * - Tag-based: Links route to /search with tag query parameters
+ * - Collection-based: Links route to /collections/:handle
  *
+ * Use the USE_COLLECTION_NAV feature flag to toggle between modes.
  * Tag format follows the approved controlled vocabulary from the data analyst spec.
  */
 
@@ -11,6 +13,8 @@ export interface MenuLink {
   label: string;
   tags: string[];
   url: string;
+  /** Optional collection handle for collection-based navigation */
+  collectionHandle?: string;
 }
 
 export interface MenuColumn {
@@ -18,6 +22,8 @@ export interface MenuColumn {
   links: MenuLink[];
   seeAllLabel?: string;
   seeAllTags?: string[];
+  /** Optional collection handle for "See All" in collection mode */
+  seeAllCollectionHandle?: string;
 }
 
 export interface MenuCategory {
@@ -30,6 +36,8 @@ export interface MenuCategory {
     url: string;
   };
   hero: CategoryHero;
+  /** Optional collection handle for the main category in collection mode */
+  collectionHandle?: string;
 }
 
 export interface CategoryHero {
@@ -37,6 +45,269 @@ export interface CategoryHero {
   subtitle: string;
   backgroundImage?: string;
   accentColor: string;
+}
+
+// =============================================================================
+// COLLECTION-BASED MENU CONFIGURATION
+// =============================================================================
+
+export interface CollectionMenuLink {
+  label: string;
+  handle: string;
+  url: string;
+}
+
+export interface CollectionMenuColumn {
+  heading: string;
+  links: CollectionMenuLink[];
+  seeAllHandle?: string;
+}
+
+export interface CollectionMenuCategory {
+  id: string;
+  label: string;
+  handle: string;
+  url: string;
+  description: string;
+  accentColor: string;
+  columns: CollectionMenuColumn[];
+  quizLink?: {
+    label: string;
+    url: string;
+  };
+}
+
+/**
+ * Build URL for a collection
+ */
+export function buildCollectionUrl(handle: string): string {
+  return `/collections/${handle}`;
+}
+
+/**
+ * Collection-based menu structure
+ * Maps to actual Shopify collections (handles must exist in Shopify)
+ */
+export const COLLECTION_MENU: CollectionMenuCategory[] = [
+  {
+    id: 'disposables',
+    label: 'Reusables',
+    handle: 'disposables',
+    url: buildCollectionUrl('disposables'),
+    description: 'Ready-to-use devices with pre-filled e-liquid.',
+    accentColor: '#f97316',
+    columns: [
+      {
+        heading: 'By Flavour',
+        links: [
+          {label: 'Fruity', handle: 'fruity-disposables', url: buildCollectionUrl('fruity-disposables')},
+          {label: 'Ice & Menthol', handle: 'menthol-disposables', url: buildCollectionUrl('menthol-disposables')},
+          {label: 'Tobacco', handle: 'tobacco-disposables', url: buildCollectionUrl('tobacco-disposables')},
+          {label: 'Desserts', handle: 'dessert-disposables', url: buildCollectionUrl('dessert-disposables')},
+        ],
+        seeAllHandle: 'disposables',
+      },
+      {
+        heading: 'By Brand',
+        links: [
+          {label: 'Elf Bar', handle: 'elf-bar', url: buildCollectionUrl('elf-bar')},
+          {label: 'Lost Mary', handle: 'lost-mary', url: buildCollectionUrl('lost-mary')},
+          {label: 'Crystal Bar', handle: 'crystal-bar', url: buildCollectionUrl('crystal-bar')},
+          {label: 'Hayati', handle: 'hayati', url: buildCollectionUrl('hayati')},
+          {label: 'SKE', handle: 'ske', url: buildCollectionUrl('ske')},
+        ],
+        seeAllHandle: 'disposables',
+      },
+      {
+        heading: 'By Nicotine',
+        links: [
+          {label: '20mg', handle: 'disposables-20mg', url: buildCollectionUrl('disposables-20mg')},
+          {label: '10mg', handle: 'disposables-10mg', url: buildCollectionUrl('disposables-10mg')},
+          {label: '0mg', handle: 'disposables-0mg', url: buildCollectionUrl('disposables-0mg')},
+        ],
+        seeAllHandle: 'disposables',
+      },
+    ],
+  },
+  {
+    id: 'e-liquids',
+    label: 'E-Liquids',
+    handle: 'e-liquids',
+    url: buildCollectionUrl('e-liquids'),
+    description: 'Premium vape juice in every flavour and strength.',
+    accentColor: '#8b5cf6',
+    quizLink: {
+      label: 'Flavour Lab Quiz',
+      url: '/flavour-lab',
+    },
+    columns: [
+      {
+        heading: 'By Type',
+        links: [
+          {label: 'Nic Salts', handle: 'nic-salts', url: buildCollectionUrl('nic-salts')},
+          {label: 'Shortfills', handle: 'shortfills', url: buildCollectionUrl('shortfills')},
+          {label: 'Freebase', handle: 'freebase', url: buildCollectionUrl('freebase')},
+        ],
+        seeAllHandle: 'e-liquids',
+      },
+      {
+        heading: 'By Size',
+        links: [
+          {label: '10ml', handle: '10ml-liquids', url: buildCollectionUrl('10ml-liquids')},
+          {label: '50ml Shortfill', handle: '50ml-shortfills', url: buildCollectionUrl('50ml-shortfills')},
+          {label: '100ml Shortfill', handle: '100ml-shortfills', url: buildCollectionUrl('100ml-shortfills')},
+        ],
+        seeAllHandle: 'e-liquids',
+      },
+      {
+        heading: 'By Flavour',
+        links: [
+          {label: 'Fruity', handle: 'fruity-liquids', url: buildCollectionUrl('fruity-liquids')},
+          {label: 'Ice & Menthol', handle: 'menthol-liquids', url: buildCollectionUrl('menthol-liquids')},
+          {label: 'Tobacco', handle: 'tobacco-liquids', url: buildCollectionUrl('tobacco-liquids')},
+          {label: 'Desserts', handle: 'dessert-liquids', url: buildCollectionUrl('dessert-liquids')},
+        ],
+        seeAllHandle: 'e-liquids',
+      },
+    ],
+  },
+  {
+    id: 'devices',
+    label: 'Devices',
+    handle: 'devices',
+    url: buildCollectionUrl('devices'),
+    description: 'Pod systems, box mods, and starter kits.',
+    accentColor: '#0ea5e9',
+    quizLink: {
+      label: 'Device Studio Quiz',
+      url: '/device-studio',
+    },
+    columns: [
+      {
+        heading: 'By Type',
+        links: [
+          {label: 'Pod Systems', handle: 'pod-systems', url: buildCollectionUrl('pod-systems')},
+          {label: 'Box Mods', handle: 'box-mods', url: buildCollectionUrl('box-mods')},
+          {label: 'Starter Kits', handle: 'starter-kits', url: buildCollectionUrl('starter-kits')},
+          {label: 'Tanks', handle: 'tanks', url: buildCollectionUrl('tanks')},
+        ],
+        seeAllHandle: 'devices',
+      },
+      {
+        heading: 'By Brand',
+        links: [
+          {label: 'VooPoo', handle: 'voopoo', url: buildCollectionUrl('voopoo')},
+          {label: 'SMOK', handle: 'smok', url: buildCollectionUrl('smok')},
+          {label: 'Aspire', handle: 'aspire', url: buildCollectionUrl('aspire')},
+          {label: 'Vaporesso', handle: 'vaporesso', url: buildCollectionUrl('vaporesso')},
+        ],
+        seeAllHandle: 'devices',
+      },
+    ],
+  },
+  {
+    id: 'pods-coils',
+    label: 'Pods & Coils',
+    handle: 'pods-coils',
+    url: buildCollectionUrl('pods-coils'),
+    description: 'Replacement pods and coils for your devices.',
+    accentColor: '#06b6d4',
+    columns: [
+      {
+        heading: 'Pods',
+        links: [
+          {label: 'Pre-filled Pods', handle: 'pre-filled-pods', url: buildCollectionUrl('pre-filled-pods')},
+          {label: 'Replacement Pods', handle: 'replacement-pods', url: buildCollectionUrl('replacement-pods')},
+        ],
+        seeAllHandle: 'pods-coils',
+      },
+      {
+        heading: 'Coils',
+        links: [
+          {label: 'Sub-Ohm Coils', handle: 'sub-ohm-coils', url: buildCollectionUrl('sub-ohm-coils')},
+          {label: 'MTL Coils', handle: 'mtl-coils', url: buildCollectionUrl('mtl-coils')},
+        ],
+        seeAllHandle: 'pods-coils',
+      },
+    ],
+  },
+  {
+    id: 'accessories',
+    label: 'Accessories',
+    handle: 'accessories',
+    url: buildCollectionUrl('accessories'),
+    description: 'Batteries, chargers, cases, and more.',
+    accentColor: '#64748b',
+    columns: [
+      {
+        heading: 'Power',
+        links: [
+          {label: 'Batteries', handle: 'batteries', url: buildCollectionUrl('batteries')},
+          {label: 'Chargers', handle: 'chargers', url: buildCollectionUrl('chargers')},
+        ],
+        seeAllHandle: 'accessories',
+      },
+      {
+        heading: 'Tools',
+        links: [
+          {label: 'Tool Kits', handle: 'tool-kits', url: buildCollectionUrl('tool-kits')},
+          {label: 'Cotton & Wire', handle: 'cotton-wire', url: buildCollectionUrl('cotton-wire')},
+        ],
+        seeAllHandle: 'accessories',
+      },
+    ],
+  },
+  {
+    id: 'nicotine-pouches',
+    label: 'Nic Pouches',
+    handle: 'nicotine-pouches',
+    url: buildCollectionUrl('nicotine-pouches'),
+    description: 'Tobacco-free nicotine pouches.',
+    accentColor: '#ec4899',
+    columns: [
+      {
+        heading: 'By Brand',
+        links: [
+          {label: 'Velo', handle: 'velo-nicotine-pouches', url: buildCollectionUrl('velo-nicotine-pouches')},
+          {label: 'Zyn', handle: 'zyn-nicotine-pouches', url: buildCollectionUrl('zyn-nicotine-pouches')},
+          {label: 'Nordic Spirit', handle: 'nordic-spirit', url: buildCollectionUrl('nordic-spirit')},
+        ],
+        seeAllHandle: 'nicotine-pouches',
+      },
+      {
+        heading: 'By Strength',
+        links: [
+          {label: 'Light (3-6mg)', handle: 'light-pouches', url: buildCollectionUrl('light-pouches')},
+          {label: 'Medium (8-11mg)', handle: 'medium-pouches', url: buildCollectionUrl('medium-pouches')},
+          {label: 'Strong (12-20mg)', handle: 'strong-pouches', url: buildCollectionUrl('strong-pouches')},
+        ],
+        seeAllHandle: 'nicotine-pouches',
+      },
+    ],
+  },
+];
+
+/**
+ * Feature flag to determine which menu type to use
+ * 
+ * @param env - Environment object (required for server-side usage)
+ * @returns boolean
+ */
+export function useCollectionMenu(env?: Record<string, string | undefined>): boolean {
+  // Only use the env parameter - avoid process.env to prevent browser runtime errors
+  const flag = env?.USE_COLLECTION_NAV;
+  if (flag === 'true' || flag === '1') return true;
+  if (flag === 'false' || flag === '0') return false;
+  // Default to false for safe rollout
+  return false;
+}
+
+/**
+ * Get menu data based on feature flag
+ * Returns either collection-based menu or tag-based menu
+ */
+export function getMenuData(useCollections: boolean): CollectionMenuCategory[] | MenuCategory[] {
+  return useCollections ? COLLECTION_MENU : MEGA_MENU;
 }
 
 /**

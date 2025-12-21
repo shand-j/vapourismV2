@@ -1,8 +1,11 @@
 /**
  * MegaMenu Component
  *
- * Tag-based mega menu navigation using static configuration.
- * Links to /search with tag query parameters.
+ * Supports both tag-based and collection-based mega menu navigation.
+ * - Tag-based: Links to /search with tag query parameters (default)
+ * - Collection-based: Links to /collections/:handle (when USE_COLLECTION_NAV is enabled)
+ *
+ * Use the `useCollections` prop to toggle modes, or rely on the feature flag.
  */
 
 import * as React from 'react';
@@ -10,17 +13,23 @@ import {Link} from '@remix-run/react';
 import {useState, useCallback} from 'react';
 import {
   MEGA_MENU,
+  COLLECTION_MENU,
   buildSearchUrl,
+  buildCollectionUrl,
   type MenuCategory,
   type MenuColumn,
+  type CollectionMenuCategory,
+  type CollectionMenuColumn,
 } from '~/lib/menu-config';
 import {cn} from '~/lib/utils';
 
 interface MegaMenuProps {
   className?: string;
+  /** Use collection-based navigation instead of tag-based */
+  useCollections?: boolean;
 }
 
-export function MegaMenu({className}: MegaMenuProps) {
+export function MegaMenu({className, useCollections = false}: MegaMenuProps) {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   const handleMouseEnter = useCallback((categoryId: string) => {
@@ -31,6 +40,53 @@ export function MegaMenu({className}: MegaMenuProps) {
     setActiveCategory(null);
   }, []);
 
+  // Render collection-based menu
+  if (useCollections) {
+    return (
+      <nav className={cn('relative w-full', className)}>
+        <ul className="flex w-full items-center justify-between">
+          {COLLECTION_MENU.map((category) => (
+            <li
+              key={category.id}
+              className="flex-1"
+              onMouseEnter={() => handleMouseEnter(category.id)}
+              onMouseLeave={handleMouseLeave}
+            >
+              <Link
+                to={category.url}
+                className={cn(
+                  'flex items-center justify-center gap-1 rounded-full px-3 py-2 text-sm font-medium transition',
+                  activeCategory === category.id
+                    ? 'bg-slate-100 text-slate-900'
+                    : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900',
+                )}
+              >
+                {category.label}
+                <svg
+                  className={cn(
+                    'h-3 w-3 transition-transform',
+                    activeCategory === category.id && 'rotate-180',
+                  )}
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path d="M3 4.5L6 7.5L9 4.5" />
+                </svg>
+              </Link>
+
+              {activeCategory === category.id && (
+                <CollectionMenuDropdown category={category} />
+              )}
+            </li>
+          ))}
+        </ul>
+      </nav>
+    );
+  }
+
+  // Render tag-based menu (default)
   return (
     <nav className={cn('relative w-full', className)}>
       {/* Top-level menu bar */}
@@ -169,6 +225,107 @@ function MegaMenuColumn({column}: MegaMenuColumnProps) {
               className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 transition hover:text-slate-700"
             >
               {column.seeAllLabel}
+              <span aria-hidden="true">-&gt;</span>
+            </Link>
+          </li>
+        )}
+      </ul>
+    </div>
+  );
+}
+
+// =============================================================================
+// COLLECTION-BASED MENU COMPONENTS
+// =============================================================================
+
+interface CollectionMenuDropdownProps {
+  category: CollectionMenuCategory;
+}
+
+function CollectionMenuDropdown({category}: CollectionMenuDropdownProps) {
+  return (
+    <div
+      className="absolute left-0 top-full z-50 mt-1 w-screen max-w-5xl"
+      onMouseEnter={(e) => e.stopPropagation()}
+    >
+      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl">
+        {/* Category header */}
+        <div className="mb-6 flex items-start justify-between border-b border-slate-100 pb-4">
+          <div>
+            <h2 className="text-lg font-semibold text-slate-900">{category.label}</h2>
+            <p className="mt-1 text-sm text-slate-500">{category.description}</p>
+          </div>
+          <div className="flex items-center gap-3">
+            {category.quizLink && (
+              <Link
+                to={category.quizLink.url}
+                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+              >
+                {category.quizLink.label}
+                <span aria-hidden="true">-&gt;</span>
+              </Link>
+            )}
+            <Link
+              to={category.url}
+              className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-white transition"
+              style={{backgroundColor: category.accentColor}}
+            >
+              See All {category.label}
+              <span aria-hidden="true">-&gt;</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* Columns grid */}
+        <div
+          className={cn(
+            'grid gap-6',
+            category.columns.length <= 3
+              ? 'grid-cols-3'
+              : category.columns.length <= 4
+                ? 'grid-cols-4'
+                : 'grid-cols-5',
+          )}
+        >
+          {category.columns.map((column, columnIndex) => (
+            <CollectionMenuColumn key={columnIndex} column={column} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface CollectionMenuColumnProps {
+  column: CollectionMenuColumn;
+}
+
+function CollectionMenuColumn({column}: CollectionMenuColumnProps) {
+  return (
+    <div>
+      <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+        {column.heading}
+      </h3>
+      <ul className="space-y-1">
+        {column.links.map((link, linkIndex) => (
+          <li key={linkIndex}>
+            <Link
+              to={link.url}
+              prefetch="intent"
+              className="block rounded-lg px-2 py-1.5 text-sm text-slate-700 transition hover:bg-slate-50 hover:text-slate-900"
+            >
+              {link.label}
+            </Link>
+          </li>
+        ))}
+        {column.seeAllHandle && (
+          <li className="pt-2">
+            <Link
+              to={buildCollectionUrl(column.seeAllHandle)}
+              prefetch="intent"
+              className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 transition hover:text-slate-700"
+            >
+              See all
               <span aria-hidden="true">-&gt;</span>
             </Link>
           </li>

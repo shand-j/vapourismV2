@@ -25,14 +25,9 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     }
   );
 
-  const topBrands = [...new Set(searchResults.products.map(p => p.vendor))].slice(0, 5);
   const categoryTitle = 'Hayati X4';
   const seoTitle = SEOAutomationService.generateCategoryTitle(categoryTitle, searchResults.totalCount);
-  const seoDescription = SEOAutomationService.generateCategoryMetaDescription(
-    categoryTitle,
-    searchResults.totalCount,
-    topBrands
-  );
+  const seoDescription = 'Shop Hayati X4 advanced pod system UK. ✓ Quad coil technology ✓ Enhanced flavor delivery ✓ Rechargeable device ✓ Refillable pods ✓ Fast UK delivery. Experience superior vaping with cutting-edge innovation.';
 
   return json({
     products: searchResults.products,

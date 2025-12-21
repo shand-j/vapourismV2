@@ -23,6 +23,7 @@ import {MegaMenu, MobileMenu} from './components/navigation/MegaMenu';
 import {ShopifySearch} from './components/search/ShopifySearch';
 import {CookieConsent} from './components/CookieConsent';
 import {GoogleAnalytics} from './components/Analytics';
+import {SearchAtlasScript} from './components/SearchAtlasScript';
 import {trackPageView} from './lib/analytics';
 import {Icon} from './components/ui/Icon';
 
@@ -195,19 +196,15 @@ export default function App() {
         
         {/* Google Analytics 4 */}
         {ga4MeasurementId && <GoogleAnalytics measurementId={ga4MeasurementId} nonce={nonce} />}
-        
-        {/* SearchAtlas OTTO Pixel - SEO optimization - loaded async to not block HTML parsing */}
-        <script
-          async
-          defer
-          id="sa-dynamic-optimization-loader"
-          data-uuid="d709ea19-b642-442c-ab07-012003668401"
-          data-nowprocket=""
-          data-nitro-exclude=""
-          src="https://dashboard.searchatlas.com/scripts/dynamic_optimization.js"
-        />
       </head>
       <body className="bg-white text-slate-900 antialiased">
+        {/* SearchAtlas OTTO Pixel - Loaded client-side after hydration to avoid React Error #418.
+            The script is loaded dynamically via SearchAtlasScript component to prevent hydration
+            mismatches caused by DOM modifications during the initial render. */}
+        <ClientOnly fallback={null}>
+          {() => <SearchAtlasScript />}
+        </ClientOnly>
+
         {isAgeGateActive && (
           <div className="pointer-events-none fixed inset-0 z-[30] bg-white/40 backdrop-blur-[3px]" aria-hidden />
         )}
@@ -274,11 +271,11 @@ export default function App() {
           {() => <CookieConsent />}
         </ClientOnly>
 
-        {/* Inline window.ENV assignment — DO NOT add nonce here. Some HMR / client-side
-            scripts are injected without nonce and React warns about mismatches when
-            the server includes a nonce attribute on a script node. To avoid noisy
-            hydration warnings in dev, keep this script without nonce. */}
+        {/* Inline window.ENV assignment — nonce required for CSP compliance.
+            Note: HMR in development may produce hydration warnings since some HMR scripts
+            don't have access to the nonce. These warnings are harmless and only appear in dev. */}
         <script
+          nonce={nonce}
           dangerouslySetInnerHTML={{
             __html: `window.ENV = ${JSON.stringify(data.env ?? {})};`,
           }}

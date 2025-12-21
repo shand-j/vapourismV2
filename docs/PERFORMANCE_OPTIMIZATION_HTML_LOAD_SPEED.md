@@ -77,12 +77,12 @@ storefront.query(SHOP_INFO_QUERY, {
 
 ```typescript
 // Cache static assets aggressively
-if (pathname.match(/\.(js|css|woff|woff2|ttf|eot|ico|png|jpg|jpeg|gif|svg|webp)$/)) {
+if (/\.(js|css|woff|woff2|ttf|eot|ico|png|jpg|jpeg|gif|svg|webp)$/.test(pathname)) {
   response.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
 }
 // Cache HTML pages briefly with stale-while-revalidate
 else if (response.headers.get('Content-Type')?.includes('text/html')) {
-  if (!pathname.match(/\/(cart|account|checkout|age-verification)/)) {
+  if (!/\/(cart|account|checkout|age-verification)/.test(pathname)) {
     response.headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
   }
 }

@@ -604,6 +604,124 @@ export type FooterQuery = {
   >;
 };
 
+export type ArticleFragment = Pick<
+  StorefrontAPI.Article,
+  | 'id'
+  | 'title'
+  | 'handle'
+  | 'content'
+  | 'contentHtml'
+  | 'excerpt'
+  | 'excerptHtml'
+  | 'publishedAt'
+  | 'tags'
+> & {
+  authorV2?: StorefrontAPI.Maybe<Pick<StorefrontAPI.ArticleAuthor, 'name'>>;
+  image?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Image, 'url' | 'altText' | 'width' | 'height'>
+  >;
+  seo?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Seo, 'title' | 'description'>>;
+  blog: Pick<StorefrontAPI.Blog, 'id' | 'handle' | 'title'>;
+};
+
+export type BlogQueryVariables = StorefrontAPI.Exact<{
+  blogHandle: StorefrontAPI.Scalars['String']['input'];
+}>;
+
+export type BlogQuery = {
+  blog?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Blog, 'id' | 'handle' | 'title'> & {
+      seo?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Seo, 'title' | 'description'>
+      >;
+    }
+  >;
+};
+
+export type BlogArticlesQueryVariables = StorefrontAPI.Exact<{
+  blogHandle: StorefrontAPI.Scalars['String']['input'];
+  first?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Int']['input']>;
+  after?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
+}>;
+
+export type BlogArticlesQuery = {
+  blog?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Blog, 'id' | 'handle' | 'title'> & {
+      articles: {
+        pageInfo: Pick<
+          StorefrontAPI.PageInfo,
+          'hasNextPage' | 'hasPreviousPage' | 'startCursor' | 'endCursor'
+        >;
+        edges: Array<
+          Pick<StorefrontAPI.ArticleEdge, 'cursor'> & {
+            node: Pick<
+              StorefrontAPI.Article,
+              | 'id'
+              | 'title'
+              | 'handle'
+              | 'content'
+              | 'contentHtml'
+              | 'excerpt'
+              | 'excerptHtml'
+              | 'publishedAt'
+              | 'tags'
+            > & {
+              authorV2?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.ArticleAuthor, 'name'>
+              >;
+              image?: StorefrontAPI.Maybe<
+                Pick<
+                  StorefrontAPI.Image,
+                  'url' | 'altText' | 'width' | 'height'
+                >
+              >;
+              seo?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.Seo, 'title' | 'description'>
+              >;
+              blog: Pick<StorefrontAPI.Blog, 'id' | 'handle' | 'title'>;
+            };
+          }
+        >;
+      };
+    }
+  >;
+};
+
+export type ArticleQueryVariables = StorefrontAPI.Exact<{
+  blogHandle: StorefrontAPI.Scalars['String']['input'];
+  articleHandle: StorefrontAPI.Scalars['String']['input'];
+}>;
+
+export type ArticleQuery = {
+  blog?: StorefrontAPI.Maybe<{
+    articleByHandle?: StorefrontAPI.Maybe<
+      Pick<
+        StorefrontAPI.Article,
+        | 'id'
+        | 'title'
+        | 'handle'
+        | 'content'
+        | 'contentHtml'
+        | 'excerpt'
+        | 'excerptHtml'
+        | 'publishedAt'
+        | 'tags'
+      > & {
+        authorV2?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.ArticleAuthor, 'name'>
+        >;
+        image?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Image, 'url' | 'altText' | 'width' | 'height'>
+        >;
+        seo?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Seo, 'title' | 'description'>
+        >;
+        blog: Pick<StorefrontAPI.Blog, 'id' | 'handle' | 'title'>;
+      }
+    >;
+  }>;
+};
+
 export type ShopInfoQueryVariables = StorefrontAPI.Exact<{
   [key: string]: never;
 }>;
@@ -960,6 +1078,18 @@ interface GeneratedQueryTypes {
   '#graphql\n  query Footer(\n    $country: CountryCode\n    $footerMenuHandle: String!\n    $language: LanguageCode\n  ) @inContext(language: $language, country: $country) {\n    menu(handle: $footerMenuHandle) {\n      ...Menu\n    }\n  }\n  #graphql\n  fragment MenuItem on MenuItem {\n    id\n    resourceId\n    tags\n    title\n    type\n    url\n  }\n  fragment ChildMenuItem on MenuItem {\n    ...MenuItem\n  }\n  fragment ParentMenuItem on MenuItem {\n    ...MenuItem\n    items {\n      ...ChildMenuItem\n    }\n  }\n  fragment Menu on Menu {\n    id\n    items {\n      ...ParentMenuItem\n    }\n  }\n\n': {
     return: FooterQuery;
     variables: FooterQueryVariables;
+  };
+  '#graphql\n  query Blog($blogHandle: String!) {\n    blog(handle: $blogHandle) {\n      id\n      handle\n      title\n      seo {\n        title\n        description\n      }\n    }\n  }\n': {
+    return: BlogQuery;
+    variables: BlogQueryVariables;
+  };
+  '#graphql\n  query BlogArticles(\n    $blogHandle: String!\n    $first: Int\n    $after: String\n  ) {\n    blog(handle: $blogHandle) {\n      id\n      handle\n      title\n      articles(first: $first, after: $after) {\n        pageInfo {\n          hasNextPage\n          hasPreviousPage\n          startCursor\n          endCursor\n        }\n        edges {\n          cursor\n          node {\n            ...Article\n          }\n        }\n      }\n    }\n  }\n  #graphql\n  fragment Article on Article {\n    id\n    title\n    handle\n    content\n    contentHtml\n    excerpt\n    excerptHtml\n    publishedAt\n    authorV2 {\n      name\n    }\n    image {\n      url\n      altText\n      width\n      height\n    }\n    seo {\n      title\n      description\n    }\n    tags\n    blog {\n      id\n      handle\n      title\n    }\n  }\n\n': {
+    return: BlogArticlesQuery;
+    variables: BlogArticlesQueryVariables;
+  };
+  '#graphql\n  query Article($blogHandle: String!, $articleHandle: String!) {\n    blog(handle: $blogHandle) {\n      articleByHandle(handle: $articleHandle) {\n        ...Article\n      }\n    }\n  }\n  #graphql\n  fragment Article on Article {\n    id\n    title\n    handle\n    content\n    contentHtml\n    excerpt\n    excerptHtml\n    publishedAt\n    authorV2 {\n      name\n    }\n    image {\n      url\n      altText\n      width\n      height\n    }\n    seo {\n      title\n      description\n    }\n    tags\n    blog {\n      id\n      handle\n      title\n    }\n  }\n\n': {
+    return: ArticleQuery;
+    variables: ArticleQueryVariables;
   };
   '#graphql\n  query ShopInfo {\n    shop {\n      name\n      description\n      primaryDomain {\n        url\n      }\n    }\n  }\n': {
     return: ShopInfoQuery;

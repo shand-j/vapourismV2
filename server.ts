@@ -34,6 +34,12 @@ function normalizeUrl(url: URL): URL {
  */
 const STATIC_ASSET_EXTENSIONS = /\.(js|css|woff|woff2|ttf|eot|ico|png|jpg|jpeg|gif|svg|webp)$/;
 
+/**
+ * User-specific pages that should not be cached.
+ * Used to prevent caching of personalized content.
+ */
+const USER_SPECIFIC_PAGES = /\/(cart|account|checkout|age-verification)/;
+
 export default {
   async fetch(
     request: Request,
@@ -80,7 +86,7 @@ export default {
       // Cache HTML pages briefly to improve repeat visits without stale content
       else if (response.headers.get('Content-Type')?.includes('text/html')) {
         // Don't cache user-specific pages (cart, account, checkout)
-        if (!pathname.match(/\/(cart|account|checkout|age-verification)/)) {
+        if (!USER_SPECIFIC_PAGES.test(pathname)) {
           response.headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
         }
       }

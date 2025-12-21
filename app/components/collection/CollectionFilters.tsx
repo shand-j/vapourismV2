@@ -386,33 +386,13 @@ export function CollectionFilters({
           </FilterSection>
         )}
 
-        {/* Dynamic Filters from Shopify */}
-        {filters
-          .filter(
-            (f) =>
-              !['vendor', 'product type', 'availability', 'price'].includes(
-                f.label.toLowerCase(),
-              ) && !f.id.includes('vendor') && !f.id.includes('productType'),
-          )
-          .map((filter) => (
-            <FilterSection key={filter.id} title={filter.label} defaultOpen={false}>
-              <div className="flex flex-wrap gap-2">
-                {filter.values.slice(0, 10).map((value) => (
-                  <FilterChip
-                    key={value.id}
-                    label={value.label}
-                    count={value.count}
-                    selected={false}
-                    onClick={() => {
-                      // TODO: Implement variant option filtering
-                      // This is a placeholder for future variant option filter implementation
-                    }}
-                    disabled={value.count === 0}
-                  />
-                ))}
-              </div>
-            </FilterSection>
-          ))}
+        {/* 
+         * Note: Variant option filters (Size, Color, etc.) from Shopify's productFilters
+         * are available in the filters array but not yet implemented. To add them:
+         * 1. Create URL param handlers for variant options
+         * 2. Add them to parseFiltersFromSearchParams in collections.ts  
+         * 3. Add UI components similar to vendor/type filters above
+         */}
       </div>
     </aside>
   );

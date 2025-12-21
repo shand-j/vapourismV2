@@ -6,3 +6,4 @@
 
 export {CollectionFilters} from './CollectionFilters';
 export {CollectionProducts} from './CollectionProducts';
+export {MobileCollectionFilters} from './MobileCollectionFilters';

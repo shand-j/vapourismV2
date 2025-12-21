@@ -341,7 +341,7 @@ export async function getCollection(
       availableForSale: edge.node.availableForSale,
     }));
 
-    const filters: CollectionFilter[] = (collection.products.filters || []).map(
+    const collectionFilters: CollectionFilter[] = (collection.products.filters || []).map(
       (filter: any) => ({
         id: filter.id,
         label: filter.label,
@@ -372,7 +372,7 @@ export async function getCollection(
           }
         : undefined,
       products,
-      filters,
+      filters: collectionFilters,
       totalCount: products.length, // Note: Shopify doesn't return totalCount for collections
       pageInfo: {
         hasNextPage: collection.products.pageInfo.hasNextPage,
@@ -552,7 +552,7 @@ export function buildNavigationStructure(
 
   return categoryConfigs
     .map((config) => {
-      const columns: CollectionNavColumn[] = config.subCategories
+      const columns = config.subCategories
         .map((subCat) => {
           const navItems = subCat.handles
             .map((handle) => collectionMap.get(handle))
@@ -564,7 +564,7 @@ export function buildNavigationStructure(
             heading: subCat.heading,
             collections: navItems,
             seeAllHandle: config.handle,
-          };
+          } as CollectionNavColumn;
         })
         .filter((col): col is CollectionNavColumn => col !== null);
 

@@ -24,7 +24,7 @@ import {
 } from '~/lib/collections';
 import {CollectionFilters} from '~/components/collection/CollectionFilters';
 import {CollectionProducts} from '~/components/collection/CollectionProducts';
-import {MobileFiltersDialog} from '~/components/search/MobileFiltersDialog';
+import {MobileCollectionFilters} from '~/components/collection/MobileCollectionFilters';
 import {ClientOnly} from '~/components/ClientOnly';
 import {SEOAutomationService} from '~/preserved/seo-automation';
 import {
@@ -509,16 +509,18 @@ export default function CollectionPage() {
       {/* Mobile Filters Dialog */}
       <ClientOnly fallback={null}>
         {() => (
-          <MobileFiltersDialog
+          <MobileCollectionFilters
             isOpen={isFiltersOpen}
             onClose={() => setFiltersOpen(false)}
-            facetGroups={[]} // We'll convert collection filters to facet groups
-            selectedTags={[]}
-            onTagToggle={() => {}}
+            filters={collection.filters}
+            selectedVendors={selectedFilters.vendors}
+            selectedTypes={selectedFilters.types}
             availability={selectedFilters.availability}
-            onAvailabilityChange={handleAvailabilityChange}
             selectedPriceRange={selectedFilters.priceRange}
             priceSummary={priceRange}
+            onVendorToggle={handleVendorToggle}
+            onTypeToggle={handleTypeToggle}
+            onAvailabilityChange={handleAvailabilityChange}
             onPriceRangeChange={handlePriceRangeChange}
             onClearFilters={handleClearFilters}
           />

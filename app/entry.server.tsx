@@ -44,12 +44,10 @@ export default async function handleRequest(
 
   // Third-party script domains that need to be allowed in CSP
   // - Google Tag Manager: Required for GA4 analytics
-  // - SearchAtlas: SEO optimization - OTTO widget for dynamic optimizations
-  // - RankYak: SEO optimization (used in conjunction with SearchAtlas)
+  // NOTE: SearchAtlas/RankYak removed - incompatible with CSP (creates inline scripts)
+  // and causes React hydration errors (#418) due to DOM modifications
   const thirdPartyScriptDomains = [
     'https://www.googletagmanager.com',
-    'https://dashboard.searchatlas.com',
-    'https://cdn.rankyak.com',
   ];
 
   const {nonce, header, NonceProvider} = createContentSecurityPolicy({
@@ -58,18 +56,17 @@ export default async function handleRequest(
       storeDomain,
     },
     directives: {
-      // Allow third-party script sources for analytics and SEO optimization
+      // Allow third-party script sources for analytics
       scriptSrc: thirdPartyScriptDomains,
       // script-src-elem controls <script> element loading - must include third-party domains
       // to prevent fallback to default-src which blocks dynamic script loading
       scriptSrcElem: thirdPartyScriptDomains,
-      // Allow connections to analytics and SEO services
+      // Allow connections to analytics services
       connectSrc: [
         'https://www.google-analytics.com',
         'https://*.google-analytics.com',
         'https://www.googletagmanager.com',
         'https://analytics.google.com',
-        'https://dashboard.searchatlas.com',
         'https://monorail-edge.shopifysvc.com',
       ],
       // Allow images from analytics and external sources

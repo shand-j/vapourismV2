@@ -23,7 +23,9 @@ import {MegaMenu, MobileMenu} from './components/navigation/MegaMenu';
 import {ShopifySearch} from './components/search/ShopifySearch';
 import {CookieConsent} from './components/CookieConsent';
 import {GoogleAnalytics} from './components/Analytics';
-import {SearchAtlasScript} from './components/SearchAtlasScript';
+// SearchAtlas OTTO disabled - incompatible with CSP (creates inline scripts without nonces)
+// and causes React hydration errors (#418) due to DOM modifications
+// import {SearchAtlasScript} from './components/SearchAtlasScript';
 import {trackPageView} from './lib/analytics';
 import {Icon} from './components/ui/Icon';
 
@@ -51,10 +53,10 @@ export const links: LinksFunction = () => [
   {rel: 'preconnect', href: 'https://cdn.shopify.com'},
   {rel: 'preconnect', href: 'https://fonts.googleapis.com'},
   {rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous'},
-  // DNS prefetch for analytics and optimization scripts (lower priority than preconnect)
+  // DNS prefetch for analytics scripts (lower priority than preconnect)
   {rel: 'dns-prefetch', href: 'https://www.googletagmanager.com'},
   {rel: 'dns-prefetch', href: 'https://www.google-analytics.com'},
-  {rel: 'dns-prefetch', href: 'https://dashboard.searchatlas.com'},
+  // SearchAtlas dns-prefetch removed - script disabled due to CSP/hydration issues
   {rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg'},
   {rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'},
   {rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png'},
@@ -198,12 +200,10 @@ export default function App() {
         {ga4MeasurementId && <GoogleAnalytics measurementId={ga4MeasurementId} nonce={nonce} />}
       </head>
       <body className="bg-white text-slate-900 antialiased">
-        {/* SearchAtlas OTTO Pixel - Loaded client-side after hydration to avoid React Error #418.
-            The script is loaded dynamically via SearchAtlasScript component to prevent hydration
-            mismatches caused by DOM modifications during the initial render. */}
-        <ClientOnly fallback={null}>
-          {() => <SearchAtlasScript />}
-        </ClientOnly>
+        {/* SearchAtlas OTTO Pixel disabled - the script is incompatible with:
+            1. Strict CSP (creates inline scripts without nonces, loads from storage.googleapis.com)
+            2. React SSR/hydration (causes Error #418 due to DOM modifications)
+            See: https://reactjs.org/docs/error-decoder.html?invariant=418 */}
 
         {isAgeGateActive && (
           <div className="pointer-events-none fixed inset-0 z-[30] bg-white/40 backdrop-blur-[3px]" aria-hidden />

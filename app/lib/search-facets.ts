@@ -424,16 +424,33 @@ export function buildTagFacetGroups(
   });
 
   // Build final facet groups, removing duplicates
-  const seenGroupKeys = new Set<string>();
+  // Use explicit list of primary keys to filter out legacy duplicates
+  const primaryAttributeKeys = new Set<string>([
+    'product_type', 'brand', 'flavour_category', 'nicotine_strength',
+    'volume', 'capacity', 'puff_count', 'battery_capacity', 'coil_resistance',
+    'device_type', 'pack_size', 'cbd_strength', 'cbd_type', 'cbd_form',
+    'material', 'color', 'size'
+  ]);
+  const seenAttributeKeys = new Set<string>();
+  
   return TAG_FILTER_GROUPS
     .filter(config => {
-      // Skip legacy keys if we already have the primary key
-      if (config.attributeKey && seenGroupKeys.has(config.attributeKey)) {
+      // For configs with an attributeKey, check if it's a primary key or a legacy alias
+      if (config.attributeKey) {
+        // If we've already processed this attributeKey, skip
+        if (seenAttributeKeys.has(config.attributeKey)) {
+          return false;
+        }
+        // Only include if the key itself is a primary key OR the config.key matches the attributeKey
+        // This ensures primary keys are used instead of legacy aliases
+        if (primaryAttributeKeys.has(config.key) || config.key === config.attributeKey) {
+          seenAttributeKeys.add(config.attributeKey);
+          return true;
+        }
+        // Skip legacy keys (like 'category' -> 'product_type')
         return false;
       }
-      if (config.attributeKey) {
-        seenGroupKeys.add(config.attributeKey);
-      }
+      // Include configs without attributeKey (legacy-only filters)
       return true;
     })
     .map((config) => {

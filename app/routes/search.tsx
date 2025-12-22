@@ -217,9 +217,16 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     // Add tag filters to the filter list (will be converted to query syntax by searchProducts)
     expandedTagFilters.forEach((tag) => allFilters.push({tag} as StorefrontAPI.ProductFilter));
 
+    // Determine if we need extra products for client-side filtering
+    // Only fetch more when we have client-side filters that require metafield data
+    const hasClientSideFilters = Object.entries(selectedFilters).some(
+      ([key, values]) => key !== 'product_type' && key !== 'brand' && values.length > 0
+    );
+    const fetchCount = hasClientSideFilters ? 100 : 24;
+
     // Use server-side filtering for everything, including tags
     const searchResults = await searchProducts(context.storefront, query, {
-      first: 100, // Fetch more to allow for client-side attribute filtering
+      first: fetchCount,
       after,
       sortKey,
       reverse,

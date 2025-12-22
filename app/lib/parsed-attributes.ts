@@ -271,7 +271,8 @@ export function parseParsedAttributes(jsonString: string | null | undefined): Pa
     if (typeof parsed !== 'object' || parsed === null) return null;
     return parsed as ParsedAttributes;
   } catch {
-    console.error('Failed to parse parsed_attributes metafield:', jsonString);
+    // Log error without exposing potentially sensitive data
+    console.error('Failed to parse parsed_attributes metafield');
     return null;
   }
 }

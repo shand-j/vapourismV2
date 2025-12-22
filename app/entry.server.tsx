@@ -140,6 +140,8 @@ export default async function handleRequest(
       if (!existing.includes('https://www.googletagmanager.com')) existing += ' https://www.googletagmanager.com';
       // SearchAtlas domains (if re-enabling the script)
       if (!existing.includes('https://dashboard.searchatlas.com')) existing += ' https://dashboard.searchatlas.com';
+      // RankYak domain for SEO optimization (used in conjunction with SearchAtlas)
+      if (!existing.includes('https://cdn.rankyak.com')) existing += ' https://cdn.rankyak.com';
       // Note: data: URLs disabled for security - SearchAtlas script commented out in root.tsx
       // if (!existing.includes('data:')) existing += ' data:';
       return `script-src${existing}`;

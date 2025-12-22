@@ -200,9 +200,13 @@ export default function App() {
         {/* SearchAtlas OTTO Widget - Must be in <head> for crawler detection.
             Rendered server-side so SearchAtlas can detect it during crawl.
             Uses base64-encoded loader for proper initialization.
+            nowprocket and nitro-exclude are cache optimization hints.
             CSP is configured to allow SearchAtlas domains and 'unsafe-inline' for inline scripts.
             See: https://help.searchatlas.com/en/articles/12334271-otto-security */}
+        {/* @ts-expect-error nowprocket and nitro-exclude are non-standard HTML attributes for cache optimization */}
         <script
+          nowprocket=""
+          nitro-exclude=""
           type="text/javascript"
           id="sa-dynamic-optimization"
           data-uuid="bc389022-b99a-470f-a7a5-14a7389ffee7"

@@ -59,18 +59,39 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const after = searchParams.get('after') || undefined;
   const quizSource = searchParams.get('source') === 'device-studio';
   
-  // If no tags, show devices by default
-  const effectiveTags = selectedTags.length > 0 
-    ? selectedTags 
-    : ['device', 'pod_system', 'box_mod', 'disposable'];
+  // Also check for new attribute-based filters
+  const productTypeFilters = searchParams.getAll('product_type');
+  const deviceTypeFilters = searchParams.getAll('device_type');
+  
+  // If no tags or filters, show devices by default
+  const hasFilters = selectedTags.length > 0 || productTypeFilters.length > 0 || deviceTypeFilters.length > 0;
+  const defaultProductTypes = ['pod_system', 'mod', 'disposable_vape'];
 
   try {
-    // Build a search query from tags
-    const tagQuery = effectiveTags
-      .map(tag => `tag:${tag}`)
-      .join(' OR ');
+    // Build search query
+    let searchQuery = '*';
     
-    const searchQuery = tagQuery || '*';
+    if (hasFilters) {
+      // Use provided filters
+      const queryParts: string[] = [];
+      
+      // Add tag-based query parts
+      if (selectedTags.length > 0) {
+        queryParts.push(`(${selectedTags.map(tag => `tag:${tag}`).join(' OR ')})`);
+      }
+      
+      // Add product type filters
+      if (productTypeFilters.length > 0) {
+        queryParts.push(`(${productTypeFilters.map(pt => `product_type:${pt}`).join(' OR ')})`);
+      }
+      
+      if (queryParts.length > 0) {
+        searchQuery = queryParts.join(' ');
+      }
+    } else {
+      // Default: show device-related product types
+      searchQuery = `(${defaultProductTypes.map(pt => `product_type:${pt}`).join(' OR ')})`;
+    }
 
     const searchResults = await searchProducts(context.storefront, searchQuery, {
       first: 100,
@@ -79,11 +100,20 @@ export async function loader({request, context}: LoaderFunctionArgs) {
       reverse: false,
     });
 
-    // Apply tag filtering
+    // Apply additional client-side filtering by parsed_attributes if needed
     let filteredProducts = searchResults.products;
     
+    // Filter by device_type if specified
+    if (deviceTypeFilters.length > 0) {
+      const { filterProductsByAttributes } = await import('~/lib/search-facets');
+      filteredProducts = filterProductsByAttributes(filteredProducts, {
+        device_type: deviceTypeFilters,
+      });
+    }
+    
+    // Legacy tag filtering (for backwards compatibility)
     if (selectedTags.length > 0) {
-      filteredProducts = searchResults.products.filter((product) => {
+      filteredProducts = filteredProducts.filter((product) => {
         const productTags = (product.tags || []).map(t => t.toLowerCase());
         return selectedTags.some(tag => 
           productTags.includes(tag.toLowerCase()) ||

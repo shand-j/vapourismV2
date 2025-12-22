@@ -59,19 +59,39 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const after = searchParams.get('after') || undefined;
   const quizSource = searchParams.get('source') === 'flavour-lab';
   
-  // If no tags, show e-liquids and disposables by default
-  const effectiveTags = selectedTags.length > 0 
-    ? selectedTags 
-    : ['e-liquid', 'disposable', 'pod'];
+  // Check for new attribute-based filters
+  const productTypeFilters = searchParams.getAll('product_type');
+  const flavourCategoryFilters = searchParams.getAll('flavour_category');
+  const nicotineStrengthFilters = searchParams.getAll('nicotine_strength');
+  
+  // If no tags or filters, show e-liquids and disposables by default
+  const hasFilters = selectedTags.length > 0 || productTypeFilters.length > 0 || flavourCategoryFilters.length > 0;
+  const defaultProductTypes = ['e-liquid', 'disposable_vape'];
 
   try {
-    // Build a search query from tags
-    // Use product tags for filtering
-    const tagQuery = effectiveTags
-      .map(tag => `tag:${tag}`)
-      .join(' OR ');
+    // Build search query
+    let searchQuery = '*';
     
-    const searchQuery = tagQuery || '*';
+    if (hasFilters) {
+      const queryParts: string[] = [];
+      
+      // Add tag-based query parts
+      if (selectedTags.length > 0) {
+        queryParts.push(`(${selectedTags.map(tag => `tag:${tag}`).join(' OR ')})`);
+      }
+      
+      // Add product type filters
+      if (productTypeFilters.length > 0) {
+        queryParts.push(`(${productTypeFilters.map(pt => `product_type:${pt}`).join(' OR ')})`);
+      }
+      
+      if (queryParts.length > 0) {
+        searchQuery = queryParts.join(' ');
+      }
+    } else {
+      // Default: show e-liquids and disposables
+      searchQuery = `(${defaultProductTypes.map(pt => `product_type:${pt}`).join(' OR ')})`;
+    }
 
     const searchResults = await searchProducts(context.storefront, searchQuery, {
       first: 100,
@@ -80,12 +100,25 @@ export async function loader({request, context}: LoaderFunctionArgs) {
       reverse: false,
     });
 
-    // Further filter by tags if needed (Shopify search is OR-based, we might want AND)
+    // Apply additional client-side filtering by parsed_attributes
     let filteredProducts = searchResults.products;
     
-    // Apply tag filtering - products must have at least one matching tag
+    // Filter by flavour_category if specified
+    if (flavourCategoryFilters.length > 0 || nicotineStrengthFilters.length > 0) {
+      const { filterProductsByAttributes } = await import('~/lib/search-facets');
+      const clientFilters: Record<string, string[]> = {};
+      if (flavourCategoryFilters.length > 0) {
+        clientFilters.flavour_category = flavourCategoryFilters;
+      }
+      if (nicotineStrengthFilters.length > 0) {
+        clientFilters.nicotine_strength = nicotineStrengthFilters;
+      }
+      filteredProducts = filterProductsByAttributes(filteredProducts, clientFilters);
+    }
+    
+    // Legacy tag filtering (for backwards compatibility)
     if (selectedTags.length > 0) {
-      filteredProducts = searchResults.products.filter((product) => {
+      filteredProducts = filteredProducts.filter((product) => {
         const productTags = (product.tags || []).map(t => t.toLowerCase());
         return selectedTags.some(tag => 
           productTags.includes(tag.toLowerCase()) ||

@@ -56,10 +56,31 @@ export interface PredictiveSearchResults {
   }>;
 }
 
+/**
+ * Variant information for a search product
+ */
+export interface SearchProductVariant {
+  id: string;
+  title: string;
+  availableForSale: boolean;
+  price: {
+    amount: string;
+    currencyCode: string;
+  };
+  selectedOptions: Array<{
+    name: string;
+    value: string;
+  }>;
+}
+
 export interface SearchProduct extends PredictiveSearchProduct {
   productType: string;
   tags: string[];
   description: string;
+  /** Raw JSON string from custom.parsed_attributes metafield */
+  parsedAttributesJson?: string | null;
+  /** Product variants */
+  variants?: SearchProductVariant[];
 }
 
 export interface SearchResults {
@@ -146,6 +167,7 @@ const PREDICTIVE_SEARCH_QUERY = `#graphql
 /**
  * Full Search GraphQL Query
  * Used for search results pages
+ * Includes custom.parsed_attributes metafield for filtering
  */
 const SEARCH_QUERY = `#graphql
   query SearchProducts(
@@ -185,6 +207,26 @@ const SEARCH_QUERY = `#graphql
               altText
             }
             availableForSale
+            parsedAttributes: metafield(namespace: "custom", key: "parsed_attributes") {
+              value
+            }
+            variants(first: 10) {
+              edges {
+                node {
+                  id
+                  title
+                  availableForSale
+                  price {
+                    amount
+                    currencyCode
+                  }
+                  selectedOptions {
+                    name
+                    value
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -371,8 +413,40 @@ export async function searchProducts(
     }
 
     const mappedProducts = results.edges
-      .map((edge) => edge?.node)
-      .filter(Boolean) as SearchProduct[];
+      .map((edge) => {
+        const node = edge?.node;
+        if (!node) return null;
+        
+        // Map the product with parsed attributes and variants
+        const product: SearchProduct = {
+          id: node.id,
+          title: node.title,
+          handle: node.handle,
+          vendor: node.vendor,
+          productType: node.productType || '',
+          tags: node.tags || [],
+          description: node.description || '',
+          priceRange: node.priceRange,
+          featuredImage: node.featuredImage?.url
+            ? {
+                url: node.featuredImage.url,
+                altText: node.featuredImage.altText ?? undefined,
+              }
+            : undefined,
+          availableForSale: node.availableForSale,
+          parsedAttributesJson: (node as any).parsedAttributes?.value || null,
+          variants: (node as any).variants?.edges?.map((variantEdge: any) => ({
+            id: variantEdge.node.id,
+            title: variantEdge.node.title,
+            availableForSale: variantEdge.node.availableForSale,
+            price: variantEdge.node.price,
+            selectedOptions: variantEdge.node.selectedOptions || [],
+          })) || [],
+        };
+        
+        return product;
+      })
+      .filter((p): p is SearchProduct => p !== null);
 
     return {
       products: mappedProducts,
@@ -501,6 +575,7 @@ export async function getCachedFacets(
   const { buildTagFacetGroups } = await import('../lib/search-facets');
 
   // Use a cached query to get all products for facet data
+  // Includes custom.parsed_attributes metafield for attribute-based filtering
   const FACET_QUERY = `#graphql
     query FacetData($first: Int, $after: String) {
       products(first: $first, after: $after) {
@@ -509,6 +584,9 @@ export async function getCachedFacets(
           vendor
           productType
           tags
+          parsedAttributes: metafield(namespace: "custom", key: "parsed_attributes") {
+            value
+          }
         }
         pageInfo {
           hasNextPage
@@ -532,7 +610,13 @@ export async function getCachedFacets(
         cache: storefront.CacheLong(), // Cache for longer periods
       }) as any;
 
-      allProducts.push(...response.products.nodes);
+      // Map products to include parsed attributes JSON
+      const mappedProducts = response.products.nodes.map((node: any) => ({
+        ...node,
+        parsedAttributesJson: node.parsedAttributes?.value || null,
+      }));
+
+      allProducts.push(...mappedProducts);
       hasNextPage = response.products.pageInfo.hasNextPage;
       endCursor = response.products.pageInfo.endCursor;
     }

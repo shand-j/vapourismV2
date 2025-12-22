@@ -1,16 +1,41 @@
 import type {SearchProduct} from './shopify-search';
+import {
+  parseParsedAttributes,
+  formatAttributeValue,
+  FILTERABLE_ATTRIBUTES,
+  ATTRIBUTE_LABELS,
+  type ParsedAttributes,
+  type FilterableAttribute,
+} from './parsed-attributes';
 
 export const FILTER_TAG_PREFIX = 'filter:';
 
+/**
+ * Filter group key - now aligned with parsed_attributes fields
+ * Still supports legacy tag-based keys for backwards compatibility
+ */
 export type FilterGroupKey =
-  | 'category'
-  | 'capacity'
-  | 'bottle_size'
-  | 'device_style'
+  | 'product_type'
+  | 'brand'
+  | 'flavour_category'
   | 'nicotine_strength'
   | 'cbd_strength'
-  | 'cbd_form'
   | 'cbd_type'
+  | 'cbd_form'
+  | 'device_type'
+  | 'volume'
+  | 'capacity'
+  | 'pack_size'
+  | 'puff_count'
+  | 'battery_capacity'
+  | 'coil_resistance'
+  | 'material'
+  | 'color'
+  | 'size'
+  // Legacy keys for backwards compatibility
+  | 'category'
+  | 'bottle_size'
+  | 'device_style'
   | 'flavour_type'
   | 'nicotine_type'
   | 'power_supply'
@@ -20,40 +45,48 @@ export type FilterGroupKey =
   | 'accessory_type'
   | 'tank_parts'
   | 'coil_ohm'
-  | 'brand'
   | 'promo'
   | 'curation';
 
 interface FilterGroupConfig {
   key: FilterGroupKey;
   label: string;
-  /** Categories this filter applies to (from approved vocabulary) */
+  /** Mapped attribute key from parsed_attributes */
+  attributeKey?: FilterableAttribute;
+  /** Categories this filter applies to */
   appliesTo?: string[];
 }
 
+/**
+ * Filter groups configuration
+ * Maps to both new parsed_attributes and legacy tag system
+ */
 export const TAG_FILTER_GROUPS: FilterGroupConfig[] = [
-  // Primary Categories (Data Analyst Priority Order)
-  {key: 'category', label: 'Product Type'},
-  {key: 'capacity', label: 'Capacity', appliesTo: ['tank', 'pod']},
-  {key: 'bottle_size', label: 'Bottle Size', appliesTo: ['e-liquid']},
-  {key: 'device_style', label: 'Device Style', appliesTo: ['device', 'pod_system']},
-  {key: 'nicotine_strength', label: 'Nicotine Strength', appliesTo: ['e-liquid', 'disposable', 'device', 'pod_system', 'nicotine_pouches']},
-  {key: 'cbd_strength', label: 'CBD Strength', appliesTo: ['CBD']},
-  {key: 'cbd_form', label: 'CBD Form', appliesTo: ['CBD']},
-  {key: 'cbd_type', label: 'CBD Type', appliesTo: ['CBD']},
-  {key: 'flavour_type', label: 'Flavour Type', appliesTo: ['e-liquid', 'disposable', 'nicotine_pouches', 'pod']},
-  {key: 'nicotine_type', label: 'Nicotine Type', appliesTo: ['e-liquid', 'disposable', 'device', 'pod_system', 'nicotine_pouches']},
-  {key: 'power_supply', label: 'Power Supply', appliesTo: ['device', 'pod_system']},
-  {key: 'vg_ratio', label: 'VG/PG Ratio', appliesTo: ['e-liquid']},
-  {key: 'vaping_style', label: 'Vaping Style', appliesTo: ['device', 'pod_system', 'e-liquid']},
-  {key: 'pod_type', label: 'Pod Type', appliesTo: ['pod']},
-  {key: 'accessory_type', label: 'Accessory Type', appliesTo: ['accessory']},
-  {key: 'tank_parts', label: 'Tank Parts', appliesTo: ['tank']},
-  {key: 'coil_ohm', label: 'Coil Resistance', appliesTo: ['coil', 'device', 'pod_system']},
-  {key: 'brand', label: 'Brand'},
-  // Secondary Categories
-  {key: 'promo', label: 'Promotions'},
-  {key: 'curation', label: 'Curated Sets'},
+  // Primary Categories - mapped to parsed_attributes
+  {key: 'product_type', label: 'Product Type', attributeKey: 'product_type'},
+  {key: 'brand', label: 'Brand', attributeKey: 'brand'},
+  {key: 'flavour_category', label: 'Flavour', attributeKey: 'flavour_category'},
+  {key: 'nicotine_strength', label: 'Nicotine Strength', attributeKey: 'nicotine_strength'},
+  {key: 'volume', label: 'Volume', attributeKey: 'volume'},
+  {key: 'capacity', label: 'Capacity', attributeKey: 'capacity'},
+  {key: 'puff_count', label: 'Puff Count', attributeKey: 'puff_count'},
+  {key: 'battery_capacity', label: 'Battery', attributeKey: 'battery_capacity'},
+  {key: 'coil_resistance', label: 'Coil Resistance', attributeKey: 'coil_resistance'},
+  {key: 'device_type', label: 'Device Type', attributeKey: 'device_type'},
+  {key: 'pack_size', label: 'Pack Size', attributeKey: 'pack_size'},
+  // CBD-specific
+  {key: 'cbd_strength', label: 'CBD Strength', attributeKey: 'cbd_strength'},
+  {key: 'cbd_type', label: 'CBD Type', attributeKey: 'cbd_type'},
+  {key: 'cbd_form', label: 'CBD Form', attributeKey: 'cbd_form'},
+  // Material & appearance
+  {key: 'material', label: 'Material', attributeKey: 'material'},
+  {key: 'color', label: 'Color', attributeKey: 'color'},
+  {key: 'size', label: 'Size', attributeKey: 'size'},
+  // Legacy keys - kept for backwards compatibility with existing URLs
+  {key: 'category', label: 'Product Type', attributeKey: 'product_type'},
+  {key: 'bottle_size', label: 'Volume', attributeKey: 'volume'},
+  {key: 'flavour_type', label: 'Flavour', attributeKey: 'flavour_category'},
+  {key: 'coil_ohm', label: 'Coil Resistance', attributeKey: 'coil_resistance'},
 ];
 
 const TAG_CONFIG_MAP = new Map(TAG_FILTER_GROUPS.map((config) => [config.key, config]));
@@ -79,6 +112,24 @@ export function parseFilterTag(tag: string): ParsedFilterTag | null {
   };
 }
 
+/**
+ * Parse attribute filter from URL parameter format
+ * Format: attributeKey:value (e.g., "product_type:e-liquid")
+ */
+export function parseAttributeFilter(param: string): { key: FilterableAttribute; value: string } | null {
+  if (!param || typeof param !== 'string') return null;
+  const colonIndex = param.indexOf(':');
+  if (colonIndex === -1) return null;
+  
+  const key = param.slice(0, colonIndex) as FilterableAttribute;
+  const value = param.slice(colonIndex + 1);
+  
+  if (!FILTERABLE_ATTRIBUTES.includes(key)) return null;
+  if (!value) return null;
+  
+  return { key, value };
+}
+
 export function formatFacetLabel(value: string): string {
   return value
     .replace(/[_-]+/g, ' ')
@@ -88,17 +139,19 @@ export function formatFacetLabel(value: string): string {
 }
 
 export interface FacetOption {
-  value: string; // raw tag value
+  value: string; // Filter value (attributeKey:value format for new system)
   label: string;
   count: number;
-  originalTags?: string[]; // Only for deduped flavour_type options
-  originalValue?: string; // Original value for synthetic filters (brand, category)
+  originalTags?: string[]; // Legacy - for tag mapping
+  originalValue?: string; // Original value for filters
 }
 
 export interface TagFacetGroup {
   key: FilterGroupKey;
   label: string;
   options: FacetOption[];
+  /** The corresponding parsed_attributes key */
+  attributeKey?: FilterableAttribute;
 }
 
 export interface PriceSummary {
@@ -108,52 +161,102 @@ export interface PriceSummary {
 }
 
 /**
- * Extract facets from existing product data (fallback while filter tags are being implemented)
+ * Extract facets from parsed_attributes metafield
+ * This is the primary facet extraction method for the new system
+ */
+function extractParsedAttributesFacets(
+  products: SearchProduct[],
+  groupOptionMap: Map<FilterGroupKey, Map<string, FacetOption & {productIds: Set<string>}>>,
+) {
+  products.forEach((product) => {
+    const attributes = parseParsedAttributes(product.parsedAttributesJson);
+    if (!attributes) return;
+
+    // Process each filterable attribute from parsed_attributes
+    for (const attrKey of FILTERABLE_ATTRIBUTES) {
+      const value = attributes[attrKey];
+      if (value === null || value === undefined) continue;
+      
+      // Find the group key for this attribute
+      const groupConfig = TAG_FILTER_GROUPS.find(g => g.attributeKey === attrKey);
+      if (!groupConfig) continue;
+      
+      const groupKey = groupConfig.key;
+      const group = groupOptionMap.get(groupKey) ?? new Map();
+      groupOptionMap.set(groupKey, group);
+
+      // Handle array values (like flavours)
+      const values = Array.isArray(value) ? value : [value];
+      
+      for (const v of values) {
+        if (!v) continue;
+        const filterValue = `${attrKey}:${v}`;
+        const option = group.get(filterValue) ?? {
+          value: filterValue,
+          label: formatAttributeValue(v),
+          count: 0,
+          productIds: new Set<string>(),
+          originalValue: v,
+        };
+        
+        if (!option.productIds.has(product.id)) {
+          option.productIds.add(product.id);
+          option.count += 1;
+        }
+        group.set(filterValue, option);
+      }
+    }
+  });
+}
+
+/**
+ * Extract facets from product fields (vendor, productType) as fallback
+ * Also extracts from legacy tags for backwards compatibility
  */
 function extractFallbackFacets(
   products: SearchProduct[],
   groupOptionMap: Map<FilterGroupKey, Map<string, FacetOption & {productIds: Set<string>}>>,
 ) {
   products.forEach((product) => {
-    // Extract Brand facets from vendor field
+    // Extract Brand facets from vendor field (fallback if not in parsed_attributes)
     if (product.vendor) {
       const brandGroup = groupOptionMap.get('brand') ?? new Map();
       groupOptionMap.set('brand', brandGroup);
-      const brandTag = `filter:brand:${product.vendor.toLowerCase().replace(/\s+/g, '_')}`;
-      const brandOption = brandGroup.get(brandTag) ?? {
-        value: brandTag,
+      const brandValue = `brand:${product.vendor}`;
+      const brandOption = brandGroup.get(brandValue) ?? {
+        value: brandValue,
         label: product.vendor,
         count: 0,
         productIds: new Set<string>(),
-        originalValue: product.vendor, // Store original vendor name
+        originalValue: product.vendor,
       };
       if (!brandOption.productIds.has(product.id)) {
         brandOption.productIds.add(product.id);
         brandOption.count += 1;
       }
-      brandGroup.set(brandTag, brandOption);
+      brandGroup.set(brandValue, brandOption);
     }
 
-    // Extract Category facets from productType field
+    // Extract Category facets from productType field (fallback if not in parsed_attributes)
     if (product.productType) {
-      const categoryGroup = groupOptionMap.get('category') ?? new Map();
-      groupOptionMap.set('category', categoryGroup);
-      const categoryTag = `filter:category:${product.productType.toLowerCase().replace(/\s+/g, '_')}`;
-      const categoryOption = categoryGroup.get(categoryTag) ?? {
-        value: categoryTag,
+      const categoryGroup = groupOptionMap.get('product_type') ?? new Map();
+      groupOptionMap.set('product_type', categoryGroup);
+      const categoryValue = `product_type:${product.productType.toLowerCase().replace(/\s+/g, '_')}`;
+      const categoryOption = categoryGroup.get(categoryValue) ?? {
+        value: categoryValue,
         label: product.productType,
         count: 0,
         productIds: new Set<string>(),
-        originalValue: product.productType, // Store original productType
+        originalValue: product.productType,
       };
       if (!categoryOption.productIds.has(product.id)) {
         categoryOption.productIds.add(product.id);
         categoryOption.count += 1;
       }
-      categoryGroup.set(categoryTag, categoryOption);
+      categoryGroup.set(categoryValue, categoryOption);
     }
 
-    // Extract facets from existing tags (look for common patterns)
+    // Extract facets from legacy tags (backwards compatibility)
     const productTags = product.tags || [];
     productTags.forEach((tag) => {
       const lowerTag = tag.toLowerCase();
@@ -162,67 +265,77 @@ function extractFallbackFacets(
       if (/^\d+mg$/i.test(tag)) {
         const nicotineGroup = groupOptionMap.get('nicotine_strength') ?? new Map();
         groupOptionMap.set('nicotine_strength', nicotineGroup);
-        // Use the original tag as the value instead of synthetic filter tag
-        const nicotineOption = nicotineGroup.get(tag) ?? {
-          value: tag, // Use original tag for filtering
+        const nicotineValue = `nicotine_strength:${tag.toLowerCase()}`;
+        const nicotineOption = nicotineGroup.get(nicotineValue) ?? {
+          value: nicotineValue,
           label: tag,
           count: 0,
           productIds: new Set<string>(),
+          originalValue: tag,
         };
         if (!nicotineOption.productIds.has(product.id)) {
           nicotineOption.productIds.add(product.id);
           nicotineOption.count += 1;
         }
-        nicotineGroup.set(tag, nicotineOption);
+        nicotineGroup.set(nicotineValue, nicotineOption);
       }
 
-      // Look for bottle size patterns (e.g., "10ml", "50ml")
+      // Look for volume patterns (e.g., "10ml", "50ml")
       if (/^\d+ml$/i.test(tag)) {
-        const sizeGroup = groupOptionMap.get('bottle_size') ?? new Map();
-        groupOptionMap.set('bottle_size', sizeGroup);
-        // Use the original tag as the value instead of synthetic filter tag
-        const sizeOption = sizeGroup.get(tag) ?? {
-          value: tag, // Use original tag for filtering
+        const sizeGroup = groupOptionMap.get('volume') ?? new Map();
+        groupOptionMap.set('volume', sizeGroup);
+        const sizeValue = `volume:${tag.toLowerCase()}`;
+        const sizeOption = sizeGroup.get(sizeValue) ?? {
+          value: sizeValue,
           label: tag,
           count: 0,
           productIds: new Set<string>(),
+          originalValue: tag,
         };
         if (!sizeOption.productIds.has(product.id)) {
           sizeOption.productIds.add(product.id);
           sizeOption.count += 1;
         }
-        sizeGroup.set(tag, sizeOption);
+        sizeGroup.set(sizeValue, sizeOption);
       }
 
-      // Look for common flavor patterns
-      const flavorKeywords = ['fruit', 'ice', 'menthol', 'tobacco', 'dessert', 'sweet', 'cool'];
-        flavorKeywords.forEach((keyword) => {
-          if (lowerTag.includes(keyword)) {
-            const flavorGroup = groupOptionMap.get('flavour_type') ?? new Map();
-            groupOptionMap.set('flavour_type', flavorGroup);
-            // Deduplicate by keyword, aggregate product IDs and count
-            const flavorTag = `filter:flavour_type:${keyword}`;
-            const flavorOption = flavorGroup.get(flavorTag) ?? {
-              value: flavorTag,
-              label: keyword.charAt(0).toUpperCase() + keyword.slice(1),
-              count: 0,
-              productIds: new Set<string>(),
-              originalTags: [],
-            };
-            if (!flavorOption.productIds.has(product.id)) {
-              flavorOption.productIds.add(product.id);
-              flavorOption.count += 1;
-            }
-            // Track original tags for deduplication mapping
-            if (!flavorOption.originalTags) {
-              flavorOption.originalTags = [];
-            }
-            if (!flavorOption.originalTags.includes(tag)) {
-              flavorOption.originalTags.push(tag);
-            }
-            flavorGroup.set(flavorTag, flavorOption);
+      // Look for common flavor patterns and map to flavour_category
+      const flavorKeywords = [
+        {keyword: 'fruit', category: 'fruity'},
+        {keyword: 'ice', category: 'ice'},
+        {keyword: 'menthol', category: 'ice'},
+        {keyword: 'tobacco', category: 'tobacco'},
+        {keyword: 'dessert', category: 'desserts/bakery'},
+        {keyword: 'sweet', category: 'candy/sweets'},
+        {keyword: 'cool', category: 'ice'},
+        {keyword: 'beverage', category: 'beverages'},
+        {keyword: 'candy', category: 'candy/sweets'},
+      ];
+      
+      for (const {keyword, category} of flavorKeywords) {
+        if (lowerTag.includes(keyword)) {
+          const flavorGroup = groupOptionMap.get('flavour_category') ?? new Map();
+          groupOptionMap.set('flavour_category', flavorGroup);
+          const flavorValue = `flavour_category:${category}`;
+          const flavorOption = flavorGroup.get(flavorValue) ?? {
+            value: flavorValue,
+            label: formatFacetLabel(category),
+            count: 0,
+            productIds: new Set<string>(),
+            originalValue: category,
+            originalTags: [],
+          };
+          if (!flavorOption.productIds.has(product.id)) {
+            flavorOption.productIds.add(product.id);
+            flavorOption.count += 1;
           }
-        });
+          if (flavorOption.originalTags && !flavorOption.originalTags.includes(tag)) {
+            flavorOption.originalTags.push(tag);
+          }
+          flavorGroup.set(flavorValue, flavorOption);
+          break; // Only match first flavor category
+        }
+      }
     });
   });
 }
@@ -234,7 +347,13 @@ export function buildTagFacetGroups(
   const groupOptionMap = new Map<FilterGroupKey, Map<string, FacetOption & {productIds: Set<string>}>>();
   const selectedSet = new Set(selectedTags);
 
-  // First, process proper filter: tags
+  // First, process parsed_attributes metafield (primary source)
+  extractParsedAttributesFacets(products, groupOptionMap);
+
+  // Then, extract fallback facets from product fields and legacy tags
+  extractFallbackFacets(products, groupOptionMap);
+
+  // Process legacy filter: tags for backwards compatibility
   products.forEach((product) => {
     const productTags = new Set(product.tags || []);
     productTags.forEach((tag) => {
@@ -244,70 +363,108 @@ export function buildTagFacetGroups(
       if (!config) return;
       const group = groupOptionMap.get(parsed.groupKey) ?? new Map();
       groupOptionMap.set(parsed.groupKey, group);
-      const option = group.get(tag) ?? {
-        value: tag,
+      
+      // Convert legacy tag to new format if possible
+      const attrKey = config.attributeKey;
+      const filterValue = attrKey ? `${attrKey}:${parsed.value}` : tag;
+      
+      const option = group.get(filterValue) ?? {
+        value: filterValue,
         label: formatFacetLabel(parsed.value),
         count: 0,
         productIds: new Set<string>(),
+        originalValue: parsed.value,
       };
       if (!option.productIds.has(product.id)) {
         option.productIds.add(product.id);
         option.count += 1;
       }
-      group.set(tag, option);
+      group.set(filterValue, option);
     });
   });
 
-  // Then, extract fallback facets from existing product data
-  extractFallbackFacets(products, groupOptionMap);
-
-  // Ensure selected tags remain visible even if zero results currently match
-  selectedSet.forEach((tag) => {
-    const parsed = parseFilterTag(tag);
+  // Ensure selected filters remain visible even if zero results currently match
+  selectedSet.forEach((filter) => {
+    // Try parsing as new attribute format first
+    const attrFilter = parseAttributeFilter(filter);
+    if (attrFilter) {
+      const groupConfig = TAG_FILTER_GROUPS.find(g => g.attributeKey === attrFilter.key);
+      if (groupConfig) {
+        const group = groupOptionMap.get(groupConfig.key) ?? new Map();
+        groupOptionMap.set(groupConfig.key, group);
+        if (!group.has(filter)) {
+          group.set(filter, {
+            value: filter,
+            label: formatAttributeValue(attrFilter.value),
+            count: 0,
+            productIds: new Set<string>(),
+            originalValue: attrFilter.value,
+          });
+        }
+      }
+      return;
+    }
+    
+    // Fall back to legacy tag parsing
+    const parsed = parseFilterTag(filter);
     if (!parsed) return;
     const config = TAG_CONFIG_MAP.get(parsed.groupKey);
     if (!config) return;
     const group = groupOptionMap.get(parsed.groupKey) ?? new Map();
     groupOptionMap.set(parsed.groupKey, group);
-    if (!group.has(tag)) {
-      group.set(tag, {
-        value: tag,
+    if (!group.has(filter)) {
+      group.set(filter, {
+        value: filter,
         label: formatFacetLabel(parsed.value),
         count: 0,
         productIds: new Set<string>(),
+        originalValue: parsed.value,
       });
     }
   });
 
+  // Build final facet groups, removing duplicates
+  const seenGroupKeys = new Set<string>();
   return TAG_FILTER_GROUPS
+    .filter(config => {
+      // Skip legacy keys if we already have the primary key
+      if (config.attributeKey && seenGroupKeys.has(config.attributeKey)) {
+        return false;
+      }
+      if (config.attributeKey) {
+        seenGroupKeys.add(config.attributeKey);
+      }
+      return true;
+    })
     .map((config) => {
       const options = groupOptionMap.get(config.key);
       if (!options || options.size === 0) return null;
-      const normalizedOptions = Array.from(options.values()).map((option) => {
-        // For flavour_type, include originalTags for mapping
-        if (config.key === 'flavour_type') {
-          return {
-            value: option.value,
-            label: option.label,
-            count: option.count,
-            originalTags: Array.from(option.originalTags ?? []),
-          };
+      
+      // Deduplicate options by label
+      const labelMap = new Map<string, FacetOption & {productIds: Set<string>}>();
+      for (const option of options.values()) {
+        const existing = labelMap.get(option.label);
+        if (existing) {
+          // Merge counts
+          for (const id of option.productIds) {
+            if (!existing.productIds.has(id)) {
+              existing.productIds.add(id);
+              existing.count += 1;
+            }
+          }
+        } else {
+          labelMap.set(option.label, option);
         }
-        // For brand and category, include originalValue for case-sensitive matching
-        if (config.key === 'brand' || config.key === 'category') {
-          return {
-            value: option.value,
-            label: option.label,
-            count: option.count,
-            originalValue: option.originalValue,
-          };
-        }
-        return {
-          value: option.value,
-          label: option.label,
-          count: option.count,
-        };
-      });
+      }
+      
+      const normalizedOptions = Array.from(labelMap.values()).map((option) => ({
+        value: option.value,
+        label: option.label,
+        count: option.count,
+        originalValue: option.originalValue,
+        originalTags: option.originalTags,
+      }));
+      
       normalizedOptions.sort((a, b) => {
         if (config.key === 'brand') {
           return a.label.toLowerCase().localeCompare(b.label.toLowerCase());
@@ -317,18 +474,33 @@ export function buildTagFacetGroups(
         }
         return b.count - a.count;
       });
+      
       return {
         key: config.key,
         label: config.label,
         options: normalizedOptions,
+        attributeKey: config.attributeKey,
       } satisfies TagFacetGroup;
     })
     .filter(Boolean) as TagFacetGroup[];
 }
 
-export function getTagDisplayLabel(tag: string): string {
-  const parsed = parseFilterTag(tag);
-  if (!parsed) return tag;
+/**
+ * Get display label for a filter value
+ * Supports both new attribute format and legacy tag format
+ */
+export function getTagDisplayLabel(filter: string): string {
+  // Try new attribute format first (attributeKey:value)
+  const attrFilter = parseAttributeFilter(filter);
+  if (attrFilter) {
+    const label = ATTRIBUTE_LABELS[attrFilter.key] || formatFacetLabel(attrFilter.key);
+    const valueLabel = formatAttributeValue(attrFilter.value);
+    return `${label}: ${valueLabel}`;
+  }
+  
+  // Fall back to legacy tag format
+  const parsed = parseFilterTag(filter);
+  if (!parsed) return filter;
   const group = TAG_CONFIG_MAP.get(parsed.groupKey);
   const valueLabel = formatFacetLabel(parsed.value);
   if (group) {
@@ -368,4 +540,75 @@ export function calculatePriceSummary(products: SearchProduct[]): PriceSummary |
     max: max * (1 + UK_VAT_RATE),
     currencyCode: currencyCode ?? 'GBP',
   };
+}
+
+/**
+ * Filter products by parsed_attributes
+ * Used for client-side filtering when server-side filtering is not available
+ */
+export function filterProductsByAttributes(
+  products: SearchProduct[],
+  filters: Record<string, string | string[]>,
+): SearchProduct[] {
+  if (Object.keys(filters).length === 0) return products;
+
+  return products.filter((product) => {
+    const attributes = parseParsedAttributes(product.parsedAttributesJson);
+    
+    for (const [key, filterValue] of Object.entries(filters)) {
+      if (!filterValue) continue;
+      
+      // Parse the filter key to get attribute key
+      const attrKey = key as FilterableAttribute;
+      if (!FILTERABLE_ATTRIBUTES.includes(attrKey)) continue;
+      
+      const filterValues = Array.isArray(filterValue) ? filterValue : [filterValue];
+      
+      // Check parsed attributes
+      if (attributes) {
+        const productValue = attributes[attrKey];
+        
+        if (productValue !== null && productValue !== undefined) {
+          if (Array.isArray(productValue)) {
+            const hasMatch = filterValues.some((fv) =>
+              productValue.some((pv) => pv.toLowerCase() === fv.toLowerCase())
+            );
+            if (hasMatch) continue; // Filter matches
+          } else {
+            const matches = filterValues.some(
+              (fv) => productValue.toLowerCase() === fv.toLowerCase()
+            );
+            if (matches) continue; // Filter matches
+          }
+        }
+      }
+      
+      // Fallback to product fields
+      if (attrKey === 'brand' && product.vendor) {
+        if (filterValues.some(fv => product.vendor.toLowerCase() === fv.toLowerCase())) {
+          continue;
+        }
+      }
+      
+      if (attrKey === 'product_type' && product.productType) {
+        if (filterValues.some(fv => 
+          product.productType.toLowerCase() === fv.toLowerCase() ||
+          product.productType.toLowerCase().replace(/\s+/g, '_') === fv.toLowerCase()
+        )) {
+          continue;
+        }
+      }
+      
+      // Check tags as last fallback
+      const productTags = (product.tags || []).map(t => t.toLowerCase());
+      if (filterValues.some(fv => productTags.includes(fv.toLowerCase()))) {
+        continue;
+      }
+      
+      // Filter did not match
+      return false;
+    }
+    
+    return true;
+  });
 }

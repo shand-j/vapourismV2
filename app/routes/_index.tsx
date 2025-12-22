@@ -247,21 +247,21 @@ export default function IndexRoute() {
       id: 'reusables',
       title: 'Reusable Vapes',
       description: 'Ready-to-use devices with pre-filled e-liquid. No charging, no refilling.',
-      href: '/search?tag=disposable',
+      href: '/search?product_type=disposable_vape',
       productCount: 500,
     },
     {
       id: 'e-liquids',
       title: 'E-Liquids',
       description: 'Premium vape juice in every flavour and strength. From nic salts to shortfills.',
-      href: '/search?tag=e-liquid',
+      href: '/search?product_type=e-liquid',
       productCount: 1200,
     },
     {
       id: 'devices',
       title: 'Vape Devices',
       description: 'Pod systems, box mods, and starter kits for every vaping style.',
-      href: '/search?tag=device',
+      href: '/search?product_type=pod_system',
       productCount: 300,
     },
   ];
@@ -348,13 +348,13 @@ export default function IndexRoute() {
                   <Icon name="arrowRight" />
                 </Link>
                 <Link
-                  to="/search?tag=device"
+                  to="/search?product_type=pod_system"
                   className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-6 py-4 text-sm font-semibold text-slate-900 shadow-sm"
                 >
                   Shop devices
                 </Link>
                 <Link
-                  to="/search?tag=e-liquid"
+                  to="/search?product_type=e-liquid"
                   className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-6 py-4 text-sm font-semibold text-slate-900 shadow-sm"
                 >
                   Shop e-liquids

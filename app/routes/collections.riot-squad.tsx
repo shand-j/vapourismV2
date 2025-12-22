@@ -241,13 +241,13 @@ export default function RiotSquadCollection() {
       <div className="border-t pt-8">
         <h3 className="font-semibold text-lg mb-4">More E-Liquid Brands</h3>
         <div className="flex flex-wrap gap-3">
-          <Link to="/search?tag=e-liquid" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
+          <Link to="/search?product_type=e-liquid" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
             All E-Liquids
           </Link>
-          <Link to="/search?tag=shortfill" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
+          <Link to="/search?product_type=e-liquid&volume=50ml" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
             50ml Shortfills
           </Link>
-          <Link to="/search?tag=nic_salt" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
+          <Link to="/search?product_type=e-liquid&nicotine_strength=nic_salt" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
             Nic Salts
           </Link>
         </div>

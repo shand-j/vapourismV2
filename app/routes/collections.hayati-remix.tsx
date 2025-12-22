@@ -279,7 +279,7 @@ export default function HayatiRemixCollection() {
           <Link to="/collections/hayati-x4" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
             Hayati X4 Device
           </Link>
-          <Link to="/search?tag=device" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
+          <Link to="/search?product_type=pod_system" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
             All Devices
           </Link>
         </div>

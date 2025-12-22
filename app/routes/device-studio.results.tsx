@@ -2,9 +2,9 @@
  * Device Studio Results Route
  * 
  * Displays personalised device recommendations based on quiz answers.
- * Uses Shopify Storefront search API with tag-based filtering.
+ * Uses Shopify Storefront search API with attribute-based filtering.
  * 
- * URL: /device-studio/results?tag=pod_system&tag=mouth-to-lung&...
+ * URL: /device-studio/results?product_type=pod_system&device_type=mouth-to-lung
  */
 
 import {FunnelIcon} from '@heroicons/react/24/outline';

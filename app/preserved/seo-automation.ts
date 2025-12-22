@@ -325,7 +325,7 @@ export class SEOAutomationService {
         title: `Browse all ${product.vendor} vaping products`
       },
       {
-        url: `/search?tag=${encodeURIComponent(product.productType.toLowerCase().replace(/\s+/g, '_'))}`,
+        url: `/search?product_type=${encodeURIComponent(product.productType.toLowerCase().replace(/\s+/g, '_'))}`,
         anchor: `Shop All ${product.productType}s`,
         title: `Explore our ${product.productType} range`
       },

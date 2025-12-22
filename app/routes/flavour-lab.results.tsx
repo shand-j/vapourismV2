@@ -2,9 +2,9 @@
  * Flavour Lab Results Route
  * 
  * Displays personalised product recommendations based on flavour quiz answers.
- * Uses Shopify Storefront search API with tag-based filtering.
+ * Uses Shopify Storefront search API with attribute-based filtering.
  * 
- * URL: /flavour-lab/results?tag=fruity&tag=20mg&...
+ * URL: /flavour-lab/results?product_type=e-liquid&flavour_category=fruity&nicotine_strength=20mg
  */
 
 import {FunnelIcon} from '@heroicons/react/24/outline';

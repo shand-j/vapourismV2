@@ -689,8 +689,14 @@ export const meta = ({data, location}: {data: any; location: any}) => {
     // Brand/vendor page - optimized for SEO
     title = SEOAutomationService.truncateTitle(`${vendor} Vape Products (${count}) | Fast UK Delivery | Vapourism`);
     description = `Shop ${count}+ authentic ${vendor} vaping products. ✓ Premium quality ✓ Fast UK delivery ✓ Competitive prices ✓ Genuine ${vendor} products from authorized UK retailer. Browse e-liquids, devices & accessories.`;
+  } else if (url.searchParams.get('product_type')) {
+    // Category page by product_type attribute
+    const productType = url.searchParams.get('product_type')!;
+    const categoryLabel = getTagDisplayLabel(productType);
+    title = SEOAutomationService.truncateTitle(`${categoryLabel} (${count}) | UK Vape Shop | Vapourism`);
+    description = SEOAutomationService.generateCategoryMetaDescription(categoryLabel, count);
   } else if (url.searchParams.get('tag')) {
-    // Category page by tag - extract tag here where it's used for title generation
+    // Legacy: Category page by tag - extract tag here where it's used for title generation
     const tag = url.searchParams.get('tag')!; // Non-null assertion: already checked in if condition
     const categoryLabel = getTagDisplayLabel(tag);
     title = SEOAutomationService.truncateTitle(`${categoryLabel} (${count}) | UK Vape Shop | Vapourism`);

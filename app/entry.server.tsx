@@ -42,10 +42,46 @@ export default async function handleRequest(
   const checkoutDomain = envVars?.PUBLIC_CHECKOUT_DOMAIN ?? envVars?.PUBLIC_STORE_DOMAIN ?? '';
   const storeDomain = envVars?.PUBLIC_STORE_DOMAIN ?? '';
 
+  // Third-party script domains that need to be allowed in CSP
+  // - Google Tag Manager: Required for GA4 analytics
+  // - SearchAtlas: SEO optimization - OTTO widget for dynamic optimizations
+  // - RankYak: SEO optimization (used in conjunction with SearchAtlas)
+  const thirdPartyScriptDomains = [
+    'https://www.googletagmanager.com',
+    'https://dashboard.searchatlas.com',
+    'https://cdn.rankyak.com',
+  ];
+
   const {nonce, header, NonceProvider} = createContentSecurityPolicy({
     shop: {
       checkoutDomain,
       storeDomain,
+    },
+    directives: {
+      // Allow third-party script sources for analytics and SEO optimization
+      scriptSrc: thirdPartyScriptDomains,
+      // script-src-elem controls <script> element loading - must include third-party domains
+      // to prevent fallback to default-src which blocks dynamic script loading
+      scriptSrcElem: thirdPartyScriptDomains,
+      // Allow connections to analytics and SEO services
+      connectSrc: [
+        'https://www.google-analytics.com',
+        'https://*.google-analytics.com',
+        'https://www.googletagmanager.com',
+        'https://analytics.google.com',
+        'https://dashboard.searchatlas.com',
+        'https://monorail-edge.shopifysvc.com',
+      ],
+      // Allow images from analytics and external sources
+      imgSrc: [
+        'https://www.google-analytics.com',
+        'https://*.google-analytics.com',
+        'https://www.googletagmanager.com',
+        'https://images.unsplash.com',
+        'https://*.unsplash.com',
+        'https:',
+        'data:',
+      ],
     },
   });
 
@@ -116,102 +152,10 @@ export default async function handleRequest(
   // Add performance headers
   responseHeaders.set('X-Content-Type-Options', 'nosniff');
   
-  // The createContentSecurityPolicy header is intentionally strict by default.
-  // For a small set of verification-only routes we need to relax script-src so
-  // partner widgets (e.g. AgeVerif) that create runtime inline scripts are
-  // allowed to execute. Browsers combine multiple CSP headers so a loader-level
-  // header cannot widen the global policy. To avoid weakening global policy we
-  // only relax the header for the verify route path.
+  // The createContentSecurityPolicy header now includes all third-party script
+  // domains via the directives option. For special routes like AgeVerif, we
+  // still need to add route-specific domains.
   let effectiveHeader = header;
-
-  // Keep the default CSP strict. Development-only relaxations (unsafe-inline,
-  // and permissive img-src for unsplash) were masking issues. For partner
-  // routes like AgeVerif we will only add trusted hostnames (no 'unsafe-inline')
-  // and rely on the per-request `nonce` produced by createContentSecurityPolicy
-  // to allow legitimate inline scripts when required.
-
-  // Third-party script domains that need to be allowed in CSP
-  // - Google Tag Manager: Required for GA4 analytics
-  // - SearchAtlas: SEO optimization - OTTO widget for dynamic optimizations
-  // - RankYak: SEO optimization (used in conjunction with SearchAtlas)
-  const thirdPartyScriptDomains = [
-    'https://www.googletagmanager.com',
-    'https://dashboard.searchatlas.com',
-    'https://cdn.rankyak.com',
-  ];
-
-  // Helper function to add domains to a CSP directive value
-  const addDomainsToDirective = (existing: string, domains: string[]): string => {
-    let result = existing;
-    for (const domain of domains) {
-      if (!result.includes(domain)) {
-        result += ` ${domain}`;
-      }
-    }
-    return result;
-  };
-
-  // Add third-party script domains to script-src directive
-  if (/script-src/.test(effectiveHeader)) {
-    effectiveHeader = effectiveHeader.replace(/script-src([^;]*)/, (match, v = '') => {
-      return `script-src${addDomainsToDirective(v, thirdPartyScriptDomains)}`;
-    });
-  }
-
-  // Add script-src-elem directive for SearchAtlas OTTO widget
-  // Browsers fall back to default-src if script-src-elem is not explicitly set,
-  // causing CSP violations when loading external scripts dynamically.
-  // This directive explicitly allows the SearchAtlas optimization script.
-  if (/script-src-elem/.test(effectiveHeader)) {
-    effectiveHeader = effectiveHeader.replace(/script-src-elem([^;]*)/, (match, v = '') => {
-      return `script-src-elem${addDomainsToDirective(v, thirdPartyScriptDomains)}`;
-    });
-  } else {
-    // If script-src-elem is not present, add it with required sources
-    // Include 'self', Shopify CDN/domains, the nonce, and third-party script domains
-    const baseScriptSources = `'self' https://cdn.shopify.com https://shopify.com 'nonce-${nonce}'`;
-    effectiveHeader += `; script-src-elem ${baseScriptSources} ${thirdPartyScriptDomains.join(' ')}`;
-  }
-  if (/connect-src/.test(effectiveHeader)) {
-    effectiveHeader = effectiveHeader.replace(/connect-src([^;]*)/, (match, v = '') => {
-      let existing = v;
-      // Allow connections to Google Analytics and Tag Manager (including regional endpoints)
-      if (!existing.includes('https://www.google-analytics.com')) existing += ' https://www.google-analytics.com';
-      // Wildcard for regional GA endpoints (region1, region2, etc.)
-      if (!existing.includes('https://*.google-analytics.com')) existing += ' https://*.google-analytics.com';
-      if (!existing.includes('https://www.googletagmanager.com')) existing += ' https://www.googletagmanager.com';
-      if (!existing.includes('https://analytics.google.com')) existing += ' https://analytics.google.com';
-      // SearchAtlas connections (if re-enabling)
-      if (!existing.includes('https://dashboard.searchatlas.com')) existing += ' https://dashboard.searchatlas.com';
-      // Shopify analytics endpoint
-      if (!existing.includes('https://monorail-edge.shopifysvc.com')) existing += ' https://monorail-edge.shopifysvc.com';
-      return `connect-src${existing}`;
-    });
-  }
-
-  // Allow GA tracking pixels in img-src
-  // Also allow common external image sources for blog content (Unsplash, etc.)
-  // Note: img-src allows https: broadly since images from various CMS-embedded sources
-  // need to render in blog content. This is safer than script-src as images cannot execute code.
-  if (/img-src/.test(effectiveHeader)) {
-    effectiveHeader = effectiveHeader.replace(/img-src([^;]*)/, (match, v = '') => {
-      let existing = v;
-      if (!existing.includes('https://www.google-analytics.com')) existing += ' https://www.google-analytics.com';
-      if (!existing.includes('https://*.google-analytics.com')) existing += ' https://*.google-analytics.com';
-      if (!existing.includes('https://www.googletagmanager.com')) existing += ' https://www.googletagmanager.com';
-      // Allow common external image sources for blog content
-      if (!existing.includes('https://images.unsplash.com')) existing += ' https://images.unsplash.com';
-      if (!existing.includes('https://*.unsplash.com')) existing += ' https://*.unsplash.com';
-      // Allow any HTTPS images for CMS-embedded blog content (images are low security risk)
-      if (!existing.includes('https:')) existing += ' https:';
-      // Allow data: URLs for inline images (some blog content uses data URIs)
-      if (!existing.includes('data:')) existing += ' data:';
-      return `img-src${existing}`;
-    });
-  } else {
-    // If img-src is not present, add it with all needed sources (https: allows CMS-embedded images)
-    effectiveHeader += '; img-src \'self\' https://cdn.shopify.com https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://images.unsplash.com https://*.unsplash.com https: data:';
-  }
 
   try {
     const url = new URL(request.url);
@@ -230,7 +174,7 @@ export default async function handleRequest(
           return `default-src${existing}`;
         });
       }
-      // Safely append allowed sources and 'unsafe-inline' to script-src if not present
+      // Safely append allowed sources to script-src if not present
       // We keep the existing header structure and only add tokens to script-src.
       if (/script-src/.test(effectiveHeader)) {
         effectiveHeader = effectiveHeader.replace(/script-src([^;]*)/, (match, v = '') => {

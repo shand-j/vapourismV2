@@ -227,12 +227,13 @@ function extractParsedAttributesFacets(
           if (!value) continue;
           
           // Map variant attribute to group key
-          // Most variant attributes map directly to product-level filter groups
+          // Variant-specific 'flavour' is a specific flavor name (e.g., "Strawberry Ice")
+          // while 'flavour_category' is the category (e.g., "fruity").
+          // We combine variant 'flavour' values into the flavour_category filter group
+          // since most users filter by category, not specific flavor names.
           let groupKey: FilterGroupKey = attrKey as FilterGroupKey;
           if (attrKey === 'flavour') {
-            // 'flavour' from variant adds to 'flavour' filter but we need to check
-            // if we want a separate filter or combine with flavour_category
-            groupKey = 'flavour_category'; // Combine into flavour category for now
+            groupKey = 'flavour_category';
           }
           
           const groupConfig = TAG_FILTER_GROUPS.find(g => g.key === groupKey || g.attributeKey === attrKey);
@@ -665,10 +666,13 @@ export function filterProductsByAttributes(
       
       // Check parsed_variant_attributes if not matched at product level
       if (!matched && variantAttributesList.length > 0) {
-        const variantKey = key as VariantFilterableAttribute;
-        if (VARIANT_FILTERABLE_ATTRIBUTES.includes(variantKey as any)) {
+        // Type guard to check if key is a valid variant attribute
+        const isVariantAttribute = (k: string): k is VariantFilterableAttribute => 
+          VARIANT_FILTERABLE_ATTRIBUTES.includes(k as VariantFilterableAttribute);
+        
+        if (isVariantAttribute(key)) {
           matched = variantAttributesList.some((va) => {
-            const variantValue = va[variantKey];
+            const variantValue = va[key];
             if (!variantValue) return false;
             return filterValues.some(
               (fv) => variantValue.toLowerCase() === fv.toLowerCase()

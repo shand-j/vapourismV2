@@ -405,10 +405,13 @@ export function getAttributeValue(
         return attributes.colors;
       }
       return attributes.color ?? null;
-    default:
-      const value = (attributes as any)[key];
+    default: {
+      // For other attributes, access directly with proper type assertion
+      const attrs = attributes as Record<string, string | string[] | null | undefined>;
+      const value = attrs[key];
       if (value === undefined) return null;
-      return value;
+      return value as string | string[] | null;
+    }
   }
 }
 
@@ -549,11 +552,13 @@ export function matchesFilters(
     
     // If product doesn't match, check variant-level attributes
     if (!productMatches && variantAttributes && variantAttributes.length > 0) {
-      // Check if any variant matches
-      const variantKey = key as VariantFilterableAttribute;
-      if (VARIANT_FILTERABLE_ATTRIBUTES.includes(variantKey as any)) {
+      // Type guard to check if key is a valid variant attribute
+      const isVariantAttribute = (k: string): k is VariantFilterableAttribute =>
+        VARIANT_FILTERABLE_ATTRIBUTES.includes(k as VariantFilterableAttribute);
+      
+      if (isVariantAttribute(key)) {
         const variantMatches = variantAttributes.some((va) => {
-          const variantValue = getVariantAttributeValue(va, variantKey);
+          const variantValue = getVariantAttributeValue(va, key);
           if (variantValue === null) return false;
           return filterValues.some(
             (fv) => variantValue.toLowerCase() === fv.toLowerCase()

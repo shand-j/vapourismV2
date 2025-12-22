@@ -130,22 +130,47 @@ export default async function handleRequest(
   // and rely on the per-request `nonce` produced by createContentSecurityPolicy
   // to allow legitimate inline scripts when required.
 
-  // Add Google Tag Manager and SearchAtlas OTTO Pixel domains to CSP
-  // Google Tag Manager: Required for GA4 analytics
-  // SearchAtlas: SEO optimization (currently disabled due to data: URL violation)
+  // Third-party script domains that need to be allowed in CSP
+  // - Google Tag Manager: Required for GA4 analytics
+  // - SearchAtlas: SEO optimization - OTTO widget for dynamic optimizations
+  // - RankYak: SEO optimization (used in conjunction with SearchAtlas)
+  const thirdPartyScriptDomains = [
+    'https://www.googletagmanager.com',
+    'https://dashboard.searchatlas.com',
+    'https://cdn.rankyak.com',
+  ];
+
+  // Helper function to add domains to a CSP directive value
+  const addDomainsToDirective = (existing: string, domains: string[]): string => {
+    let result = existing;
+    for (const domain of domains) {
+      if (!result.includes(domain)) {
+        result += ` ${domain}`;
+      }
+    }
+    return result;
+  };
+
+  // Add third-party script domains to script-src directive
   if (/script-src/.test(effectiveHeader)) {
     effectiveHeader = effectiveHeader.replace(/script-src([^;]*)/, (match, v = '') => {
-      let existing = v;
-      // Add Google Tag Manager for analytics
-      if (!existing.includes('https://www.googletagmanager.com')) existing += ' https://www.googletagmanager.com';
-      // SearchAtlas domains (if re-enabling the script)
-      if (!existing.includes('https://dashboard.searchatlas.com')) existing += ' https://dashboard.searchatlas.com';
-      // RankYak domain for SEO optimization (used in conjunction with SearchAtlas)
-      if (!existing.includes('https://cdn.rankyak.com')) existing += ' https://cdn.rankyak.com';
-      // Note: data: URLs disabled for security - SearchAtlas script commented out in root.tsx
-      // if (!existing.includes('data:')) existing += ' data:';
-      return `script-src${existing}`;
+      return `script-src${addDomainsToDirective(v, thirdPartyScriptDomains)}`;
     });
+  }
+
+  // Add script-src-elem directive for SearchAtlas OTTO widget
+  // Browsers fall back to default-src if script-src-elem is not explicitly set,
+  // causing CSP violations when loading external scripts dynamically.
+  // This directive explicitly allows the SearchAtlas optimization script.
+  if (/script-src-elem/.test(effectiveHeader)) {
+    effectiveHeader = effectiveHeader.replace(/script-src-elem([^;]*)/, (match, v = '') => {
+      return `script-src-elem${addDomainsToDirective(v, thirdPartyScriptDomains)}`;
+    });
+  } else {
+    // If script-src-elem is not present, add it with required sources
+    // Include 'self', Shopify CDN/domains, the nonce, and third-party script domains
+    const baseScriptSources = `'self' https://cdn.shopify.com https://shopify.com 'nonce-${nonce}'`;
+    effectiveHeader += `; script-src-elem ${baseScriptSources} ${thirdPartyScriptDomains.join(' ')}`;
   }
   if (/connect-src/.test(effectiveHeader)) {
     effectiveHeader = effectiveHeader.replace(/connect-src([^;]*)/, (match, v = '') => {

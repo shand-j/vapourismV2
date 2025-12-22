@@ -1,13 +1,17 @@
 /**
  * SearchAtlas OTTO Pixel Script
  * 
- * Loads the SearchAtlas SEO optimization script client-side only to avoid:
- * 1. React hydration mismatches (Error #418) - SearchAtlas modifies DOM at runtime
- * 2. CSP violations from dynamically created inline scripts
+ * @deprecated This component is no longer used. The SearchAtlas OTTO pixel is now
+ * rendered server-side directly in app/root.tsx <head> section for proper crawler
+ * detection. SearchAtlas requires the pixel script to be in <head> and visible to
+ * crawlers, which client-side injection via useEffect cannot provide.
  * 
- * By loading this script after React hydration completes, we ensure:
- * - React's initial render matches the server
- * - The script can modify the DOM without causing reconciliation errors
+ * Historical note: This component was previously used to load the script client-side
+ * only to avoid React hydration mismatches (Error #418), but this approach prevented
+ * SearchAtlas from detecting the pixel during crawls.
+ * 
+ * The fix (December 2025): Moved the script to <head> in app/root.tsx as a static
+ * server-rendered tag with async/defer attributes to prevent render blocking.
  */
 
 import {useEffect} from 'react';

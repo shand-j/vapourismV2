@@ -23,7 +23,6 @@ import {MegaMenu, MobileMenu} from './components/navigation/MegaMenu';
 import {ShopifySearch} from './components/search/ShopifySearch';
 import {CookieConsent} from './components/CookieConsent';
 import {GoogleAnalytics} from './components/Analytics';
-import {SearchAtlasScript} from './components/SearchAtlasScript';
 import {trackPageView} from './lib/analytics';
 import {Icon} from './components/ui/Icon';
 
@@ -197,14 +196,23 @@ export default function App() {
         
         {/* Google Analytics 4 */}
         {ga4MeasurementId && <GoogleAnalytics measurementId={ga4MeasurementId} nonce={nonce} />}
-      </head>
-      <body className="bg-white text-slate-900 antialiased">
-        {/* SearchAtlas OTTO Pixel - Loaded client-side after hydration.
+        
+        {/* SearchAtlas OTTO Pixel - Must be in <head> for crawler detection.
+            Rendered server-side so SearchAtlas can detect it during crawl.
+            async/defer prevents render blocking.
             CSP is configured to allow SearchAtlas domains and 'unsafe-inline' for inline scripts.
             See: https://help.searchatlas.com/en/articles/12334271-otto-security */}
-        <ClientOnly fallback={null}>
-          {() => <SearchAtlasScript />}
-        </ClientOnly>
+        <script
+          async
+          defer
+          id="sa-dynamic-optimization-loader"
+          data-uuid="d709ea19-b642-442c-ab07-012003668401"
+          data-nowprocket=""
+          data-nitro-exclude=""
+          src="https://dashboard.searchatlas.com/scripts/dynamic_optimization.js"
+        />
+      </head>
+      <body className="bg-white text-slate-900 antialiased">
 
         {isAgeGateActive && (
           <div className="pointer-events-none fixed inset-0 z-[30] bg-white/40 backdrop-blur-[3px]" aria-hidden />

@@ -21,7 +21,7 @@ interface SearchAtlasScriptProps {
 }
 
 export function SearchAtlasScript({
-  uuid = 'd709ea19-b642-442c-ab07-012003668401',
+  uuid = 'bc389022-b99a-470f-a7a5-14a7389ffee7',
 }: SearchAtlasScriptProps) {
   useEffect(() => {
     // Only run on client side, after hydration

@@ -221,27 +221,28 @@ function ArticleContent({contentHtml}: {contentHtml: string}) {
     <div 
       ref={contentRef}
       className="article-content prose prose-lg prose-slate max-w-none
-        prose-headings:font-bold prose-headings:text-slate-900
-        prose-h1:text-4xl prose-h1:mb-6 prose-h1:mt-12 first:prose-h1:mt-0 prose-h1:leading-tight
-        prose-h2:text-3xl prose-h2:mb-5 prose-h2:mt-10 prose-h2:leading-tight
-        prose-h3:text-2xl prose-h3:mb-4 prose-h3:mt-8 prose-h3:leading-snug
-        prose-h4:text-xl prose-h4:mb-3 prose-h4:mt-6
-        prose-p:text-slate-700 prose-p:leading-[1.8] prose-p:mb-6 prose-p:text-[1.125rem]
-        prose-ul:list-disc prose-ul:ml-6 prose-ul:mb-6 prose-ul:space-y-2 prose-ul:text-slate-700
-        prose-ol:list-decimal prose-ol:ml-6 prose-ol:mb-6 prose-ol:space-y-2 prose-ol:text-slate-700
-        prose-li:text-slate-700 prose-li:leading-[1.8] prose-li:text-[1.125rem]
-        prose-a:text-violet-600 prose-a:hover:text-violet-700 prose-a:underline prose-a:decoration-2 prose-a:underline-offset-2
+        prose-headings:font-semibold prose-headings:text-slate-900 prose-headings:tracking-tight
+        prose-h1:text-3xl prose-h1:md:text-4xl prose-h1:mb-6 prose-h1:mt-12 first:prose-h1:mt-0 prose-h1:leading-[1.1]
+        prose-h2:text-2xl prose-h2:md:text-3xl prose-h2:mb-5 prose-h2:mt-12 prose-h2:leading-[1.2] prose-h2:pt-4 prose-h2:border-t prose-h2:border-slate-100
+        prose-h3:text-xl prose-h3:md:text-2xl prose-h3:mb-4 prose-h3:mt-10 prose-h3:leading-[1.3]
+        prose-h4:text-lg prose-h4:md:text-xl prose-h4:mb-4 prose-h4:mt-8
+        prose-p:text-slate-600 prose-p:leading-[1.85] prose-p:mb-6 prose-p:text-[1.0625rem] prose-p:md:text-[1.125rem]
+        prose-ul:list-disc prose-ul:pl-6 prose-ul:my-6 prose-ul:space-y-3 prose-ul:text-slate-600
+        prose-ol:list-decimal prose-ol:pl-6 prose-ol:my-6 prose-ol:space-y-3 prose-ol:text-slate-600
+        prose-li:text-slate-600 prose-li:leading-[1.75] prose-li:text-[1.0625rem] prose-li:md:text-[1.125rem] prose-li:pl-2 prose-li:marker:text-[#5b2be0]
+        prose-a:text-[#5b2be0] prose-a:hover:text-[#1fb2ff] prose-a:no-underline prose-a:font-medium prose-a:transition-colors prose-a:duration-200
         prose-strong:text-slate-900 prose-strong:font-semibold
-        prose-em:italic prose-em:text-slate-600
-        prose-code:bg-slate-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:text-slate-800 prose-code:font-mono
-        prose-pre:bg-slate-900 prose-pre:text-slate-100 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto prose-pre:my-6
-        prose-img:rounded-xl prose-img:shadow-lg prose-img:my-8 prose-img:w-full prose-img:h-auto prose-img:max-w-full
-        prose-blockquote:border-l-4 prose-blockquote:border-violet-500 prose-blockquote:pl-6 prose-blockquote:pr-4 prose-blockquote:py-2 prose-blockquote:italic prose-blockquote:text-slate-600 prose-blockquote:bg-slate-50 prose-blockquote:rounded-r-lg prose-blockquote:my-6
-        prose-hr:border-slate-300 prose-hr:my-10
-        prose-table:border-collapse prose-table:w-full prose-table:my-6
-        prose-th:bg-slate-100 prose-th:p-3 prose-th:text-left prose-th:font-semibold prose-th:text-slate-900 prose-th:border prose-th:border-slate-300
-        prose-td:p-3 prose-td:border prose-td:border-slate-300 prose-td:text-slate-700
-        prose-video:rounded-xl prose-video:shadow-lg prose-video:my-8 prose-video:w-full"
+        prose-em:italic prose-em:text-slate-500
+        prose-code:bg-slate-100 prose-code:px-2 prose-code:py-1 prose-code:rounded-md prose-code:text-sm prose-code:text-slate-800 prose-code:font-mono prose-code:before:content-[''] prose-code:after:content-['']
+        prose-pre:bg-slate-900 prose-pre:text-slate-100 prose-pre:rounded-2xl prose-pre:p-6 prose-pre:overflow-x-auto prose-pre:my-8
+        prose-img:rounded-2xl prose-img:shadow-xl prose-img:my-8 prose-img:w-full prose-img:h-auto prose-img:max-w-full
+        prose-blockquote:border-l-4 prose-blockquote:border-[#5b2be0] prose-blockquote:pl-8 prose-blockquote:pr-6 prose-blockquote:py-4 prose-blockquote:not-italic prose-blockquote:text-slate-700 prose-blockquote:bg-gradient-to-r prose-blockquote:from-slate-50 prose-blockquote:to-white prose-blockquote:rounded-r-2xl prose-blockquote:my-8
+        prose-hr:border-slate-200 prose-hr:my-12
+        prose-table:w-full prose-table:my-8 prose-table:border prose-table:border-slate-200 prose-table:rounded-xl prose-table:overflow-hidden
+        prose-thead:bg-slate-50
+        prose-th:px-5 prose-th:py-4 prose-th:text-left prose-th:font-semibold prose-th:text-slate-900 prose-th:border-b-2 prose-th:border-[#5b2be0] prose-th:text-sm prose-th:uppercase prose-th:tracking-wider
+        prose-td:px-5 prose-td:py-4 prose-td:border-b prose-td:border-slate-100 prose-td:text-slate-600
+        prose-video:rounded-2xl prose-video:shadow-xl prose-video:my-8 prose-video:w-full"
       dangerouslySetInnerHTML={{__html: contentHtml}}
     />
   );
@@ -330,100 +331,107 @@ export default function BlogArticle() {
         dangerouslySetInnerHTML={{__html: JSON.stringify(structuredData)}}
       />
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
         {/* Breadcrumb */}
-        <nav className="mb-8 text-sm max-w-6xl mx-auto">
-          <ol className="flex items-center space-x-2 text-slate-600">
-            <li>
-              <Link to="/" className="hover:text-violet-600">
-                Home
-              </Link>
-            </li>
-            <li>•</li>
-            <li>
-              <Link to="/blog" className="hover:text-violet-600">
-                Blog
-              </Link>
-            </li>
-            <li>•</li>
-            <li className="text-slate-900">{article.title}</li>
-          </ol>
+        <nav className="border-b border-slate-100 bg-white/80 backdrop-blur-sm sticky top-[var(--header-height,72px)] z-40">
+          <div className="container mx-auto px-4 py-4">
+            <ol className="flex items-center space-x-2 text-sm text-slate-500 max-w-4xl mx-auto">
+              <li>
+                <Link to="/" className="hover:text-[#5b2be0] transition-colors">
+                  Home
+                </Link>
+              </li>
+              <li className="text-slate-300">/</li>
+              <li>
+                <Link to="/blog" className="hover:text-[#5b2be0] transition-colors">
+                  Blog
+                </Link>
+              </li>
+              <li className="text-slate-300">/</li>
+              <li className="text-slate-700 font-medium truncate max-w-48 md:max-w-none">{article.title}</li>
+            </ol>
+          </div>
         </nav>
 
-        {/* Article Header */}
-        <header className="mb-12 max-w-6xl mx-auto">
-          <div className="flex items-center gap-3 text-sm text-slate-600 mb-6">
-            <span className="bg-violet-100 text-violet-700 px-3 py-1.5 rounded-full font-medium">
-              {category}
-            </span>
-            <span className="text-slate-400">•</span>
-            <time dateTime={article.publishedAt}>
-              {new Date(article.publishedAt).toLocaleDateString('en-GB', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </time>
-            {article.authorV2?.name && (
-              <>
-                <span className="text-slate-400">•</span>
-                <span>By {article.authorV2.name}</span>
-              </>
-            )}
-          </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 mb-6 leading-tight">
-            {article.title}
-          </h1>
-          {article.excerpt && (
-            <p className="text-xl md:text-2xl text-slate-600 leading-relaxed">{article.excerpt}</p>
-          )}
-        </header>
-
-        {/* Featured Image */}
-        {article.image?.url && (
-          <div className="mb-12 max-w-6xl mx-auto">
-            <img
-              src={article.image.url}
-              alt={article.image.altText || article.title}
-              className="w-full rounded-xl shadow-2xl"
-              loading="eager"
-              onError={(e) => {
-                // Hide image if it fails to load
-                e.currentTarget.style.display = 'none';
-                console.error('Failed to load featured image:', article.image?.url);
-              }}
-            />
-          </div>
-        )}
-
-        {/* Article Content */}
-        <article className="max-w-6xl mx-auto">
-          <ArticleContent contentHtml={article.contentHtml} />
-        </article>
-
-        {/* Article Tags */}
-        <div className="mt-12 max-w-6xl mx-auto">
-          <div className="flex flex-wrap gap-2">
-            <span className="text-sm font-semibold text-slate-700">Tags:</span>
-            {article.tags.map((tag) => (
-              <span
-                key={tag}
-                className="text-sm bg-slate-100 text-slate-700 px-3 py-1 rounded-full"
-              >
-                {tag}
+        <div className="container mx-auto px-4">
+          {/* Article Header */}
+          <header className="py-12 md:py-16 lg:py-20 max-w-4xl mx-auto text-center">
+            <div className="flex items-center justify-center gap-3 text-sm text-slate-500 mb-8">
+              <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-[#5b2be0]/10 to-[#1fb2ff]/10 text-[#5b2be0] px-4 py-2 rounded-full font-medium">
+                {category}
               </span>
-            ))}
-          </div>
-        </div>
+              <span className="text-slate-300">•</span>
+              <time dateTime={article.publishedAt} className="font-medium">
+                {new Date(article.publishedAt).toLocaleDateString('en-GB', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </time>
+              {article.authorV2?.name && (
+                <>
+                  <span className="text-slate-300">•</span>
+                  <span className="font-medium">By {article.authorV2.name}</span>
+                </>
+              )}
+            </div>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-slate-900 mb-8 leading-[1.15] tracking-tight">
+              {article.title}
+            </h1>
+            {article.excerpt && (
+              <p className="text-lg md:text-xl text-slate-500 leading-relaxed max-w-3xl mx-auto">{article.excerpt}</p>
+            )}
+          </header>
 
-        {/* Back to Blog Link */}
-        <div className="mt-12 max-w-6xl mx-auto">
-          <Link
-            to="/blog"
-            className="inline-flex items-center text-violet-600 hover:text-violet-700 font-semibold"
-          >
-            ← Back to Blog
-          </Link>
+          {/* Featured Image */}
+          {article.image?.url && (
+            <div className="mb-12 md:mb-16 max-w-5xl mx-auto">
+              <img
+                src={article.image.url}
+                alt={article.image.altText || article.title}
+                className="w-full rounded-3xl shadow-2xl"
+                loading="eager"
+                onError={(e) => {
+                  // Hide image if it fails to load
+                  e.currentTarget.style.display = 'none';
+                  console.error('Failed to load featured image:', article.image?.url);
+                }}
+              />
+            </div>
+          )}
+
+          {/* Article Content */}
+          <article className="max-w-3xl mx-auto pb-16">
+            <ArticleContent contentHtml={article.contentHtml} />
+          </article>
+
+          {/* Article Tags */}
+          {article.tags.length > 0 && (
+            <div className="max-w-3xl mx-auto pb-12 border-t border-slate-100 pt-10">
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="text-sm font-semibold text-slate-900">Tags:</span>
+                {article.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-sm bg-slate-100 text-slate-600 px-4 py-2 rounded-full hover:bg-slate-200 transition-colors cursor-default"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Back to Blog Link */}
+          <div className="max-w-3xl mx-auto pb-20">
+            <Link
+              to="/blog"
+              className="inline-flex items-center gap-2 text-[#5b2be0] hover:text-[#1fb2ff] font-semibold transition-colors group"
+            >
+              <span className="transition-transform group-hover:-translate-x-1">←</span>
+              Back to Blog
+            </Link>
+          </div>
         </div>
       </div>
     </>

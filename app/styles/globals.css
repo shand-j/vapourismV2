@@ -25,6 +25,7 @@
   --radius: 1.5rem;
   --gradient-start: #5b2be0;
   --gradient-end: #1fb2ff;
+  --header-height: 72px;
 }
 
 @layer base {
@@ -227,9 +228,39 @@ html {
 
 /* Improve blog article content readability */
 .article-content {
+  /* Typography base - matching site branding */
+  font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  
+  /* Headings inherit site's heading font */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'SF Pro Display', 'Space Grotesk', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    letter-spacing: -0.02em;
+  }
+  
   /* Better paragraph spacing for long-form content */
   & > p + p {
-    margin-top: 1.5rem;
+    margin-top: 1.75rem;
+  }
+  
+  /* Headings need significant spacing above to separate sections */
+  h1 { margin-top: 3rem; margin-bottom: 1.5rem; }
+  h2 { margin-top: 2.75rem; margin-bottom: 1.25rem; }
+  h3 { margin-top: 2.25rem; margin-bottom: 1rem; }
+  h4 { margin-top: 2rem; margin-bottom: 0.875rem; }
+  h5, h6 { margin-top: 1.75rem; margin-bottom: 0.75rem; }
+  
+  /* First heading shouldn't have top margin */
+  & > h1:first-child,
+  & > h2:first-child,
+  & > h3:first-child,
+  & > h4:first-child {
+    margin-top: 0;
+  }
+  
+  /* First paragraph after heading - reduce spacing for better flow */
+  h1 + p, h2 + p, h3 + p, h4 + p {
+    margin-top: 0 !important;
   }
   
   /* 
@@ -253,8 +284,35 @@ html {
   }
   
   /* Better list styling */
+  ul, ol {
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+    padding-left: 1.5rem;
+  }
+  
+  ul {
+    list-style-type: disc;
+  }
+  
+  ol {
+    list-style-type: decimal;
+  }
+  
   ul li, ol li {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.875rem;
+    padding-left: 0.5rem;
+    line-height: 1.75;
+  }
+  
+  /* Nested lists */
+  ul ul, ol ul, ul ol, ol ol {
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  /* List item markers */
+  li::marker {
+    color: #5b2be0;
   }
   
   /* Code blocks */
@@ -262,22 +320,80 @@ html {
     overflow-x: auto;
   }
   
-  /* Tables */
+  /* Table styling - comprehensive */
   table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
+    width: 100%;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    border-collapse: collapse;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    display: table;
+    white-space: normal;
+    border: 1px solid #e2e8f0;
+  }
+  
+  thead {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  }
+  
+  th {
+    padding: 1rem 1.25rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #334155;
+    border-bottom: 2px solid #5b2be0;
+  }
+  
+  td {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #e2e8f0;
+    color: #475569;
+    line-height: 1.6;
+  }
+  
+  tr:last-child td {
+    border-bottom: none;
+  }
+  
+  tr:hover td {
+    background-color: #f8fafc;
+  }
+  
+  /* Responsive table wrapper for smaller screens */
+  @media (max-width: 640px) {
+    table {
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
   }
   
   /* Figure elements for images */
   figure {
-    margin: 2rem 0;
+    margin: 2.5rem 0;
   }
   
   figcaption {
     text-align: center;
     font-size: 0.875rem;
     color: #64748b;
-    margin-top: 0.5rem;
+    margin-top: 0.75rem;
+    font-style: italic;
+  }
+  
+  /* Drop cap for first paragraph (optional enhancement) */
+  & > p:first-of-type::first-letter {
+    float: left;
+    font-size: 3.5rem;
+    font-weight: 600;
+    line-height: 1;
+    margin-right: 0.75rem;
+    margin-top: 0.125rem;
+    color: #5b2be0;
+    font-family: 'SF Pro Display', 'Space Grotesk', system-ui, sans-serif;
   }
 }

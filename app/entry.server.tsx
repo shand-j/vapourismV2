@@ -42,12 +42,23 @@ export default async function handleRequest(
   const checkoutDomain = envVars?.PUBLIC_CHECKOUT_DOMAIN ?? envVars?.PUBLIC_STORE_DOMAIN ?? '';
   const storeDomain = envVars?.PUBLIC_STORE_DOMAIN ?? '';
 
-  // Third-party script domains that need to be allowed in CSP
+  // Script-src CSP directive values for third-party scripts
   // - Google Tag Manager: Required for GA4 analytics
-  // NOTE: SearchAtlas/RankYak removed - incompatible with CSP (creates inline scripts)
-  // and causes React hydration errors (#418) due to DOM modifications
-  const thirdPartyScriptDomains = [
+  // - SearchAtlas OTTO: SEO optimization widget
+  //   - dashboard.searchatlas.com: Main script loader
+  //   - storage.googleapis.com: Static assets (dynamic_optimization.js)
+  //   - cdn.rankyak.com: Additional SEO scripts
+  // - 'unsafe-inline': Required for SearchAtlas inline script execution
+  // See: https://help.searchatlas.com/en/articles/12334271-otto-security
+  //
+  // SECURITY NOTE: 'unsafe-inline' weakens CSP but is required by SearchAtlas.
+  // This is an accepted tradeoff for SEO optimization functionality.
+  const scriptSrcDirectives = [
     'https://www.googletagmanager.com',
+    'https://dashboard.searchatlas.com',
+    'https://storage.googleapis.com',
+    'https://cdn.rankyak.com',
+    "'unsafe-inline'",
   ];
 
   const {nonce, header, NonceProvider} = createContentSecurityPolicy({
@@ -56,17 +67,19 @@ export default async function handleRequest(
       storeDomain,
     },
     directives: {
-      // Allow third-party script sources for analytics
-      scriptSrc: thirdPartyScriptDomains,
+      // Allow third-party script sources for analytics and SEO
+      scriptSrc: scriptSrcDirectives,
       // script-src-elem controls <script> element loading - must include third-party domains
       // to prevent fallback to default-src which blocks dynamic script loading
-      scriptSrcElem: thirdPartyScriptDomains,
-      // Allow connections to analytics services
+      scriptSrcElem: scriptSrcDirectives,
+      // Allow connections to analytics and SEO services
       connectSrc: [
         'https://www.google-analytics.com',
         'https://*.google-analytics.com',
         'https://www.googletagmanager.com',
         'https://analytics.google.com',
+        'https://dashboard.searchatlas.com',
+        'https://public.linkgraph.com',
         'https://monorail-edge.shopifysvc.com',
       ],
       // Allow images from analytics and external sources

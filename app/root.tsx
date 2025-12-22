@@ -51,10 +51,11 @@ export const links: LinksFunction = () => [
   {rel: 'preconnect', href: 'https://cdn.shopify.com'},
   {rel: 'preconnect', href: 'https://fonts.googleapis.com'},
   {rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous'},
-  // DNS prefetch for analytics and optimization scripts (lower priority than preconnect)
+  // DNS prefetch for analytics and SEO optimization scripts (lower priority than preconnect)
   {rel: 'dns-prefetch', href: 'https://www.googletagmanager.com'},
   {rel: 'dns-prefetch', href: 'https://www.google-analytics.com'},
   {rel: 'dns-prefetch', href: 'https://dashboard.searchatlas.com'},
+  {rel: 'dns-prefetch', href: 'https://storage.googleapis.com'},
   {rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg'},
   {rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'},
   {rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png'},
@@ -198,9 +199,9 @@ export default function App() {
         {ga4MeasurementId && <GoogleAnalytics measurementId={ga4MeasurementId} nonce={nonce} />}
       </head>
       <body className="bg-white text-slate-900 antialiased">
-        {/* SearchAtlas OTTO Pixel - Loaded client-side after hydration to avoid React Error #418.
-            The script is loaded dynamically via SearchAtlasScript component to prevent hydration
-            mismatches caused by DOM modifications during the initial render. */}
+        {/* SearchAtlas OTTO Pixel - Loaded client-side after hydration.
+            CSP is configured to allow SearchAtlas domains and 'unsafe-inline' for inline scripts.
+            See: https://help.searchatlas.com/en/articles/12334271-otto-security */}
         <ClientOnly fallback={null}>
           {() => <SearchAtlasScript />}
         </ClientOnly>

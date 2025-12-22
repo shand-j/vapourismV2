@@ -12,5 +12,5 @@ export async function loader() {
 }
 
 export default function SiteWebmanifest() {
-  return null as any;
+  return null;
 }

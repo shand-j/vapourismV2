@@ -153,39 +153,87 @@ export const CBD_FORMS = ['e-liquid', 'oil', 'edible', 'topical'] as const;
 export type CbdForm = (typeof CBD_FORMS)[number];
 
 // =============================================================================
-// PARSED ATTRIBUTES INTERFACE
+// PARSED ATTRIBUTES INTERFACES
 // =============================================================================
 
 /**
  * The structure of the custom.parsed_attributes metafield JSON
+ * Applied to products (isVariant: false)
+ * 
+ * Note: Arrays are used for attributes that can have multiple values across variants
  */
 export interface ParsedAttributes {
+  /** Whether this is a variant (always false for parsed_attributes) */
+  isVariant?: boolean;
   product_type: ProductType | null;
   brand: string | null;
-  flavours: string[];
-  flavour_category: FlavourCategory | null;
-  nicotine_strength: string | null;
-  cbd_strength: string | null;
+  /** Array of flavour categories available across variants */
+  flavour_categories: FlavourCategory[];
+  /** Array of nicotine strengths available across variants */
+  nicotine_strengths: string[];
+  /** Array of CBD strengths available across variants */
+  cbd_strengths: string[];
   cbd_type: CbdType | null;
   cbd_form: CbdForm | null;
   device_type: string | null;
-  volume: string | null;
   capacity: string | null;
   pack_size: string | null;
   puff_count: string | null;
   battery_capacity: string | null;
   coil_resistance: string | null;
-  material: string | null;
-  color: string | null;
+  /** Array of materials available */
+  materials: string[];
+  /** Array of colors available across variants */
+  colors: string[];
   size: string | null;
+  
+  // Legacy fields for backwards compatibility
+  /** @deprecated Use flavour_categories instead */
+  flavours?: string[];
+  /** @deprecated Use flavour_categories instead */
+  flavour_category?: FlavourCategory | null;
+  /** @deprecated Use nicotine_strengths instead */
+  nicotine_strength?: string | null;
+  /** @deprecated Use cbd_strengths instead */
+  cbd_strength?: string | null;
+  /** @deprecated Use materials instead */
+  material?: string | null;
+  /** @deprecated Use colors instead */
+  color?: string | null;
+  /** @deprecated Not used in new schema */
+  volume?: string | null;
 }
+
+/**
+ * The structure of the custom.parsed_variant_attributes metafield JSON
+ * Applied to variants (isVariant: true)
+ */
+export interface ParsedVariantAttributes {
+  /** Whether this is a variant (always true for parsed_variant_attributes) */
+  isVariant?: boolean;
+  /** Specific flavour for this variant */
+  flavour: string | null;
+  /** Flavour category for this variant */
+  flavour_category: FlavourCategory | null;
+  /** Nicotine strength for this variant */
+  nicotine_strength: string | null;
+  /** CBD strength for this variant */
+  cbd_strength: string | null;
+  /** Color for this variant */
+  color: string | null;
+}
+
+/**
+ * Combined type for either product or variant attributes
+ */
+export type ProductOrVariantAttributes = ParsedAttributes | ParsedVariantAttributes;
 
 // =============================================================================
 // FILTER ATTRIBUTE KEYS
 // =============================================================================
 
 /**
- * All filterable attribute keys from parsed_attributes
+ * All filterable attribute keys from parsed_attributes (product level)
  */
 export const FILTERABLE_ATTRIBUTES = [
   'product_type',
@@ -196,7 +244,6 @@ export const FILTERABLE_ATTRIBUTES = [
   'cbd_type',
   'cbd_form',
   'device_type',
-  'volume',
   'capacity',
   'pack_size',
   'puff_count',
@@ -205,9 +252,24 @@ export const FILTERABLE_ATTRIBUTES = [
   'material',
   'color',
   'size',
+  // Keep volume for backwards compatibility
+  'volume',
 ] as const;
 
 export type FilterableAttribute = (typeof FILTERABLE_ATTRIBUTES)[number];
+
+/**
+ * Variant-specific filterable attributes from parsed_variant_attributes
+ */
+export const VARIANT_FILTERABLE_ATTRIBUTES = [
+  'flavour',
+  'flavour_category',
+  'nicotine_strength',
+  'cbd_strength',
+  'color',
+] as const;
+
+export type VariantFilterableAttribute = (typeof VARIANT_FILTERABLE_ATTRIBUTES)[number];
 
 /**
  * Display labels for filterable attributes
@@ -230,6 +292,17 @@ export const ATTRIBUTE_LABELS: Record<FilterableAttribute, string> = {
   material: 'Material',
   color: 'Color',
   size: 'Size',
+};
+
+/**
+ * Display labels for variant-specific attributes
+ */
+export const VARIANT_ATTRIBUTE_LABELS: Record<VariantFilterableAttribute, string> = {
+  flavour: 'Flavour',
+  flavour_category: 'Flavour Category',
+  nicotine_strength: 'Nicotine Strength',
+  cbd_strength: 'CBD Strength',
+  color: 'Color',
 };
 
 /**
@@ -278,12 +351,74 @@ export function parseParsedAttributes(jsonString: string | null | undefined): Pa
 }
 
 /**
+ * Parse the custom.parsed_variant_attributes metafield JSON string
+ */
+export function parseVariantAttributes(jsonString: string | null | undefined): ParsedVariantAttributes | null {
+  if (!jsonString) return null;
+
+  try {
+    const parsed = JSON.parse(jsonString);
+    // Validate it has the expected structure
+    if (typeof parsed !== 'object' || parsed === null) return null;
+    return parsed as ParsedVariantAttributes;
+  } catch {
+    console.error('Failed to parse parsed_variant_attributes metafield');
+    return null;
+  }
+}
+
+/**
  * Get a specific attribute value from parsed attributes
+ * Handles both old (singular) and new (array) field names
  */
 export function getAttributeValue(
   attributes: ParsedAttributes | null,
   key: FilterableAttribute
 ): string | string[] | null {
+  if (!attributes) return null;
+  
+  // Map new array fields to their values
+  switch (key) {
+    case 'flavour_category':
+      // Try new array field first, then fallback to old singular field
+      if (attributes.flavour_categories && attributes.flavour_categories.length > 0) {
+        return attributes.flavour_categories;
+      }
+      return attributes.flavour_category ?? null;
+    case 'nicotine_strength':
+      if (attributes.nicotine_strengths && attributes.nicotine_strengths.length > 0) {
+        return attributes.nicotine_strengths;
+      }
+      return attributes.nicotine_strength ?? null;
+    case 'cbd_strength':
+      if (attributes.cbd_strengths && attributes.cbd_strengths.length > 0) {
+        return attributes.cbd_strengths;
+      }
+      return attributes.cbd_strength ?? null;
+    case 'material':
+      if (attributes.materials && attributes.materials.length > 0) {
+        return attributes.materials;
+      }
+      return attributes.material ?? null;
+    case 'color':
+      if (attributes.colors && attributes.colors.length > 0) {
+        return attributes.colors;
+      }
+      return attributes.color ?? null;
+    default:
+      const value = (attributes as any)[key];
+      if (value === undefined) return null;
+      return value;
+  }
+}
+
+/**
+ * Get attribute value from variant attributes
+ */
+export function getVariantAttributeValue(
+  attributes: ParsedVariantAttributes | null,
+  key: VariantFilterableAttribute
+): string | null {
   if (!attributes) return null;
   const value = attributes[key];
   if (value === undefined) return null;
@@ -369,7 +504,7 @@ export function getNonNullAttributes(attributes: ParsedAttributes | null): Parti
   const result: Partial<ParsedAttributes> = {};
 
   for (const key of FILTERABLE_ATTRIBUTES) {
-    const value = attributes[key];
+    const value = getAttributeValue(attributes, key);
     if (value !== null && value !== undefined) {
       if (Array.isArray(value) && value.length === 0) continue;
       (result as any)[key] = value;
@@ -381,10 +516,12 @@ export function getNonNullAttributes(attributes: ParsedAttributes | null): Parti
 
 /**
  * Check if a product matches given filter criteria
+ * Checks both product-level attributes and variant-level attributes
  */
 export function matchesFilters(
   attributes: ParsedAttributes | null,
-  filters: Partial<Record<FilterableAttribute, string | string[]>>
+  filters: Partial<Record<FilterableAttribute, string | string[]>>,
+  variantAttributes?: ParsedVariantAttributes[] | null
 ): boolean {
   if (!attributes) return false;
 
@@ -392,36 +529,53 @@ export function matchesFilters(
     if (!filterValue) continue;
 
     const attributeKey = key as FilterableAttribute;
-    const productValue = attributes[attributeKey];
-
-    if (productValue === null || productValue === undefined) return false;
-
     const filterValues = Array.isArray(filterValue) ? filterValue : [filterValue];
-
-    if (Array.isArray(productValue)) {
-      // For array attributes (like flavours), check if any filter value matches
-      const hasMatch = filterValues.some((fv) =>
-        productValue.some((pv) => pv.toLowerCase() === fv.toLowerCase())
-      );
-      if (!hasMatch) return false;
-    } else {
-      // For scalar attributes, check if the value matches any filter value
-      const matches = filterValues.some(
-        (fv) => productValue.toLowerCase() === fv.toLowerCase()
-      );
-      if (!matches) return false;
+    
+    // First try to match at product level
+    const productValue = getAttributeValue(attributes, attributeKey);
+    let productMatches = false;
+    
+    if (productValue !== null && productValue !== undefined) {
+      if (Array.isArray(productValue)) {
+        productMatches = filterValues.some((fv) =>
+          productValue.some((pv) => pv.toLowerCase() === fv.toLowerCase())
+        );
+      } else {
+        productMatches = filterValues.some(
+          (fv) => productValue.toLowerCase() === fv.toLowerCase()
+        );
+      }
     }
+    
+    // If product doesn't match, check variant-level attributes
+    if (!productMatches && variantAttributes && variantAttributes.length > 0) {
+      // Check if any variant matches
+      const variantKey = key as VariantFilterableAttribute;
+      if (VARIANT_FILTERABLE_ATTRIBUTES.includes(variantKey as any)) {
+        const variantMatches = variantAttributes.some((va) => {
+          const variantValue = getVariantAttributeValue(va, variantKey);
+          if (variantValue === null) return false;
+          return filterValues.some(
+            (fv) => variantValue.toLowerCase() === fv.toLowerCase()
+          );
+        });
+        if (variantMatches) continue; // Filter matched via variant
+      }
+    }
+    
+    // If neither product nor variant matched, filter fails
+    if (!productMatches) return false;
   }
 
   return true;
 }
 
 // =============================================================================
-// METAFIELD GRAPHQL FRAGMENT
+// METAFIELD GRAPHQL FRAGMENTS
 // =============================================================================
 
 /**
- * GraphQL fragment to fetch the parsed_attributes metafield
+ * GraphQL fragment to fetch the parsed_attributes metafield on Product
  */
 export const PARSED_ATTRIBUTES_METAFIELD_FRAGMENT = `#graphql
   fragment ParsedAttributesMetafield on Product {
@@ -433,6 +587,23 @@ export const PARSED_ATTRIBUTES_METAFIELD_FRAGMENT = `#graphql
 ` as const;
 
 /**
+ * GraphQL fragment to fetch the parsed_variant_attributes metafield on ProductVariant
+ */
+export const PARSED_VARIANT_ATTRIBUTES_METAFIELD_FRAGMENT = `#graphql
+  fragment ParsedVariantAttributesMetafield on ProductVariant {
+    parsedVariantAttributes: metafield(namespace: "custom", key: "parsed_variant_attributes") {
+      value
+      type
+    }
+  }
+` as const;
+
+/**
  * GraphQL fragment identifier for product queries
  */
 export const PARSED_ATTRIBUTES_METAFIELD_ID = 'ParsedAttributesMetafield';
+
+/**
+ * GraphQL fragment identifier for variant queries
+ */
+export const PARSED_VARIANT_ATTRIBUTES_METAFIELD_ID = 'ParsedVariantAttributesMetafield';

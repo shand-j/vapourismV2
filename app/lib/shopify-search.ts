@@ -71,6 +71,8 @@ export interface SearchProductVariant {
     name: string;
     value: string;
   }>;
+  /** Raw JSON string from custom.parsed_variant_attributes metafield */
+  parsedVariantAttributesJson?: string | null;
 }
 
 export interface SearchProduct extends PredictiveSearchProduct {
@@ -79,7 +81,7 @@ export interface SearchProduct extends PredictiveSearchProduct {
   description: string;
   /** Raw JSON string from custom.parsed_attributes metafield */
   parsedAttributesJson?: string | null;
-  /** Product variants */
+  /** Product variants with their attributes */
   variants?: SearchProductVariant[];
 }
 
@@ -167,7 +169,8 @@ const PREDICTIVE_SEARCH_QUERY = `#graphql
 /**
  * Full Search GraphQL Query
  * Used for search results pages
- * Includes custom.parsed_attributes metafield for filtering
+ * Includes custom.parsed_attributes metafield for product filtering
+ * Includes custom.parsed_variant_attributes metafield for variant filtering
  */
 const SEARCH_QUERY = `#graphql
   query SearchProducts(
@@ -210,7 +213,7 @@ const SEARCH_QUERY = `#graphql
             parsedAttributes: metafield(namespace: "custom", key: "parsed_attributes") {
               value
             }
-            variants(first: 10) {
+            variants(first: 50) {
               edges {
                 node {
                   id
@@ -222,6 +225,9 @@ const SEARCH_QUERY = `#graphql
                   }
                   selectedOptions {
                     name
+                    value
+                  }
+                  parsedVariantAttributes: metafield(namespace: "custom", key: "parsed_variant_attributes") {
                     value
                   }
                 }
@@ -441,6 +447,7 @@ export async function searchProducts(
             availableForSale: variantEdge.node.availableForSale,
             price: variantEdge.node.price,
             selectedOptions: variantEdge.node.selectedOptions || [],
+            parsedVariantAttributesJson: variantEdge.node.parsedVariantAttributes?.value || null,
           })) || [],
         };
         

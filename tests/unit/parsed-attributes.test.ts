@@ -1,7 +1,9 @@
 import {describe, expect, it} from 'vitest';
 import {
   parseParsedAttributes,
+  parseVariantAttributes,
   getAttributeValue,
+  getVariantAttributeValue,
   isAttributeApplicable,
   formatAttributeValue,
   buildAttributeFilterParam,
@@ -11,8 +13,10 @@ import {
   matchesFilters,
   PRODUCT_TYPES,
   FILTERABLE_ATTRIBUTES,
+  VARIANT_FILTERABLE_ATTRIBUTES,
   ATTRIBUTE_LABELS,
   type ParsedAttributes,
+  type ParsedVariantAttributes,
 } from '../../app/lib/parsed-attributes';
 
 describe('parsed-attributes', () => {
@@ -36,6 +40,16 @@ describe('parsed-attributes', () => {
     });
   });
 
+  describe('VARIANT_FILTERABLE_ATTRIBUTES', () => {
+    it('contains all expected variant attributes', () => {
+      expect(VARIANT_FILTERABLE_ATTRIBUTES).toContain('flavour');
+      expect(VARIANT_FILTERABLE_ATTRIBUTES).toContain('flavour_category');
+      expect(VARIANT_FILTERABLE_ATTRIBUTES).toContain('nicotine_strength');
+      expect(VARIANT_FILTERABLE_ATTRIBUTES).toContain('cbd_strength');
+      expect(VARIANT_FILTERABLE_ATTRIBUTES).toContain('color');
+    });
+  });
+
   describe('ATTRIBUTE_LABELS', () => {
     it('provides display labels for all attributes', () => {
       expect(ATTRIBUTE_LABELS.product_type).toBe('Product Type');
@@ -46,7 +60,26 @@ describe('parsed-attributes', () => {
   });
 
   describe('parseParsedAttributes', () => {
-    it('parses valid JSON string', () => {
+    it('parses valid JSON string with new schema', () => {
+      const json = JSON.stringify({
+        product_type: 'e-liquid',
+        brand: 'Test Brand',
+        flavour_categories: ['fruity', 'ice'],
+        nicotine_strengths: ['20mg', '10mg'],
+        cbd_strengths: [],
+        materials: [],
+        colors: ['red', 'blue'],
+      });
+
+      const result = parseParsedAttributes(json);
+      expect(result).toBeDefined();
+      expect(result?.product_type).toBe('e-liquid');
+      expect(result?.brand).toBe('Test Brand');
+      expect(result?.flavour_categories).toEqual(['fruity', 'ice']);
+      expect(result?.nicotine_strengths).toEqual(['20mg', '10mg']);
+    });
+
+    it('parses valid JSON string with legacy schema', () => {
       const json = JSON.stringify({
         product_type: 'e-liquid',
         brand: 'Test Brand',
@@ -74,40 +107,133 @@ describe('parsed-attributes', () => {
     });
   });
 
-  describe('getAttributeValue', () => {
-    const attributes: ParsedAttributes = {
-      product_type: 'e-liquid',
-      brand: 'Test Brand',
-      flavours: ['fruity', 'ice'],
-      flavour_category: 'fruity',
-      nicotine_strength: '20mg',
-      cbd_strength: null,
-      cbd_type: null,
-      cbd_form: null,
-      device_type: null,
-      volume: '10ml',
-      capacity: null,
-      pack_size: null,
-      puff_count: null,
-      battery_capacity: null,
-      coil_resistance: null,
-      material: null,
-      color: null,
-      size: null,
-    };
+  describe('parseVariantAttributes', () => {
+    it('parses valid variant JSON string', () => {
+      const json = JSON.stringify({
+        flavour: 'Strawberry Ice',
+        flavour_category: 'fruity',
+        nicotine_strength: '20mg',
+        cbd_strength: null,
+        color: 'red',
+      });
 
-    it('returns correct value for existing attribute', () => {
+      const result = parseVariantAttributes(json);
+      expect(result).toBeDefined();
+      expect(result?.flavour).toBe('Strawberry Ice');
+      expect(result?.flavour_category).toBe('fruity');
+      expect(result?.nicotine_strength).toBe('20mg');
+      expect(result?.color).toBe('red');
+    });
+
+    it('returns null for null input', () => {
+      expect(parseVariantAttributes(null)).toBeNull();
+    });
+  });
+
+  describe('getAttributeValue', () => {
+    it('returns correct value for existing attribute with new schema', () => {
+      const attributes: ParsedAttributes = {
+        product_type: 'e-liquid',
+        brand: 'Test Brand',
+        flavour_categories: ['fruity', 'ice'],
+        nicotine_strengths: ['20mg', '10mg'],
+        cbd_strengths: [],
+        cbd_type: null,
+        cbd_form: null,
+        device_type: null,
+        capacity: null,
+        pack_size: null,
+        puff_count: null,
+        battery_capacity: null,
+        coil_resistance: null,
+        materials: [],
+        colors: ['red'],
+        size: null,
+      };
+
       expect(getAttributeValue(attributes, 'product_type')).toBe('e-liquid');
       expect(getAttributeValue(attributes, 'brand')).toBe('Test Brand');
-      expect(getAttributeValue(attributes, 'volume')).toBe('10ml');
+      expect(getAttributeValue(attributes, 'flavour_category')).toEqual(['fruity', 'ice']);
+      expect(getAttributeValue(attributes, 'nicotine_strength')).toEqual(['20mg', '10mg']);
+    });
+
+    it('falls back to legacy fields when new fields are empty', () => {
+      const attributes: ParsedAttributes = {
+        product_type: 'e-liquid',
+        brand: 'Test Brand',
+        flavour_categories: [],
+        flavour_category: 'fruity',
+        nicotine_strengths: [],
+        nicotine_strength: '20mg',
+        cbd_strengths: [],
+        cbd_type: null,
+        cbd_form: null,
+        device_type: null,
+        capacity: null,
+        pack_size: null,
+        puff_count: null,
+        battery_capacity: null,
+        coil_resistance: null,
+        materials: [],
+        colors: [],
+        size: null,
+      };
+
+      expect(getAttributeValue(attributes, 'flavour_category')).toBe('fruity');
+      expect(getAttributeValue(attributes, 'nicotine_strength')).toBe('20mg');
     });
 
     it('returns null for null attribute', () => {
+      const attributes: ParsedAttributes = {
+        product_type: 'e-liquid',
+        brand: 'Test Brand',
+        flavour_categories: [],
+        nicotine_strengths: [],
+        cbd_strengths: [],
+        cbd_type: null,
+        cbd_form: null,
+        device_type: null,
+        capacity: null,
+        pack_size: null,
+        puff_count: null,
+        battery_capacity: null,
+        coil_resistance: null,
+        materials: [],
+        colors: [],
+        size: null,
+      };
       expect(getAttributeValue(attributes, 'cbd_strength')).toBeNull();
     });
 
     it('returns null for null attributes object', () => {
       expect(getAttributeValue(null, 'product_type')).toBeNull();
+    });
+  });
+
+  describe('getVariantAttributeValue', () => {
+    it('returns correct value for existing variant attribute', () => {
+      const variantAttrs: ParsedVariantAttributes = {
+        flavour: 'Strawberry',
+        flavour_category: 'fruity',
+        nicotine_strength: '20mg',
+        cbd_strength: null,
+        color: 'red',
+      };
+
+      expect(getVariantAttributeValue(variantAttrs, 'flavour')).toBe('Strawberry');
+      expect(getVariantAttributeValue(variantAttrs, 'flavour_category')).toBe('fruity');
+      expect(getVariantAttributeValue(variantAttrs, 'nicotine_strength')).toBe('20mg');
+    });
+
+    it('returns null for null attribute', () => {
+      const variantAttrs: ParsedVariantAttributes = {
+        flavour: 'Strawberry',
+        flavour_category: 'fruity',
+        nicotine_strength: null,
+        cbd_strength: null,
+        color: null,
+      };
+      expect(getVariantAttributeValue(variantAttrs, 'cbd_strength')).toBeNull();
     });
   });
 
@@ -203,31 +329,27 @@ describe('parsed-attributes', () => {
       const attributes: ParsedAttributes = {
         product_type: 'e-liquid',
         brand: 'Test',
-        flavours: [],
-        flavour_category: 'fruity',
-        nicotine_strength: null,
-        cbd_strength: null,
+        flavour_categories: ['fruity'],
+        nicotine_strengths: [],
+        cbd_strengths: [],
         cbd_type: null,
         cbd_form: null,
         device_type: null,
-        volume: '10ml',
         capacity: null,
         pack_size: null,
         puff_count: null,
         battery_capacity: null,
         coil_resistance: null,
-        material: null,
-        color: null,
+        materials: [],
+        colors: [],
         size: null,
+        volume: '10ml',
       };
 
       const result = getNonNullAttributes(attributes);
       expect(result.product_type).toBe('e-liquid');
       expect(result.brand).toBe('Test');
       expect(result.volume).toBe('10ml');
-      expect(result.flavour_category).toBe('fruity');
-      expect(result.nicotine_strength).toBeUndefined();
-      expect(result.flavours).toBeUndefined(); // Empty array excluded
     });
 
     it('returns empty object for null input', () => {
@@ -239,21 +361,19 @@ describe('parsed-attributes', () => {
     const attributes: ParsedAttributes = {
       product_type: 'e-liquid',
       brand: 'Test Brand',
-      flavours: ['strawberry', 'mint'],
-      flavour_category: 'fruity',
-      nicotine_strength: '20mg',
-      cbd_strength: null,
+      flavour_categories: ['fruity', 'ice'],
+      nicotine_strengths: ['20mg', '10mg'],
+      cbd_strengths: [],
       cbd_type: null,
       cbd_form: null,
       device_type: null,
-      volume: '10ml',
       capacity: null,
       pack_size: null,
       puff_count: null,
       battery_capacity: null,
       coil_resistance: null,
-      material: null,
-      color: null,
+      materials: [],
+      colors: [],
       size: null,
     };
 
@@ -270,7 +390,7 @@ describe('parsed-attributes', () => {
 
       expect(matchesFilters(attributes, {
         product_type: 'e-liquid',
-        nicotine_strength: '10mg',
+        nicotine_strength: '5mg',
       })).toBe(false);
     });
 
@@ -280,10 +400,39 @@ describe('parsed-attributes', () => {
       })).toBe(true);
     });
 
-    it('matches array attribute values', () => {
+    it('matches array attribute values (flavour_categories)', () => {
       expect(matchesFilters(attributes, {
         flavour_category: 'fruity',
       })).toBe(true);
+      expect(matchesFilters(attributes, {
+        flavour_category: 'ice',
+      })).toBe(true);
+      expect(matchesFilters(attributes, {
+        flavour_category: 'tobacco',
+      })).toBe(false);
+    });
+
+    it('matches with variant attributes', () => {
+      const variantAttrs: ParsedVariantAttributes[] = [
+        {
+          flavour: 'Strawberry',
+          flavour_category: 'fruity',
+          nicotine_strength: '20mg',
+          cbd_strength: null,
+          color: 'red',
+        },
+        {
+          flavour: 'Mint',
+          flavour_category: 'ice',
+          nicotine_strength: '10mg',
+          cbd_strength: null,
+          color: 'blue',
+        },
+      ];
+
+      // Match via variant attribute
+      expect(matchesFilters(attributes, {color: 'red'}, variantAttrs)).toBe(true);
+      expect(matchesFilters(attributes, {color: 'green'}, variantAttrs)).toBe(false);
     });
 
     it('returns false for null attributes', () => {

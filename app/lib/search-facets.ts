@@ -1,11 +1,16 @@
 import type {SearchProduct} from './shopify-search';
 import {
   parseParsedAttributes,
+  parseVariantAttributes,
+  getAttributeValue,
   formatAttributeValue,
   FILTERABLE_ATTRIBUTES,
+  VARIANT_FILTERABLE_ATTRIBUTES,
   ATTRIBUTE_LABELS,
   type ParsedAttributes,
+  type ParsedVariantAttributes,
   type FilterableAttribute,
+  type VariantFilterableAttribute,
 } from './parsed-attributes';
 
 export const FILTER_TAG_PREFIX = 'filter:';
@@ -161,7 +166,8 @@ export interface PriceSummary {
 }
 
 /**
- * Extract facets from parsed_attributes metafield
+ * Extract facets from parsed_attributes metafield (product-level)
+ * and parsed_variant_attributes metafield (variant-level)
  * This is the primary facet extraction method for the new system
  */
 function extractParsedAttributesFacets(
@@ -170,40 +176,88 @@ function extractParsedAttributesFacets(
 ) {
   products.forEach((product) => {
     const attributes = parseParsedAttributes(product.parsedAttributesJson);
-    if (!attributes) return;
-
-    // Process each filterable attribute from parsed_attributes
-    for (const attrKey of FILTERABLE_ATTRIBUTES) {
-      const value = attributes[attrKey];
-      if (value === null || value === undefined) continue;
-      
-      // Find the group key for this attribute
-      const groupConfig = TAG_FILTER_GROUPS.find(g => g.attributeKey === attrKey);
-      if (!groupConfig) continue;
-      
-      const groupKey = groupConfig.key;
-      const group = groupOptionMap.get(groupKey) ?? new Map();
-      groupOptionMap.set(groupKey, group);
-
-      // Handle array values (like flavours)
-      const values = Array.isArray(value) ? value : [value];
-      
-      for (const v of values) {
-        if (!v) continue;
-        const filterValue = `${attrKey}:${v}`;
-        const option = group.get(filterValue) ?? {
-          value: filterValue,
-          label: formatAttributeValue(v),
-          count: 0,
-          productIds: new Set<string>(),
-          originalValue: v,
-        };
+    
+    // Process product-level attributes
+    if (attributes) {
+      for (const attrKey of FILTERABLE_ATTRIBUTES) {
+        // Use the getAttributeValue helper that handles both old and new schema
+        const value = getAttributeValue(attributes, attrKey);
+        if (value === null || value === undefined) continue;
         
-        if (!option.productIds.has(product.id)) {
-          option.productIds.add(product.id);
-          option.count += 1;
+        // Find the group key for this attribute
+        const groupConfig = TAG_FILTER_GROUPS.find(g => g.attributeKey === attrKey);
+        if (!groupConfig) continue;
+        
+        const groupKey = groupConfig.key;
+        const group = groupOptionMap.get(groupKey) ?? new Map();
+        groupOptionMap.set(groupKey, group);
+
+        // Handle array values (like flavour_categories, nicotine_strengths)
+        const values = Array.isArray(value) ? value : [value];
+        
+        for (const v of values) {
+          if (!v) continue;
+          const filterValue = `${attrKey}:${v}`;
+          const option = group.get(filterValue) ?? {
+            value: filterValue,
+            label: formatAttributeValue(v),
+            count: 0,
+            productIds: new Set<string>(),
+            originalValue: v,
+          };
+          
+          if (!option.productIds.has(product.id)) {
+            option.productIds.add(product.id);
+            option.count += 1;
+          }
+          group.set(filterValue, option);
         }
-        group.set(filterValue, option);
+      }
+    }
+    
+    // Process variant-level attributes from parsed_variant_attributes
+    if (product.variants && product.variants.length > 0) {
+      for (const variant of product.variants) {
+        const variantAttrs = parseVariantAttributes(variant.parsedVariantAttributesJson);
+        if (!variantAttrs) continue;
+        
+        // Extract variant-specific attributes
+        for (const attrKey of VARIANT_FILTERABLE_ATTRIBUTES) {
+          const value = variantAttrs[attrKey];
+          if (!value) continue;
+          
+          // Map variant attribute to group key
+          // Most variant attributes map directly to product-level filter groups
+          let groupKey: FilterGroupKey = attrKey as FilterGroupKey;
+          if (attrKey === 'flavour') {
+            // 'flavour' from variant adds to 'flavour' filter but we need to check
+            // if we want a separate filter or combine with flavour_category
+            groupKey = 'flavour_category'; // Combine into flavour category for now
+          }
+          
+          const groupConfig = TAG_FILTER_GROUPS.find(g => g.key === groupKey || g.attributeKey === attrKey);
+          if (!groupConfig) continue;
+          
+          const finalGroupKey = groupConfig.key;
+          const group = groupOptionMap.get(finalGroupKey) ?? new Map();
+          groupOptionMap.set(finalGroupKey, group);
+          
+          const filterValue = `${groupConfig.attributeKey || attrKey}:${value}`;
+          const option = group.get(filterValue) ?? {
+            value: filterValue,
+            label: formatAttributeValue(value),
+            count: 0,
+            productIds: new Set<string>(),
+            originalValue: value,
+          };
+          
+          // Count at product level (not variant level) to avoid duplicates
+          if (!option.productIds.has(product.id)) {
+            option.productIds.add(product.id);
+            option.count += 1;
+          }
+          group.set(filterValue, option);
+        }
       }
     }
   });
@@ -560,8 +614,9 @@ export function calculatePriceSummary(products: SearchProduct[]): PriceSummary |
 }
 
 /**
- * Filter products by parsed_attributes
+ * Filter products by parsed_attributes and parsed_variant_attributes
  * Used for client-side filtering when server-side filtering is not available
+ * Checks both product-level and variant-level attributes
  */
 export function filterProductsByAttributes(
   products: SearchProduct[],
@@ -572,58 +627,82 @@ export function filterProductsByAttributes(
   return products.filter((product) => {
     const attributes = parseParsedAttributes(product.parsedAttributesJson);
     
+    // Parse all variant attributes
+    const variantAttributesList: ParsedVariantAttributes[] = [];
+    if (product.variants) {
+      for (const variant of product.variants) {
+        const variantAttrs = parseVariantAttributes(variant.parsedVariantAttributesJson);
+        if (variantAttrs) {
+          variantAttributesList.push(variantAttrs);
+        }
+      }
+    }
+    
     for (const [key, filterValue] of Object.entries(filters)) {
       if (!filterValue) continue;
       
       // Parse the filter key to get attribute key
       const attrKey = key as FilterableAttribute;
-      if (!FILTERABLE_ATTRIBUTES.includes(attrKey)) continue;
-      
       const filterValues = Array.isArray(filterValue) ? filterValue : [filterValue];
+      let matched = false;
       
-      // Check parsed attributes
-      if (attributes) {
-        const productValue = attributes[attrKey];
+      // Check parsed_attributes (product level)
+      if (attributes && FILTERABLE_ATTRIBUTES.includes(attrKey)) {
+        const productValue = getAttributeValue(attributes, attrKey);
         
         if (productValue !== null && productValue !== undefined) {
           if (Array.isArray(productValue)) {
-            const hasMatch = filterValues.some((fv) =>
+            matched = filterValues.some((fv) =>
               productValue.some((pv) => pv.toLowerCase() === fv.toLowerCase())
             );
-            if (hasMatch) continue; // Filter matches
           } else {
-            const matches = filterValues.some(
+            matched = filterValues.some(
               (fv) => productValue.toLowerCase() === fv.toLowerCase()
             );
-            if (matches) continue; // Filter matches
           }
         }
       }
       
-      // Fallback to product fields
-      if (attrKey === 'brand' && product.vendor) {
-        if (filterValues.some(fv => product.vendor.toLowerCase() === fv.toLowerCase())) {
-          continue;
+      // Check parsed_variant_attributes if not matched at product level
+      if (!matched && variantAttributesList.length > 0) {
+        const variantKey = key as VariantFilterableAttribute;
+        if (VARIANT_FILTERABLE_ATTRIBUTES.includes(variantKey as any)) {
+          matched = variantAttributesList.some((va) => {
+            const variantValue = va[variantKey];
+            if (!variantValue) return false;
+            return filterValues.some(
+              (fv) => variantValue.toLowerCase() === fv.toLowerCase()
+            );
+          });
         }
       }
       
-      if (attrKey === 'product_type' && product.productType) {
+      // Fallback to product fields
+      if (!matched && attrKey === 'brand' && product.vendor) {
+        if (filterValues.some(fv => product.vendor.toLowerCase() === fv.toLowerCase())) {
+          matched = true;
+        }
+      }
+      
+      if (!matched && attrKey === 'product_type' && product.productType) {
         if (filterValues.some(fv => 
           product.productType.toLowerCase() === fv.toLowerCase() ||
           product.productType.toLowerCase().replace(/\s+/g, '_') === fv.toLowerCase()
         )) {
-          continue;
+          matched = true;
         }
       }
       
       // Check tags as last fallback
-      const productTags = (product.tags || []).map(t => t.toLowerCase());
-      if (filterValues.some(fv => productTags.includes(fv.toLowerCase()))) {
-        continue;
+      if (!matched) {
+        const productTags = (product.tags || []).map(t => t.toLowerCase());
+        if (filterValues.some(fv => productTags.includes(fv.toLowerCase()))) {
+          matched = true;
+        }
       }
       
-      // Filter did not match
-      return false;
+      // Filter did not match anywhere
+      if (!matched) return false;
     }
     
     return true;

@@ -204,14 +204,14 @@ export function CartDrawer({isOpen, onClose, fallbackCart, onCartUpdate}: CartDr
           ) : (
             <div className="space-y-3">
               <Link
-                to="/search?tag=disposable"
+                to="/search?product_type=disposable_vape"
                 className="inline-flex w-full items-center justify-center rounded-2xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700"
                 onClick={onClose}
               >
                 Shop reusables
               </Link>
               <Link
-                to="/search?tag=device"
+                to="/search?product_type=pod_system"
                 className="inline-flex w-full items-center justify-center rounded-2xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700"
                 onClick={onClose}
               >

@@ -296,7 +296,7 @@ export default function PaymentMethodsPage() {
             Start Shopping
           </Link>
           <Link 
-            to="/search?tag=disposable" 
+            to="/search?product_type=disposable_vape" 
             className="px-6 py-3 bg-blue-700 text-white rounded-lg font-semibold hover:bg-blue-800 transition border-2 border-white"
           >
             Disposable Vapes

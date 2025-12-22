@@ -1,8 +1,11 @@
 /**
  * Search Results Page Route
  * 
- * Full search page with pagination
- * URL: /search?q=query&page=1&sort=RELEVANCE
+ * Full search page with pagination and attribute-based filtering
+ * URL: /search?q=query&product_type=e-liquid&flavour_category=fruity&page=1&sort=RELEVANCE
+ * 
+ * Supports both new attribute-based filters (from custom.parsed_attributes metafield)
+ * and legacy tag-based filters for backwards compatibility.
  */
 
 // Headless UI components imported in separate component to avoid SSR issues
@@ -20,11 +23,17 @@ import {
   buildTagFacetGroups,
   calculatePriceSummary,
   getTagDisplayLabel,
+  filterProductsByAttributes,
+  parseAttributeFilter,
   type PriceSummary,
 } from '../lib/search-facets';
 import {searchProducts, getCachedFacets, trackSearchEvent} from '../lib/shopify-search';
-import {getHeroForTags, type CategoryHero} from '../lib/menu-config';
+import {getHeroForTags, getHeroForFilters, type CategoryHero} from '../lib/menu-config';
 import {SEOAutomationService} from '../preserved/seo-automation';
+import {
+  FILTERABLE_ATTRIBUTES,
+  type FilterableAttribute,
+} from '../lib/parsed-attributes';
 
 /**
  * UK VAT rate (20%)
@@ -46,6 +55,8 @@ type SearchLoaderData = {
   priceSummary: PriceSummary | null;
   hero: CategoryHero | null;
   selectedTags: string[];
+  /** New: attribute-based filters */
+  selectedFilters: Record<string, string[]>;
   error?: string;
 };
 
@@ -79,12 +90,23 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const sortConfig = SORT_LOOKUP[sortParam] ?? SORT_LOOKUP.RELEVANCE;
   const sortKey = sortConfig.sortKey;
   const reverse = sortConfig.reverse;
+  
+  // Legacy params
   const selectedTypes = searchParams.getAll('type');
   const selectedVendors = searchParams.getAll('vendor');
   const selectedTags = searchParams.getAll('tag');
   const availability = searchParams.get('availability');
   const priceMinParam = searchParams.get('price_min');
   const priceMaxParam = searchParams.get('price_max');
+
+  // New: Extract attribute-based filters from URL params
+  const selectedFilters: Record<string, string[]> = {};
+  for (const attrKey of FILTERABLE_ATTRIBUTES) {
+    const values = searchParams.getAll(attrKey);
+    if (values.length > 0) {
+      selectedFilters[attrKey] = values;
+    }
+  }
 
   // User enters VAT-inclusive prices, but Shopify stores ex-VAT
   // Convert user input to ex-VAT for filtering
@@ -125,6 +147,18 @@ export async function loader({request, context}: LoaderFunctionArgs) {
       : []),
   ];
 
+  // Handle attribute-based filters - add to Shopify filters where possible
+  if (selectedFilters.product_type) {
+    selectedFilters.product_type.forEach((value) => {
+      allFilters.push({productType: value} as StorefrontAPI.ProductFilter);
+    });
+  }
+  if (selectedFilters.brand) {
+    selectedFilters.brand.forEach((value) => {
+      allFilters.push({productVendor: value} as StorefrontAPI.ProductFilter);
+    });
+  }
+
   // Handle tag expansion and add to filters
   let expandedTagFilters: string[] = [];
   let additionalVendors: string[] = [];
@@ -138,9 +172,9 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     facetGroups = await getCachedFacets(context.storefront);
 
     // Process tag expansions using cached facets
-    const flavourTypeFacet = facetGroups.find(fg => fg.key === 'flavour_type');
+    const flavourTypeFacet = facetGroups.find(fg => fg.key === 'flavour_category' || fg.key === 'flavour_type');
     const brandFacet = facetGroups.find(fg => fg.key === 'brand');
-    const categoryFacet = facetGroups.find(fg => fg.key === 'category');
+    const categoryFacet = facetGroups.find(fg => fg.key === 'product_type' || fg.key === 'category');
 
     selectedTags.forEach((tag) => {
       if (tag.startsWith('filter:flavour_type:') && flavourTypeFacet) {
@@ -183,33 +217,76 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     // Add tag filters to the filter list (will be converted to query syntax by searchProducts)
     expandedTagFilters.forEach((tag) => allFilters.push({tag} as StorefrontAPI.ProductFilter));
 
+    // Determine if we need extra products for client-side filtering
+    // Only fetch more when we have client-side filters that require metafield data
+    const hasClientSideFilters = Object.entries(selectedFilters).some(
+      ([key, values]) => key !== 'product_type' && key !== 'brand' && values.length > 0
+    );
+    const fetchCount = hasClientSideFilters ? 100 : 24;
+
     // Use server-side filtering for everything, including tags
     const searchResults = await searchProducts(context.storefront, query, {
-      first: 24,
+      first: fetchCount,
       after,
       sortKey,
       reverse,
       filters: allFilters,
     });
 
+    // Apply client-side filtering for attribute-based filters that can't be done server-side
+    // (attributes stored in metafield can't be filtered server-side by Shopify)
+    let filteredProducts = searchResults.products;
+    const clientSideFilters: Record<string, string[]> = {};
+    
+    // Filter by parsed_attributes metafield
+    for (const [key, values] of Object.entries(selectedFilters)) {
+      // Skip filters already handled server-side
+      if (key === 'product_type' || key === 'brand') continue;
+      if (values.length > 0) {
+        clientSideFilters[key] = values;
+      }
+    }
+    
+    if (Object.keys(clientSideFilters).length > 0) {
+      filteredProducts = filterProductsByAttributes(filteredProducts, clientSideFilters);
+    }
+
     // Calculate price summary from filtered results
-    const priceSummary = calculatePriceSummary(searchResults.products);
+    const priceSummary = calculatePriceSummary(filteredProducts);
 
     // Calculate facets from the filtered search results
-    const filteredFacets = buildTagFacetGroups(searchResults.products);
+    // Combine legacy tags and new attribute filters for facet calculation
+    const allSelectedFilters = [
+      ...selectedTags,
+      ...Object.entries(selectedFilters).flatMap(([key, values]) => 
+        values.map(v => `${key}:${v}`)
+      ),
+    ];
+    const filteredFacets = buildTagFacetGroups(filteredProducts, allSelectedFilters);
 
-    // Get hero banner based on selected tags
-    const hero = getHeroForTags(selectedTags);
+    // Get hero banner based on selected tags or attribute filters
+    let hero = getHeroForFilters(selectedFilters);
+    if (!hero) {
+      hero = getHeroForTags(selectedTags);
+    }
+
+    // Paginate the filtered results
+    const pageSize = 24;
+    const paginatedProducts = filteredProducts.slice(0, pageSize);
 
     return json<SearchLoaderData>({
       query,
-      products: searchResults.products,
-      totalCount: searchResults.totalCount,
-      pageInfo: searchResults.pageInfo,
+      products: paginatedProducts,
+      totalCount: filteredProducts.length,
+      pageInfo: {
+        hasNextPage: filteredProducts.length > pageSize,
+        endCursor: searchResults.pageInfo.endCursor,
+      },
       facets: filteredFacets,
       priceSummary,
       hero,
       selectedTags,
+      selectedFilters,
     }, {
       headers: {
         'Cache-Control': 'public, max-age=60', // Cache for 1 minute
@@ -218,6 +295,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     });
 
   } catch (error) {
+    console.error('Search error:', error);
     return json<SearchLoaderData>({
       query,
       products: [],
@@ -227,10 +305,13 @@ export async function loader({request, context}: LoaderFunctionArgs) {
       priceSummary: null,
       hero: null,
       selectedTags: [],
+      selectedFilters: {},
       error: 'Search failed',
     }, {status: 500});
   }
-}export default function SearchPage() {
+}
+
+export default function SearchPage() {
   const data = useLoaderData<typeof loader>();
   const navigation = useNavigation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -285,16 +366,38 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     }
   };
 
+  /**
+   * Handle filter toggle - supports both legacy tag format and new attribute format
+   * New format: attributeKey:value (e.g., "flavour_category:fruity")
+   * Legacy format: filter:groupKey:value (e.g., "filter:flavour_type:fruity")
+   */
   const handleTagToggle = (value: string) => {
     const newParams = new URLSearchParams(searchParams);
-    const existing = new Set(newParams.getAll('tag'));
-    if (existing.has(value)) {
-      existing.delete(value);
+    
+    // Check if this is a new attribute format (attributeKey:value)
+    const attrFilter = parseAttributeFilter(value);
+    if (attrFilter) {
+      const { key, value: filterValue } = attrFilter;
+      const existing = new Set(newParams.getAll(key));
+      if (existing.has(filterValue)) {
+        existing.delete(filterValue);
+      } else {
+        existing.add(filterValue);
+      }
+      newParams.delete(key);
+      existing.forEach((item) => newParams.append(key, item));
     } else {
-      existing.add(value);
+      // Legacy tag format
+      const existing = new Set(newParams.getAll('tag'));
+      if (existing.has(value)) {
+        existing.delete(value);
+      } else {
+        existing.add(value);
+      }
+      newParams.delete('tag');
+      existing.forEach((item) => newParams.append('tag', item));
     }
-    newParams.delete('tag');
-    existing.forEach((item) => newParams.append('tag', item));
+    
     newParams.delete('after');
     setSearchParams(newParams);
   };
@@ -328,19 +431,37 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 
   const handleClearFilters = () => {
     const newParams = new URLSearchParams(searchParams);
+    // Clear legacy params
     ['type', 'vendor', 'tag', 'availability', 'after', 'price_min', 'price_max'].forEach((param) =>
       newParams.delete(param),
     );
+    // Clear new attribute-based params
+    for (const attrKey of FILTERABLE_ATTRIBUTES) {
+      newParams.delete(attrKey);
+    }
     setSearchParams(newParams);
     setFiltersOpen(false);
   };
 
+  // Build active filter chips from both legacy tags and new attribute filters
   const activeFilterChips: Array<{id: string; label: string; onRemove: () => void}> = [
+    // Legacy tag filters
     ...selectedTags.map((tag) => ({
       id: `tag:${tag}`,
       label: getTagDisplayLabel(tag),
       onRemove: () => handleTagToggle(tag),
     })),
+    // New attribute filters
+    ...Object.entries(data.selectedFilters || {}).flatMap(([key, values]) =>
+      values.map((value) => {
+        const filterValue = `${key}:${value}`;
+        return {
+          id: filterValue,
+          label: getTagDisplayLabel(filterValue),
+          onRemove: () => handleTagToggle(filterValue),
+        };
+      })
+    ),
   ];
   if (selectedAvailability) {
     activeFilterChips.push({
@@ -568,8 +689,14 @@ export const meta = ({data, location}: {data: any; location: any}) => {
     // Brand/vendor page - optimized for SEO
     title = SEOAutomationService.truncateTitle(`${vendor} Vape Products (${count}) | Fast UK Delivery | Vapourism`);
     description = `Shop ${count}+ authentic ${vendor} vaping products. ✓ Premium quality ✓ Fast UK delivery ✓ Competitive prices ✓ Genuine ${vendor} products from authorized UK retailer. Browse e-liquids, devices & accessories.`;
+  } else if (url.searchParams.get('product_type')) {
+    // Category page by product_type attribute
+    const productType = url.searchParams.get('product_type')!;
+    const categoryLabel = getTagDisplayLabel(productType);
+    title = SEOAutomationService.truncateTitle(`${categoryLabel} (${count}) | UK Vape Shop | Vapourism`);
+    description = SEOAutomationService.generateCategoryMetaDescription(categoryLabel, count);
   } else if (url.searchParams.get('tag')) {
-    // Category page by tag - extract tag here where it's used for title generation
+    // Legacy: Category page by tag - extract tag here where it's used for title generation
     const tag = url.searchParams.get('tag')!; // Non-null assertion: already checked in if condition
     const categoryLabel = getTagDisplayLabel(tag);
     title = SEOAutomationService.truncateTitle(`${categoryLabel} (${count}) | UK Vape Shop | Vapourism`);

@@ -476,32 +476,32 @@ function SiteFooter({
             <h3 className="text-lg font-semibold mb-4">Shop by Category</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/search?tag=disposable" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/search?product_type=disposable_vape" className="text-gray-300 hover:text-white transition-colors">
                   Disposable Vapes
                 </Link>
               </li>
               <li>
-                <Link to="/search?tag=e-liquid" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/search?product_type=e-liquid" className="text-gray-300 hover:text-white transition-colors">
                   E-Liquids
                 </Link>
               </li>
               <li>
-                <Link to="/search?tag=pod_system" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/search?product_type=pod_system" className="text-gray-300 hover:text-white transition-colors">
                   Pod Systems
                 </Link>
               </li>
               <li>
-                <Link to="/search?tag=coil" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/search?product_type=coil" className="text-gray-300 hover:text-white transition-colors">
                   Coils & Pods
                 </Link>
               </li>
               <li>
-                <Link to="/search?tag=CBD" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/search?product_type=cbd" className="text-gray-300 hover:text-white transition-colors">
                   CBD Products
                 </Link>
               </li>
               <li>
-                <Link to="/search?tag=nicotine_pouches" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/search?product_type=nicotine_pouches" className="text-gray-300 hover:text-white transition-colors">
                   Nicotine Pouches
                 </Link>
               </li>

@@ -382,13 +382,13 @@ export function buildProductBreadcrumb(
 
     items.push({
       label: categoryLabels[primaryCategory] || productType,
-      url: `/search?tag=${primaryCategory}`,
+      url: `/search?product_type=${primaryCategory}`,
     });
   } else if (productType) {
     // Fallback to product type
     items.push({
       label: productType,
-      url: `/search?productType=${encodeURIComponent(productType)}`,
+      url: `/search?product_type=${encodeURIComponent(productType.toLowerCase().replace(/\s+/g, '_'))}`,
     });
   }
 

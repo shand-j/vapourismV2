@@ -4,8 +4,8 @@ import {ProductCard} from '~/components/ProductCard';
 import type {ProductCardProduct} from '~/components/ProductCard';
 
 interface SearchHeroProps {
-  /** Current category tag (e.g., "disposables") */
-  tag: string;
+  /** Current category product_type (e.g., "disposable_vape") */
+  productType: string;
   /** Hero products from metafields */
   products: ProductCardProduct[];
   /** Category display name */
@@ -16,7 +16,7 @@ interface SearchHeroProps {
  * Hero section for search results showing top picks for a category.
  * Displayed above search results when category hero products are configured.
  */
-export function SearchHero({tag, products, categoryName}: Readonly<SearchHeroProps>) {
+export function SearchHero({productType, products, categoryName}: Readonly<SearchHeroProps>) {
   if (!products.length) {
     return null;
   }
@@ -33,7 +33,7 @@ export function SearchHero({tag, products, categoryName}: Readonly<SearchHeroPro
           </h2>
         </div>
         <Link
-          to={`/search?tag=${encodeURIComponent(tag)}`}
+          to={`/search?product_type=${encodeURIComponent(productType)}`}
           className="text-sm font-semibold text-[#5b2be0] hover:underline"
         >
           View all

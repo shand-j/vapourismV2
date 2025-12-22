@@ -130,7 +130,7 @@ export default function NicotinePouchesCollection() {
           </Link>
           
           <Link 
-            to="/search?tag=nordic_spirit&tag=nicotine_pouches"
+            to="/search?brand=Nordic Spirit&product_type=nicotine_pouches"
             className="group border-2 border-gray-200 rounded-xl p-6 hover:border-blue-500 hover:shadow-xl transition-all"
           >
             <h3 className="font-bold text-2xl mb-2 group-hover:text-blue-600">Nordic Spirit</h3>
@@ -491,10 +491,10 @@ export default function NicotinePouchesCollection() {
       <div className="border-t-2 border-gray-200 pt-8">
         <h3 className="font-semibold text-xl mb-4 text-center">Related Products</h3>
         <div className="flex flex-wrap justify-center gap-3">
-          <Link to="/search?tag=disposable" className="px-6 py-3 bg-gray-100 hover:bg-blue-50 text-gray-800 rounded-lg hover:text-blue-700 transition font-medium">
+          <Link to="/search?product_type=disposable_vape" className="px-6 py-3 bg-gray-100 hover:bg-blue-50 text-gray-800 rounded-lg hover:text-blue-700 transition font-medium">
             Disposable Vapes
           </Link>
-          <Link to="/search?tag=e-liquid" className="px-6 py-3 bg-gray-100 hover:bg-blue-50 text-gray-800 rounded-lg hover:text-blue-700 transition font-medium">
+          <Link to="/search?product_type=e-liquid" className="px-6 py-3 bg-gray-100 hover:bg-blue-50 text-gray-800 rounded-lg hover:text-blue-700 transition font-medium">
             E-Liquids
           </Link>
           <Link to="/" className="px-6 py-3 bg-gray-100 hover:bg-blue-50 text-gray-800 rounded-lg hover:text-blue-700 transition font-medium">

@@ -34,12 +34,12 @@ Vapourism is a trusted UK vape retailer offering disposable vapes, e-liquids, ni
 We stock thousands of vaping products from leading brands:
 
 - [Shop All Products](${baseUrl}/search): Browse our full product catalogue
-- [Disposable Vapes](${baseUrl}/search?tag=disposable_vape): Elf Bar, Lost Mary, Crystal Bar, Hayati, and more
-- [E-Liquids](${baseUrl}/search?tag=e_liquid): Shortfills, nic salts, and freebase options
+- [Disposable Vapes](${baseUrl}/search?product_type=disposable_vape): Elf Bar, Lost Mary, Crystal Bar, Hayati, and more
+- [E-Liquids](${baseUrl}/search?product_type=e-liquid): Shortfills, nic salts, and freebase options
 - [Nicotine Pouches](${baseUrl}/collections/nicotine-pouches): VELO, ZYN, and tobacco-free alternatives
-- [Vape Kits](${baseUrl}/search?tag=vape_kit): Starter kits and advanced mods
-- [Pod Systems](${baseUrl}/search?tag=pod_system): Refillable pod devices
-- [Accessories](${baseUrl}/search?tag=accessories): Coils, batteries, and replacement parts
+- [Vape Kits](${baseUrl}/search?product_type=mod): Starter kits and advanced mods
+- [Pod Systems](${baseUrl}/search?product_type=pod_system): Refillable pod devices
+- [Accessories](${baseUrl}/search?product_type=accessory): Coils, batteries, and replacement parts
 
 ### Popular Brands
 

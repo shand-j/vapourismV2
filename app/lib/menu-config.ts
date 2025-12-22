@@ -1,15 +1,20 @@
 /**
  * Mega Menu Configuration
  *
- * Static menu structure using tag-based filtering.
- * All navigation links route to /search with tag query parameters.
+ * Static menu structure using parsed_attributes metafield-based filtering.
+ * All navigation links route to /search with attribute filter query parameters.
  *
- * Tag format follows the approved controlled vocabulary from the data analyst spec.
+ * Migrated from tag-based filtering to custom.parsed_attributes metafield.
  */
+
+import type { FilterableAttribute } from './parsed-attributes';
 
 export interface MenuLink {
   label: string;
-  tags: string[];
+  /** Legacy: tag-based filters */
+  tags?: string[];
+  /** New: attribute-based filters */
+  filters?: Record<string, string>;
   url: string;
 }
 
@@ -18,12 +23,16 @@ export interface MenuColumn {
   links: MenuLink[];
   seeAllLabel?: string;
   seeAllTags?: string[];
+  seeAllFilters?: Record<string, string>;
 }
 
 export interface MenuCategory {
   id: string;
   label: string;
-  tags: string[];
+  /** Legacy: tag-based filters */
+  tags?: string[];
+  /** New: attribute-based filters */
+  filters?: Record<string, string>;
   columns: MenuColumn[];
   quizLink?: {
     label: string;
@@ -40,7 +49,23 @@ export interface CategoryHero {
 }
 
 /**
- * Build search URL from tags
+ * Build search URL from attribute filters
+ * New method using parsed_attributes metafield
+ */
+export function buildAttributeSearchUrl(filters: Record<string, string>): string {
+  if (Object.keys(filters).length === 0) return '/search';
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(filters)) {
+    if (value) {
+      params.append(key, value);
+    }
+  }
+  return `/search?${params.toString()}`;
+}
+
+/**
+ * Build search URL from tags (legacy support)
+ * @deprecated Use buildAttributeSearchUrl instead
  */
 export function buildSearchUrl(tags: string[]): string {
   if (tags.length === 0) return '/search';
@@ -113,7 +138,7 @@ export const CATEGORY_HEROES: Record<string, CategoryHero> = {
 };
 
 /**
- * Get hero config for a set of tags
+ * Get hero config for a set of tags or filters
  */
 export function getHeroForTags(tags: string[]): CategoryHero | null {
   // Check for primary category tags first
@@ -135,6 +160,38 @@ export function getHeroForTags(tags: string[]): CategoryHero | null {
     if (tags.includes(category)) {
       return CATEGORY_HEROES[category] || null;
     }
+  }
+
+  return null;
+}
+
+/**
+ * Get hero config based on attribute filters
+ * Maps product_type attribute values to hero configurations
+ */
+export function getHeroForFilters(filters: Record<string, string | string[]>): CategoryHero | null {
+  const productType = filters.product_type;
+  if (!productType) return null;
+
+  const typeValue = Array.isArray(productType) ? productType[0] : productType;
+
+  // Map product_type values to hero keys
+  const typeToHeroKey: Record<string, string> = {
+    'e-liquid': 'e-liquid',
+    'disposable_vape': 'disposable',
+    'pod_system': 'pod_system',
+    'mod': 'box_mod',
+    'tank_atomizer': 'tank',
+    'coil': 'coil',
+    'battery': 'accessory',
+    'accessory': 'accessory',
+    'nicotine_pouches': 'nicotine_pouches',
+    'cbd': 'CBD',
+  };
+
+  const heroKey = typeToHeroKey[typeValue.toLowerCase()];
+  if (heroKey && CATEGORY_HEROES[heroKey]) {
+    return CATEGORY_HEROES[heroKey];
   }
 
   return null;

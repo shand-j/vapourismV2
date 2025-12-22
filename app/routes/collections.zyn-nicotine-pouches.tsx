@@ -325,10 +325,10 @@ export default function ZynPouchesCollection() {
           <Link to="/collections/velo-nicotine-pouches" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
             Velo Pouches
           </Link>
-          <Link to="/search?tag=nordic_spirit" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
+          <Link to="/search?brand=Nordic Spirit" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
             Nordic Spirit
           </Link>
-          <Link to="/search?tag=disposable" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
+          <Link to="/search?product_type=disposable_vape" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
             Disposable Vapes
           </Link>
         </div>

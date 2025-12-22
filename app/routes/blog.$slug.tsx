@@ -222,26 +222,27 @@ function ArticleContent({contentHtml}: {contentHtml: string}) {
       ref={contentRef}
       className="article-content prose prose-lg prose-slate max-w-none
         prose-headings:font-semibold prose-headings:text-slate-900 prose-headings:tracking-tight
-        prose-h1:text-3xl prose-h1:md:text-4xl prose-h1:mb-8 prose-h1:mt-16 first:prose-h1:mt-0 prose-h1:leading-[1.1]
-        prose-h2:text-2xl prose-h2:md:text-3xl prose-h2:mb-6 prose-h2:mt-14 prose-h2:leading-[1.2]
-        prose-h3:text-xl prose-h3:md:text-2xl prose-h3:mb-5 prose-h3:mt-12 prose-h3:leading-[1.3]
-        prose-h4:text-lg prose-h4:md:text-xl prose-h4:mb-4 prose-h4:mt-10
-        prose-p:text-slate-600 prose-p:leading-[1.85] prose-p:mb-7 prose-p:text-[1.0625rem] prose-p:md:text-[1.125rem]
-        prose-ul:list-disc prose-ul:ml-6 prose-ul:mb-8 prose-ul:space-y-3 prose-ul:text-slate-600
-        prose-ol:list-decimal prose-ol:ml-6 prose-ol:mb-8 prose-ol:space-y-3 prose-ol:text-slate-600
-        prose-li:text-slate-600 prose-li:leading-[1.85] prose-li:text-[1.0625rem] prose-li:md:text-[1.125rem]
+        prose-h1:text-3xl prose-h1:md:text-4xl prose-h1:mb-6 prose-h1:mt-12 first:prose-h1:mt-0 prose-h1:leading-[1.1]
+        prose-h2:text-2xl prose-h2:md:text-3xl prose-h2:mb-5 prose-h2:mt-12 prose-h2:leading-[1.2] prose-h2:pt-4 prose-h2:border-t prose-h2:border-slate-100
+        prose-h3:text-xl prose-h3:md:text-2xl prose-h3:mb-4 prose-h3:mt-10 prose-h3:leading-[1.3]
+        prose-h4:text-lg prose-h4:md:text-xl prose-h4:mb-4 prose-h4:mt-8
+        prose-p:text-slate-600 prose-p:leading-[1.85] prose-p:mb-6 prose-p:text-[1.0625rem] prose-p:md:text-[1.125rem]
+        prose-ul:list-disc prose-ul:pl-6 prose-ul:my-6 prose-ul:space-y-3 prose-ul:text-slate-600
+        prose-ol:list-decimal prose-ol:pl-6 prose-ol:my-6 prose-ol:space-y-3 prose-ol:text-slate-600
+        prose-li:text-slate-600 prose-li:leading-[1.75] prose-li:text-[1.0625rem] prose-li:md:text-[1.125rem] prose-li:pl-2 prose-li:marker:text-[#5b2be0]
         prose-a:text-[#5b2be0] prose-a:hover:text-[#1fb2ff] prose-a:no-underline prose-a:font-medium prose-a:transition-colors prose-a:duration-200
         prose-strong:text-slate-900 prose-strong:font-semibold
         prose-em:italic prose-em:text-slate-500
         prose-code:bg-slate-100 prose-code:px-2 prose-code:py-1 prose-code:rounded-md prose-code:text-sm prose-code:text-slate-800 prose-code:font-mono prose-code:before:content-[''] prose-code:after:content-['']
-        prose-pre:bg-slate-900 prose-pre:text-slate-100 prose-pre:rounded-2xl prose-pre:p-6 prose-pre:overflow-x-auto prose-pre:my-10
-        prose-img:rounded-2xl prose-img:shadow-xl prose-img:my-10 prose-img:w-full prose-img:h-auto prose-img:max-w-full
-        prose-blockquote:border-l-4 prose-blockquote:border-[#5b2be0] prose-blockquote:pl-8 prose-blockquote:pr-6 prose-blockquote:py-4 prose-blockquote:not-italic prose-blockquote:text-slate-700 prose-blockquote:bg-gradient-to-r prose-blockquote:from-slate-50 prose-blockquote:to-white prose-blockquote:rounded-r-2xl prose-blockquote:my-10
-        prose-hr:border-slate-200 prose-hr:my-14
-        prose-table:border-collapse prose-table:w-full prose-table:my-10 prose-table:rounded-xl prose-table:overflow-hidden
-        prose-th:bg-slate-100 prose-th:p-4 prose-th:text-left prose-th:font-semibold prose-th:text-slate-900 prose-th:border prose-th:border-slate-200
-        prose-td:p-4 prose-td:border prose-td:border-slate-200 prose-td:text-slate-600
-        prose-video:rounded-2xl prose-video:shadow-xl prose-video:my-10 prose-video:w-full"
+        prose-pre:bg-slate-900 prose-pre:text-slate-100 prose-pre:rounded-2xl prose-pre:p-6 prose-pre:overflow-x-auto prose-pre:my-8
+        prose-img:rounded-2xl prose-img:shadow-xl prose-img:my-8 prose-img:w-full prose-img:h-auto prose-img:max-w-full
+        prose-blockquote:border-l-4 prose-blockquote:border-[#5b2be0] prose-blockquote:pl-8 prose-blockquote:pr-6 prose-blockquote:py-4 prose-blockquote:not-italic prose-blockquote:text-slate-700 prose-blockquote:bg-gradient-to-r prose-blockquote:from-slate-50 prose-blockquote:to-white prose-blockquote:rounded-r-2xl prose-blockquote:my-8
+        prose-hr:border-slate-200 prose-hr:my-12
+        prose-table:w-full prose-table:my-8 prose-table:border prose-table:border-slate-200 prose-table:rounded-xl prose-table:overflow-hidden
+        prose-thead:bg-slate-50
+        prose-th:px-5 prose-th:py-4 prose-th:text-left prose-th:font-semibold prose-th:text-slate-900 prose-th:border-b-2 prose-th:border-[#5b2be0] prose-th:text-sm prose-th:uppercase prose-th:tracking-wider
+        prose-td:px-5 prose-td:py-4 prose-td:border-b prose-td:border-slate-100 prose-td:text-slate-600
+        prose-video:rounded-2xl prose-video:shadow-xl prose-video:my-8 prose-video:w-full"
       dangerouslySetInnerHTML={{__html: contentHtml}}
     />
   );

@@ -66,33 +66,32 @@ export default async function handleRequest(
       checkoutDomain,
       storeDomain,
     },
-    directives: {
-      // Allow third-party script sources for analytics and SEO
-      scriptSrc: scriptSrcDirectives,
-      // script-src-elem controls <script> element loading - must include third-party domains
-      // to prevent fallback to default-src which blocks dynamic script loading
-      scriptSrcElem: scriptSrcDirectives,
-      // Allow connections to analytics and SEO services
-      connectSrc: [
-        'https://www.google-analytics.com',
-        'https://*.google-analytics.com',
-        'https://www.googletagmanager.com',
-        'https://analytics.google.com',
-        'https://dashboard.searchatlas.com',
-        'https://public.linkgraph.com',
-        'https://monorail-edge.shopifysvc.com',
-      ],
-      // Allow images from analytics and external sources
-      imgSrc: [
-        'https://www.google-analytics.com',
-        'https://*.google-analytics.com',
-        'https://www.googletagmanager.com',
-        'https://images.unsplash.com',
-        'https://*.unsplash.com',
-        'https:',
-        'data:',
-      ],
-    },
+    // CSP directives are passed at the top level, not nested
+    // Allow third-party script sources for analytics and SEO
+    scriptSrc: scriptSrcDirectives,
+    // script-src-elem controls <script> element loading - must include third-party domains
+    // to prevent fallback to default-src which blocks dynamic script loading
+    scriptSrcElem: scriptSrcDirectives,
+    // Allow connections to analytics and SEO services
+    connectSrc: [
+      'https://www.google-analytics.com',
+      'https://*.google-analytics.com',
+      'https://www.googletagmanager.com',
+      'https://analytics.google.com',
+      'https://dashboard.searchatlas.com',
+      'https://public.linkgraph.com',
+      'https://monorail-edge.shopifysvc.com',
+    ],
+    // Allow images from analytics and external sources
+    imgSrc: [
+      'https://www.google-analytics.com',
+      'https://*.google-analytics.com',
+      'https://www.googletagmanager.com',
+      'https://images.unsplash.com',
+      'https://*.unsplash.com',
+      'https:',
+      'data:',
+    ],
   });
 
   let body: any;

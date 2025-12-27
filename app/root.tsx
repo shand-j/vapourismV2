@@ -207,6 +207,8 @@ export default function App() {
         <script
           nowprocket=""
           nitro-exclude=""
+          data-nowprocket=""
+          data-nitro-exclude=""
           async
           defer
           type="text/javascript"

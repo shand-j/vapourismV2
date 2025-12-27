@@ -48,10 +48,12 @@ export default async function handleRequest(
   //   - dashboard.searchatlas.com: Main script loader
   //   - storage.googleapis.com: Static assets (dynamic_optimization.js)
   //   - cdn.rankyak.com: Additional SEO scripts
+  //   - data: URI scheme: Required for base64-encoded loader script
   // - 'unsafe-inline': Required for SearchAtlas inline script execution
   // See: https://help.searchatlas.com/en/articles/12334271-otto-security
   //
   // SECURITY NOTE: 'unsafe-inline' weakens CSP but is required by SearchAtlas.
+  // The 'data:' directive allows base64-encoded inline scripts for the OTTO loader.
   // This is an accepted tradeoff for SEO optimization functionality.
   const scriptSrcDirectives = [
     'https://www.googletagmanager.com',
@@ -59,6 +61,7 @@ export default async function handleRequest(
     'https://storage.googleapis.com',
     'https://cdn.rankyak.com',
     "'unsafe-inline'",
+    'data:',
   ];
 
   const {nonce, header, NonceProvider} = createContentSecurityPolicy({

@@ -26,32 +26,35 @@ According to Semrush, the main factors affecting HTML load speed are:
 
 #### 1. SearchAtlas Script Optimization
 **File:** `app/root.tsx`  
-**Change:** Replaced base64-encoded inline script loader with direct async script tag
+**Change:** SearchAtlas OTTO widget with base64-encoded loader format
 
-**Before:**
+**Note (December 2025 Update):** SearchAtlas requires the base64-encoded loader format for proper widget initialization and crawler detection. While direct async script loading would reduce HTML payload by ~500 bytes, SearchAtlas support confirmed that the base64 loader is required for their widget to function correctly.
+
+**Current Implementation:**
 ```tsx
 <script
-  type="text/javascript"
-  id="sa-dynamic-optimization"
-  data-uuid="d709ea19-b642-442c-ab07-012003668401"
-  src="data:text/javascript;base64,dmFyIHNjcmlwdCA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoInNjcmlwdCIpO3NjcmlwdC5zZXRBdHRyaWJ1dGUoIm5vd3Byb2NrZXQiLCAiIik7c2NyaXB0LnNldEF0dHJpYnV0ZSgibml0cm8tZXhjbHVkZSIsICIiKTtzY3JpcHQuc3JjID0gImh0dHBzOi8vZGFzaGJvYXJkLnNlYXJjaGF0bGFzLmNvbS9zY3JpcHRzL2R5bmFtaWNfb3B0aW1pemF0aW9uLmpzIjtzY3JpcHQuZGF0YXNldC51dWlkID0gImQ3MDllYTE5LWI2NDItNDQyYy1hYjA3LTAxMjAwMzY2ODQwMSI7c2NyaXB0LmlkID0gInNhLWR5bmFtaWMtb3B0aW1pemF0aW9uLWxvYWRlciI7ZG9jdW1lbnQuaGVhZC5hcHBlbmRDaGlsZChzY3JpcHQpOw=="
-/>
-```
-
-**After:**
-```tsx
-<script
-  async
-  defer
-  id="sa-dynamic-optimization-loader"
-  data-uuid="d709ea19-b642-442c-ab07-012003668401"
+  nowprocket=""
+  nitro-exclude=""
   data-nowprocket=""
   data-nitro-exclude=""
-  src="https://dashboard.searchatlas.com/scripts/dynamic_optimization.js"
+  async
+  defer
+  type="text/javascript"
+  id="sa-dynamic-optimization"
+  data-uuid="bc389022-b99a-470f-a7a5-14a7389ffee7"
+  src="data:text/javascript;base64,..."
 />
 ```
 
-**Impact:** ~500 bytes reduction in HTML payload, script loads asynchronously without blocking HTML parsing
+**Key attributes:**
+- `async` and `defer`: Ensures script loads non-blocking
+- `nowprocket`, `nitro-exclude`: Prevents WP Rocket/Nitropack caching plugins from modifying the loader
+- `data-nowprocket`, `data-nitro-exclude`: Data-prefixed versions for maximum plugin compatibility
+- Base64 loader: Required by SearchAtlas for proper widget initialization
+
+**CSP Requirement:** The `data:` URI scheme must be included in the `script-src` and `script-src-elem` CSP directives in `app/entry.server.tsx` to allow the base64-encoded script to execute.
+
+**Impact:** Script loads asynchronously with async/defer attributes, minimizing render blocking impact despite using the base64 loader format
 
 #### 2. Shop Info Query Caching
 **File:** `app/root.tsx`  
@@ -173,10 +176,11 @@ cache: context.storefront.CacheLong(), // Cache for 1 hour
 ### Quantitative Improvements
 
 **HTML Payload Reduction:**
-- Base64 script: ~500 bytes
 - Duplicate env keys: ~50 bytes  
 - Minified JSON-LD: ~200 bytes
-- **Total: ~750 bytes per page load**
+- **Total: ~250 bytes per page load**
+
+**Note:** SearchAtlas requires the base64-encoded loader format (~500 bytes) for proper widget initialization. While this adds payload compared to direct script loading, the async/defer attributes ensure non-blocking loading.
 
 **Server-Side Query Optimization:**
 - Shop info query: 1 hour cache (was uncached)
@@ -186,7 +190,7 @@ cache: context.storefront.CacheLong(), // Cache for 1 hour
 
 **Client-Side Loading:**
 - DNS prefetch for 3 third-party domains
-- SearchAtlas script now loads async/defer (non-blocking)
+- SearchAtlas script loads with async/defer (non-blocking despite base64 format)
 - Static assets cached for 1 year
 - HTML pages use stale-while-revalidate
 

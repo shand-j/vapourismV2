@@ -207,6 +207,8 @@ export default function App() {
         <script
           nowprocket=""
           nitro-exclude=""
+          async
+          defer
           type="text/javascript"
           id="sa-dynamic-optimization"
           data-uuid="bc389022-b99a-470f-a7a5-14a7389ffee7"

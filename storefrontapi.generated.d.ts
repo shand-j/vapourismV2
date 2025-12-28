@@ -3,6 +3,18 @@
 /* eslint-disable */
 import type * as StorefrontAPI from '@shopify/hydrogen/storefront-api-types';
 
+export type ParsedAttributesMetafieldFragment = {
+  parsedAttributes?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Metafield, 'value' | 'type'>
+  >;
+};
+
+export type ParsedVariantAttributesMetafieldFragment = {
+  parsedVariantAttributes?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Metafield, 'value' | 'type'>
+  >;
+};
+
 export type FeaturedShowcaseProductsQueryVariables = StorefrontAPI.Exact<{
   first: StorefrontAPI.Scalars['Int']['input'];
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
@@ -296,6 +308,25 @@ export type SearchProductsQuery = {
         featuredImage?: StorefrontAPI.Maybe<
           Pick<StorefrontAPI.Image, 'url' | 'altText'>
         >;
+        parsedAttributes?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
+        variants: {
+          edges: Array<{
+            node: Pick<
+              StorefrontAPI.ProductVariant,
+              'id' | 'title' | 'availableForSale'
+            > & {
+              price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+              selectedOptions: Array<
+                Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
+              >;
+              parsedVariantAttributes?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.Metafield, 'value'>
+              >;
+            };
+          }>;
+        };
       };
     }>;
     pageInfo: Pick<StorefrontAPI.PageInfo, 'hasNextPage' | 'endCursor'>;
@@ -310,7 +341,11 @@ export type FacetDataQueryVariables = StorefrontAPI.Exact<{
 export type FacetDataQuery = {
   products: {
     nodes: Array<
-      Pick<StorefrontAPI.Product, 'id' | 'vendor' | 'productType' | 'tags'>
+      Pick<StorefrontAPI.Product, 'id' | 'vendor' | 'productType' | 'tags'> & {
+        parsedAttributes?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'>
+        >;
+      }
     >;
     pageInfo: Pick<StorefrontAPI.PageInfo, 'hasNextPage' | 'endCursor'>;
   };
@@ -1063,11 +1098,11 @@ interface GeneratedQueryTypes {
     return: PredictiveSearchQuery;
     variables: PredictiveSearchQueryVariables;
   };
-  '#graphql\n  query SearchProducts(\n    $query: String!\n    $first: Int\n    $after: String\n    $sortKey: SearchSortKeys\n    $reverse: Boolean\n  ) {\n    search(\n      query: $query\n      first: $first\n      after: $after\n      sortKey: $sortKey\n      reverse: $reverse\n      types: PRODUCT\n      unavailableProducts: HIDE\n    ) {\n      edges {\n        node {\n          ... on Product {\n            id\n            title\n            handle\n            vendor\n            productType\n            tags\n            description\n            priceRange {\n              minVariantPrice {\n                amount\n                currencyCode\n              }\n            }\n            featuredImage {\n              url(transform: {maxWidth: 500})\n              altText\n            }\n            availableForSale\n          }\n        }\n      }\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n      totalCount\n    }\n  }\n': {
+  '#graphql\n  query SearchProducts(\n    $query: String!\n    $first: Int\n    $after: String\n    $sortKey: SearchSortKeys\n    $reverse: Boolean\n  ) {\n    search(\n      query: $query\n      first: $first\n      after: $after\n      sortKey: $sortKey\n      reverse: $reverse\n      types: PRODUCT\n      unavailableProducts: HIDE\n    ) {\n      edges {\n        node {\n          ... on Product {\n            id\n            title\n            handle\n            vendor\n            productType\n            tags\n            description\n            priceRange {\n              minVariantPrice {\n                amount\n                currencyCode\n              }\n            }\n            featuredImage {\n              url(transform: {maxWidth: 500})\n              altText\n            }\n            availableForSale\n            parsedAttributes: metafield(namespace: "custom", key: "parsed_attributes") {\n              value\n            }\n            variants(first: 50) {\n              edges {\n                node {\n                  id\n                  title\n                  availableForSale\n                  price {\n                    amount\n                    currencyCode\n                  }\n                  selectedOptions {\n                    name\n                    value\n                  }\n                  parsedVariantAttributes: metafield(namespace: "custom", key: "parsed_variant_attributes") {\n                    value\n                  }\n                }\n              }\n            }\n          }\n        }\n      }\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n      totalCount\n    }\n  }\n': {
     return: SearchProductsQuery;
     variables: SearchProductsQueryVariables;
   };
-  '#graphql\n    query FacetData($first: Int, $after: String) {\n      products(first: $first, after: $after) {\n        nodes {\n          id\n          vendor\n          productType\n          tags\n        }\n        pageInfo {\n          hasNextPage\n          endCursor\n        }\n      }\n    }\n  ': {
+  '#graphql\n    query FacetData($first: Int, $after: String) {\n      products(first: $first, after: $after) {\n        nodes {\n          id\n          vendor\n          productType\n          tags\n          parsedAttributes: metafield(namespace: "custom", key: "parsed_attributes") {\n            value\n          }\n        }\n        pageInfo {\n          hasNextPage\n          endCursor\n        }\n      }\n    }\n  ': {
     return: FacetDataQuery;
     variables: FacetDataQueryVariables;
   };

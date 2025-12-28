@@ -150,6 +150,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   // Handle attribute-based filters
   // NOTE: product_type is stored in custom.parsed_attributes metafield, NOT Shopify's native productType
   // We handle it client-side via filterProductsByAttributes() since metafield values may differ from Shopify's
+  // Fallback: if metafield is missing, filterProductsByAttributes() checks product.productType with normalization
   // Only brand can be mapped to vendor for server-side filtering
   if (selectedFilters.brand) {
     selectedFilters.brand.forEach((value) => {

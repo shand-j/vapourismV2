@@ -147,12 +147,10 @@ export async function loader({request, context}: LoaderFunctionArgs) {
       : []),
   ];
 
-  // Handle attribute-based filters - add to Shopify filters where possible
-  if (selectedFilters.product_type) {
-    selectedFilters.product_type.forEach((value) => {
-      allFilters.push({productType: value} as StorefrontAPI.ProductFilter);
-    });
-  }
+  // Handle attribute-based filters
+  // NOTE: product_type is stored in custom.parsed_attributes metafield, NOT Shopify's native productType
+  // We handle it client-side via filterProductsByAttributes() since metafield values may differ from Shopify's
+  // Only brand can be mapped to vendor for server-side filtering
   if (selectedFilters.brand) {
     selectedFilters.brand.forEach((value) => {
       allFilters.push({productVendor: value} as StorefrontAPI.ProductFilter);
@@ -218,9 +216,10 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     expandedTagFilters.forEach((tag) => allFilters.push({tag} as StorefrontAPI.ProductFilter));
 
     // Determine if we need extra products for client-side filtering
-    // Only fetch more when we have client-side filters that require metafield data
+    // All metafield-based filters (including product_type) require client-side filtering
+    // Only brand is handled server-side via vendor filter
     const hasClientSideFilters = Object.entries(selectedFilters).some(
-      ([key, values]) => key !== 'product_type' && key !== 'brand' && values.length > 0
+      ([key, values]) => key !== 'brand' && values.length > 0
     );
     const fetchCount = hasClientSideFilters ? 100 : 24;
 
@@ -239,9 +238,10 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     const clientSideFilters: Record<string, string[]> = {};
     
     // Filter by parsed_attributes metafield
+    // product_type is filtered client-side since metafield values may differ from Shopify's native productType
     for (const [key, values] of Object.entries(selectedFilters)) {
-      // Skip filters already handled server-side
-      if (key === 'product_type' || key === 'brand') continue;
+      // Skip brand - handled server-side via vendor filter
+      if (key === 'brand') continue;
       if (values.length > 0) {
         clientSideFilters[key] = values;
       }

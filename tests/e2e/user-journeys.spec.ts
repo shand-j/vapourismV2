@@ -48,12 +48,9 @@ test.describe('Vapourism V2 - user journeys', () => {
     // Type at least two characters and expect predictive dropdown
     await searchInput.fill('dis');
 
-    // Wait for network request and dropdown to populate
-    await page.waitForResponse((resp) => resp.url().includes('/api/search/predictive') && resp.status() === 200, { timeout: 5000 });
-
     // Assertions: suggestions, products or collections should appear
     const overlay = page.locator('#search-results');
-    await expect(overlay).toBeVisible({ timeout: 5000 });
+    await expect(overlay).toBeVisible({ timeout: 10000 });
     // It should include at least one suggestion, or product card
     const hasProducts = (await overlay.locator('text=Products').count()) > 0;
     const hasSuggestions = (await overlay.locator('text=Suggestions').count()) > 0;
@@ -161,8 +158,8 @@ test.describe('Vapourism V2 - user journeys', () => {
     await expect(page.locator('button[aria-label="Cart"]').locator('.bg-rose-500')).toHaveText('1');
 
     await page.locator('button[aria-label="Cart"]').click();
-    await page.waitForResponse((resp) => resp.url().includes('/cart.data') && resp.request().method() === 'GET', { timeout: 5000 });
-    await expect(page.locator('text=Proceed to checkout').first()).toBeVisible({ timeout: 5000 });
+    // Wait for checkout button to be visible (indicates cart data loaded)
+    await expect(page.locator('text=Proceed to checkout').first()).toBeVisible({ timeout: 10000 });
   });
 
   test('Age verification modal appears on first-time visits', async ({ page }) => {

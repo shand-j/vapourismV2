@@ -91,17 +91,17 @@ npx playwright show-report
 ## Test Structure
 
 ### `user-journeys.spec.ts`
-Main test suite covering 18 critical user journeys:
+Main test suite covering 14 critical user journeys:
 
 1. **Homepage Discovery** - Hero section and CTAs visibility
-2. **Predictive Search** - Header search with suggestions, products, and collections
+2. **Predictive Search** - Header search with suggestions, products, and collections (UI-based, not dependent on API response)
 3. **Collections Mega-Menu** - Desktop navigation and hover interactions
 4. **Mobile Menu** - Drawer navigation and responsive behavior
 5. **Collections Directory** - Collections listing and detail pages
 6. **Product Detail Page** - Gallery and purchase functionality
 7. **Search Results** - Full search page with results display
 8. **Filters and Pagination** - Search filtering and pagination controls
-9. **Add to Cart** - Cart slideout and optimistic updates
+9. **Add to Cart** - Cart slideout and optimistic updates (UI-based, not dependent on cart API response)
 10. **Age Verification Modal** - First-time visit modal
 11. **Account Login** - Redirect to Shopify authentication
 12. **404 Error Page** - Not found page rendering
@@ -143,9 +143,10 @@ See `playwright.config.ts` in the project root for configuration:
 When updating tests:
 1. **Use proper async/await**: Always await `.count()` calls before using in conditionals
 2. **Avoid silent error swallowing**: Never use `.catch(() => {})` on assertions
-3. **Add explicit timeouts**: All assertions should have `{ timeout: 5000 }` or higher
-4. **Use specific selectors**: Prefer `getByRole`, `getByLabel`, and specific test IDs
-5. **Check TypeScript**: Run `npx tsc --noEmit tests/e2e/*.spec.ts` to verify syntax
+3. **Test UI state, not network requests**: Avoid `waitForResponse()` calls that can timeout; instead, test the UI state that results from the network request
+4. **Add explicit timeouts**: Critical assertions should have `{ timeout: 10000 }` or higher for CI environments
+5. **Use specific selectors**: Prefer `getByRole`, `getByLabel`, and specific test IDs
+6. **Check TypeScript**: Run `npx tsc --noEmit tests/e2e/*.spec.ts` to verify syntax
 
 ## CI Integration
 

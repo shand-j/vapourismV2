@@ -29,9 +29,13 @@ test.describe('Vapourism V2 - user journeys', () => {
     // Hero header exists and primary CTA visible
     await expect(page.locator('text=Vapourism').first()).toBeVisible();
     await expect(page.locator('header')).toBeVisible();
-    expect((await page.locator('role=heading').count())).toBeGreaterThan(0);
-    // CTA buttons exist and are links
-    await expect(page.locator('text=Featured')).toBeVisible({ timeout: 2000 }).catch(() => {});
+    const headingCount = await page.locator('role=heading').count();
+    expect(headingCount).toBeGreaterThan(0);
+    // CTA buttons exist and are links - use soft assertion
+    const featuredCount = await page.locator('text=Featured').count();
+    if (featuredCount > 0) {
+      await expect(page.locator('text=Featured')).toBeVisible({ timeout: 2000 });
+    }
   });
 
   test('Predictive search from header shows suggestions, products and collections', async ({ page }) => {
@@ -81,7 +85,8 @@ test.describe('Vapourism V2 - user journeys', () => {
     await expect(page.locator('h1, h2')).toBeVisible();
     // Try opening a known collection if present (best-effort)
     const firstCollection = page.locator('a[href^="/collections/"]').first();
-    if (await firstCollection.count() > 0) {
+    const collectionCount = await firstCollection.count();
+    if (collectionCount > 0) {
       const href = await firstCollection.getAttribute('href');
       await firstCollection.click();
       await expect(page).toHaveURL(href ?? /collections/);
@@ -98,7 +103,9 @@ test.describe('Vapourism V2 - user journeys', () => {
     await productLink.click();
     await expect(page).toHaveURL(href ?? /products/);
     // Purchase area exists — check for add-to-cart form/button
-    const addVisible = (await page.locator('text=Add to cart').count()) > 0 || (await page.locator('button[type="submit"]').filter({ hasText: 'Add' }).count()) > 0;
+    const addToCartCount = await page.locator('text=Add to cart').count();
+    const submitButtonCount = await page.locator('button[type="submit"]').filter({ hasText: 'Add' }).count();
+    const addVisible = addToCartCount > 0 || submitButtonCount > 0;
     expect(addVisible).toBeTruthy();
   });
 
@@ -112,10 +119,16 @@ test.describe('Vapourism V2 - user journeys', () => {
     await page.goto('/search?q=vape');
     // Confirm search results are present and pagination exists
     const results = page.locator('main').locator('article, .product-card, .product-card__link');
-    await expect(results.first()).toBeVisible({ timeout: 5000 }).catch(() => {});
+    // Use soft assertion to check if results are visible, but don't fail the test if not
+    const resultsCount = await results.count();
+    if (resultsCount > 0) {
+      await expect(results.first()).toBeVisible({ timeout: 5000 });
+    }
     // Check for pagination controls
-    const hasLoadMore = (await page.locator('text=Load more').count()) > 0;
-    const hasNext = (await page.locator('text=Next').count()) > 0;
+    const loadMoreCount = await page.locator('text=Load more').count();
+    const nextCount = await page.locator('text=Next').count();
+    const hasLoadMore = loadMoreCount > 0;
+    const hasNext = nextCount > 0;
     expect(hasLoadMore || hasNext).toBeTruthy();
   });
 
@@ -125,7 +138,16 @@ test.describe('Vapourism V2 - user journeys', () => {
     const productLink = page.locator('a[href^="/products/"]').first();
     await productLink.click();
     
-    await page.locator('#variant-selector').selectOption('0.6 Ohm' , {timeout: 5000}).catch(() => {});
+    // Try to select a variant if a selector exists
+    const variantSelector = page.locator('#variant-selector');
+    const variantSelectorCount = await variantSelector.count();
+    if (variantSelectorCount > 0) {
+      // Check if the specific option exists before selecting
+      const optionCount = await variantSelector.locator('option:has-text("0.6 Ohm")').count();
+      if (optionCount > 0) {
+        await variantSelector.selectOption('0.6 Ohm', {timeout: 5000});
+      }
+    }
     
     await page.getByRole('button', { name: /Add to cart/i }).click();
     
@@ -134,7 +156,7 @@ test.describe('Vapourism V2 - user journeys', () => {
     await expect(page.locator('button[aria-label="Cart"]').locator('.bg-rose-500')).toHaveText('1');
 
     await page.locator('button[aria-label="Cart"]').click();
-    await page.waitForRequest((req) => req.url().includes('/cart.data?_routes=routes%2Fcart') && req.method() === 'GET', { timeout: 5000 });
+    await page.waitForResponse((resp) => resp.url().includes('/cart.data') && resp.request().method() === 'GET', { timeout: 5000 });
     await expect(page.locator('text=Proceed to checkout').first()).toBeVisible({ timeout: 5000 });
   });
 
@@ -147,7 +169,9 @@ test.describe('Vapourism V2 - user journeys', () => {
     await page.route('**/*', (route) => route.continue());
     await page.goto('/');
     // Expect the AgeVerificationModal to possibly be visible
-    const ageVerifVisible = (await page.locator('text=Age verification').first().count()) > 0 || (await page.locator('text=Enter your date of birth').count()) > 0;
+    const ageVerifCount = await page.locator('text=Age verification').first().count();
+    const dobCount = await page.locator('text=Enter your date of birth').count();
+    const ageVerifVisible = ageVerifCount > 0 || dobCount > 0;
     expect(ageVerifVisible).toBeTruthy();
   });
 
@@ -165,13 +189,17 @@ test.describe('Vapourism V2 - user journeys', () => {
 
   test('404 page renders for unknown paths', async ({ page }) => {
     await page.goto('/__this-route-does-not-exist__');
-    const notFound = (await page.locator('text=Not Found').first().count()) > 0 || (await page.locator('text=404').count()) > 0;
+    const notFoundCount = await page.locator('text=Not Found').first().count();
+    const fourOhFourCount = await page.locator('text=404').count();
+    const notFound = notFoundCount > 0 || fourOhFourCount > 0;
     expect(notFound).toBeTruthy();
   });
 
   test('Post-payment age verification route loads VerifyPage', async ({ page }) => {
     await page.goto('/age-verification?order=TEST123&confirmationCode=abc');
-    const verifyVisible = (await page.locator('text=Verify').first().count()) > 0 || (await page.locator('text=Start verification').count()) > 0;
+    const verifyCount = await page.locator('text=Verify').first().count();
+    const startVerificationCount = await page.locator('text=Start verification').count();
+    const verifyVisible = verifyCount > 0 || startVerificationCount > 0;
     expect(verifyVisible).toBeTruthy();
   });
 
@@ -216,7 +244,8 @@ test.describe('Vapourism V2 - user journeys', () => {
 
     // If the initial age verification modal appears, accept it
     const acceptButton = page.locator('button').filter({ hasText: 'Accept' }).or(page.locator('button').filter({ hasText: 'I am 18+' }));
-    if (await acceptButton.isVisible({ timeout: 2000 }).catch(() => false)) {
+    const isAcceptVisible = await acceptButton.isVisible({ timeout: 2000 }).catch(() => false);
+    if (isAcceptVisible) {
       await acceptButton.click();
       await page.waitForTimeout(500); // Wait for modal to close
     }

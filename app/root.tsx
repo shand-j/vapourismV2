@@ -249,7 +249,7 @@ export default function App() {
                   'radial-gradient(circle at top, rgba(167, 139, 250, 0.18), transparent 55%), radial-gradient(circle at bottom, rgba(56, 189, 248, 0.15), transparent 50%)',
               }}
             />
-            <div className="relative z-10">
+            <div className="relative">
               <Outlet />
             </div>
           </main>

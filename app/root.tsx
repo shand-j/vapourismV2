@@ -202,25 +202,22 @@ export default function App() {
             while still allowing Link navigation. Need to investigate proper configuration
             or contact SearchAtlas support for a fix.
             
-            Original implementation:
-            - Rendered server-side so SearchAtlas can detect it during crawl
-            - Uses base64-encoded loader for proper initialization
-            - CSP is configured to allow SearchAtlas domains
+            To re-enable, uncomment the script tag below:
+            
+            <script
+              nowprocket=""
+              nitro-exclude=""
+              data-nowprocket=""
+              data-nitro-exclude=""
+              async
+              defer
+              type="text/javascript"
+              id="sa-dynamic-optimization"
+              data-uuid="bc389022-b99a-470f-a7a5-14a7389ffee7"
+              src="data:text/javascript;base64,dmFyIHNjcmlwdCA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoInNjcmlwdCIpO3NjcmlwdC5zZXRBdHRyaWJ1dGUoIm5vd3Byb2NrZXQiLCAiIik7c2NyaXB0LnNldEF0dHJpYnV0ZSgibml0cm8tZXhjbHVkZSIsICIiKTtzY3JpcHQuc3JjID0gImh0dHBzOi8vZGFzaGJvYXJkLnNlYXJjaGF0bGFzLmNvbS9zY3JpcHRzL2R5bmFtaWNfb3B0aW1pemF0aW9uLmpzIjtzY3JpcHQuZGF0YXNldC51dWlkID0gImJjMzg5MDIyLWI5OWEtNDcwZi1hN2E1LTE0YTczODlmZmVlNyI7c2NyaXB0LmlkID0gInNhLWR5bmFtaWMtb3B0aW1pemF0aW9uLWxvYWRlciI7ZG9jdW1lbnQuaGVhZC5hcHBlbmRDaGlsZChzY3JpcHQpOw=="
+            />
+            
             See: https://help.searchatlas.com/en/articles/12334271-otto-security
-        
-        {/* @ts-expect-error nowprocket and nitro-exclude are non-standard HTML attributes for cache optimization *}
-        <script
-          nowprocket=""
-          nitro-exclude=""
-          data-nowprocket=""
-          data-nitro-exclude=""
-          async
-          defer
-          type="text/javascript"
-          id="sa-dynamic-optimization"
-          data-uuid="bc389022-b99a-470f-a7a5-14a7389ffee7"
-          src="data:text/javascript;base64,dmFyIHNjcmlwdCA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoInNjcmlwdCIpO3NjcmlwdC5zZXRBdHRyaWJ1dGUoIm5vd3Byb2NrZXQiLCAiIik7c2NyaXB0LnNldEF0dHJpYnV0ZSgibml0cm8tZXhjbHVkZSIsICIiKTtzY3JpcHQuc3JjID0gImh0dHBzOi8vZGFzaGJvYXJkLnNlYXJjaGF0bGFzLmNvbS9zY3JpcHRzL2R5bmFtaWNfb3B0aW1pemF0aW9uLmpzIjtzY3JpcHQuZGF0YXNldC51dWlkID0gImJjMzg5MDIyLWI5OWEtNDcwZi1hN2E1LTE0YTczODlmZmVlNyI7c2NyaXB0LmlkID0gInNhLWR5bmFtaWMtb3B0aW1pemF0aW9uLWxvYWRlciI7ZG9jdW1lbnQuaGVhZC5hcHBlbmRDaGlsZChzY3JpcHQpOw=="
-        />
         */}
       </head>
       <body className="bg-white text-slate-900 antialiased">

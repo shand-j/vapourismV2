@@ -83,6 +83,11 @@ export interface SearchProduct extends PredictiveSearchProduct {
   parsedAttributesJson?: string | null;
   /** Product variants with their attributes */
   variants?: SearchProductVariant[];
+  /** Pagination info for variants (if more than 100 variants exist) */
+  variantsPageInfo?: {
+    hasNextPage: boolean;
+    endCursor?: string;
+  };
 }
 
 export interface SearchResults {
@@ -213,7 +218,11 @@ const SEARCH_QUERY = `#graphql
             parsedAttributes: metafield(namespace: "custom", key: "parsed_attributes") {
               value
             }
-            variants(first: 50) {
+            variants(first: 100) {
+              pageInfo {
+                hasNextPage
+                endCursor
+              }
               edges {
                 node {
                   id
@@ -244,6 +253,105 @@ const SEARCH_QUERY = `#graphql
     }
   }
 ` as const;
+
+/**
+ * Query for fetching additional variants with pagination
+ * Used when a product has more than 100 variants
+ */
+const PRODUCT_VARIANTS_QUERY = `#graphql
+  query ProductVariants(
+    $productId: ID!
+    $first: Int
+    $after: String
+  ) {
+    product(id: $productId) {
+      variants(first: $first, after: $after) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        edges {
+          node {
+            id
+            title
+            availableForSale
+            price {
+              amount
+              currencyCode
+            }
+            selectedOptions {
+              name
+              value
+            }
+            parsedVariantAttributes: metafield(namespace: "custom", key: "parsed_variant_attributes") {
+              value
+            }
+          }
+        }
+      }
+    }
+  }
+` as const;
+
+/**
+ * Fetch additional variants for a product with pagination
+ * 
+ * @param storefront - Hydrogen Storefront client
+ * @param productId - Shopify product ID (gid://shopify/Product/xxx)
+ * @param after - Cursor for pagination
+ * @param first - Number of variants to fetch (default: 100)
+ * @returns Additional variants and pagination info
+ */
+export async function fetchAdditionalVariants(
+  storefront: Storefront,
+  productId: string,
+  after: string,
+  first: number = 100
+): Promise<{
+  variants: SearchProductVariant[];
+  pageInfo: { hasNextPage: boolean; endCursor?: string };
+}> {
+  const response = await storefront.query<{
+    product: {
+      variants: {
+        pageInfo: { hasNextPage: boolean; endCursor?: string };
+        edges: Array<{
+          node: {
+            id: string;
+            title: string;
+            availableForSale: boolean;
+            price: { amount: string; currencyCode: string };
+            selectedOptions: Array<{ name: string; value: string }>;
+            parsedVariantAttributes?: { value: string } | null;
+          };
+        }>;
+      };
+    } | null;
+  }>(PRODUCT_VARIANTS_QUERY, {
+    variables: { productId, first, after },
+    cache: storefront.CacheShort(),
+  });
+
+  const variants = response?.product?.variants;
+  if (!variants) {
+    return { variants: [], pageInfo: { hasNextPage: false } };
+  }
+
+  return {
+    variants: variants.edges.map((edge) => ({
+      id: edge.node.id,
+      title: edge.node.title,
+      availableForSale: edge.node.availableForSale,
+      price: edge.node.price,
+      selectedOptions: edge.node.selectedOptions,
+      parsedVariantAttributesJson: edge.node.parsedVariantAttributes?.value ?? null,
+    })),
+    pageInfo: {
+      hasNextPage: variants.pageInfo.hasNextPage,
+      endCursor: variants.pageInfo.endCursor ?? undefined,
+    },
+  };
+}
 
 /**
  * Perform predictive search for autocomplete
@@ -449,6 +557,11 @@ export async function searchProducts(
             selectedOptions: variantEdge.node.selectedOptions || [],
             parsedVariantAttributesJson: variantEdge.node.parsedVariantAttributes?.value || null,
           })) || [],
+          // Include variant pagination info for products with >100 variants
+          variantsPageInfo: (node as any).variants?.pageInfo ? {
+            hasNextPage: (node as any).variants.pageInfo.hasNextPage ?? false,
+            endCursor: (node as any).variants.pageInfo.endCursor ?? undefined,
+          } : undefined,
         };
         
         return product;

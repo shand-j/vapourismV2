@@ -312,6 +312,7 @@ export type SearchProductsQuery = {
           Pick<StorefrontAPI.Metafield, 'value'>
         >;
         variants: {
+          pageInfo: Pick<StorefrontAPI.PageInfo, 'hasNextPage' | 'endCursor'>;
           edges: Array<{
             node: Pick<
               StorefrontAPI.ProductVariant,
@@ -331,6 +332,34 @@ export type SearchProductsQuery = {
     }>;
     pageInfo: Pick<StorefrontAPI.PageInfo, 'hasNextPage' | 'endCursor'>;
   };
+};
+
+export type ProductVariantsQueryVariables = StorefrontAPI.Exact<{
+  productId: StorefrontAPI.Scalars['ID']['input'];
+  first?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Int']['input']>;
+  after?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
+}>;
+
+export type ProductVariantsQuery = {
+  product?: StorefrontAPI.Maybe<{
+    variants: {
+      pageInfo: Pick<StorefrontAPI.PageInfo, 'hasNextPage' | 'endCursor'>;
+      edges: Array<{
+        node: Pick<
+          StorefrontAPI.ProductVariant,
+          'id' | 'title' | 'availableForSale'
+        > & {
+          price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+          selectedOptions: Array<
+            Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
+          >;
+          parsedVariantAttributes?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Metafield, 'value'>
+          >;
+        };
+      }>;
+    };
+  }>;
 };
 
 export type FacetDataQueryVariables = StorefrontAPI.Exact<{
@@ -1098,9 +1127,13 @@ interface GeneratedQueryTypes {
     return: PredictiveSearchQuery;
     variables: PredictiveSearchQueryVariables;
   };
-  '#graphql\n  query SearchProducts(\n    $query: String!\n    $first: Int\n    $after: String\n    $sortKey: SearchSortKeys\n    $reverse: Boolean\n  ) {\n    search(\n      query: $query\n      first: $first\n      after: $after\n      sortKey: $sortKey\n      reverse: $reverse\n      types: PRODUCT\n      unavailableProducts: HIDE\n    ) {\n      edges {\n        node {\n          ... on Product {\n            id\n            title\n            handle\n            vendor\n            productType\n            tags\n            description\n            priceRange {\n              minVariantPrice {\n                amount\n                currencyCode\n              }\n            }\n            featuredImage {\n              url(transform: {maxWidth: 500})\n              altText\n            }\n            availableForSale\n            parsedAttributes: metafield(namespace: "custom", key: "parsed_attributes") {\n              value\n            }\n            variants(first: 50) {\n              edges {\n                node {\n                  id\n                  title\n                  availableForSale\n                  price {\n                    amount\n                    currencyCode\n                  }\n                  selectedOptions {\n                    name\n                    value\n                  }\n                  parsedVariantAttributes: metafield(namespace: "custom", key: "parsed_variant_attributes") {\n                    value\n                  }\n                }\n              }\n            }\n          }\n        }\n      }\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n      totalCount\n    }\n  }\n': {
+  '#graphql\n  query SearchProducts(\n    $query: String!\n    $first: Int\n    $after: String\n    $sortKey: SearchSortKeys\n    $reverse: Boolean\n  ) {\n    search(\n      query: $query\n      first: $first\n      after: $after\n      sortKey: $sortKey\n      reverse: $reverse\n      types: PRODUCT\n      unavailableProducts: HIDE\n    ) {\n      edges {\n        node {\n          ... on Product {\n            id\n            title\n            handle\n            vendor\n            productType\n            tags\n            description\n            priceRange {\n              minVariantPrice {\n                amount\n                currencyCode\n              }\n            }\n            featuredImage {\n              url(transform: {maxWidth: 500})\n              altText\n            }\n            availableForSale\n            parsedAttributes: metafield(namespace: "custom", key: "parsed_attributes") {\n              value\n            }\n            variants(first: 100) {\n              pageInfo {\n                hasNextPage\n                endCursor\n              }\n              edges {\n                node {\n                  id\n                  title\n                  availableForSale\n                  price {\n                    amount\n                    currencyCode\n                  }\n                  selectedOptions {\n                    name\n                    value\n                  }\n                  parsedVariantAttributes: metafield(namespace: "custom", key: "parsed_variant_attributes") {\n                    value\n                  }\n                }\n              }\n            }\n          }\n        }\n      }\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n      totalCount\n    }\n  }\n': {
     return: SearchProductsQuery;
     variables: SearchProductsQueryVariables;
+  };
+  '#graphql\n  query ProductVariants(\n    $productId: ID!\n    $first: Int\n    $after: String\n  ) {\n    product(id: $productId) {\n      variants(first: $first, after: $after) {\n        pageInfo {\n          hasNextPage\n          endCursor\n        }\n        edges {\n          node {\n            id\n            title\n            availableForSale\n            price {\n              amount\n              currencyCode\n            }\n            selectedOptions {\n              name\n              value\n            }\n            parsedVariantAttributes: metafield(namespace: "custom", key: "parsed_variant_attributes") {\n              value\n            }\n          }\n        }\n      }\n    }\n  }\n': {
+    return: ProductVariantsQuery;
+    variables: ProductVariantsQueryVariables;
   };
   '#graphql\n    query FacetData($first: Int, $after: String) {\n      products(first: $first, after: $after) {\n        nodes {\n          id\n          vendor\n          productType\n          tags\n          parsedAttributes: metafield(namespace: "custom", key: "parsed_attributes") {\n            value\n          }\n        }\n        pageInfo {\n          hasNextPage\n          endCursor\n        }\n      }\n    }\n  ': {
     return: FacetDataQuery;

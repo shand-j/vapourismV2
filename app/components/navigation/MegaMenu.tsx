@@ -22,13 +22,39 @@ interface MegaMenuProps {
 
 export function MegaMenu({className}: MegaMenuProps) {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const closeTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleMouseEnter = useCallback((categoryId: string) => {
+    // Clear any pending close timeout
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
     setActiveCategory(categoryId);
   }, []);
 
   const handleMouseLeave = useCallback(() => {
-    setActiveCategory(null);
+    // Small delay before closing to allow moving to dropdown
+    closeTimeoutRef.current = setTimeout(() => {
+      setActiveCategory(null);
+    }, 150);
+  }, []);
+
+  const handleDropdownEnter = useCallback(() => {
+    // Cancel close when entering dropdown
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+  }, []);
+
+  // Cleanup on unmount
+  React.useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+      }
+    };
   }, []);
 
   return (
@@ -65,29 +91,38 @@ export function MegaMenu({className}: MegaMenuProps) {
                 <path d="M3 4.5L6 7.5L9 4.5" />
               </svg>
             </Link>
-
-            {/* Dropdown panel */}
-            {activeCategory === category.id && (
-              <MegaMenuDropdown category={category} />
-            )}
           </li>
         ))}
       </ul>
+
+      {/* Dropdown panel - rendered outside ul to avoid overflow clipping */}
+      {activeCategory && (
+        <MegaMenuDropdown
+          category={MEGA_MENU.find((c) => c.id === activeCategory)!}
+          onMouseEnter={handleDropdownEnter}
+          onMouseLeave={handleMouseLeave}
+        />
+      )}
     </nav>
   );
 }
 
 interface MegaMenuDropdownProps {
   category: MenuCategory;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
 }
 
-function MegaMenuDropdown({category}: MegaMenuDropdownProps) {
+function MegaMenuDropdown({category, onMouseEnter, onMouseLeave}: MegaMenuDropdownProps) {
   return (
     <div
-      className="absolute left-0 top-full z-50 mt-1 w-screen max-w-5xl"
-      onMouseEnter={(e) => e.stopPropagation()}
+      className="absolute inset-x-0 top-full z-[100]"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl">
+      {/* Invisible hover bridge */}
+      <div className="h-2" />
+      <div className="mx-auto max-w-5xl rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl">
         {/* Category header */}
         <div className="mb-6 flex items-start justify-between border-b border-slate-100 pb-4">
           <div>

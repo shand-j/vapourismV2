@@ -43,6 +43,7 @@ export default async function handleRequest(
   const storeDomain = envVars?.PUBLIC_STORE_DOMAIN ?? '';
 
   // Script-src CSP directive values for third-party scripts
+  // - cdn.shopify.com: Required for Oxygen production bundles
   // - Google Tag Manager: Required for GA4 analytics
   // - SearchAtlas OTTO: SEO optimization widget
   //   - dashboard.searchatlas.com: Main script loader
@@ -56,6 +57,8 @@ export default async function handleRequest(
   // The 'data:' directive allows base64-encoded inline scripts for the OTTO loader.
   // This is an accepted tradeoff for SEO optimization functionality.
   const scriptSrcDirectives = [
+    "'self'",
+    'https://cdn.shopify.com',
     'https://www.googletagmanager.com',
     'https://dashboard.searchatlas.com',
     'https://storage.googleapis.com',
@@ -77,16 +80,22 @@ export default async function handleRequest(
     scriptSrcElem: scriptSrcDirectives,
     // Allow connections to analytics and SEO services
     connectSrc: [
+      "'self'",
+      'https://cdn.shopify.com',
+      'https://accounts.shopify.com',
       'https://www.google-analytics.com',
       'https://*.google-analytics.com',
       'https://www.googletagmanager.com',
       'https://analytics.google.com',
       'https://dashboard.searchatlas.com',
+      'https://sa.searchatlas.com',
       'https://public.linkgraph.com',
       'https://monorail-edge.shopifysvc.com',
     ],
     // Allow images from analytics and external sources
     imgSrc: [
+      "'self'",
+      'https://cdn.shopify.com',
       'https://www.google-analytics.com',
       'https://*.google-analytics.com',
       'https://www.googletagmanager.com',
@@ -94,6 +103,13 @@ export default async function handleRequest(
       'https://*.unsplash.com',
       'https:',
       'data:',
+    ],
+    // Allow default sources for manifest and other resources
+    defaultSrc: [
+      "'self'",
+      'https://cdn.shopify.com',
+      'https://shopify.com',
+      'https://accounts.shopify.com',
     ],
   });
 

@@ -1,8 +1,8 @@
 /**
  * MegaMenu Component
  *
- * Tag-based mega menu navigation using static configuration.
- * Links to /search with tag query parameters.
+ * Attribute-based mega menu navigation using static configuration.
+ * Links to /search with attribute filter query parameters.
  */
 
 import * as React from 'react';
@@ -10,7 +10,7 @@ import {Link} from '@remix-run/react';
 import {useState, useCallback} from 'react';
 import {
   MEGA_MENU,
-  buildSearchUrl,
+  buildAttributeSearchUrl,
   type MenuCategory,
   type MenuColumn,
 } from '~/lib/menu-config';
@@ -69,7 +69,7 @@ export function MegaMenu({className}: MegaMenuProps) {
             onMouseLeave={handleMouseLeave}
           >
             <Link
-              to={buildSearchUrl(category.tags)}
+              to={buildAttributeSearchUrl(category.filters)}
               className={cn(
                 'flex items-center justify-center gap-1 rounded-full px-3 py-2 text-sm font-medium transition',
                 activeCategory === category.id
@@ -144,7 +144,7 @@ function MegaMenuDropdown({category, onMouseEnter, onMouseLeave}: MegaMenuDropdo
               </Link>
             )}
             <Link
-              to={buildSearchUrl(category.tags)}
+              to={buildAttributeSearchUrl(category.filters)}
               className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-white transition"
               style={{backgroundColor: category.hero.accentColor}}
             >
@@ -196,10 +196,10 @@ function MegaMenuColumn({column}: MegaMenuColumnProps) {
             </Link>
           </li>
         ))}
-        {column.seeAllLabel && column.seeAllTags && (
+        {column.seeAllLabel && column.seeAllFilters && (
           <li className="pt-2">
             <Link
-              to={buildSearchUrl(column.seeAllTags)}
+              to={buildAttributeSearchUrl(column.seeAllFilters)}
               prefetch="intent"
               className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 transition hover:text-slate-700"
             >
@@ -301,7 +301,7 @@ export function MobileMenu({isOpen, onClose}: MobileMenuProps) {
                 <div className="bg-slate-50 px-4 pb-4">
                   {/* See all link */}
                   <Link
-                    to={buildSearchUrl(category.tags)}
+                    to={buildAttributeSearchUrl(category.filters)}
                     onClick={onClose}
                     className="mb-3 flex items-center justify-between rounded-lg bg-white px-3 py-2 text-sm font-medium text-slate-900"
                   >
@@ -340,10 +340,10 @@ export function MobileMenu({isOpen, onClose}: MobileMenuProps) {
                               </Link>
                             </li>
                           ))}
-                          {column.links.length > 5 && column.seeAllTags && (
+                          {column.links.length > 5 && column.seeAllFilters && (
                             <li>
                               <Link
-                                to={buildSearchUrl(column.seeAllTags)}
+                                to={buildAttributeSearchUrl(column.seeAllFilters)}
                                 onClick={onClose}
                                 className="block px-3 py-2 text-xs font-medium text-slate-500"
                               >

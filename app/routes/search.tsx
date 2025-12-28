@@ -28,7 +28,7 @@ import {
   type PriceSummary,
 } from '../lib/search-facets';
 import {searchProducts, getCachedFacets, trackSearchEvent} from '../lib/shopify-search';
-import {getHeroForTags, getHeroForFilters, type CategoryHero} from '../lib/menu-config';
+import {getHeroForFilters, type CategoryHero} from '../lib/menu-config';
 import {SEOAutomationService} from '../preserved/seo-automation';
 import {
   FILTERABLE_ATTRIBUTES,
@@ -265,11 +265,8 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     ];
     const filteredFacets = buildTagFacetGroups(filteredProducts, allSelectedFilters);
 
-    // Get hero banner based on selected tags or attribute filters
-    let hero = getHeroForFilters(selectedFilters);
-    if (!hero) {
-      hero = getHeroForTags(selectedTags);
-    }
+    // Get hero banner based on attribute filters
+    const hero = getHeroForFilters(selectedFilters);
 
     // Paginate the filtered results
     const pageSize = 24;

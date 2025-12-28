@@ -14,3 +14,4 @@ h2_deploy_log.json
 
 # Unlighthouse artifacts
 .unlighthouse/
+.shopify

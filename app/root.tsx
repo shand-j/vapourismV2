@@ -197,28 +197,7 @@ export default function App() {
         {/* Google Analytics 4 */}
         {ga4MeasurementId && <GoogleAnalytics measurementId={ga4MeasurementId} nonce={nonce} />}
         
-        {/* SearchAtlas OTTO Widget - TEMPORARILY DISABLED due to navigation click blocking issue.
-            The widget was injecting overlays that prevented onClick handlers from working
-            while still allowing Link navigation. Need to investigate proper configuration
-            or contact SearchAtlas support for a fix.
-            
-            To re-enable, uncomment the script tag below:
-            
-            <script
-              nowprocket=""
-              nitro-exclude=""
-              data-nowprocket=""
-              data-nitro-exclude=""
-              async
-              defer
-              type="text/javascript"
-              id="sa-dynamic-optimization"
-              data-uuid="bc389022-b99a-470f-a7a5-14a7389ffee7"
-              src="data:text/javascript;base64,dmFyIHNjcmlwdCA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoInNjcmlwdCIpO3NjcmlwdC5zZXRBdHRyaWJ1dGUoIm5vd3Byb2NrZXQiLCAiIik7c2NyaXB0LnNldEF0dHJpYnV0ZSgibml0cm8tZXhjbHVkZSIsICIiKTtzY3JpcHQuc3JjID0gImh0dHBzOi8vZGFzaGJvYXJkLnNlYXJjaGF0bGFzLmNvbS9zY3JpcHRzL2R5bmFtaWNfb3B0aW1pemF0aW9uLmpzIjtzY3JpcHQuZGF0YXNldC51dWlkID0gImJjMzg5MDIyLWI5OWEtNDcwZi1hN2E1LTE0YTczODlmZmVlNyI7c2NyaXB0LmlkID0gInNhLWR5bmFtaWMtb3B0aW1pemF0aW9uLWxvYWRlciI7ZG9jdW1lbnQuaGVhZC5hcHBlbmRDaGlsZChzY3JpcHQpOw=="
-            />
-            
-            See: https://help.searchatlas.com/en/articles/12334271-otto-security
-        */}
+        <script nowprocket="" nitro-exclude="" type="text/javascript" id="sa-dynamic-optimization" data-uuid="bc389022-b99a-470f-a7a5-14a7389ffee7" src="data:text/javascript;base64,dmFyIHNjcmlwdCA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoInNjcmlwdCIpO3NjcmlwdC5zZXRBdHRyaWJ1dGUoIm5vd3Byb2NrZXQiLCAiIik7c2NyaXB0LnNldEF0dHJpYnV0ZSgibml0cm8tZXhjbHVkZSIsICIiKTtzY3JpcHQuc3JjID0gImh0dHBzOi8vZGFzaGJvYXJkLnNlYXJjaGF0bGFzLmNvbS9zY3JpcHRzL2R5bmFtaWNfb3B0aW1pemF0aW9uLmpzIjtzY3JpcHQuZGF0YXNldC51dWlkID0gImJjMzg5MDIyLWI5OWEtNDcwZi1hN2E1LTE0YTczODlmZmVlNyI7c2NyaXB0LmlkID0gInNhLWR5bmFtaWMtb3B0aW1pemF0aW9uLWxvYWRlciI7ZG9jdW1lbnQuaGVhZC5hcHBlbmRDaGlsZChzY3JpcHQpOw=="></script>
       </head>
       <body className="bg-white text-slate-900 antialiased">
 
@@ -320,7 +299,7 @@ function SiteHeader({
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/30 bg-white/85 shadow-[0_25px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl">
+    <header className="sticky top-0 z-50 overflow-visible border-b border-white/30 bg-white/85 shadow-[0_25px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl">
       <div className="bg-slate-950 text-xs text-white">
         <div className="mx-auto flex w-full max-w-[1920px] flex-wrap items-center justify-center gap-3 px-6 py-2 text-center">
           <span className="flex items-center gap-1 text-emerald-300">
@@ -331,8 +310,8 @@ function SiteHeader({
         </div>
       </div>
 
-      <div className="mx-auto w-full max-w-[1920px] px-6">
-        <div className="flex flex-wrap items-center gap-4 py-4 lg:flex-nowrap">
+      <div className="mx-auto w-full max-w-[1920px] overflow-visible px-6">
+        <div className="flex flex-wrap items-center gap-4 overflow-visible py-4 lg:flex-nowrap">
           <div className="flex items-center gap-3">
             <button
               type="button"
@@ -349,7 +328,7 @@ function SiteHeader({
           </div>
 
           {/* Desktop Mega Menu */}
-          <div className="hidden flex-1 lg:block">
+          <div className="hidden flex-1 overflow-visible lg:block">
             <MegaMenu />
           </div>
 

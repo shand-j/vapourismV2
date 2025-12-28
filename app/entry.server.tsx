@@ -56,6 +56,7 @@ export default async function handleRequest(
   // The 'data:' directive allows base64-encoded inline scripts for the OTTO loader.
   // This is an accepted tradeoff for SEO optimization functionality.
   const scriptSrcDirectives = [
+    "'self'",
     'https://www.googletagmanager.com',
     'https://dashboard.searchatlas.com',
     'https://storage.googleapis.com',
@@ -77,16 +78,19 @@ export default async function handleRequest(
     scriptSrcElem: scriptSrcDirectives,
     // Allow connections to analytics and SEO services
     connectSrc: [
+      "'self'",
       'https://www.google-analytics.com',
       'https://*.google-analytics.com',
       'https://www.googletagmanager.com',
       'https://analytics.google.com',
       'https://dashboard.searchatlas.com',
+      'https://sa.searchatlas.com',
       'https://public.linkgraph.com',
       'https://monorail-edge.shopifysvc.com',
     ],
     // Allow images from analytics and external sources
     imgSrc: [
+      "'self'",
       'https://www.google-analytics.com',
       'https://*.google-analytics.com',
       'https://www.googletagmanager.com',

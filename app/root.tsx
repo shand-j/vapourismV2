@@ -23,7 +23,6 @@ import {MegaMenu, MobileMenu} from './components/navigation/MegaMenu';
 import {ShopifySearch} from './components/search/ShopifySearch';
 import {CookieConsent} from './components/CookieConsent';
 import {GoogleAnalytics} from './components/Analytics';
-import {SearchAtlasScript} from './components/SearchAtlasScript';
 import {trackPageView} from './lib/analytics';
 import {Icon} from './components/ui/Icon';
 
@@ -197,14 +196,10 @@ export default function App() {
         
         {/* Google Analytics 4 */}
         {ga4MeasurementId && <GoogleAnalytics measurementId={ga4MeasurementId} nonce={nonce} />}
+        
+        <script nowprocket="" nitro-exclude="" type="text/javascript" id="sa-dynamic-optimization" data-uuid="bc389022-b99a-470f-a7a5-14a7389ffee7" src="data:text/javascript;base64,dmFyIHNjcmlwdCA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoInNjcmlwdCIpO3NjcmlwdC5zZXRBdHRyaWJ1dGUoIm5vd3Byb2NrZXQiLCAiIik7c2NyaXB0LnNldEF0dHJpYnV0ZSgibml0cm8tZXhjbHVkZSIsICIiKTtzY3JpcHQuc3JjID0gImh0dHBzOi8vZGFzaGJvYXJkLnNlYXJjaGF0bGFzLmNvbS9zY3JpcHRzL2R5bmFtaWNfb3B0aW1pemF0aW9uLmpzIjtzY3JpcHQuZGF0YXNldC51dWlkID0gImJjMzg5MDIyLWI5OWEtNDcwZi1hN2E1LTE0YTczODlmZmVlNyI7c2NyaXB0LmlkID0gInNhLWR5bmFtaWMtb3B0aW1pemF0aW9uLWxvYWRlciI7ZG9jdW1lbnQuaGVhZC5hcHBlbmRDaGlsZChzY3JpcHQpOw=="></script>
       </head>
       <body className="bg-white text-slate-900 antialiased">
-        {/* SearchAtlas OTTO Pixel - Loaded client-side after hydration.
-            CSP is configured to allow SearchAtlas domains and 'unsafe-inline' for inline scripts.
-            See: https://help.searchatlas.com/en/articles/12334271-otto-security */}
-        <ClientOnly fallback={null}>
-          {() => <SearchAtlasScript />}
-        </ClientOnly>
 
         {isAgeGateActive && (
           <div className="pointer-events-none fixed inset-0 z-[30] bg-white/40 backdrop-blur-[3px]" aria-hidden />
@@ -236,7 +231,7 @@ export default function App() {
                   'radial-gradient(circle at top, rgba(167, 139, 250, 0.18), transparent 55%), radial-gradient(circle at bottom, rgba(56, 189, 248, 0.15), transparent 50%)',
               }}
             />
-            <div className="relative z-10">
+            <div className="relative">
               <Outlet />
             </div>
           </main>
@@ -304,7 +299,7 @@ function SiteHeader({
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/30 bg-white/85 shadow-[0_25px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl">
+    <header className="sticky top-0 z-50 overflow-visible border-b border-white/30 bg-white/85 shadow-[0_25px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl">
       <div className="bg-slate-950 text-xs text-white">
         <div className="mx-auto flex w-full max-w-[1920px] flex-wrap items-center justify-center gap-3 px-6 py-2 text-center">
           <span className="flex items-center gap-1 text-emerald-300">
@@ -315,8 +310,8 @@ function SiteHeader({
         </div>
       </div>
 
-      <div className="mx-auto w-full max-w-[1920px] px-6">
-        <div className="flex flex-wrap items-center gap-4 py-4 lg:flex-nowrap">
+      <div className="mx-auto w-full max-w-[1920px] overflow-visible px-6">
+        <div className="flex flex-wrap items-center gap-4 overflow-visible py-4 lg:flex-nowrap">
           <div className="flex items-center gap-3">
             <button
               type="button"
@@ -333,7 +328,7 @@ function SiteHeader({
           </div>
 
           {/* Desktop Mega Menu */}
-          <div className="hidden flex-1 lg:block">
+          <div className="hidden flex-1 overflow-visible lg:block">
             <MegaMenu />
           </div>
 
@@ -642,7 +637,7 @@ function SiteFooter({
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <div className="text-gray-400 text-sm mb-4 md:mb-0">
-            © {new Date().getFullYear()} {shopName}. All rights reserved.
+            © 2025 {shopName}. All rights reserved.
           </div>
           <div className="flex items-center space-x-4 text-sm text-gray-400">
             {/* TODO: Company registration details - update as necessary */}

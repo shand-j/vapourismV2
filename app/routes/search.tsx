@@ -709,7 +709,7 @@ export const meta = ({data, location}: {data: any; location: any}) => {
   } else {
     // General search/browse page
     title = SEOAutomationService.truncateTitle(`Browse All Vape Products (${count}+) | Vapourism`);
-    description = `Browse ${count}+ vaping products. ✓ E-liquids ✓ Devices ✓ Accessories ✓ Fast UK delivery ✓ Premium quality ✓ Best prices ${new Date().getFullYear()}.`;
+    description = `Browse ${count}+ vaping products. ✓ E-liquids ✓ Devices ✓ Accessories ✓ Fast UK delivery ✓ Premium quality ✓ Best prices.`;
   }
 
   return [

@@ -15,3 +15,9 @@ h2_deploy_log.json
 # Unlighthouse artifacts
 .unlighthouse/
 .shopify
+
+# Cloud sync artifacts
+/tmp/
+service-account-key.json
+*.pem
+*.key

@@ -531,6 +531,25 @@ export async function searchProducts(
         const node = edge?.node;
         if (!node) return null;
         
+        // Type assertion for metafield aliases not in generated types
+        // These are custom aliases added in SEARCH_QUERY for parsed_attributes and variants
+        const nodeWithMetafields = node as typeof node & {
+          parsedAttributes?: { value: string } | null;
+          variants?: {
+            pageInfo?: { hasNextPage: boolean; endCursor?: string };
+            edges?: Array<{
+              node: {
+                id: string;
+                title: string;
+                availableForSale: boolean;
+                price: { amount: string; currencyCode: string };
+                selectedOptions: Array<{ name: string; value: string }>;
+                parsedVariantAttributes?: { value: string } | null;
+              };
+            }>;
+          };
+        };
+        
         // Map the product with parsed attributes and variants
         const product: SearchProduct = {
           id: node.id,
@@ -548,8 +567,8 @@ export async function searchProducts(
               }
             : undefined,
           availableForSale: node.availableForSale,
-          parsedAttributesJson: (node as any).parsedAttributes?.value || null,
-          variants: (node as any).variants?.edges?.map((variantEdge: any) => ({
+          parsedAttributesJson: nodeWithMetafields.parsedAttributes?.value || null,
+          variants: nodeWithMetafields.variants?.edges?.map((variantEdge) => ({
             id: variantEdge.node.id,
             title: variantEdge.node.title,
             availableForSale: variantEdge.node.availableForSale,
@@ -558,9 +577,9 @@ export async function searchProducts(
             parsedVariantAttributesJson: variantEdge.node.parsedVariantAttributes?.value || null,
           })) || [],
           // Include variant pagination info for products with >100 variants
-          variantsPageInfo: (node as any).variants?.pageInfo ? {
-            hasNextPage: (node as any).variants.pageInfo.hasNextPage ?? false,
-            endCursor: (node as any).variants.pageInfo.endCursor ?? undefined,
+          variantsPageInfo: nodeWithMetafields.variants?.pageInfo ? {
+            hasNextPage: nodeWithMetafields.variants.pageInfo.hasNextPage ?? false,
+            endCursor: nodeWithMetafields.variants.pageInfo.endCursor ?? undefined,
           } : undefined,
         };
         

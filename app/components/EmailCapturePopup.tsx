@@ -12,6 +12,7 @@
 import React, {useState, useCallback, useEffect} from 'react';
 import {X} from 'lucide-react';
 import {cn} from '~/lib/utils';
+import {isValidEmail} from '~/lib/email-validation';
 
 interface EmailCapturePopupProps {
   isOpen: boolean;
@@ -89,7 +90,7 @@ export function EmailCapturePopup({isOpen, onClose, trigger = 'manual'}: EmailCa
 
     try {
       // Validate email
-      if (!email || !email.includes('@')) {
+      if (!isValidEmail(email)) {
         setError('Please enter a valid email address');
         setIsSubmitting(false);
         return;

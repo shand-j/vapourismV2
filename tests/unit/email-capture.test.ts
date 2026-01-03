@@ -4,6 +4,7 @@
 
 import {describe, it, expect, beforeEach, afterEach, vi} from 'vitest';
 import {hasEmailCaptureBeenShown, markEmailCaptureAsShown} from '~/components/EmailCapturePopup';
+import {isValidEmail, normalizeEmail} from '~/lib/email-validation';
 
 describe('Email Capture Popup Storage', () => {
   beforeEach(() => {
@@ -79,16 +80,18 @@ describe('Email Capture Popup Storage', () => {
 });
 
 describe('Email Validation', () => {
-  it('should validate basic email format', () => {
+  it('should validate basic email formats', () => {
     const validEmails = [
       'test@example.com',
       'user.name@example.co.uk',
       'user+tag@example.com',
       'user_name@example-domain.com',
+      'a@b.c',
+      '123@456.com',
     ];
 
     validEmails.forEach((email) => {
-      expect(email.includes('@')).toBe(true);
+      expect(isValidEmail(email)).toBe(true);
     });
   });
 
@@ -97,12 +100,12 @@ describe('Email Validation', () => {
       'notanemail',
       'no-at-symbol.com',
       'email.example.com',
+      '',
+      'test',
     ];
 
-    // Our simple validation just checks for @ - real validation happens server-side
     invalidEmails.forEach((email) => {
-      const hasAt = email.includes('@');
-      expect(hasAt).toBe(false);
+      expect(isValidEmail(email)).toBe(false);
     });
   });
 
@@ -114,8 +117,32 @@ describe('Email Validation', () => {
     ];
 
     invalidEmails.forEach((email) => {
-      const hasSpaces = email.includes(' ');
-      expect(hasSpaces).toBe(true);
+      expect(isValidEmail(email)).toBe(false);
     });
+  });
+
+  it('should reject malformed email addresses', () => {
+    const invalidEmails = [
+      'a@',
+      '@b.com',
+      'a@@b.com',
+      'user@',
+      '@example.com',
+    ];
+
+    invalidEmails.forEach((email) => {
+      expect(isValidEmail(email)).toBe(false);
+    });
+  });
+
+  it('should reject emails that are too long', () => {
+    const longEmail = 'a'.repeat(250) + '@example.com';
+    expect(isValidEmail(longEmail)).toBe(false);
+  });
+
+  it('should normalize emails correctly', () => {
+    expect(normalizeEmail('Test@Example.COM')).toBe('test@example.com');
+    expect(normalizeEmail('  user@domain.com  ')).toBe('user@domain.com');
+    expect(normalizeEmail('User.Name@Example.Co.UK')).toBe('user.name@example.co.uk');
   });
 });

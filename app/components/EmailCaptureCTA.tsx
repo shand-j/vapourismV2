@@ -12,6 +12,7 @@
 import React, {useState, useCallback} from 'react';
 import {cn} from '~/lib/utils';
 import {markEmailCaptureAsShown} from './EmailCapturePopup';
+import {isValidEmail} from '~/lib/email-validation';
 
 export function EmailCaptureCTA() {
   const [email, setEmail] = useState('');
@@ -27,7 +28,7 @@ export function EmailCaptureCTA() {
 
     try {
       // Validate email
-      if (!email || !email.includes('@')) {
+      if (!isValidEmail(email)) {
         setError('Please enter a valid email address');
         setIsSubmitting(false);
         return;

@@ -11,6 +11,7 @@
 
 import {json, type ActionFunctionArgs} from '@shopify/remix-oxygen';
 import {adminGraphQL} from '~/lib/admin-client';
+import {isValidEmail, normalizeEmail} from '~/lib/email-validation';
 
 // GraphQL mutation to create a customer
 const CREATE_CUSTOMER_MUTATION = `#graphql
@@ -67,6 +68,20 @@ interface EmailCaptureRequest {
   trigger: 'exit' | 'timer' | 'search' | 'blog_cta' | 'manual';
 }
 
+interface ShopifyUserError {
+  field?: string[];
+  message: string;
+}
+
+interface CustomerResponse {
+  customer?: {
+    id: string;
+    email: string;
+    tags?: string[];
+  };
+  userErrors?: ShopifyUserError[];
+}
+
 export async function action({request, context}: ActionFunctionArgs) {
   // Only accept POST requests
   if (request.method !== 'POST') {
@@ -79,12 +94,12 @@ export async function action({request, context}: ActionFunctionArgs) {
     const {email, marketingConsent, trigger} = body;
 
     // Validate email
-    if (!email || !email.includes('@')) {
+    if (!isValidEmail(email)) {
       return json({error: 'Invalid email address'}, {status: 400});
     }
 
     // Normalize email (lowercase, trim)
-    const normalizedEmail = email.toLowerCase().trim();
+    const normalizedEmail = normalizeEmail(email);
 
     // Check if customer already exists
     const checkQuery = `email:${normalizedEmail}`;
@@ -156,13 +171,13 @@ export async function action({request, context}: ActionFunctionArgs) {
       context.env
     );
 
-    // Check for errors
-    const userErrors = createResponse?.data?.customerCreate?.userErrors || [];
+    // Check for errors with proper typing
+    const userErrors: ShopifyUserError[] = createResponse?.data?.customerCreate?.userErrors || [];
     if (userErrors.length > 0) {
       console.error('Customer creation errors:', userErrors);
       
       // Check if it's a duplicate email error (shouldn't happen due to our check, but just in case)
-      const duplicateError = userErrors.find((err: any) => 
+      const duplicateError = userErrors.find((err) => 
         err.message?.toLowerCase().includes('email') && 
         err.message?.toLowerCase().includes('taken')
       );

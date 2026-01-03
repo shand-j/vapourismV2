@@ -29,8 +29,10 @@ import {Icon} from './components/ui/Icon';
 // Lazy load components that might use Headless UI
 const LazyCartDrawer = lazy(() => import('./components/cart/CartDrawer').then(m => ({default: m.CartDrawer})));
 const LazyInitialAgeVerificationModal = lazy(() => import('./components/compliance/InitialAgeVerificationModal').then(m => ({default: m.InitialAgeVerificationModal})));
+const LazyEmailCapturePopup = lazy(() => import('./components/EmailCapturePopup').then(m => ({default: m.EmailCapturePopup})));
 import {cn} from './lib/utils';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
+import {useEmailCapturePopup} from './lib/hooks/useEmailCapturePopup';
 import './styles/globals.css';
 
 const SHOP_INFO_QUERY = `#graphql
@@ -131,6 +133,15 @@ export default function App() {
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [cartSnapshot, setCartSnapshot] = useState(data.cart ?? null);
   const [isAgeGateActive, setIsAgeGateActive] = useState(false);
+  
+  // Email capture popup - enable exit intent and timer for all pages except search
+  const isSearchPage = location.pathname === '/search';
+  const emailCapture = useEmailCapturePopup({
+    enableExitIntent: !isSearchPage,
+    enableTimer: !isSearchPage,
+    timerDuration: 30000, // 30 seconds
+    trigger: 'exit', // Will be overridden by timer if timer triggers first
+  });
 
   useEffect(() => {
     setCartSnapshot(data.cart ?? null);
@@ -265,6 +276,19 @@ export default function App() {
         {/* Cookie Consent Banner - GDPR compliance */}
         <ClientOnly fallback={null}>
           {() => <CookieConsent />}
+        </ClientOnly>
+
+        {/* Email Capture Popup - Global (exit intent + timer) */}
+        <ClientOnly fallback={null}>
+          {() => (
+            <Suspense fallback={null}>
+              <LazyEmailCapturePopup
+                isOpen={emailCapture.isOpen}
+                onClose={emailCapture.closePopup}
+                trigger={emailCapture.trigger}
+              />
+            </Suspense>
+          )}
         </ClientOnly>
 
         {/* Inline window.ENV assignment — nonce required for CSP compliance.

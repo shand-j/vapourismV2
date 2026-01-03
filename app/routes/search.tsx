@@ -16,6 +16,8 @@ import {ClientOnly} from '../components/ClientOnly';
 import {SearchFilters} from '../components/search/SearchFilters';
 import {SearchResults} from '../components/search/SearchResults';
 import {MobileFiltersDialog} from '../components/search/MobileFiltersDialog';
+import {EmailCapturePopup} from '../components/EmailCapturePopup';
+import {useEmailCapturePopup} from '../lib/hooks/useEmailCapturePopup';
 import {
   buildTagFacetGroups,
   calculatePriceSummary,
@@ -235,6 +237,12 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const navigation = useNavigation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [isFiltersOpen, setFiltersOpen] = useState(false);
+  
+  // Email capture popup - show on search page landing
+  const emailCapture = useEmailCapturePopup({
+    showImmediately: true,
+    trigger: 'search',
+  });
 
   const isLoading = navigation.state === 'loading';
   const selectedTags = searchParams.getAll('tag');
@@ -532,6 +540,17 @@ export async function loader({request, context}: LoaderFunctionArgs) {
             priceSummary={data.priceSummary}
             onPriceRangeChange={handlePriceRangeChange}
             onClearFilters={handleClearFilters}
+          />
+        )}
+      </ClientOnly>
+
+      {/* Email Capture Popup */}
+      <ClientOnly fallback={null}>
+        {() => (
+          <EmailCapturePopup
+            isOpen={emailCapture.isOpen}
+            onClose={emailCapture.closePopup}
+            trigger={emailCapture.trigger}
           />
         )}
       </ClientOnly>

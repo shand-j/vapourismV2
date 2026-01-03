@@ -20,6 +20,8 @@ declare global {
 
   interface Window {
     ENV: Record<string, unknown>;
+    gtag?: (...args: any[]) => void;
+    dataLayer?: any[];
   }
 
   interface Env extends HydrogenEnv {

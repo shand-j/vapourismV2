@@ -1,0 +1,18 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["app/*"]
+    }
+  },
+  "include": [
+    "app",
+    "../storefrontapi.generated.d.ts",
+    "../customer-accountapi.generated.d.ts",
+    "../env.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

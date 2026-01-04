@@ -4,8 +4,9 @@
  * Handles email capture submissions and creates customers in Shopify.
  * Features:
  * - Creates customer in Shopify with 10% discount tag
+ * - Always sets customer to SUBSCRIBED (to send discount code email)
+ * - Marketing consent checkbox tracked separately via customer tag
  * - Checks for existing customers before creating
- * - Stores marketing consent preference
  * - Returns appropriate responses for success/error/duplicate
  */
 
@@ -133,6 +134,11 @@ export async function action({request, context}: ActionFunctionArgs) {
             input: {
               id: existingCustomer.id,
               tags: newTags,
+              // Always set customer to subscribed when they submit email
+              emailMarketingConsent: {
+                marketingState: 'SUBSCRIBED',
+                marketingOptInLevel: 'SINGLE_OPT_IN',
+              },
             },
           },
           context.env
@@ -162,10 +168,13 @@ export async function action({request, context}: ActionFunctionArgs) {
         input: {
           email: normalizedEmail,
           tags: customerTags,
-          emailMarketingConsent: marketingConsent ? {
+          // Always set customer to subscribed when they submit email
+          // This allows sending the discount code and transactional emails
+          // The marketing_consent tag separately tracks if they opted into marketing
+          emailMarketingConsent: {
             marketingState: 'SUBSCRIBED',
             marketingOptInLevel: 'SINGLE_OPT_IN',
-          } : undefined,
+          },
         },
       },
       context.env

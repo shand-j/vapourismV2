@@ -3,7 +3,8 @@
  * 
  * Displays a popup to capture user emails for 10% discount offer.
  * Features:
- * - GDPR-compliant marketing consent checkbox (optional, unticked by default)
+ * - All customers set to SUBSCRIBED in Shopify (to send discount code)
+ * - Optional marketing consent checkbox tracks additional marketing preferences
  * - Only shows once per user (tracked via cookie)
  * - Multiple trigger modes: exit intent, timer, immediate
  * - Checks for existing customer before submitting

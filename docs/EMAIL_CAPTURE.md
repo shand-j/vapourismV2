@@ -57,11 +57,17 @@ This feature implements a GDPR-compliant email capture system with a 10% discoun
 
 ## GDPR Compliance
 
+### Email Subscription
+- **All customers are set to SUBSCRIBED** in Shopify when they submit their email
+- This allows sending the discount code and transactional emails
+- This is a business requirement to deliver the promised 10% discount
+
 ### Marketing Consent
 - Checkbox is **optional** and **unticked by default**
 - Clear labeling: "I'd like to receive marketing emails..."
 - User can submit without accepting marketing
-- Consent preference stored in Shopify customer record
+- Consent preference stored via `marketing_consent` customer tag
+- Tag is used to segment marketing campaigns (only users with tag receive promotional emails)
 
 ### Privacy
 - Minimal data collection (email only)
@@ -80,14 +86,19 @@ This feature implements a GDPR-compliant email capture system with a 10% discoun
    - User enters email
    - Optionally checks marketing consent
    - Submits form
-   - API creates Shopify customer with tags
+   - API creates Shopify customer with:
+     - Email subscription: **SUBSCRIBED** (always, to send discount code)
+     - Tags: `email_capture_10_discount` (always), `marketing_consent` (if checked)
    - Success message with "Check your inbox" prompt
    - Popup marked as shown (won't appear again for 365 days)
 
 2. **Existing Customer**
    - User enters email
    - API checks for existing customer
-   - If found, updates customer with discount tag if not already present
+   - If found:
+     - Sets email subscription to **SUBSCRIBED** (to send discount code)
+     - Adds discount tag if not already present
+     - Adds marketing consent tag if user checked the box
    - Same success message as new customer
    - Graceful handling (no "already exists" error shown to user)
 

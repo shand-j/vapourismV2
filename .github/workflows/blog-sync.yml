@@ -1,0 +1,158 @@
+name: Blog Syndication to Cloud Providers
+
+on:
+  # Run daily at 2 AM UTC
+  schedule:
+    - cron: '0 2 * * *'
+  
+  # Allow manual triggering
+  workflow_dispatch:
+    inputs:
+      provider:
+        description: 'Cloud provider to deploy to'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - aws
+          - gcp
+      limit:
+        description: 'Limit number of posts to sync (0 = all)'
+        required: false
+        default: '0'
+        type: string
+      dry_run:
+        description: 'Dry run (no actual deployment)'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  sync-blog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: |
+          npm ci
+          # Install cloud provider SDKs
+          npm install @aws-sdk/client-s3 @aws-sdk/client-cloudfront @google-cloud/storage
+      
+      - name: Configure GCP credentials
+        if: ${{ github.event.inputs.provider == 'gcp' || github.event.inputs.provider == 'all' || github.event.schedule }}
+        run: |
+          # Create service account key file from secret
+          echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > service-account-key.json
+      
+      - name: Sync to AWS S3
+        if: ${{ github.event.inputs.provider == 'aws' || github.event.inputs.provider == 'all' || github.event.schedule }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+          AWS_CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }}
+          PUBLIC_STORE_DOMAIN: ${{ secrets.PUBLIC_STORE_DOMAIN }}
+          PUBLIC_STOREFRONT_API_TOKEN: ${{ secrets.PUBLIC_STOREFRONT_API_TOKEN }}
+        run: |
+          echo "🚀 Starting AWS S3 deployment..."
+          
+          # Build command
+          CMD="npx tsx scripts/cloud-sync/sync-blog-to-cloud.ts --provider aws"
+          
+          # Add limit if specified
+          if [ "${{ github.event.inputs.limit }}" != "0" ] && [ -n "${{ github.event.inputs.limit }}" ]; then
+            CMD="$CMD --limit ${{ github.event.inputs.limit }}"
+          fi
+          
+          # Add dry-run flag if specified
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            CMD="$CMD --dry-run"
+          fi
+          
+          # Execute deployment
+          $CMD
+          
+          echo "✅ AWS deployment complete"
+      
+      - name: Sync to GCP Cloud Storage
+        if: ${{ github.event.inputs.provider == 'gcp' || github.event.inputs.provider == 'all' || github.event.schedule }}
+        env:
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          GCP_BUCKET_NAME: ${{ secrets.GCP_BUCKET_NAME }}
+          GCP_KEY_FILENAME: ./service-account-key.json
+          PUBLIC_STORE_DOMAIN: ${{ secrets.PUBLIC_STORE_DOMAIN }}
+          PUBLIC_STOREFRONT_API_TOKEN: ${{ secrets.PUBLIC_STOREFRONT_API_TOKEN }}
+        run: |
+          echo "🚀 Starting GCP Cloud Storage deployment..."
+          
+          # Build command
+          CMD="npx tsx scripts/cloud-sync/sync-blog-to-cloud.ts --provider gcp"
+          
+          # Add limit if specified
+          if [ "${{ github.event.inputs.limit }}" != "0" ] && [ -n "${{ github.event.inputs.limit }}" ]; then
+            CMD="$CMD --limit ${{ github.event.inputs.limit }}"
+          fi
+          
+          # Add dry-run flag if specified
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            CMD="$CMD --dry-run"
+          fi
+          
+          # Execute deployment
+          $CMD
+          
+          echo "✅ GCP deployment complete"
+      
+      - name: Clean up GCP credentials
+        if: always()
+        run: |
+          rm -f service-account-key.json
+      
+      - name: Upload deployment logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-logs
+          path: |
+            *.log
+            tmp/syndicated-content/
+          retention-days: 7
+      
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "❌ Blog syndication failed!"
+          echo "Check the logs above for details."
+          echo "Common issues:"
+          echo "  - Invalid credentials"
+          echo "  - Shopify API rate limits"
+          echo "  - Network connectivity"
+          echo "  - S3/GCS bucket permissions"
+          exit 1
+      
+      - name: Summary
+        if: success()
+        run: |
+          echo "🎉 Blog syndication completed successfully!"
+          echo ""
+          echo "📊 Deployment Details:"
+          echo "  - Provider: ${{ github.event.inputs.provider || 'all' }}"
+          echo "  - Limit: ${{ github.event.inputs.limit || 'all posts' }}"
+          echo "  - Dry Run: ${{ github.event.inputs.dry_run || 'false' }}"
+          echo ""
+          echo "🌐 Next Steps:"
+          echo "  1. Verify pages are accessible on cloud platforms"
+          echo "  2. Check Google Search Console for new backlinks (1-2 weeks)"
+          echo "  3. Monitor referral traffic in Google Analytics"

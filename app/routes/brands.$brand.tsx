@@ -354,7 +354,7 @@ export default function BrandPage() {
                     {product.title}
                   </h3>
                   <p className="text-sm text-gray-600 mt-1">{product.productType}</p>
-                  {product.priceRange && (
+                  {product.priceRange?.minVariantPrice?.amount && (
                     <p className="text-lg font-bold mt-2">
                       £{parseFloat(product.priceRange.minVariantPrice.amount).toFixed(2)}
                     </p>
@@ -440,8 +440,8 @@ export default function BrandPage() {
             url: `${SITE_URL}/products/${product.handle}`,
             image: product.featuredImage?.url,
             description: product.description || product.title,
-            price: product.priceRange?.minVariantPrice.amount,
-            priceCurrency: product.priceRange?.minVariantPrice.currencyCode || 'GBP',
+            price: product.priceRange?.minVariantPrice?.amount,
+            priceCurrency: product.priceRange?.minVariantPrice?.currencyCode || 'GBP',
           })),
         }))} />
       )}

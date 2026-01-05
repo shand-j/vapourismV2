@@ -3,8 +3,7 @@
  * 
  * Displays an inline call-to-action for email capture with 10% discount offer.
  * Features:
- * - All customers set to SUBSCRIBED in Shopify (to send discount code)
- * - Optional marketing consent checkbox tracks additional marketing preferences
+ * - GDPR-compliant marketing consent checkbox (optional, unticked by default)
  * - Inline form submission
  * - Respects "already shown" cookie (but still displays CTA)
  * - Styled to match blog design system

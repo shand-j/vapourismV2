@@ -1,8 +1,7 @@
-import {useEffect, useMemo, useRef, useState} from 'react';
-import {type LoaderFunctionArgs, type MetaFunction} from '@shopify/remix-oxygen';
+import {useEffect, useState} from 'react';
+import type {LoaderFunctionArgs, MetaFunction} from '@remix-run/server-runtime';
 import {Link, useLoaderData} from '@remix-run/react';
 import {BRAND_CONFIG, getSearchTagFilter} from '../brand-config';
-import type {ProductFilter} from '@shopify/hydrogen/storefront-api-types';
 
 export const meta: MetaFunction = () => [
   {title: `${BRAND_CONFIG.name} | ${BRAND_CONFIG.tagline}`},

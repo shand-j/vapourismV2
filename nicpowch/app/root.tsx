@@ -1,10 +1,6 @@
-import {useEffect, useState, type ReactNode, lazy, Suspense} from 'react';
-import {
-  json,
-  type LinksFunction,
-  type LoaderFunctionArgs,
-  type MetaFunction,
-} from '@shopify/remix-oxygen';
+import {useEffect, useState, type ReactNode} from 'react';
+import {json} from '@shopify/remix-oxygen';
+import type {LinksFunction, LoaderFunctionArgs, MetaFunction} from '@remix-run/server-runtime';
 import {
   Links,
   Meta,
@@ -20,7 +16,6 @@ import {
 import {useNonce} from '@shopify/hydrogen';
 import {BRAND_CONFIG} from './brand-config';
 import {NicPowchMegaMenu, NicPowchMobileMenu} from './components/navigation/NicPowchMegaMenu';
-import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import './styles/globals.css';
 
 const SHOP_INFO_QUERY = `#graphql
@@ -71,7 +66,9 @@ interface LoaderData {
     } | null;
   } | null;
   env: Record<string, string | undefined>;
-  cart: CartApiQueryFragment | null;
+  cart: {
+    totalQuantity?: number | null;
+  } | null;
 }
 
 /**

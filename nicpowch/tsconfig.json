@@ -1,16 +1,27 @@
 {
-  "extends": "../tsconfig.json",
   "compilerOptions": {
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "types": ["@shopify/oxygen-workers-types", "vite/client"],
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "target": "ES2022",
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
       "~/*": ["app/*"]
-    }
+    },
+    "noEmit": true
   },
   "include": [
-    "app",
-    "../storefrontapi.generated.d.ts",
-    "../customer-accountapi.generated.d.ts",
-    "../env.d.ts"
+    "env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
   ],
   "exclude": [
     "node_modules"

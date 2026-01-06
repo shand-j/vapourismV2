@@ -9,6 +9,7 @@ import {
   type ShopifyArticle,
 } from '~/lib/shopify-blog';
 import {SEOAutomationService} from '~/preserved/seo-automation';
+import {EmailCaptureCTA} from '~/components/EmailCaptureCTA';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   if (!data?.article) {
@@ -404,6 +405,11 @@ export default function BlogArticle() {
           <article className="max-w-3xl mx-auto pb-16">
             <ArticleContent contentHtml={article.contentHtml} />
           </article>
+
+          {/* Email Capture CTA */}
+          <div className="max-w-3xl mx-auto pb-16">
+            <EmailCaptureCTA />
+          </div>
 
           {/* Article Tags */}
           {article.tags.length > 0 && (

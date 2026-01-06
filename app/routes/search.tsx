@@ -1,16 +1,16 @@
 /**
  * Search Results Page Route
  * 
- * Full search page with pagination
+ * Simplified search page using Shopify native search.
+ * Filtering is handled by Shopify Search & Discovery app.
  * URL: /search?q=query&page=1&sort=RELEVANCE
  */
 
-// Headless UI components imported in separate component to avoid SSR issues
-import {FunnelIcon, XMarkIcon} from '@heroicons/react/24/outline';
+import {FunnelIcon} from '@heroicons/react/24/outline';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type * as StorefrontAPI from '@shopify/hydrogen/storefront-api-types';
 import {useLoaderData, useNavigation, useSearchParams} from '@remix-run/react';
-import {Fragment, useEffect, useMemo, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 
 import {ClientOnly} from '../components/ClientOnly';
 import {SearchFilters} from '../components/search/SearchFilters';
@@ -19,12 +19,10 @@ import {MobileFiltersDialog} from '../components/search/MobileFiltersDialog';
 import {EmailCapturePopup} from '../components/EmailCapturePopup';
 import {useEmailCapturePopup} from '../lib/hooks/useEmailCapturePopup';
 import {
-  buildTagFacetGroups,
   calculatePriceSummary,
-  getTagDisplayLabel,
   type PriceSummary,
 } from '../lib/search-facets';
-import {searchProducts, getCachedFacets, trackSearchEvent} from '../lib/shopify-search';
+import {searchProducts, trackSearchEvent} from '../lib/shopify-search';
 import {getHeroForTags, type CategoryHero} from '../lib/menu-config';
 import {SEOAutomationService} from '../preserved/seo-automation';
 
@@ -44,10 +42,10 @@ type SearchLoaderData = {
     hasNextPage: boolean;
     endCursor?: string;
   };
-  facets: ReturnType<typeof buildTagFacetGroups>;
   priceSummary: PriceSummary | null;
   hero: CategoryHero | null;
-  selectedTags: string[];
+  selectedVendor: string | null;
+  selectedProductType: string | null;
   error?: string;
 };
 
@@ -81,158 +79,88 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const sortConfig = SORT_LOOKUP[sortParam] ?? SORT_LOOKUP.RELEVANCE;
   const sortKey = sortConfig.sortKey;
   const reverse = sortConfig.reverse;
-  const selectedTypes = searchParams.getAll('type');
-  const selectedVendors = searchParams.getAll('vendor');
-  const selectedTags = searchParams.getAll('tag');
+  
+  // Simple filters - vendor and product type
+  const vendor = searchParams.get('vendor') || undefined;
+  const productType = searchParams.get('type') || undefined;
   const availability = searchParams.get('availability');
   const priceMinParam = searchParams.get('price_min');
   const priceMaxParam = searchParams.get('price_max');
 
   // User enters VAT-inclusive prices, but Shopify stores ex-VAT
   // Convert user input to ex-VAT for filtering
-  const normalizedPriceRange: {min?: number; max?: number} = {};
+  const priceRange: {min?: number; max?: number} = {};
   const parsedMin = priceMinParam ? parseFloat(priceMinParam) : undefined;
   const parsedMax = priceMaxParam ? parseFloat(priceMaxParam) : undefined;
   if (parsedMin !== undefined && !Number.isNaN(parsedMin) && parsedMin >= 0) {
-    // Convert VAT-inclusive input to ex-VAT for Shopify filter
-    normalizedPriceRange.min = parsedMin / (1 + UK_VAT_RATE);
+    priceRange.min = parsedMin / (1 + UK_VAT_RATE);
   }
   if (parsedMax !== undefined && !Number.isNaN(parsedMax) && parsedMax >= 0) {
-    // Convert VAT-inclusive input to ex-VAT for Shopify filter
-    normalizedPriceRange.max = parsedMax / (1 + UK_VAT_RATE);
+    priceRange.max = parsedMax / (1 + UK_VAT_RATE);
   }
   if (
-    normalizedPriceRange.min !== undefined &&
-    normalizedPriceRange.max !== undefined &&
-    normalizedPriceRange.min > normalizedPriceRange.max
+    priceRange.min !== undefined &&
+    priceRange.max !== undefined &&
+    priceRange.min > priceRange.max
   ) {
-    const temp = normalizedPriceRange.min;
-    normalizedPriceRange.min = normalizedPriceRange.max;
-    normalizedPriceRange.max = temp;
+    const temp = priceRange.min;
+    priceRange.min = priceRange.max;
+    priceRange.max = temp;
   }
 
-  // Build all filters for server-side application
-  const allFilters: StorefrontAPI.ProductFilter[] = [
-    ...selectedTypes.map((value) => ({productType: value} as StorefrontAPI.ProductFilter)),
-    ...selectedVendors.map((value) => ({productVendor: value} as StorefrontAPI.ProductFilter)),
-    ...(availability === 'in-stock' ? [{available: true} as StorefrontAPI.ProductFilter] : []),
-    ...(availability === 'out-of-stock' ? [{available: false} as StorefrontAPI.ProductFilter] : []),
-    ...(normalizedPriceRange.min !== undefined || normalizedPriceRange.max !== undefined
-      ? [{
-          price: {
-            ...(normalizedPriceRange.min !== undefined ? {min: normalizedPriceRange.min} : {}),
-            ...(normalizedPriceRange.max !== undefined ? {max: normalizedPriceRange.max} : {}),
-          },
-        } as StorefrontAPI.ProductFilter]
-      : []),
-  ];
-
-  // Handle tag expansion and add to filters
-  let expandedTagFilters: string[] = [];
-  let additionalVendors: string[] = [];
-  let additionalTypes: string[] = [];
-
-  // Get facets from cache for efficient tag expansion
-  let facetGroups: ReturnType<typeof buildTagFacetGroups>;
-
   try {
-    // Get cached facets for efficient tag expansion
-    facetGroups = await getCachedFacets(context.storefront);
-
-    // Process tag expansions using cached facets
-    const flavourTypeFacet = facetGroups.find(fg => fg.key === 'flavour_type');
-    const brandFacet = facetGroups.find(fg => fg.key === 'brand');
-    const categoryFacet = facetGroups.find(fg => fg.key === 'category');
-
-    selectedTags.forEach((tag) => {
-      if (tag.startsWith('filter:flavour_type:') && flavourTypeFacet) {
-        const option = flavourTypeFacet.options.find(opt => opt.value === tag);
-        if (option && option.originalTags && option.originalTags.length > 0) {
-          expandedTagFilters.push(...option.originalTags);
-        } else {
-          expandedTagFilters.push(tag);
-        }
-      } else if (tag.startsWith('filter:brand:') && brandFacet) {
-        const option = brandFacet.options.find(opt => opt.value === tag);
-        if (option && option.originalValue) {
-          additionalVendors.push(option.originalValue);
-        } else {
-          const vendorName = tag.replace('filter:brand:', '').replace(/_/g, ' ');
-          additionalVendors.push(vendorName);
-        }
-      } else if (tag.startsWith('filter:category:') && categoryFacet) {
-        const option = categoryFacet.options.find(opt => opt.value === tag);
-        if (option && option.originalValue) {
-          additionalTypes.push(option.originalValue);
-        } else {
-          const productType = tag.replace('filter:category:', '').replace(/_/g, ' ');
-          additionalTypes.push(productType);
-        }
-      } else {
-        expandedTagFilters.push(tag);
-      }
-    });
-
-    // Remove duplicates
-    expandedTagFilters = Array.from(new Set(expandedTagFilters));
-    additionalVendors = Array.from(new Set(additionalVendors));
-    additionalTypes = Array.from(new Set(additionalTypes));
-
-    // Add expanded filters to the filter list
-    additionalTypes.forEach((value) => allFilters.push({productType: value} as StorefrontAPI.ProductFilter));
-    additionalVendors.forEach((value) => allFilters.push({productVendor: value} as StorefrontAPI.ProductFilter));
-    
-    // Add tag filters to the filter list (will be converted to query syntax by searchProducts)
-    expandedTagFilters.forEach((tag) => allFilters.push({tag} as StorefrontAPI.ProductFilter));
-
-    // Use server-side filtering for everything, including tags
+    // Use simplified search with direct options
     const searchResults = await searchProducts(context.storefront, query, {
       first: 24,
       after,
       sortKey,
       reverse,
-      filters: allFilters,
+      vendor,
+      productType,
+      available: availability === 'in-stock' ? true : availability === 'out-of-stock' ? false : undefined,
+      priceRange: (priceRange.min !== undefined || priceRange.max !== undefined) ? priceRange : undefined,
     });
 
     // Calculate price summary from filtered results
     const priceSummary = calculatePriceSummary(searchResults.products);
 
-    // Calculate facets from the filtered search results
-    const filteredFacets = buildTagFacetGroups(searchResults.products);
-
-    // Get hero banner based on selected tags
-    const hero = getHeroForTags(selectedTags);
+    // Get hero banner based on product type (simplified from tag-based)
+    const heroTags = productType ? [productType.toLowerCase().replace(/\s+/g, '_')] : [];
+    const hero = getHeroForTags(heroTags);
 
     return json<SearchLoaderData>({
       query,
       products: searchResults.products,
       totalCount: searchResults.totalCount,
       pageInfo: searchResults.pageInfo,
-      facets: filteredFacets,
       priceSummary,
       hero,
-      selectedTags,
+      selectedVendor: vendor || null,
+      selectedProductType: productType || null,
     }, {
       headers: {
-        'Cache-Control': 'public, max-age=60', // Cache for 1 minute
+        'Cache-Control': 'public, max-age=60',
         'X-Search-Performance': `${Date.now() - startTime}ms`,
       },
     });
 
   } catch (error) {
+    console.error('Search error:', error);
     return json<SearchLoaderData>({
       query,
       products: [],
       totalCount: 0,
       pageInfo: { hasNextPage: false },
-      facets: [],
       priceSummary: null,
       hero: null,
-      selectedTags: [],
+      selectedVendor: vendor || null,
+      selectedProductType: productType || null,
       error: 'Search failed',
     }, {status: 500});
   }
-}export default function SearchPage() {
+}
+
+export default function SearchPage() {
   const data = useLoaderData<typeof loader>();
   const navigation = useNavigation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -245,7 +173,6 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   });
 
   const isLoading = navigation.state === 'loading';
-  const selectedTags = searchParams.getAll('tag');
   const availabilityParam = searchParams.get('availability');
   const priceMinParam = searchParams.get('price_min');
   const priceMaxParam = searchParams.get('price_max');
@@ -293,20 +220,6 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     }
   };
 
-  const handleTagToggle = (value: string) => {
-    const newParams = new URLSearchParams(searchParams);
-    const existing = new Set(newParams.getAll('tag'));
-    if (existing.has(value)) {
-      existing.delete(value);
-    } else {
-      existing.add(value);
-    }
-    newParams.delete('tag');
-    existing.forEach((item) => newParams.append('tag', item));
-    newParams.delete('after');
-    setSearchParams(newParams);
-  };
-
   const handleAvailabilityChange = (value: 'in-stock' | 'out-of-stock' | null) => {
     const newParams = new URLSearchParams(searchParams);
     if (!value) {
@@ -336,20 +249,42 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 
   const handleClearFilters = () => {
     const newParams = new URLSearchParams(searchParams);
-    ['type', 'vendor', 'tag', 'availability', 'after', 'price_min', 'price_max'].forEach((param) =>
+    ['type', 'vendor', 'availability', 'after', 'price_min', 'price_max'].forEach((param) =>
       newParams.delete(param),
     );
     setSearchParams(newParams);
     setFiltersOpen(false);
   };
 
-  const activeFilterChips: Array<{id: string; label: string; onRemove: () => void}> = [
-    ...selectedTags.map((tag) => ({
-      id: `tag:${tag}`,
-      label: getTagDisplayLabel(tag),
-      onRemove: () => handleTagToggle(tag),
-    })),
-  ];
+  // Build active filter chips from current filters
+  const activeFilterChips: Array<{id: string; label: string; onRemove: () => void}> = [];
+  
+  if (data.selectedVendor) {
+    activeFilterChips.push({
+      id: `vendor:${data.selectedVendor}`,
+      label: `Brand: ${data.selectedVendor}`,
+      onRemove: () => {
+        const newParams = new URLSearchParams(searchParams);
+        newParams.delete('vendor');
+        newParams.delete('after');
+        setSearchParams(newParams);
+      },
+    });
+  }
+  
+  if (data.selectedProductType) {
+    activeFilterChips.push({
+      id: `type:${data.selectedProductType}`,
+      label: `Type: ${data.selectedProductType}`,
+      onRemove: () => {
+        const newParams = new URLSearchParams(searchParams);
+        newParams.delete('type');
+        newParams.delete('after');
+        setSearchParams(newParams);
+      },
+    });
+  }
+  
   if (selectedAvailability) {
     activeFilterChips.push({
       id: `availability:${selectedAvailability}`,
@@ -445,9 +380,6 @@ export async function loader({request, context}: LoaderFunctionArgs) {
         <div className="grid gap-8 lg:grid-cols-[320px,1fr]">
           <div className="order-2 block">
             <SearchFilters
-              facetGroups={data.facets}
-              selectedTags={selectedTags}
-              onTagToggle={handleTagToggle}
               availability={selectedAvailability}
               onAvailabilityChange={handleAvailabilityChange}
               selectedPriceRange={selectedPriceRange}
@@ -531,9 +463,6 @@ export async function loader({request, context}: LoaderFunctionArgs) {
           <MobileFiltersDialog
             isOpen={isFiltersOpen}
             onClose={closeFilters}
-            facetGroups={data.facets}
-            selectedTags={selectedTags}
-            onTagToggle={handleTagToggle}
             availability={selectedAvailability}
             onAvailabilityChange={handleAvailabilityChange}
             selectedPriceRange={selectedPriceRange}
@@ -559,25 +488,25 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 }
 
 // SEO Meta Tags
-export const meta = ({data, location}: {data: any; location: any}) => {
+export const meta = ({data, location}: {data: SearchLoaderData | null; location: {pathname: string; search?: string}}) => {
   const query = data?.query || '';
   const count = data?.totalCount || 0;
-  const selectedTags = data?.selectedTags || [];
+  const vendor = data?.selectedVendor;
+  const productType = data?.selectedProductType;
   
   // Extract URL parameters for indexing decisions
   const url = new URL(location?.pathname || '/search', 'https://www.vapourism.co.uk');
   if (location?.search) {
     url.search = location.search;
   }
-  const vendor = url.searchParams.get('vendor');
   const after = url.searchParams.get('after'); // pagination cursor
   const sort = url.searchParams.get('sort');
   // Check for additional filters that create duplicate content
   const hasFilters = url.searchParams.has('price_min') || url.searchParams.has('price_max') || url.searchParams.has('availability');
   
   // Brand/vendor pages should be indexable (important for SEO)
-  // But NOT paginated results, filtered results (except by vendor/tag), or sorted results
-  const shouldIndex = (!!vendor || selectedTags.length > 0) && !after && !sort && !hasFilters;
+  // But NOT paginated results, filtered results (except by vendor/type), or sorted results
+  const shouldIndex = (!!vendor || !!productType) && !after && !sort && !hasFilters;
   
   // Generate brand-specific title and description
   let title = '';
@@ -587,12 +516,10 @@ export const meta = ({data, location}: {data: any; location: any}) => {
     // Brand/vendor page - optimized for SEO
     title = SEOAutomationService.truncateTitle(`${vendor} Vape Products (${count}) | Fast UK Delivery | Vapourism`);
     description = `Shop ${count}+ authentic ${vendor} vaping products. ✓ Premium quality ✓ Fast UK delivery ✓ Competitive prices ✓ Genuine ${vendor} products from authorized UK retailer. Browse e-liquids, devices & accessories.`;
-  } else if (url.searchParams.get('tag')) {
-    // Category page by tag - extract tag here where it's used for title generation
-    const tag = url.searchParams.get('tag')!; // Non-null assertion: already checked in if condition
-    const categoryLabel = getTagDisplayLabel(tag);
-    title = SEOAutomationService.truncateTitle(`${categoryLabel} (${count}) | UK Vape Shop | Vapourism`);
-    description = SEOAutomationService.generateCategoryMetaDescription(categoryLabel, count);
+  } else if (productType) {
+    // Product type page
+    title = SEOAutomationService.truncateTitle(`${productType} (${count}) | UK Vape Shop | Vapourism`);
+    description = SEOAutomationService.generateCategoryMetaDescription(productType, count);
   } else if (query) {
     // Search query results
     title = SEOAutomationService.truncateTitle(`Search: "${query}" (${count} Results) | Vapourism`);
@@ -631,7 +558,7 @@ export const meta = ({data, location}: {data: any; location: any}) => {
     },
     {
       name: 'robots',
-      // Index brand/vendor pages and category pages, but not general search results
+      // Index brand/vendor pages and product type pages, but not general search results
       content: shouldIndex ? 'index, follow' : 'noindex, follow',
     },
     {

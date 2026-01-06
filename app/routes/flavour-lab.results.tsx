@@ -2,7 +2,7 @@
  * Flavour Lab Results Route
  * 
  * Displays personalised product recommendations based on flavour quiz answers.
- * Uses Shopify Storefront search API with tag-based filtering.
+ * Uses Shopify Storefront search API.
  * 
  * URL: /flavour-lab/results?tag=fruity&tag=20mg&...
  */
@@ -17,9 +17,8 @@ import {SearchFilters} from '~/components/search/SearchFilters';
 import {SearchResults} from '~/components/search/SearchResults';
 import {MobileFiltersDialog} from '~/components/search/MobileFiltersDialog';
 import {
-  buildTagFacetGroups,
   calculatePriceSummary,
-  getTagDisplayLabel,
+  formatFacetLabel,
   type PriceSummary,
 } from '~/lib/search-facets';
 import {searchProducts} from '~/lib/shopify-search';
@@ -33,7 +32,6 @@ type LoaderData = {
     hasNextPage: boolean;
     endCursor?: string;
   };
-  facets: ReturnType<typeof buildTagFacetGroups>;
   priceSummary: PriceSummary | null;
   appliedTags: string[];
   quizSource: boolean;
@@ -94,7 +92,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
       });
     }
 
-    const facets = buildTagFacetGroups(filteredProducts, selectedTags);
+    const facets = [];
     const priceSummary = calculatePriceSummary(filteredProducts);
 
     // Paginate
@@ -111,7 +109,6 @@ export async function loader({request, context}: LoaderFunctionArgs) {
         hasNextPage: hasMorePages,
         endCursor: hasMorePages ? endIndex.toString() : undefined,
       },
-      facets,
       priceSummary,
       appliedTags: selectedTags,
       quizSource,
@@ -122,7 +119,6 @@ export async function loader({request, context}: LoaderFunctionArgs) {
       products: [],
       totalCount: 0,
       pageInfo: {hasNextPage: false},
-      facets: [],
       priceSummary: null,
       appliedTags: selectedTags,
       quizSource,
@@ -173,7 +169,7 @@ export default function FlavourLabResultsRoute() {
 
   const activeFilterChips = selectedTags.map((tag) => ({
     id: `tag:${tag}`,
-    label: getTagDisplayLabel(tag) || tag.split('_').join(' '),
+    label: formatFacetLabel(tag) || tag.split('_').join(' '),
     onRemove: () => handleTagToggle(tag),
   }));
 
@@ -265,9 +261,6 @@ export default function FlavourLabResultsRoute() {
           {/* Desktop Filters */}
           <div className="hidden lg:block">
             <SearchFilters
-              facetGroups={data.facets}
-              selectedTags={selectedTags}
-              onTagToggle={handleTagToggle}
               availability={null}
               onAvailabilityChange={() => {}}
               selectedPriceRange={{}}
@@ -303,9 +296,6 @@ export default function FlavourLabResultsRoute() {
           <MobileFiltersDialog
             isOpen={isFiltersOpen}
             onClose={() => setIsFiltersOpen(false)}
-            facetGroups={data.facets}
-            selectedTags={selectedTags}
-            onTagToggle={handleTagToggle}
             availability={null}
             onAvailabilityChange={() => {}}
             selectedPriceRange={{}}

@@ -1,11 +1,11 @@
 /**
- * Tests to verify that filters apply to all results from Shopify, not just the current page
+ * Tests for simplified search with pagination
+ * Tests that basic search options (vendor, productType, price) work correctly
  */
 import {describe, it, expect, vi, beforeEach} from 'vitest';
 import {searchProducts} from '~/lib/shopify-search';
-import type * as StorefrontAPI from '@shopify/hydrogen/storefront-api-types';
 
-describe('search pagination with filters', () => {
+describe('search pagination with simplified filters', () => {
   let mockStorefront: any;
   let mockQuery: any;
 
@@ -17,78 +17,56 @@ describe('search pagination with filters', () => {
     };
   });
 
-  it('should apply tag filters to all pages, not just first page', async () => {
-    // Mock first page response
+  it('should apply vendor filter to query', async () => {
     mockQuery.mockResolvedValueOnce({
       search: {
         edges: [
-          {node: {id: '1', title: 'Product 1', tags: ['disposable']}},
-          {node: {id: '2', title: 'Product 2', tags: ['disposable']}},
+          {node: {id: '1', title: 'Product 1'}},
+          {node: {id: '2', title: 'Product 2'}},
         ],
         pageInfo: {hasNextPage: true, endCursor: 'cursor123'},
-        totalCount: 50, // Total matching products across all pages
+        totalCount: 50,
       },
     });
 
-    const tagFilters: StorefrontAPI.ProductFilter[] = [
-      {tag: 'disposable'} as StorefrontAPI.ProductFilter,
-    ];
-
-    // First page request
-    const firstPage = await searchProducts(mockStorefront, '', {
+    await searchProducts(mockStorefront, '', {
       first: 2,
-      filters: tagFilters,
+      vendor: 'Elf Bar',
     });
 
-    // Verify first page call includes tag filter in query
     expect(mockQuery).toHaveBeenCalledWith(
       expect.any(String),
       expect.objectContaining({
         variables: expect.objectContaining({
-          query: 'tag:disposable',
+          query: 'vendor:Elf Bar',
           first: 2,
-          after: undefined,
         }),
       })
     );
+  });
 
-    expect(firstPage.totalCount).toBe(50);
-    expect(firstPage.pageInfo.hasNextPage).toBe(true);
-    expect(firstPage.pageInfo.endCursor).toBe('cursor123');
-
-    // Mock second page response
+  it('should apply productType filter to query', async () => {
     mockQuery.mockResolvedValueOnce({
       search: {
-        edges: [
-          {node: {id: '3', title: 'Product 3', tags: ['disposable']}},
-          {node: {id: '4', title: 'Product 4', tags: ['disposable']}},
-        ],
-        pageInfo: {hasNextPage: true, endCursor: 'cursor456'},
-        totalCount: 50, // Same total count
+        edges: [],
+        pageInfo: {hasNextPage: false},
+        totalCount: 0,
       },
     });
 
-    // Second page request with cursor
-    const secondPage = await searchProducts(mockStorefront, '', {
-      first: 2,
-      after: 'cursor123',
-      filters: tagFilters,
+    await searchProducts(mockStorefront, '', {
+      first: 10,
+      productType: 'Disposable',
     });
 
-    // Verify second page call ALSO includes the same tag filter
     expect(mockQuery).toHaveBeenCalledWith(
       expect.any(String),
       expect.objectContaining({
         variables: expect.objectContaining({
-          query: 'tag:disposable',
-          first: 2,
-          after: 'cursor123', // Cursor for pagination
+          query: 'product_type:Disposable',
         }),
       })
     );
-
-    expect(secondPage.totalCount).toBe(50);
-    expect(secondPage.products[0].id).toBe('3');
   });
 
   it('should apply multiple filters consistently across all pages', async () => {
@@ -100,24 +78,16 @@ describe('search pagination with filters', () => {
       },
     });
 
-    const filters: StorefrontAPI.ProductFilter[] = [
-      {tag: 'disposable'} as StorefrontAPI.ProductFilter,
-      {tag: '20mg'} as StorefrontAPI.ProductFilter,
-      {productVendor: 'Elf Bar'} as StorefrontAPI.ProductFilter,
-      {available: true} as StorefrontAPI.ProductFilter,
-    ];
-
     // Page 1
     await searchProducts(mockStorefront, 'vape', {
       first: 10,
-      filters,
+      vendor: 'Elf Bar',
+      available: true,
     });
 
     // Verify page 1 has all filters
     const firstCallQuery = mockQuery.mock.calls[0][1].variables.query;
     expect(firstCallQuery).toContain('vape');
-    expect(firstCallQuery).toContain('tag:disposable');
-    expect(firstCallQuery).toContain('tag:20mg');
     expect(firstCallQuery).toContain('vendor:Elf Bar');
     expect(firstCallQuery).toContain('available:true');
 
@@ -125,7 +95,8 @@ describe('search pagination with filters', () => {
     await searchProducts(mockStorefront, 'vape', {
       first: 10,
       after: 'page2cursor',
-      filters,
+      vendor: 'Elf Bar',
+      available: true,
     });
 
     // Verify page 2 has EXACTLY the same filters
@@ -148,7 +119,7 @@ describe('search pagination with filters', () => {
 
     const result = await searchProducts(mockStorefront, '', {
       first: 2,
-      filters: [{tag: 'e-liquid'} as StorefrontAPI.ProductFilter],
+      productType: 'E-Liquid',
     });
 
     // Returned only 2 products for this page
@@ -162,11 +133,6 @@ describe('search pagination with filters', () => {
   });
 
   it('should maintain filter consistency when navigating back and forth between pages', async () => {
-    const filters: StorefrontAPI.ProductFilter[] = [
-      {tag: 'CBD'} as StorefrontAPI.ProductFilter,
-      {price: {min: 10, max: 50}} as StorefrontAPI.ProductFilter,
-    ];
-
     mockQuery.mockResolvedValue({
       search: {
         edges: [],
@@ -179,7 +145,7 @@ describe('search pagination with filters', () => {
     await searchProducts(mockStorefront, '', {
       first: 5,
       after: 'page2cursor',
-      filters,
+      priceRange: {min: 10, max: 50},
     });
 
     const page2Query = mockQuery.mock.calls[0][1].variables.query;
@@ -187,15 +153,37 @@ describe('search pagination with filters', () => {
     // Navigate back to page 1
     await searchProducts(mockStorefront, '', {
       first: 5,
-      filters,
+      priceRange: {min: 10, max: 50},
     });
 
     const page1Query = mockQuery.mock.calls[1][1].variables.query;
 
     // Both pages should have identical filter queries
     expect(page1Query).toBe(page2Query);
-    expect(page1Query).toContain('tag:CBD');
     expect(page1Query).toContain('price:>10');
     expect(page1Query).toContain('price:<50');
+  });
+
+  it('should use wildcard query when no search term or filters', async () => {
+    mockQuery.mockResolvedValue({
+      search: {
+        edges: [],
+        pageInfo: {hasNextPage: false},
+        totalCount: 0,
+      },
+    });
+
+    await searchProducts(mockStorefront, '', {
+      first: 10,
+    });
+
+    expect(mockQuery).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        variables: expect.objectContaining({
+          query: '*',
+        }),
+      })
+    );
   });
 });

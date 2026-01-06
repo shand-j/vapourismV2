@@ -1,34 +1,29 @@
+/**
+ * Unit tests for simplified search-facets utilities
+ */
 import {describe, expect, it} from 'vitest';
 import type {SearchProduct} from '../../app/lib/shopify-search';
 import {
-  buildTagFacetGroups,
+  calculatePriceSummary,
   formatFacetLabel,
-  getTagDisplayLabel,
-  parseFilterTag,
 } from '../../app/lib/search-facets';
-
-describe('parseFilterTag', () => {
-  it('parses valid filter tags', () => {
-    expect(parseFilterTag('filter:category:disposables')).toEqual({
-      groupKey: 'category',
-      value: 'disposables',
-    });
-  });
-
-  it('returns null for invalid formats', () => {
-    expect(parseFilterTag('category:disposables')).toBeNull();
-    expect(parseFilterTag('filter:unknown:value')).toBeNull();
-  });
-});
 
 describe('formatFacetLabel', () => {
   it('title cases values and strips delimiters', () => {
     expect(formatFacetLabel('approx-600')).toBe('Approx 600');
     expect(formatFacetLabel('mtl')).toBe('Mtl');
   });
+
+  it('handles underscores', () => {
+    expect(formatFacetLabel('nicotine_strength')).toBe('Nicotine Strength');
+  });
+
+  it('handles empty string', () => {
+    expect(formatFacetLabel('')).toBe('');
+  });
 });
 
-describe('buildTagFacetGroups', () => {
+describe('calculatePriceSummary', () => {
   const mockProducts: SearchProduct[] = [
     {
       id: 'product-1',
@@ -36,13 +31,12 @@ describe('buildTagFacetGroups', () => {
       handle: 'sample-1',
       vendor: 'Brand A',
       productType: 'Disposable',
-      tags: ['filter:category:Disposable', 'filter:nicotine_strength:20mg', 'Promo'],
+      tags: [],
       description: '',
       availableForSale: true,
       priceRange: {
         minVariantPrice: {amount: '9.99', currencyCode: 'GBP'},
       },
-      featuredImage: undefined,
     } as SearchProduct,
     {
       id: 'product-2',
@@ -50,36 +44,47 @@ describe('buildTagFacetGroups', () => {
       handle: 'sample-2',
       vendor: 'Brand B',
       productType: 'Pod Kit',
-      tags: ['filter:category:Disposable', 'filter:category:Starter', 'filter:nicotine_strength:10mg'],
+      tags: [],
       description: '',
       availableForSale: true,
       priceRange: {
         minVariantPrice: {amount: '11.99', currencyCode: 'GBP'},
       },
-      featuredImage: undefined,
     } as SearchProduct,
   ];
 
-  it('builds grouped facets with counts', () => {
-    const groups = buildTagFacetGroups(mockProducts, []);
-    const categoryGroup = groups.find((group) => group.key === 'category');
-    expect(categoryGroup).toBeDefined();
-    expect(categoryGroup?.options[0]).toMatchObject({label: 'Disposable', count: 2});
+  it('calculates min and max prices with VAT', () => {
+    const summary = calculatePriceSummary(mockProducts);
+    expect(summary).not.toBeNull();
+    // 9.99 * 1.2 = 11.988
+    expect(summary!.min).toBeCloseTo(11.988, 2);
+    // 11.99 * 1.2 = 14.388
+    expect(summary!.max).toBeCloseTo(14.388, 2);
+    expect(summary!.currencyCode).toBe('GBP');
   });
 
-  it('keeps selected tags even when absent in current results', () => {
-    const groups = buildTagFacetGroups(mockProducts, ['filter:category:Unavailable']);
-    const categoryGroup = groups.find((group) => group.key === 'category');
-    expect(categoryGroup?.options.some((option) => option.label === 'Unavailable')).toBe(true);
-  });
-});
-
-describe('getTagDisplayLabel', () => {
-  it('returns friendly labels for known tags', () => {
-    expect(getTagDisplayLabel('filter:category:disposable')).toBe('Product Type: Disposable');
+  it('returns null for empty products', () => {
+    const summary = calculatePriceSummary([]);
+    expect(summary).toBeNull();
   });
 
-  it('falls back to raw tag when unknown', () => {
-    expect(getTagDisplayLabel('promo:flash')).toBe('promo:flash');
+  it('handles products without price range', () => {
+    const productsWithoutPrice: SearchProduct[] = [
+      {
+        id: 'product-1',
+        title: 'No Price',
+        handle: 'no-price',
+        vendor: 'Brand',
+        productType: 'Test',
+        tags: [],
+        description: '',
+        availableForSale: true,
+        priceRange: {
+          minVariantPrice: {amount: '', currencyCode: 'GBP'},
+        },
+      } as SearchProduct,
+    ];
+    const summary = calculatePriceSummary(productsWithoutPrice);
+    expect(summary).toBeNull();
   });
 });

@@ -1,26 +1,29 @@
 /**
- * Shopify Native Search Implementation for V2
+ * Shopify Native Search Implementation
  * 
- * Replaces Algolia with Shopify Storefront API predictive search.
+ * Simplified search using Shopify Storefront API with Search & Discovery app.
  * 
  * Key features:
  * - Predictive search for autocomplete
  * - Full search results with pagination
+ * - Native Shopify sorting
  * - Edge caching hints
  * - Debouncing utilities
+ * 
+ * Note: Filtering is handled by Shopify Search & Discovery app via metafields.
+ * See docs/metafield-schema.md for the taxonomy that products should follow.
  * 
  * References:
  * - https://shopify.dev/docs/api/storefront/2025-01/queries/predictiveSearch
  * - https://shopify.dev/docs/api/storefront/2025-01/queries/search
+ * - https://help.shopify.com/en/manual/online-store/search-and-discovery
  */
 
 import type {Storefront} from '@shopify/hydrogen';
 import type * as StorefrontAPI from '@shopify/hydrogen/storefront-api-types';
 import type {
   PredictiveSearchQuery,
-  PredictiveSearchQueryVariables,
   SearchProductsQuery,
-  SearchProductsQueryVariables,
 } from 'storefrontapi.generated';
 
 export interface PredictiveSearchProduct {
@@ -76,16 +79,23 @@ const DEFAULT_SEARCH_SORT_KEY: StorefrontAPI.SearchSortKeys = 'RELEVANCE';
 
 const EMPTY_PREDICTIVE_RESULTS: PredictiveSearchResults = {
   products: [],
-  collections: [], // Empty - collections not used in this store
+  collections: [],
   queries: [],
 };
 
-type SearchProductsOptions = {
+export type SearchProductsOptions = {
   first?: number;
   after?: string;
   sortKey?: StorefrontAPI.SearchSortKeys | null;
   reverse?: boolean;
-  filters?: StorefrontAPI.ProductFilter[];
+  /** Optional product type filter */
+  productType?: string;
+  /** Optional vendor filter */
+  vendor?: string;
+  /** Optional availability filter */
+  available?: boolean;
+  /** Optional price range filter */
+  priceRange?: {min?: number; max?: number};
 };
 
 /**
@@ -264,9 +274,12 @@ export async function predictiveSearch(
 /**
  * Perform full product search with pagination
  * 
+ * Uses Shopify's native search with simple query syntax.
+ * Filtering is handled by Shopify Search & Discovery app.
+ * 
  * @param storefront - Hydrogen Storefront client
  * @param query - Search query string
- * @param options - Search options (pagination, sorting, filters)
+ * @param options - Search options (pagination, sorting)
  * @returns Search results with pagination info
  */
 export async function searchProducts(
@@ -279,73 +292,40 @@ export async function searchProducts(
     after,
     sortKey = DEFAULT_SEARCH_SORT_KEY,
     reverse = false,
-    filters = [],
+    productType,
+    vendor,
+    available,
+    priceRange,
   } = options;
 
   const trimmedTerm = term?.trim() ?? '';
 
-  // Build the full query string from term and filters
+  // Build simple query string
   const queryParts: string[] = [];
+  
   if (trimmedTerm) {
     queryParts.push(trimmedTerm);
   }
 
-  // Collect tag filters separately to handle OR logic
-  const tagFilters: string[] = [];
-
-  // Add filters to the query string
-  for (const filter of filters) {
-    if ('tag' in filter && filter.tag) {
-      // Collect tag filters for OR logic
-      tagFilters.push(filter.tag);
-    } else if ('productType' in filter && filter.productType) {
-      queryParts.push(`product_type:${filter.productType}`);
-    } else if ('productVendor' in filter && filter.productVendor) {
-      queryParts.push(`vendor:${filter.productVendor}`);
-    } else if ('available' in filter) {
-      queryParts.push(`available:${filter.available}`);
-    } else if ('price' in filter && filter.price) {
-      if (filter.price.min !== undefined) {
-        queryParts.push(`price:>${filter.price.min}`);
-      }
-      if (filter.price.max !== undefined) {
-        queryParts.push(`price:<${filter.price.max}`);
-      }
-    }
+  // Add simple filters (these are the only filters we support now)
+  if (productType) {
+    queryParts.push(`product_type:${productType}`);
+  }
+  if (vendor) {
+    queryParts.push(`vendor:${vendor}`);
+  }
+  if (available !== undefined) {
+    queryParts.push(`available:${available}`);
+  }
+  if (priceRange?.min !== undefined) {
+    queryParts.push(`price:>${priceRange.min}`);
+  }
+  if (priceRange?.max !== undefined) {
+    queryParts.push(`price:<${priceRange.max}`);
   }
 
-  // Add tag filters with OR logic if present
-  if (tagFilters.length > 0) {
-    if (tagFilters.length === 1) {
-      // Single tag, no need for parentheses
-      queryParts.push(`tag:${tagFilters[0]}`);
-    } else {
-      // Multiple tags, use OR logic with parentheses
-      const tagQuery = tagFilters.map(tag => `tag:${tag}`).join(' OR ');
-      queryParts.push(`(${tagQuery})`);
-    }
-  }
-
-  // Join with AND logic when we have a search term, otherwise just space-separate
-  let fullQuery: string;
-  if (trimmedTerm && queryParts.length > 1) {
-    // If we have a search term, AND it with the filters
-    const [searchTerm, ...filterParts] = queryParts;
-    fullQuery = `${searchTerm} AND ${filterParts.join(' ')}`;
-  } else {
-    fullQuery = queryParts.join(' ') || '*';
-  }
-
-  // Allow empty queries to return all products
-  if (fullQuery !== '*' && fullQuery.length < 2) {
-    return {
-      products: [],
-      totalCount: 0,
-      pageInfo: {
-        hasNextPage: false,
-      },
-    };
-  }
+  // Use wildcard for empty queries to return all products
+  const fullQuery = queryParts.length > 0 ? queryParts.join(' ') : '*';
 
   try {
     const response = await storefront.query<SearchProductsQuery>(SEARCH_QUERY, {
@@ -487,60 +467,4 @@ export function trackSearchEvent(
       },
     })
   );
-}
-
-/**
- * Cached Facet Calculation
- * Uses Hydrogen's caching to avoid recalculating facets on every request
- */
-export async function getCachedFacets(
-  storefront: Storefront,
-  cacheKey = 'facets:v2'
-): Promise<ReturnType<typeof buildTagFacetGroups>> {
-  // Import here to avoid circular dependency
-  const { buildTagFacetGroups } = await import('../lib/search-facets');
-
-  // Use a cached query to get all products for facet data
-  const FACET_QUERY = `#graphql
-    query FacetData($first: Int, $after: String) {
-      products(first: $first, after: $after) {
-        nodes {
-          id
-          vendor
-          productType
-          tags
-        }
-        pageInfo {
-          hasNextPage
-          endCursor
-        }
-      }
-    }
-  ` as const;
-
-  try {
-    const allProducts: any[] = [];
-    let hasNextPage = true;
-    let endCursor: string | null = null;
-
-    while (hasNextPage) {
-      const response = await storefront.query(FACET_QUERY, {
-        variables: {
-          first: 250, // Shopify max per page
-          after: endCursor,
-        },
-        cache: storefront.CacheLong(), // Cache for longer periods
-      }) as any;
-
-      allProducts.push(...response.products.nodes);
-      hasNextPage = response.products.pageInfo.hasNextPage;
-      endCursor = response.products.pageInfo.endCursor;
-    }
-
-    return buildTagFacetGroups(allProducts, []);
-  } catch (error) {
-    console.error('Error calculating facets:', error);
-    // Return empty facets on error
-    return [];
-  }
 }

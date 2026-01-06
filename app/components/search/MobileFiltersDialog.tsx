@@ -1,13 +1,12 @@
 /**
  * Mobile Search Filters Dialog
  * 
- * Native HTML modal implementation to avoid SSR issues with Headless UI
+ * Simplified mobile filter panel for availability and price.
  */
 
 import {useEffect} from 'react';
 import {XMarkIcon} from '@heroicons/react/24/outline';
 import {SearchFilters} from './SearchFilters';
-import type {TagFacetGroup} from '../../lib/search-facets';
 
 interface PriceRangeSelection {
   min?: number;
@@ -23,9 +22,6 @@ interface PriceSummary {
 interface MobileFiltersDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  facetGroups: TagFacetGroup[];
-  selectedTags: string[];
-  onTagToggle: (tag: string) => void;
   availability: 'in-stock' | 'out-of-stock' | null;
   onAvailabilityChange: (value: 'in-stock' | 'out-of-stock' | null) => void;
   selectedPriceRange: PriceRangeSelection;
@@ -37,9 +33,6 @@ interface MobileFiltersDialogProps {
 export function MobileFiltersDialog({
   isOpen,
   onClose,
-  facetGroups,
-  selectedTags,
-  onTagToggle,
   availability,
   onAvailabilityChange,
   selectedPriceRange,
@@ -107,9 +100,6 @@ export function MobileFiltersDialog({
 
           <div className="flex-1 overflow-y-auto">
             <SearchFilters
-              facetGroups={facetGroups}
-              selectedTags={selectedTags}
-              onTagToggle={onTagToggle}
               availability={availability}
               onAvailabilityChange={onAvailabilityChange}
               selectedPriceRange={selectedPriceRange}

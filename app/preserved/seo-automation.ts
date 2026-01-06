@@ -320,12 +320,12 @@ export class SEOAutomationService {
   static generateInternalLinks(product: ProductSEOData): Array<{url: string; anchor: string; title: string}> {
     return [
       {
-        url: `/products?vendor=${encodeURIComponent(product.vendor)}`,
+        url: `/search?vendor=${encodeURIComponent(product.vendor)}`,
         anchor: `More ${product.vendor} Products`,
         title: `Browse all ${product.vendor} vaping products`
       },
       {
-        url: `/search?tag=${encodeURIComponent(product.productType.toLowerCase().replace(/\s+/g, '_'))}`,
+        url: `/search?type=${encodeURIComponent(product.productType)}`,
         anchor: `Shop All ${product.productType}s`,
         title: `Explore our ${product.productType} range`
       },

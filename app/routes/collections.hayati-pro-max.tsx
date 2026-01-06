@@ -16,11 +16,13 @@ import {generateCollectionPageSchema, generateBreadcrumbSchema, structuredDataSc
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
   
-  // Search for Hayati Pro Max e-liquid products using tag-based query
+  // Search for Hayati Pro Max e-liquid products using vendor filtering
   const searchResults = await searchProducts(
     storefront,
-    'tag:hayati tag:pro_max tag:e-liquid',
+    'Pro Max',
     {
+      vendor: 'Hayati',
+      productType: 'E-Liquid',
       sortKey: 'RELEVANCE',
       reverse: false,
       first: 48,
@@ -222,7 +224,7 @@ export default function HayatiProMaxCollection() {
           <Link to="/collections/riot-squad" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
             Riot Squad E-Liquids
           </Link>
-          <Link to="/search?tag=e-liquid" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
+          <Link to="/search?type=E-Liquid" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
             All E-Liquids
           </Link>
         </div>

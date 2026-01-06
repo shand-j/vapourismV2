@@ -4,8 +4,8 @@ import {ProductCard} from '~/components/ProductCard';
 import type {ProductCardProduct} from '~/components/ProductCard';
 
 interface SearchHeroProps {
-  /** Current category tag (e.g., "disposables") */
-  tag: string;
+  /** Current product type (e.g., "Disposable") */
+  productType?: string;
   /** Hero products from metafields */
   products: ProductCardProduct[];
   /** Category display name */
@@ -16,7 +16,7 @@ interface SearchHeroProps {
  * Hero section for search results showing top picks for a category.
  * Displayed above search results when category hero products are configured.
  */
-export function SearchHero({tag, products, categoryName}: Readonly<SearchHeroProps>) {
+export function SearchHero({productType, products, categoryName}: Readonly<SearchHeroProps>) {
   if (!products.length) {
     return null;
   }
@@ -32,12 +32,14 @@ export function SearchHero({tag, products, categoryName}: Readonly<SearchHeroPro
             Our best {categoryName}
           </h2>
         </div>
-        <Link
-          to={`/search?tag=${encodeURIComponent(tag)}`}
-          className="text-sm font-semibold text-[#5b2be0] hover:underline"
-        >
-          View all
-        </Link>
+        {productType && (
+          <Link
+            to={`/search?type=${encodeURIComponent(productType)}`}
+            className="text-sm font-semibold text-[#5b2be0] hover:underline"
+          >
+            View all
+          </Link>
+        )}
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">

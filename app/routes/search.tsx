@@ -23,7 +23,7 @@ import {
   type PriceSummary,
 } from '../lib/search-facets';
 import {searchProducts, trackSearchEvent} from '../lib/shopify-search';
-import {getHeroForTags, type CategoryHero} from '../lib/menu-config';
+import {getHeroForProductType, type CategoryHero} from '../lib/menu-config';
 import {SEOAutomationService} from '../preserved/seo-automation';
 
 /**
@@ -124,9 +124,8 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     // Calculate price summary from filtered results
     const priceSummary = calculatePriceSummary(searchResults.products);
 
-    // Get hero banner based on product type (simplified from tag-based)
-    const heroTags = productType ? [productType.toLowerCase().replace(/\s+/g, '_')] : [];
-    const hero = getHeroForTags(heroTags);
+    // Get hero banner based on product type
+    const hero = getHeroForProductType(productType);
 
     return json<SearchLoaderData>({
       query,

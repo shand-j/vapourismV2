@@ -17,12 +17,13 @@ import {generateCollectionPageSchema, generateBreadcrumbSchema, structuredDataSc
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
   
-  // Search for Hayati Pro Ultra products using vendor field and product-specific tags
-  // Vendor filtering is the correct approach for brand-specific pages
+  // Search for Hayati Pro Ultra products using vendor filtering
   const searchResults = await searchProducts(
     storefront,
-    'vendor:Hayati tag:pro_ultra tag:disposable',
+    'Pro Ultra',
     {
+      vendor: 'Hayati',
+      productType: 'Disposable',
       sortKey: 'RELEVANCE',
       reverse: false,
       first: 48,
@@ -354,7 +355,7 @@ export default function HayatiProUltraCollection() {
           <Link to="/collections/crystal-bar" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
             Crystal Bar
           </Link>
-          <Link to="/search?tag=disposable" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
+          <Link to="/search?type=Disposable" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
             All Disposables
           </Link>
         </div>

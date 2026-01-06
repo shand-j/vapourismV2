@@ -15,12 +15,13 @@ import {useCollectionTracking} from '~/lib/hooks/useCollectionTracking';
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
   
-  // Search for Velo nicotine pouch products using vendor field
-  // Vendor filtering is the correct approach for brand-specific pages
+  // Search for Velo nicotine pouch products using vendor filtering
   const searchResults = await searchProducts(
     storefront,
-    'vendor:Velo tag:nicotine_pouches',
+    '',
     {
+      vendor: 'Velo',
+      productType: 'Nicotine Pouch',
       sortKey: 'RELEVANCE',
       reverse: false,
       first: 48,
@@ -410,7 +411,7 @@ export default function VeloPouchesCollection() {
           <Link to="/collections/zyn-nicotine-pouches" className="px-6 py-3 bg-gray-100 hover:bg-blue-50 text-gray-800 rounded-lg hover:text-blue-700 transition font-medium">
             Zyn Pouches
           </Link>
-          <Link to="/search?tag=disposable" className="px-6 py-3 bg-gray-100 hover:bg-blue-50 text-gray-800 rounded-lg hover:text-blue-700 transition font-medium">
+          <Link to="/search?type=Disposable" className="px-6 py-3 bg-gray-100 hover:bg-blue-50 text-gray-800 rounded-lg hover:text-blue-700 transition font-medium">
             Disposable Vapes
           </Link>
         </div>

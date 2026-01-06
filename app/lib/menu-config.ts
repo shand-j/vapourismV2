@@ -1,29 +1,35 @@
 /**
  * Mega Menu Configuration
  *
- * Static menu structure using tag-based filtering.
- * All navigation links route to /search with tag query parameters.
+ * Static menu structure using vendor and productType filtering.
+ * All navigation links route to /search with vendor/type query parameters.
  *
- * Tag format follows the approved controlled vocabulary from the data analyst spec.
+ * URL patterns:
+ * - Brand pages: /search?vendor=Crystal+Bar
+ * - Product type pages: /search?type=Disposable
+ * - Combined: /search?type=E-Liquid&vendor=Hayati
  */
 
 export interface MenuLink {
   label: string;
-  tags: string[];
   url: string;
+  vendor?: string;
+  productType?: string;
 }
 
 export interface MenuColumn {
   heading: string;
   links: MenuLink[];
   seeAllLabel?: string;
-  seeAllTags?: string[];
+  seeAllProductType?: string;
+  seeAllVendor?: string;
 }
 
 export interface MenuCategory {
   id: string;
   label: string;
-  tags: string[];
+  productType?: string;
+  vendor?: string;
   columns: MenuColumn[];
   quizLink?: {
     label: string;
@@ -40,19 +46,27 @@ export interface CategoryHero {
 }
 
 /**
- * Build search URL from tags
+ * Build search URL from vendor and/or productType
  */
-export function buildSearchUrl(tags: string[]): string {
-  if (tags.length === 0) return '/search';
+export function buildSearchUrl(options: {
+  vendor?: string;
+  productType?: string;
+  q?: string;
+} = {}): string {
+  const { vendor, productType, q } = options;
+  if (!vendor && !productType && !q) return '/search';
+  
   const params = new URLSearchParams();
-  for (const tag of tags) {
-    params.append('tag', tag);
-  }
+  if (q) params.set('q', q);
+  if (productType) params.set('type', productType);
+  if (vendor) params.set('vendor', vendor);
+  
   return `/search?${params.toString()}`;
 }
 
 /**
  * Category hero configurations for search page banners
+ * Keys are normalized productType values (lowercase, spaces to underscores)
  */
 export const CATEGORY_HEROES: Record<string, CategoryHero> = {
   disposable: {
@@ -100,12 +114,12 @@ export const CATEGORY_HEROES: Record<string, CategoryHero> = {
     subtitle: 'Batteries, chargers, cases, and everything else you need.',
     accentColor: '#64748b',
   },
-  CBD: {
+  cbd: {
     title: 'CBD Products',
     subtitle: 'Oils, gummies, capsules, and more. Quality CBD for wellness.',
     accentColor: '#22c55e',
   },
-  nicotine_pouches: {
+  nicotine_pouch: {
     title: 'Nicotine Pouches',
     subtitle: 'Tobacco-free nicotine pouches. Discreet and smoke-free.',
     accentColor: '#ec4899',
@@ -113,31 +127,29 @@ export const CATEGORY_HEROES: Record<string, CategoryHero> = {
 };
 
 /**
- * Get hero config for a set of tags
+ * Normalize a product type string for hero lookup
+ * Converts to lowercase, replaces spaces/hyphens with underscores
  */
-export function getHeroForTags(tags: string[]): CategoryHero | null {
-  // Check for primary category tags first
-  const primaryCategories = [
-    'disposable',
-    'e-liquid',
-    'device',
-    'pod_system',
-    'box_mod',
-    'tank',
-    'pod',
-    'coil',
-    'accessory',
-    'CBD',
-    'nicotine_pouches',
-  ];
-
-  for (const category of primaryCategories) {
-    if (tags.includes(category)) {
-      return CATEGORY_HEROES[category] || null;
-    }
+function normalizeProductType(productType: string | null | undefined): string {
+  if (!productType || typeof productType !== 'string') {
+    return '';
   }
+  return productType.toLowerCase().replace(/[\s-]+/g, '_');
+}
 
-  return null;
+/**
+ * Get hero config for a productType
+ */
+export function getHeroForProductType(productType: string | null | undefined): CategoryHero | null {
+  if (!productType || typeof productType !== 'string') {
+    return null;
+  }
+  
+  const normalized = normalizeProductType(productType);
+  if (!normalized) {
+    return null;
+  }
+  return CATEGORY_HEROES[normalized] || null;
 }
 
 // =============================================================================
@@ -146,44 +158,34 @@ export function getHeroForTags(tags: string[]): CategoryHero | null {
 
 export const MEGA_MENU: MenuCategory[] = [
   // -------------------------------------------------------------------------
-  // REUSABLES
+  // REUSABLES (Disposables)
   // -------------------------------------------------------------------------
   {
     id: 'reusables',
     label: 'Reusables',
-    tags: ['disposable'],
+    productType: 'Disposable',
     hero: CATEGORY_HEROES.disposable,
     columns: [
       {
-        heading: 'By Flavour',
+        heading: 'By Brand',
         links: [
-          {label: 'Fruity', tags: ['disposable', 'fruity'], url: buildSearchUrl(['disposable', 'fruity'])},
-          {label: 'Ice & Menthol', tags: ['disposable', 'ice'], url: buildSearchUrl(['disposable', 'ice'])},
-          {label: 'Tobacco', tags: ['disposable', 'tobacco'], url: buildSearchUrl(['disposable', 'tobacco'])},
-          {label: 'Desserts & Bakery', tags: ['disposable', 'desserts/bakery'], url: buildSearchUrl(['disposable', 'desserts/bakery'])},
-          {label: 'Beverages', tags: ['disposable', 'beverages'], url: buildSearchUrl(['disposable', 'beverages'])},
+          {label: 'Crystal Bar', vendor: 'Crystal Bar', url: buildSearchUrl({vendor: 'Crystal Bar', productType: 'Disposable'})},
+          {label: 'Lost Mary', vendor: 'Lost Mary', url: buildSearchUrl({vendor: 'Lost Mary', productType: 'Disposable'})},
+          {label: 'Elux Legend', vendor: 'Elux', url: buildSearchUrl({vendor: 'Elux', productType: 'Disposable'})},
+          {label: 'Hayati', vendor: 'Hayati', url: buildSearchUrl({vendor: 'Hayati', productType: 'Disposable'})},
         ],
-        seeAllLabel: 'See all flavours',
-        seeAllTags: ['disposable'],
+        seeAllLabel: 'See all brands',
+        seeAllProductType: 'Disposable',
       },
       {
-        heading: 'By Nicotine',
+        heading: 'By Puff Count',
         links: [
-          {label: '20mg', tags: ['disposable', '20mg'], url: buildSearchUrl(['disposable', '20mg'])},
-          {label: '10mg', tags: ['disposable', '10mg'], url: buildSearchUrl(['disposable', '10mg'])},
-          {label: '0mg (Nicotine Free)', tags: ['disposable', '0mg'], url: buildSearchUrl(['disposable', '0mg'])},
+          {label: '600 Puffs', url: buildSearchUrl({productType: 'Disposable', q: '600 puffs'})},
+          {label: '3500 Puffs', url: buildSearchUrl({productType: 'Disposable', q: '3500 puffs'})},
+          {label: '6000+ Puffs', url: buildSearchUrl({productType: 'Disposable', q: '6000 puffs'})},
         ],
-        seeAllLabel: 'See all strengths',
-        seeAllTags: ['disposable'],
-      },
-      {
-        heading: 'By Nicotine Type',
-        links: [
-          {label: 'Nic Salt', tags: ['disposable', 'nic_salt'], url: buildSearchUrl(['disposable', 'nic_salt'])},
-          {label: 'Freebase', tags: ['disposable', 'freebase_nicotine'], url: buildSearchUrl(['disposable', 'freebase_nicotine'])},
-        ],
-        seeAllLabel: 'See all types',
-        seeAllTags: ['disposable'],
+        seeAllLabel: 'See all disposables',
+        seeAllProductType: 'Disposable',
       },
     ],
   },
@@ -194,7 +196,7 @@ export const MEGA_MENU: MenuCategory[] = [
   {
     id: 'e-liquids',
     label: 'E-Liquids',
-    tags: ['e-liquid'],
+    productType: 'E-Liquid',
     hero: CATEGORY_HEROES['e-liquid'],
     quizLink: {
       label: 'Flavour Lab Quiz',
@@ -202,61 +204,25 @@ export const MEGA_MENU: MenuCategory[] = [
     },
     columns: [
       {
+        heading: 'By Brand',
+        links: [
+          {label: 'Riot Squad', vendor: 'Riot Squad', url: buildSearchUrl({vendor: 'Riot Squad', productType: 'E-Liquid'})},
+          {label: 'Hayati Pro Max', vendor: 'Hayati', url: buildSearchUrl({vendor: 'Hayati', productType: 'E-Liquid'})},
+        ],
+        seeAllLabel: 'See all brands',
+        seeAllProductType: 'E-Liquid',
+      },
+      {
         heading: 'By Type',
         links: [
-          {label: 'Nic Salts', tags: ['e-liquid', 'nic_salt'], url: buildSearchUrl(['e-liquid', 'nic_salt'])},
-          {label: 'Freebase', tags: ['e-liquid', 'freebase_nicotine'], url: buildSearchUrl(['e-liquid', 'freebase_nicotine'])},
-          {label: 'Traditional', tags: ['e-liquid', 'traditional_nicotine'], url: buildSearchUrl(['e-liquid', 'traditional_nicotine'])},
+          {label: 'Nic Salts', url: buildSearchUrl({productType: 'E-Liquid', q: 'nic salt'})},
+          {label: 'Shortfills', url: buildSearchUrl({productType: 'E-Liquid', q: 'shortfill'})},
+          {label: '10ml', url: buildSearchUrl({productType: 'E-Liquid', q: '10ml'})},
+          {label: '50ml', url: buildSearchUrl({productType: 'E-Liquid', q: '50ml'})},
+          {label: '100ml', url: buildSearchUrl({productType: 'E-Liquid', q: '100ml'})},
         ],
-        seeAllLabel: 'See all types',
-        seeAllTags: ['e-liquid'],
-      },
-      {
-        heading: 'By Size',
-        links: [
-          {label: '10ml', tags: ['e-liquid', '10ml'], url: buildSearchUrl(['e-liquid', '10ml'])},
-          {label: '50ml Shortfill', tags: ['e-liquid', '50ml', 'shortfill'], url: buildSearchUrl(['e-liquid', '50ml', 'shortfill'])},
-          {label: '100ml Shortfill', tags: ['e-liquid', '100ml', 'shortfill'], url: buildSearchUrl(['e-liquid', '100ml', 'shortfill'])},
-        ],
-        seeAllLabel: 'See all sizes',
-        seeAllTags: ['e-liquid'],
-      },
-      {
-        heading: 'By Flavour',
-        links: [
-          {label: 'Fruity', tags: ['e-liquid', 'fruity'], url: buildSearchUrl(['e-liquid', 'fruity'])},
-          {label: 'Ice & Menthol', tags: ['e-liquid', 'ice'], url: buildSearchUrl(['e-liquid', 'ice'])},
-          {label: 'Tobacco', tags: ['e-liquid', 'tobacco'], url: buildSearchUrl(['e-liquid', 'tobacco'])},
-          {label: 'Desserts & Bakery', tags: ['e-liquid', 'desserts/bakery'], url: buildSearchUrl(['e-liquid', 'desserts/bakery'])},
-          {label: 'Beverages', tags: ['e-liquid', 'beverages'], url: buildSearchUrl(['e-liquid', 'beverages'])},
-          {label: 'Cereal', tags: ['e-liquid', 'cereal'], url: buildSearchUrl(['e-liquid', 'cereal'])},
-        ],
-        seeAllLabel: 'See all flavours',
-        seeAllTags: ['e-liquid'],
-      },
-      {
-        heading: 'By VG/PG Ratio',
-        links: [
-          {label: '50/50', tags: ['e-liquid', '50/50'], url: buildSearchUrl(['e-liquid', '50/50'])},
-          {label: '70/30', tags: ['e-liquid', '70/30'], url: buildSearchUrl(['e-liquid', '70/30'])},
-          {label: '80/20', tags: ['e-liquid', '80/20'], url: buildSearchUrl(['e-liquid', '80/20'])},
-        ],
-        seeAllLabel: 'See all ratios',
-        seeAllTags: ['e-liquid'],
-      },
-      {
-        heading: 'By Strength',
-        links: [
-          {label: '0mg', tags: ['e-liquid', '0mg'], url: buildSearchUrl(['e-liquid', '0mg'])},
-          {label: '3mg', tags: ['e-liquid', '3mg'], url: buildSearchUrl(['e-liquid', '3mg'])},
-          {label: '6mg', tags: ['e-liquid', '6mg'], url: buildSearchUrl(['e-liquid', '6mg'])},
-          {label: '10mg', tags: ['e-liquid', '10mg'], url: buildSearchUrl(['e-liquid', '10mg'])},
-          {label: '12mg', tags: ['e-liquid', '12mg'], url: buildSearchUrl(['e-liquid', '12mg'])},
-          {label: '18mg', tags: ['e-liquid', '18mg'], url: buildSearchUrl(['e-liquid', '18mg'])},
-          {label: '20mg', tags: ['e-liquid', '20mg'], url: buildSearchUrl(['e-liquid', '20mg'])},
-        ],
-        seeAllLabel: 'See all strengths',
-        seeAllTags: ['e-liquid'],
+        seeAllLabel: 'See all e-liquids',
+        seeAllProductType: 'E-Liquid',
       },
     ],
   },
@@ -267,7 +233,7 @@ export const MEGA_MENU: MenuCategory[] = [
   {
     id: 'devices',
     label: 'Devices',
-    tags: ['device'],
+    productType: 'Device',
     hero: CATEGORY_HEROES.device,
     quizLink: {
       label: 'Device Studio Quiz',
@@ -277,44 +243,20 @@ export const MEGA_MENU: MenuCategory[] = [
       {
         heading: 'By Category',
         links: [
-          {label: 'Pod Systems', tags: ['pod_system'], url: buildSearchUrl(['pod_system'])},
-          {label: 'Box Mods', tags: ['box_mod'], url: buildSearchUrl(['box_mod'])},
-          {label: 'Starter Kits', tags: ['device'], url: buildSearchUrl(['device'])},
-          {label: 'Tanks', tags: ['tank'], url: buildSearchUrl(['tank'])},
+          {label: 'Pod Systems', url: buildSearchUrl({productType: 'Pod System'})},
+          {label: 'Starter Kits', url: buildSearchUrl({productType: 'Device', q: 'starter kit'})},
         ],
         seeAllLabel: 'See all devices',
-        seeAllTags: ['device'],
+        seeAllProductType: 'Device',
       },
       {
-        heading: 'By Style',
+        heading: 'By Brand',
         links: [
-          {label: 'Pen Style', tags: ['device', 'pen_style'], url: buildSearchUrl(['device', 'pen_style'])},
-          {label: 'Pod Style', tags: ['device', 'pod_style'], url: buildSearchUrl(['device', 'pod_style'])},
-          {label: 'Box Style', tags: ['device', 'box_style'], url: buildSearchUrl(['device', 'box_style'])},
-          {label: 'Compact', tags: ['device', 'compact'], url: buildSearchUrl(['device', 'compact'])},
-          {label: 'Mini', tags: ['device', 'mini'], url: buildSearchUrl(['device', 'mini'])},
+          {label: 'Hayati X4', vendor: 'Hayati', url: buildSearchUrl({vendor: 'Hayati', productType: 'Device'})},
+          {label: 'Hayati Remix', vendor: 'Hayati', url: buildSearchUrl({vendor: 'Hayati', productType: 'Device'})},
         ],
-        seeAllLabel: 'See all styles',
-        seeAllTags: ['device'],
-      },
-      {
-        heading: 'By Vaping Style',
-        links: [
-          {label: 'Mouth-to-Lung', tags: ['device', 'mouth-to-lung'], url: buildSearchUrl(['device', 'mouth-to-lung'])},
-          {label: 'Direct-to-Lung', tags: ['device', 'direct-to-lung'], url: buildSearchUrl(['device', 'direct-to-lung'])},
-          {label: 'Restricted DTL', tags: ['device', 'restricted-direct-to-lung'], url: buildSearchUrl(['device', 'restricted-direct-to-lung'])},
-        ],
-        seeAllLabel: 'See all vaping styles',
-        seeAllTags: ['device'],
-      },
-      {
-        heading: 'By Power',
-        links: [
-          {label: 'Rechargeable', tags: ['device', 'rechargeable'], url: buildSearchUrl(['device', 'rechargeable'])},
-          {label: 'Removable Battery', tags: ['device', 'removable_battery'], url: buildSearchUrl(['device', 'removable_battery'])},
-        ],
-        seeAllLabel: 'See all power options',
-        seeAllTags: ['device'],
+        seeAllLabel: 'See all brands',
+        seeAllProductType: 'Device',
       },
     ],
   },
@@ -325,60 +267,26 @@ export const MEGA_MENU: MenuCategory[] = [
   {
     id: 'pods-coils',
     label: 'Pods & Coils',
-    tags: ['pod', 'coil'],
+    productType: 'Pod',
     hero: CATEGORY_HEROES.pod,
     columns: [
       {
         heading: 'Pods',
         links: [
-          {label: 'Pre-filled Pods', tags: ['pod', 'prefilled_pod'], url: buildSearchUrl(['pod', 'prefilled_pod'])},
-          {label: 'Replacement Pods', tags: ['pod', 'replacement_pod'], url: buildSearchUrl(['pod', 'replacement_pod'])},
+          {label: 'Pre-filled Pods', url: buildSearchUrl({productType: 'Pod', q: 'prefilled'})},
+          {label: 'Replacement Pods', url: buildSearchUrl({productType: 'Pod', q: 'replacement'})},
         ],
         seeAllLabel: 'See all pods',
-        seeAllTags: ['pod'],
+        seeAllProductType: 'Pod',
       },
       {
         heading: 'Coils',
         links: [
-          {label: 'Sub-Ohm Coils (0.3-0.5)', tags: ['coil', '0.3ohm'], url: buildSearchUrl(['coil', '0.3ohm'])},
-          {label: 'RDTL Coils (0.6-0.8)', tags: ['coil', '0.6ohm'], url: buildSearchUrl(['coil', '0.6ohm'])},
-          {label: 'MTL Coils (1.0+)', tags: ['coil', '1.0ohm'], url: buildSearchUrl(['coil', '1.0ohm'])},
+          {label: 'Sub-Ohm Coils', url: buildSearchUrl({productType: 'Coil', q: 'sub ohm'})},
+          {label: 'MTL Coils', url: buildSearchUrl({productType: 'Coil', q: 'MTL'})},
         ],
         seeAllLabel: 'See all coils',
-        seeAllTags: ['coil'],
-      },
-      {
-        heading: 'By Capacity',
-        links: [
-          {label: '2ml', tags: ['pod', '2ml'], url: buildSearchUrl(['pod', '2ml'])},
-          {label: '3ml', tags: ['pod', '3ml'], url: buildSearchUrl(['pod', '3ml'])},
-          {label: '4ml', tags: ['pod', '4ml'], url: buildSearchUrl(['pod', '4ml'])},
-          {label: '5ml+', tags: ['pod', '5ml'], url: buildSearchUrl(['pod', '5ml'])},
-        ],
-        seeAllLabel: 'See all capacities',
-        seeAllTags: ['pod'],
-      },
-      {
-        heading: 'By Resistance',
-        links: [
-          {label: '0.3ohm', tags: ['coil', '0.3ohm'], url: buildSearchUrl(['coil', '0.3ohm'])},
-          {label: '0.6ohm', tags: ['coil', '0.6ohm'], url: buildSearchUrl(['coil', '0.6ohm'])},
-          {label: '0.8ohm', tags: ['coil', '0.8ohm'], url: buildSearchUrl(['coil', '0.8ohm'])},
-          {label: '1.0ohm', tags: ['coil', '1.0ohm'], url: buildSearchUrl(['coil', '1.0ohm'])},
-          {label: '1.2ohm', tags: ['coil', '1.2ohm'], url: buildSearchUrl(['coil', '1.2ohm'])},
-        ],
-        seeAllLabel: 'See all resistances',
-        seeAllTags: ['coil'],
-      },
-      {
-        heading: 'Tank Parts',
-        links: [
-          {label: 'Replacement Glass', tags: ['tank', 'glass_tube'], url: buildSearchUrl(['tank', 'glass_tube'])},
-          {label: 'O-Rings', tags: ['tank', 'o-rings'], url: buildSearchUrl(['tank', 'o-rings'])},
-          {label: 'Drip Tips', tags: ['accessory', 'drip_tip'], url: buildSearchUrl(['accessory', 'drip_tip'])},
-        ],
-        seeAllLabel: 'See all tank parts',
-        seeAllTags: ['tank'],
+        seeAllProductType: 'Coil',
       },
     ],
   },
@@ -389,40 +297,27 @@ export const MEGA_MENU: MenuCategory[] = [
   {
     id: 'accessories',
     label: 'Accessories',
-    tags: ['accessory'],
+    productType: 'Accessory',
     hero: CATEGORY_HEROES.accessory,
     columns: [
       {
         heading: 'Batteries & Power',
         links: [
-          {label: 'Batteries', tags: ['accessory', 'battery'], url: buildSearchUrl(['accessory', 'battery'])},
-          {label: 'Chargers', tags: ['accessory', 'charger'], url: buildSearchUrl(['accessory', 'charger'])},
-          {label: 'Charging Cables', tags: ['accessory', 'charging_cable'], url: buildSearchUrl(['accessory', 'charging_cable'])},
-          {label: 'Battery Wraps', tags: ['accessory', 'battery_wraps'], url: buildSearchUrl(['accessory', 'battery_wraps'])},
+          {label: 'Batteries', url: buildSearchUrl({productType: 'Accessory', q: 'battery'})},
+          {label: 'Chargers', url: buildSearchUrl({productType: 'Accessory', q: 'charger'})},
+          {label: 'Charging Cables', url: buildSearchUrl({productType: 'Accessory', q: 'cable'})},
         ],
         seeAllLabel: 'See all power accessories',
-        seeAllTags: ['accessory', 'battery'],
+        seeAllProductType: 'Accessory',
       },
       {
-        heading: 'Cases & Storage',
+        heading: 'Cases & Tools',
         links: [
-          {label: 'Pouches', tags: ['accessory', 'pouch'], url: buildSearchUrl(['accessory', 'pouch'])},
-          {label: 'Cases', tags: ['accessory', 'case'], url: buildSearchUrl(['accessory', 'case'])},
+          {label: 'Cases', url: buildSearchUrl({productType: 'Accessory', q: 'case'})},
+          {label: 'Tool Kits', url: buildSearchUrl({productType: 'Accessory', q: 'tool'})},
         ],
-        seeAllLabel: 'See all storage',
-        seeAllTags: ['accessory', 'case'],
-      },
-      {
-        heading: 'Tools & Parts',
-        links: [
-          {label: 'Tool Kits', tags: ['accessory', 'tool_kit'], url: buildSearchUrl(['accessory', 'tool_kit'])},
-          {label: 'Cotton', tags: ['accessory', 'cotton'], url: buildSearchUrl(['accessory', 'cotton'])},
-          {label: 'Wire', tags: ['accessory', 'wire'], url: buildSearchUrl(['accessory', 'wire'])},
-          {label: 'Screwdrivers', tags: ['accessory', 'screwdriver'], url: buildSearchUrl(['accessory', 'screwdriver'])},
-          {label: 'Mouthpieces', tags: ['accessory', 'mouthpiece'], url: buildSearchUrl(['accessory', 'mouthpiece'])},
-        ],
-        seeAllLabel: 'See all tools',
-        seeAllTags: ['accessory', 'tool_kit'],
+        seeAllLabel: 'See all accessories',
+        seeAllProductType: 'Accessory',
       },
     ],
   },
@@ -433,33 +328,18 @@ export const MEGA_MENU: MenuCategory[] = [
   {
     id: 'cbd',
     label: 'CBD',
-    tags: ['CBD'],
-    hero: CATEGORY_HEROES.CBD,
+    productType: 'CBD',
+    hero: CATEGORY_HEROES.cbd,
     columns: [
       {
         heading: 'By Form',
         links: [
-          {label: 'Oils & Tinctures', tags: ['CBD', 'oil'], url: buildSearchUrl(['CBD', 'oil'])},
-          {label: 'Gummies & Edibles', tags: ['CBD', 'gummy'], url: buildSearchUrl(['CBD', 'gummy'])},
-          {label: 'Capsules', tags: ['CBD', 'capsule'], url: buildSearchUrl(['CBD', 'capsule'])},
-          {label: 'Topicals & Patches', tags: ['CBD', 'topical'], url: buildSearchUrl(['CBD', 'topical'])},
-          {label: 'Beverages', tags: ['CBD', 'beverage'], url: buildSearchUrl(['CBD', 'beverage'])},
-          {label: 'Pastes & Shots', tags: ['CBD', 'paste'], url: buildSearchUrl(['CBD', 'paste'])},
+          {label: 'Oils & Tinctures', url: buildSearchUrl({productType: 'CBD', q: 'oil'})},
+          {label: 'Gummies & Edibles', url: buildSearchUrl({productType: 'CBD', q: 'gummy'})},
+          {label: 'Capsules', url: buildSearchUrl({productType: 'CBD', q: 'capsule'})},
         ],
-        seeAllLabel: 'See all forms',
-        seeAllTags: ['CBD'],
-      },
-      {
-        heading: 'By Type',
-        links: [
-          {label: 'Full Spectrum', tags: ['CBD', 'full_spectrum'], url: buildSearchUrl(['CBD', 'full_spectrum'])},
-          {label: 'Broad Spectrum', tags: ['CBD', 'broad_spectrum'], url: buildSearchUrl(['CBD', 'broad_spectrum'])},
-          {label: 'Isolate', tags: ['CBD', 'isolate'], url: buildSearchUrl(['CBD', 'isolate'])},
-          {label: 'CBG', tags: ['CBD', 'cbg'], url: buildSearchUrl(['CBD', 'cbg'])},
-          {label: 'CBDA', tags: ['CBD', 'cbda'], url: buildSearchUrl(['CBD', 'cbda'])},
-        ],
-        seeAllLabel: 'See all types',
-        seeAllTags: ['CBD'],
+        seeAllLabel: 'See all CBD',
+        seeAllProductType: 'CBD',
       },
     ],
   },
@@ -470,31 +350,28 @@ export const MEGA_MENU: MenuCategory[] = [
   {
     id: 'nicotine-pouches',
     label: 'Nic Pouches',
-    tags: ['nicotine_pouches'],
-    hero: CATEGORY_HEROES.nicotine_pouches,
+    productType: 'Nicotine Pouch',
+    hero: CATEGORY_HEROES.nicotine_pouch,
     columns: [
+      {
+        heading: 'By Brand',
+        links: [
+          {label: 'Velo', vendor: 'Velo', url: buildSearchUrl({vendor: 'Velo', productType: 'Nicotine Pouch'})},
+          {label: 'Zyn', vendor: 'Zyn', url: buildSearchUrl({vendor: 'Zyn', productType: 'Nicotine Pouch'})},
+          {label: 'Nordic Spirit', vendor: 'Nordic Spirit', url: buildSearchUrl({vendor: 'Nordic Spirit', productType: 'Nicotine Pouch'})},
+        ],
+        seeAllLabel: 'See all brands',
+        seeAllProductType: 'Nicotine Pouch',
+      },
       {
         heading: 'By Strength',
         links: [
-          {label: '3mg (Light)', tags: ['nicotine_pouches', '3mg'], url: buildSearchUrl(['nicotine_pouches', '3mg'])},
-          {label: '6mg (Medium)', tags: ['nicotine_pouches', '6mg'], url: buildSearchUrl(['nicotine_pouches', '6mg'])},
-          {label: '10mg (Strong)', tags: ['nicotine_pouches', '10mg'], url: buildSearchUrl(['nicotine_pouches', '10mg'])},
-          {label: '15mg (Extra Strong)', tags: ['nicotine_pouches', '15mg'], url: buildSearchUrl(['nicotine_pouches', '15mg'])},
-          {label: '20mg (Maximum)', tags: ['nicotine_pouches', '20mg'], url: buildSearchUrl(['nicotine_pouches', '20mg'])},
+          {label: 'Light (3-6mg)', url: buildSearchUrl({productType: 'Nicotine Pouch', q: '3mg 6mg'})},
+          {label: 'Regular (8-11mg)', url: buildSearchUrl({productType: 'Nicotine Pouch', q: '10mg'})},
+          {label: 'Strong (12-20mg)', url: buildSearchUrl({productType: 'Nicotine Pouch', q: '20mg'})},
         ],
         seeAllLabel: 'See all strengths',
-        seeAllTags: ['nicotine_pouches'],
-      },
-      {
-        heading: 'By Flavour',
-        links: [
-          {label: 'Fruity', tags: ['nicotine_pouches', 'fruity'], url: buildSearchUrl(['nicotine_pouches', 'fruity'])},
-          {label: 'Ice & Menthol', tags: ['nicotine_pouches', 'ice'], url: buildSearchUrl(['nicotine_pouches', 'ice'])},
-          {label: 'Tobacco', tags: ['nicotine_pouches', 'tobacco'], url: buildSearchUrl(['nicotine_pouches', 'tobacco'])},
-          {label: 'Beverages', tags: ['nicotine_pouches', 'beverages'], url: buildSearchUrl(['nicotine_pouches', 'beverages'])},
-        ],
-        seeAllLabel: 'See all flavours',
-        seeAllTags: ['nicotine_pouches'],
+        seeAllProductType: 'Nicotine Pouch',
       },
     ],
   },
@@ -508,8 +385,15 @@ export function getMenuCategory(id: string): MenuCategory | undefined {
 }
 
 /**
- * Get menu category by primary tag
+ * Get menu category by productType
  */
-export function getMenuCategoryByTag(tag: string): MenuCategory | undefined {
-  return MEGA_MENU.find((category) => category.tags.includes(tag));
+export function getMenuCategoryByProductType(productType: string | null | undefined): MenuCategory | undefined {
+  const normalized = normalizeProductType(productType);
+  if (!normalized) return undefined;
+  
+  return MEGA_MENU.find((category) => {
+    if (!category.productType) return false;
+    const categoryNormalized = normalizeProductType(category.productType);
+    return categoryNormalized === normalized;
+  });
 }

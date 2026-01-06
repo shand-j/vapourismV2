@@ -14,11 +14,13 @@ import {useCollectionTracking} from '~/lib/hooks/useCollectionTracking';
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
   
-  // Search for Hayati Remix device products using tag-based query
+  // Search for Hayati Remix device products using vendor filtering
   const searchResults = await searchProducts(
     storefront,
-    'tag:hayati tag:remix tag:device',
+    'Remix',
     {
+      vendor: 'Hayati',
+      productType: 'Device',
       sortKey: 'RELEVANCE',
       reverse: false,
       first: 48,
@@ -279,7 +281,7 @@ export default function HayatiRemixCollection() {
           <Link to="/collections/hayati-x4" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
             Hayati X4 Device
           </Link>
-          <Link to="/search?tag=device" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
+          <Link to="/search?type=Device" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
             All Devices
           </Link>
         </div>

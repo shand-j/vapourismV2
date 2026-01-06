@@ -169,12 +169,12 @@ interface PopularCategoriesProps {
 }
 
 const POPULAR_CATEGORIES = [
-  {label: 'Disposable Vapes', url: '/search?tag=disposable', icon: '💨'},
-  {label: 'E-Liquids', url: '/search?tag=e-liquid', icon: '💧'},
-  {label: 'Pod Systems', url: '/search?tag=pod_system', icon: '📱'},
-  {label: 'CBD Products', url: '/search?tag=CBD', icon: '🌿'},
-  {label: 'Nicotine Pouches', url: '/search?tag=nicotine_pouches', icon: '🎯'},
-  {label: 'Coils & Pods', url: '/search?tag=coil', icon: '🔧'},
+  {label: 'Disposable Vapes', url: '/search?type=Disposable', icon: '💨'},
+  {label: 'E-Liquids', url: '/search?type=E-Liquid', icon: '💧'},
+  {label: 'Pod Systems', url: '/search?type=Pod+System', icon: '📱'},
+  {label: 'CBD Products', url: '/search?type=CBD', icon: '🌿'},
+  {label: 'Nicotine Pouches', url: '/search?type=Nicotine+Pouch', icon: '🎯'},
+  {label: 'Coils & Pods', url: '/search?type=Coil', icon: '🔧'},
 ];
 
 export function PopularCategories({className}: PopularCategoriesProps) {

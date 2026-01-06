@@ -1,8 +1,8 @@
 /**
  * MegaMenu Component
  *
- * Tag-based mega menu navigation using static configuration.
- * Links to /search with tag query parameters.
+ * Vendor/productType-based mega menu navigation using static configuration.
+ * Links to /search with vendor/type query parameters.
  */
 
 import * as React from 'react';
@@ -69,7 +69,7 @@ export function MegaMenu({className}: MegaMenuProps) {
             onMouseLeave={handleMouseLeave}
           >
             <Link
-              to={buildSearchUrl(category.tags)}
+              to={buildSearchUrl({productType: category.productType, vendor: category.vendor})}
               className={cn(
                 'flex items-center justify-center gap-1 rounded-full px-3 py-2 text-sm font-medium transition',
                 activeCategory === category.id
@@ -144,7 +144,7 @@ function MegaMenuDropdown({category, onMouseEnter, onMouseLeave}: MegaMenuDropdo
               </Link>
             )}
             <Link
-              to={buildSearchUrl(category.tags)}
+              to={buildSearchUrl({productType: category.productType, vendor: category.vendor})}
               className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-white transition"
               style={{backgroundColor: category.hero.accentColor}}
             >
@@ -196,10 +196,10 @@ function MegaMenuColumn({column}: MegaMenuColumnProps) {
             </Link>
           </li>
         ))}
-        {column.seeAllLabel && column.seeAllTags && (
+        {column.seeAllLabel && (column.seeAllProductType || column.seeAllVendor) && (
           <li className="pt-2">
             <Link
-              to={buildSearchUrl(column.seeAllTags)}
+              to={buildSearchUrl({productType: column.seeAllProductType, vendor: column.seeAllVendor})}
               prefetch="intent"
               className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 transition hover:text-slate-700"
             >
@@ -301,7 +301,7 @@ export function MobileMenu({isOpen, onClose}: MobileMenuProps) {
                 <div className="bg-slate-50 px-4 pb-4">
                   {/* See all link */}
                   <Link
-                    to={buildSearchUrl(category.tags)}
+                    to={buildSearchUrl({productType: category.productType, vendor: category.vendor})}
                     onClick={onClose}
                     className="mb-3 flex items-center justify-between rounded-lg bg-white px-3 py-2 text-sm font-medium text-slate-900"
                   >
@@ -340,10 +340,10 @@ export function MobileMenu({isOpen, onClose}: MobileMenuProps) {
                               </Link>
                             </li>
                           ))}
-                          {column.links.length > 5 && column.seeAllTags && (
+                          {column.links.length > 5 && (column.seeAllProductType || column.seeAllVendor) && (
                             <li>
                               <Link
-                                to={buildSearchUrl(column.seeAllTags)}
+                                to={buildSearchUrl({productType: column.seeAllProductType, vendor: column.seeAllVendor})}
                                 onClick={onClose}
                                 className="block px-3 py-2 text-xs font-medium text-slate-500"
                               >

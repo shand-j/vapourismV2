@@ -237,7 +237,7 @@ Explore top-rated vape starter kits UK from leading brands
 🌟 **[Shop Best Sellers](/collections/best-sellers)**  
 Discover the most popular compact vape kits and portable vape devices
 
-📚 **[Read More Vape Kit Reviews](/blog)**  
+📚 **[Read More Vape Kit Reviews](/blogs/news)**  
 Make informed decisions with expert guides and user experiences
 
 💬 **Need Help Choosing?**  

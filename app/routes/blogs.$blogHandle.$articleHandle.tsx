@@ -10,7 +10,7 @@ import {
 import {SEOAutomationService} from '~/preserved/seo-automation';
 import {EmailCaptureCTA} from '~/components/EmailCaptureCTA';
 
-export const meta: MetaFunction<typeof loader> = ({data, params}) => {
+export const meta: MetaFunction<typeof loader> = ({data}) => {
   if (!data?.article) {
     return [
       {title: 'Article Not Found | Vapourism'},

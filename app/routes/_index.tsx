@@ -634,7 +634,7 @@ export default function IndexRoute() {
             <div className="glass-morphism rounded-2xl border border-slate-100 p-8">
               <h3 className="text-xl font-semibold text-slate-900 mb-4">Choosing your device</h3>
               <p className="leading-relaxed mb-4">
-                Starter kits and pod systems provide the easiest entry point for new vapers. These devices feature simple operation, minimal maintenance, and often include everything needed to begin vaping immediately. Popular options include refillable pod kits from brands like SMOK, Vaporesso, and Voopoo. <Link to="/blog" className="text-[#5b2be0] hover:underline font-medium">Read our buying guides →</Link>
+                Starter kits and pod systems provide the easiest entry point for new vapers. These devices feature simple operation, minimal maintenance, and often include everything needed to begin vaping immediately. Popular options include refillable pod kits from brands like SMOK, Vaporesso, and Voopoo. <Link to="/blogs/news" className="text-[#5b2be0] hover:underline font-medium">Read our buying guides →</Link>
               </p>
               <p className="leading-relaxed">
                 Disposable vapes offer maximum convenience for trying vaping without commitment. These single-use devices require no charging or refilling, making them ideal for testing different flavours and nicotine strengths before investing in a reusable system. <Link to="/search" className="text-[#5b2be0] hover:underline font-medium">Browse all devices →</Link>

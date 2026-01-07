@@ -62,7 +62,7 @@ Elf Bar, Lost Mary, SMOK, Voopoo, Aspire, Innokin, Geek Bar, Crystal Bar, Hayati
 
 ## Blog
 
-- [Blog](${baseUrl}/blog): Expert vaping guides, reviews, and educational content
+- [Blog](${baseUrl}/blogs/news): Expert vaping guides, reviews, and educational content
 
 ## Support
 

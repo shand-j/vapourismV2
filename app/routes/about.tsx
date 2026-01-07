@@ -84,7 +84,7 @@ export default function AboutRoute() {
                 Our retail philosophy combines the convenience of e-commerce with the accountability standards expected of traditional tobacco retailers. Every aspect of our operation—from product sourcing to age verification—reflects our commitment to being a responsible participant in the UK nicotine marketplace.
               </p>
               <p className="text-slate-700 leading-relaxed">
-                We believe informed consumers make better choices. That's why we invest heavily in product information, transparent labelling, and <Link to="/blog" className="text-[#5b2be0] hover:underline">educational resources</Link> that help customers understand what they're purchasing, how products work, and the regulatory landscape governing vaping in the United Kingdom. Visit our <Link to="/faq" className="text-[#5b2be0] hover:underline">FAQ section</Link> for answers to common questions.
+                We believe informed consumers make better choices. That's why we invest heavily in product information, transparent labelling, and <Link to="/blogs/news" className="text-[#5b2be0] hover:underline">educational resources</Link> that help customers understand what they're purchasing, how products work, and the regulatory landscape governing vaping in the United Kingdom. Visit our <Link to="/faq" className="text-[#5b2be0] hover:underline">FAQ section</Link> for answers to common questions.
               </p>
             </div>
           </div>
@@ -177,7 +177,7 @@ export default function AboutRoute() {
                   <p className="text-sm text-slate-600 mt-1">Get in touch with our customer support team for assistance</p>
                 </div>
               </Link>
-              <Link to="/blog" className="flex items-start gap-3 p-4 rounded-xl border border-slate-200 hover:border-[#5b2be0] hover:bg-slate-50 transition-colors">
+              <Link to="/blogs/news" className="flex items-start gap-3 p-4 rounded-xl border border-slate-200 hover:border-[#5b2be0] hover:bg-slate-50 transition-colors">
                 <div className="mt-1">
                   <svg className="w-5 h-5 text-[#5b2be0]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />

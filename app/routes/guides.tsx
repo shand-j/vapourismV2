@@ -160,7 +160,7 @@ export default function GuidesIndexRoute() {
           <div className="rounded-2xl border border-blue-100 bg-blue-50 p-8 text-center">
             <h3 className="text-xl font-semibold text-slate-900 mb-3">Have questions about our practices?</h3>
             <p className="text-slate-700 mb-6">
-              If you can't find the information you need in our guides, our customer service team can answer specific questions about our compliance procedures, verification processes, or sustainability initiatives. Check our <Link to="/faq" className="text-[#5b2be0] hover:underline font-medium">FAQ section</Link> for quick answers or browse our <Link to="/blog" className="text-[#5b2be0] hover:underline font-medium">educational blog</Link> for in-depth articles.
+              If you can't find the information you need in our guides, our customer service team can answer specific questions about our compliance procedures, verification processes, or sustainability initiatives. Check our <Link to="/faq" className="text-[#5b2be0] hover:underline font-medium">FAQ section</Link> for quick answers or browse our <Link to="/blogs/news" className="text-[#5b2be0] hover:underline font-medium">educational blog</Link> for in-depth articles.
             </p>
             <div className="flex flex-wrap gap-3 justify-center">
               <Link

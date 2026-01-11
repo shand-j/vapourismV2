@@ -282,3 +282,123 @@ The V2 refactor aims to reduce complexity while improving UX and maintainability
 - **Compliance**: `app/lib/hooks/useAgeVerification.tsx`, `app/lib/shipping-restrictions.ts`
 - **SEO**: `app/lib/seo-automation.ts`, meta exports in route files
 - **Categories**: `app/lib/category-mapping.ts` (mappings), `app/components/Header.tsx` (navigation)
+
+---
+
+## NicPowch: Shopify Theme Development
+
+### Overview
+NicPowch is a **separate brand** focused exclusively on nicotine pouches. Unlike Vapourism (Hydrogen storefront), NicPowch is built as a **native Shopify theme** using Liquid templates.
+
+### Theme Architecture
+The NicPowch theme lives in `/nicpowch-theme/` and follows standard Shopify theme structure:
+
+```
+/nicpowch-theme/
+├── assets/              # CSS, JS, images, fonts
+│   ├── base.css         # Foundation styles
+│   ├── component-*.css  # Component-specific styles
+│   ├── section-*.css    # Section-specific styles
+│   └── theme.js         # Main JavaScript
+├── config/              # Theme settings
+│   ├── settings_schema.json  # Theme customizer schema
+│   └── settings_data.json    # Default theme settings
+├── layout/              # Base page layouts
+│   └── theme.liquid     # Main layout wrapper
+├── locales/             # i18n translations
+│   └── en.default.json  # English translations
+├── sections/            # Reusable page sections
+│   ├── header.liquid    # Site header
+│   ├── footer.liquid    # Site footer
+│   ├── hero.liquid      # Hero banner
+│   └── product-grid.liquid  # Product collection grid
+├── snippets/            # Reusable Liquid code
+│   ├── product-card.liquid  # Product card component
+│   ├── price.liquid     # Price display
+│   └── icon-*.liquid    # SVG icons
+└── templates/           # Page templates
+    ├── index.json       # Homepage
+    ├── product.json     # Product page
+    ├── collection.json  # Collection page
+    └── cart.json        # Cart page
+```
+
+### Development Commands
+```bash
+# Install Shopify CLI
+npm install -g @shopify/cli @shopify/theme
+
+# Navigate to theme directory
+cd nicpowch-theme
+
+# Start development server
+shopify theme dev --store=nicpowch.myshopify.com
+
+# Push theme to Shopify
+shopify theme push
+
+# Pull theme from Shopify
+shopify theme pull
+
+# Check theme for issues
+shopify theme check
+```
+
+### NicPowch Brand Guidelines
+- **Primary Colors**: Teal (#0d9488) to Emerald (#10b981) gradient
+- **Accent**: Teal-500 (#14b8a6)
+- **Typography**: System fonts, clean sans-serif
+- **Products**: Filter to nicotine_pouches and snus tags only
+- **Target Market**: UK adults 18+
+
+### Shopify Theme Best Practices
+
+#### Liquid Templating
+- Use sections and blocks for customizable content
+- Prefer JSON templates over Liquid templates (Online Store 2.0)
+- Use snippets for reusable code fragments
+- Always escape user-generated content with `| escape`
+
+#### Performance
+- Minimize JavaScript; use native browser features
+- Lazy load images using `loading="lazy"`
+- Use responsive images with `srcset`
+- Minimize render-blocking CSS
+
+#### Accessibility
+- Include proper ARIA labels
+- Ensure keyboard navigation
+- Maintain color contrast ratios (WCAG AA)
+- Test with screen readers
+
+#### SEO
+- Use semantic HTML5 elements
+- Include structured data (JSON-LD)
+- Optimize meta tags in theme.liquid
+- Use canonical URLs
+
+### Product Filtering for NicPowch
+All NicPowch templates should filter products using:
+```liquid
+{% assign nicotine_pouches = collection.products | where: "tags", "nicotine_pouches" %}
+```
+
+Or use Shopify's collection filtering with pre-configured collections:
+- `nicotine-pouches` - All nicotine pouches
+- `nicotine-pouches-by-brand` - Shop by brand (Velo, Zyn, etc.)
+- `nicotine-pouches-by-strength` - Shop by strength (3mg, 6mg, etc.)
+
+### Age Verification
+NicPowch requires age verification for all visitors:
+- Use Shopify apps like "Age Checker" or custom age gate
+- Store verification status in customer metafields
+- Implement cookie-based session tracking
+
+### Key Differences from Vapourism
+| Aspect | Vapourism | NicPowch |
+|--------|-----------|----------|
+| Technology | Hydrogen (React/Remix) | Shopify Theme (Liquid) |
+| Deployment | Oxygen (Cloudflare Workers) | Shopify CDN |
+| Products | Full vape catalog | Nicotine pouches only |
+| Customization | Code-first | Theme editor-first |
+| Hosting | Shopify Oxygen | Native Shopify |

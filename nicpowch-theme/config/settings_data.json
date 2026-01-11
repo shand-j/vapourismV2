@@ -1,0 +1,36 @@
+{
+  "current": {
+    "color_primary": "#0d9488",
+    "color_secondary": "#10b981",
+    "color_accent": "#14b8a6",
+    "color_background": "#ffffff",
+    "color_foreground": "#0f172a",
+    "type_header_font": "inter_n6",
+    "type_body_font": "inter_n4",
+    "heading_scale": 100,
+    "body_scale": 100,
+    "page_width": 1400,
+    "spacing_sections": 40,
+    "border_radius": 8,
+    "logo_width": 150,
+    "enable_age_verification": true,
+    "age_verification_title": "Age Verification Required",
+    "age_verification_message": "<p>You must be 18 years or older to purchase nicotine products. By entering this site, you confirm you are of legal age.</p>",
+    "age_verification_confirm_button": "I am 18 or older",
+    "age_verification_deny_button": "I am under 18",
+    "age_verification_deny_url": "https://www.google.com",
+    "cart_type": "drawer",
+    "show_vendor": true,
+    "sections": {
+      "header": {
+        "type": "header",
+        "settings": {}
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {}
+      }
+    },
+    "content_for_index": []
+  }
+}

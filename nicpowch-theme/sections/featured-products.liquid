@@ -1,0 +1,211 @@
+{%- comment -%}
+  NicPowch Featured Products Section
+  Display nicotine pouch products in a grid
+{%- endcomment -%}
+
+{%- style -%}
+  .featured-products {
+    padding: var(--spacing-sections-mobile) 0;
+  }
+
+  @media (min-width: 990px) {
+    .featured-products {
+      padding: var(--spacing-sections-desktop) 0;
+    }
+  }
+
+  .featured-products__container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .featured-products__header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .featured-products__subtitle {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(var(--color-foreground-rgb), 0.5);
+    margin: 0 0 0.75rem;
+  }
+
+  .featured-products__title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 0.75rem;
+    color: var(--color-foreground);
+  }
+
+  .featured-products__description {
+    font-size: 1rem;
+    color: rgba(var(--color-foreground-rgb), 0.7);
+    margin: 0;
+  }
+
+  .featured-products__grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 500px) {
+    .featured-products__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 750px) {
+    .featured-products__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 990px) {
+    .featured-products__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .featured-products__footer {
+    text-align: center;
+    margin-top: 2rem;
+  }
+
+  .featured-products__view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-foreground);
+    background-color: white;
+    border: 1px solid rgba(var(--color-foreground-rgb), 0.15);
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .featured-products__view-all:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+{%- endstyle -%}
+
+<section class="featured-products">
+  <div class="featured-products__container">
+    <div class="featured-products__header">
+      {%- if section.settings.subtitle != blank -%}
+        <p class="featured-products__subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.title != blank -%}
+        <h2 class="featured-products__title">{{ section.settings.title }}</h2>
+      {%- endif -%}
+
+      {%- if section.settings.description != blank -%}
+        <p class="featured-products__description">{{ section.settings.description }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="featured-products__grid">
+      {%- assign collection = collections[section.settings.collection] -%}
+      {%- assign products_to_show = section.settings.products_to_show | default: 8 -%}
+
+      {%- if collection != blank and collection.products.size > 0 -%}
+        {%- for product in collection.products limit: products_to_show -%}
+          {% render 'product-card', product: product %}
+        {%- endfor -%}
+      {%- else -%}
+        {%- comment -%} Show placeholder products {%- endcomment -%}
+        {%- for i in (1..products_to_show) -%}
+          <div class="product-card product-card--placeholder">
+            <div class="product-card__image" style="background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.1), rgba(var(--color-secondary-rgb), 0.1)); aspect-ratio: 1;">
+              <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: rgba(var(--color-foreground-rgb), 0.3); font-size: 0.875rem;">
+                Product {{ i }}
+              </div>
+            </div>
+            <div class="product-card__content">
+              <span class="product-card__vendor">Brand</span>
+              <h3 class="product-card__title">Nicotine Pouch Product</h3>
+              <p class="product-card__price">£4.99</p>
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.show_view_all and collection != blank -%}
+      <div class="featured-products__footer">
+        <a href="{{ collection.url }}" class="featured-products__view-all">
+          {{ section.settings.view_all_text | default: "Browse all pouches" }}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured products",
+  "tag": "section",
+  "class": "section-featured-products",
+  "settings": [
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Featured products"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Popular nicotine pouches"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Top-selling pouches from trusted brands, in stock and ready for next-day delivery."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "label": "Products to show"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show 'View all' button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "view_all_text",
+      "label": "View all button text",
+      "default": "Browse all pouches"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured products"
+    }
+  ]
+}
+{% endschema %}

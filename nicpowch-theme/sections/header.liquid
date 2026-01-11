@@ -1,0 +1,275 @@
+{%- comment -%}
+  NicPowch Header Section
+  Premium nicotine pouches UK - teal/emerald branding
+{%- endcomment -%}
+
+{%- style -%}
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(15, 23, 42, 0.1);
+  }
+
+  .header__announcement {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    font-size: 0.875rem;
+  }
+
+  .header__announcement-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .header__container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .header__logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-foreground);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .header__logo-text {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .header__nav {
+    display: none;
+    flex: 1;
+    justify-content: center;
+  }
+
+  @media (min-width: 990px) {
+    .header__nav {
+      display: flex;
+    }
+  }
+
+  .header__nav-list {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .header__nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-foreground);
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  .header__nav-link:hover {
+    background-color: rgba(var(--color-primary-rgb), 0.1);
+    color: var(--color-primary);
+  }
+
+  .header__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .header__action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid rgba(var(--color-foreground-rgb), 0.15);
+    border-radius: var(--border-radius);
+    background-color: white;
+    color: var(--color-foreground);
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    text-decoration: none;
+    position: relative;
+  }
+
+  .header__action-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .header__cart-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    font-size: 0.625rem;
+    font-weight: 600;
+    line-height: 18px;
+    text-align: center;
+    color: white;
+    background-color: var(--color-primary);
+    border-radius: 9999px;
+  }
+
+  .header__mobile-toggle {
+    display: flex;
+  }
+
+  @media (min-width: 990px) {
+    .header__mobile-toggle {
+      display: none;
+    }
+  }
+
+  .header__search {
+    display: none;
+    min-width: 240px;
+    max-width: 320px;
+  }
+
+  @media (min-width: 990px) {
+    .header__search {
+      display: block;
+    }
+  }
+
+  .header__search-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    color: rgba(var(--color-foreground-rgb), 0.6);
+    background-color: rgba(var(--color-foreground-rgb), 0.05);
+    border: 1px solid rgba(var(--color-foreground-rgb), 0.1);
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    transition: border-color 0.2s, background-color 0.2s;
+  }
+
+  .header__search-link:hover {
+    border-color: var(--color-primary);
+    background-color: white;
+  }
+{%- endstyle -%}
+
+<header class="header" role="banner">
+  {%- if section.settings.show_announcement -%}
+    <div class="header__announcement">
+      <div class="header__announcement-text">
+        <span>🚚 Free UK delivery on orders over £{{ section.settings.free_shipping_threshold }}</span>
+        <span style="opacity: 0.6;">•</span>
+        <span style="text-transform: uppercase; letter-spacing: 0.15em; font-weight: 600;">Tobacco-Free Nicotine Pouches</span>
+      </div>
+    </div>
+  {%- endif -%}
+
+  <div class="header__container">
+    <button type="button" class="header__action-btn header__mobile-toggle" aria-label="Open menu">
+      {% render 'icon-menu' %}
+    </button>
+
+    <a href="{{ routes.root_url }}" class="header__logo">
+      {%- if settings.logo != blank -%}
+        <img src="{{ settings.logo | image_url: width: settings.logo_width }}" alt="{{ shop.name }}" width="{{ settings.logo_width }}" height="auto" loading="eager">
+      {%- else -%}
+        <span class="header__logo-text">NicPowch</span>
+      {%- endif -%}
+    </a>
+
+    <nav class="header__nav" role="navigation" aria-label="Main navigation">
+      <ul class="header__nav-list">
+        {%- for link in section.settings.menu.links -%}
+          <li>
+            <a href="{{ link.url }}" class="header__nav-link"{% if link.current %} aria-current="page"{% endif %}>
+              {{ link.title }}
+              {%- if link.links.size > 0 -%}
+                {% render 'icon-chevron-down' %}
+              {%- endif -%}
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+
+    <div class="header__search">
+      <a href="{{ routes.search_url }}?type=product&q=nicotine+pouches" class="header__search-link">
+        {% render 'icon-search' %}
+        <span>Search pouches...</span>
+      </a>
+    </div>
+
+    <div class="header__actions">
+      <a href="{{ routes.account_url }}" class="header__action-btn" aria-label="Account">
+        {% render 'icon-user' %}
+      </a>
+
+      <a href="{{ routes.cart_url }}" class="header__action-btn" aria-label="Cart">
+        {% render 'icon-cart' %}
+        {%- if cart.item_count > 0 -%}
+          <span class="header__cart-count">{{ cart.item_count }}</span>
+        {%- endif -%}
+      </a>
+    </div>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "section-header",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": "Show announcement bar",
+      "default": true
+    },
+    {
+      "type": "number",
+      "id": "free_shipping_threshold",
+      "label": "Free shipping threshold (£)",
+      "default": 30
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Header"
+    }
+  ]
+}
+{% endschema %}

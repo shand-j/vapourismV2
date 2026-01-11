@@ -25,6 +25,7 @@
   },
   "include": [
     "app",
+    "nicpowch/app",
     "server.ts",
     "env.d.ts",
     "vite.config.ts",

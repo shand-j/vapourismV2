@@ -1,0 +1,173 @@
+{%- comment -%}
+  Age Verification Modal
+  Required for UK nicotine product sales - 18+
+{%- endcomment -%}
+
+<div id="age-verification-modal" class="age-modal" role="dialog" aria-modal="true" aria-labelledby="age-modal-title">
+  <div class="age-modal__overlay"></div>
+  <div class="age-modal__content">
+    <div class="age-modal__icon">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M12 16v-4M12 8h.01"/>
+      </svg>
+    </div>
+    
+    <h2 id="age-modal-title" class="age-modal__title">{{ settings.age_verification_title }}</h2>
+    
+    <div class="age-modal__message">
+      {{ settings.age_verification_message }}
+    </div>
+    
+    <div class="age-modal__buttons">
+      <button type="button" class="age-modal__button age-modal__button--confirm" onclick="confirmAge()">
+        {{ settings.age_verification_confirm_button }}
+      </button>
+      <button type="button" class="age-modal__button age-modal__button--deny" onclick="denyAge()">
+        {{ settings.age_verification_deny_button }}
+      </button>
+    </div>
+    
+    <p class="age-modal__legal">
+      By continuing, you agree to our <a href="/policies/terms-of-service">Terms of Service</a> and <a href="/policies/privacy-policy">Privacy Policy</a>.
+    </p>
+  </div>
+</div>
+
+<style>
+  .age-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  
+  .age-modal[hidden] {
+    display: none;
+  }
+  
+  .age-modal__overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+  }
+  
+  .age-modal__content {
+    position: relative;
+    max-width: 28rem;
+    width: 100%;
+    background-color: white;
+    border-radius: calc(var(--border-radius) * 2);
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  }
+  
+  .age-modal__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.1), rgba(var(--color-secondary-rgb), 0.1));
+    border-radius: 50%;
+    color: var(--color-primary);
+  }
+  
+  .age-modal__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 1rem;
+    color: var(--color-foreground);
+  }
+  
+  .age-modal__message {
+    color: rgba(var(--color-foreground-rgb), 0.7);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+  
+  .age-modal__message p {
+    margin: 0;
+  }
+  
+  .age-modal__buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .age-modal__button {
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+  
+  .age-modal__button--confirm {
+    color: white;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  }
+  
+  .age-modal__button--confirm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);
+  }
+  
+  .age-modal__button--deny {
+    color: var(--color-foreground);
+    background-color: rgba(var(--color-foreground-rgb), 0.05);
+    border: 1px solid rgba(var(--color-foreground-rgb), 0.1);
+  }
+  
+  .age-modal__button--deny:hover {
+    background-color: rgba(var(--color-foreground-rgb), 0.1);
+  }
+  
+  .age-modal__legal {
+    font-size: 0.75rem;
+    color: rgba(var(--color-foreground-rgb), 0.5);
+    margin: 1.5rem 0 0;
+  }
+  
+  .age-modal__legal a {
+    color: var(--color-primary);
+  }
+</style>
+
+<script>
+  (function() {
+    var modal = document.getElementById('age-verification-modal');
+    var storageKey = 'nicpowch_age_verified';
+    var denyUrl = {{ settings.age_verification_deny_url | json }};
+    
+    // Check if already verified
+    var isVerified = localStorage.getItem(storageKey);
+    
+    if (isVerified) {
+      modal.hidden = true;
+    } else {
+      modal.hidden = false;
+      document.body.style.overflow = 'hidden';
+    }
+    
+    // Expose functions globally
+    window.confirmAge = function() {
+      localStorage.setItem(storageKey, 'true');
+      modal.hidden = true;
+      document.body.style.overflow = '';
+    };
+    
+    window.denyAge = function() {
+      window.location.href = denyUrl || 'https://www.google.com';
+    };
+  })();
+</script>

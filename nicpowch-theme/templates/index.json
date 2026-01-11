@@ -1,0 +1,58 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "badge_text": "Tobacco-free nicotine • 18+ verified",
+        "heading_before": "Premium",
+        "heading_accent": "nicotine pouches",
+        "description": "Discover tobacco-free nicotine satisfaction. Discreet, smoke-free pouches from Velo, Zyn, Nordic Spirit, and more—delivered next-day to your door.",
+        "button_primary_text": "Shop all pouches",
+        "button_primary_url": "/collections/nicotine-pouches",
+        "overlay_title": "NicPowch",
+        "overlay_subtitle": "Premium Nicotine Pouches UK"
+      },
+      "blocks": {
+        "button-1": {
+          "type": "button",
+          "settings": {
+            "text": "Shop Velo",
+            "url": "/collections/velo"
+          }
+        },
+        "button-2": {
+          "type": "button",
+          "settings": {
+            "text": "Shop Zyn",
+            "url": "/collections/zyn"
+          }
+        }
+      },
+      "block_order": ["button-1", "button-2"]
+    },
+    "featured-products": {
+      "type": "featured-products",
+      "settings": {
+        "subtitle": "Featured products",
+        "title": "Popular nicotine pouches",
+        "description": "Top-selling pouches from trusted brands, in stock and ready for next-day delivery.",
+        "collection": "nicotine-pouches",
+        "products_to_show": 8,
+        "show_view_all": true,
+        "view_all_text": "Browse all pouches"
+      }
+    },
+    "strength-categories": {
+      "type": "rich-text",
+      "settings": {
+        "heading": "Shop by Strength",
+        "text": "<p>From light 3mg to UK maximum 20mg, we have every strength covered.</p>"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "featured-products",
+    "strength-categories"
+  ]
+}

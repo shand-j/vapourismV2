@@ -1,0 +1,352 @@
+{%- comment -%}
+  Auto Brand Grid Section
+  Automatically displays all brands (vendors) from a specified collection
+  No manual block configuration needed - pulls vendors dynamically from products
+{%- endcomment -%}
+
+{%- style -%}
+  .auto-brand-grid {
+    padding: var(--spacing-sections-mobile, 2rem) 0;
+    background-color: var(--color-background);
+  }
+
+  @media (min-width: 990px) {
+    .auto-brand-grid {
+      padding: var(--spacing-sections-desktop, 4rem) 0;
+    }
+  }
+
+  .auto-brand-grid__container {
+    max-width: var(--page-width, 1200px);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .auto-brand-grid__header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .auto-brand-grid__subtitle {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--color-primary, #0d9488);
+    margin: 0 0 0.75rem;
+  }
+
+  .auto-brand-grid__title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 0.75rem;
+    color: var(--color-foreground, #0f172a);
+  }
+
+  @media (min-width: 750px) {
+    .auto-brand-grid__title {
+      font-size: 2.5rem;
+    }
+  }
+
+  .auto-brand-grid__description {
+    font-size: 1.125rem;
+    color: rgba(15, 23, 42, 0.7);
+    max-width: 40rem;
+    margin: 0 auto;
+  }
+
+  .auto-brand-grid__count {
+    display: inline-block;
+    margin-top: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    background: linear-gradient(135deg, var(--color-primary, #0d9488) 0%, var(--color-secondary, #10b981) 100%);
+    color: white;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .auto-brand-grid__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  @media (min-width: 550px) {
+    .auto-brand-grid__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 750px) {
+    .auto-brand-grid__grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+    }
+  }
+
+  @media (min-width: 990px) {
+    .auto-brand-grid__grid {
+      grid-template-columns: repeat(6, 1fr);
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .auto-brand-grid__grid {
+      grid-template-columns: repeat(8, 1fr);
+    }
+  }
+
+  .auto-brand-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.25rem 1rem;
+    background-color: white;
+    border: 1px solid rgba(15, 23, 42, 0.1);
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--color-foreground, #0f172a);
+    transition: all 0.3s ease;
+  }
+
+  .auto-brand-card:hover {
+    border-color: var(--color-primary, #0d9488);
+    box-shadow: 0 10px 30px rgba(13, 148, 136, 0.15);
+    transform: translateY(-4px);
+  }
+
+  .auto-brand-card__logo {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--color-primary, #0d9488) 0%, var(--color-secondary, #10b981) 100%);
+    border-radius: 12px;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  .auto-brand-card__logo img {
+    max-width: 48px;
+    max-height: 48px;
+    object-fit: contain;
+  }
+
+  .auto-brand-card__initials {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .auto-brand-card__name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin: 0;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .auto-brand-card__product-count {
+    font-size: 0.75rem;
+    color: rgba(15, 23, 42, 0.6);
+    margin-top: 0.25rem;
+  }
+
+  /* Brand-specific colors */
+  .auto-brand-card[data-brand="velo"] .auto-brand-card__logo {
+    background: linear-gradient(135deg, #1a365d 0%, #2563eb 100%);
+  }
+  .auto-brand-card[data-brand="nordic-spirit"] .auto-brand-card__logo {
+    background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
+  }
+  .auto-brand-card[data-brand="on"] .auto-brand-card__logo {
+    background: linear-gradient(135deg, #7c2d12 0%, #ea580c 100%);
+  }
+  .auto-brand-card[data-brand="iceberg"] .auto-brand-card__logo {
+    background: linear-gradient(135deg, #0c4a6e 0%, #0ea5e9 100%);
+  }
+  .auto-brand-card[data-brand="cuba"] .auto-brand-card__logo {
+    background: linear-gradient(135deg, #78350f 0%, #d97706 100%);
+  }
+  .auto-brand-card[data-brand="kurwa"] .auto-brand-card__logo {
+    background: linear-gradient(135deg, #450a0a 0%, #dc2626 100%);
+  }
+  .auto-brand-card[data-brand="helwit"] .auto-brand-card__logo {
+    background: linear-gradient(135deg, #1e1b4b 0%, #7c3aed 100%);
+  }
+  .auto-brand-card[data-brand="ignite"] .auto-brand-card__logo {
+    background: linear-gradient(135deg, #7f1d1d 0%, #ef4444 100%);
+  }
+  .auto-brand-card[data-brand="fumi"] .auto-brand-card__logo {
+    background: linear-gradient(135deg, #831843 0%, #ec4899 100%);
+  }
+  .auto-brand-card[data-brand="ubbs"] .auto-brand-card__logo,
+  .auto-brand-card[data-brand="übbs"] .auto-brand-card__logo {
+    background: linear-gradient(135deg, #0f766e 0%, #2dd4bf 100%);
+  }
+  .auto-brand-card[data-brand="77"] .auto-brand-card__logo {
+    background: linear-gradient(135deg, #18181b 0%, #52525b 100%);
+  }
+  .auto-brand-card[data-brand="nois"] .auto-brand-card__logo {
+    background: linear-gradient(135deg, #14532d 0%, #22c55e 100%);
+  }
+  .auto-brand-card[data-brand="ghost"] .auto-brand-card__logo {
+    background: linear-gradient(135deg, #1f2937 0%, #6b7280 100%);
+  }
+  .auto-brand-card[data-brand="zeus"] .auto-brand-card__logo {
+    background: linear-gradient(135deg, #78350f 0%, #fbbf24 100%);
+  }
+  .auto-brand-card[data-brand="aroma-king"] .auto-brand-card__logo {
+    background: linear-gradient(135deg, #581c87 0%, #c084fc 100%);
+  }
+{%- endstyle -%}
+
+<section class="auto-brand-grid">
+  <div class="auto-brand-grid__container">
+    {%- if section.settings.show_header -%}
+      <div class="auto-brand-grid__header">
+        {%- if section.settings.subtitle != blank -%}
+          <p class="auto-brand-grid__subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <h2 class="auto-brand-grid__title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+        {%- if section.settings.description != blank -%}
+          <p class="auto-brand-grid__description">{{ section.settings.description }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Get all unique vendors from the collection {%- endcomment -%}
+    {%- assign source_collection = collections[section.settings.collection] -%}
+    {%- assign all_vendors = '' -%}
+    {%- assign vendor_counts = '' -%}
+    
+    {%- for product in source_collection.products -%}
+      {%- unless all_vendors contains product.vendor -%}
+        {%- if all_vendors != '' -%}
+          {%- assign all_vendors = all_vendors | append: '|' -%}
+        {%- endif -%}
+        {%- assign all_vendors = all_vendors | append: product.vendor -%}
+      {%- endunless -%}
+    {%- endfor -%}
+    
+    {%- assign vendors_array = all_vendors | split: '|' | sort -%}
+    {%- assign vendor_count = vendors_array | size -%}
+
+    {%- if section.settings.show_header and section.settings.show_count -%}
+      <p class="auto-brand-grid__count">{{ vendor_count }} {{ 'sections.brands.brands_available' | t | default: 'brands available' }}</p>
+    {%- endif -%}
+
+    <div class="auto-brand-grid__grid">
+      {%- for vendor in vendors_array -%}
+        {%- assign vendor_slug = vendor | handleize -%}
+        {%- assign vendor_url = '/collections/vendors?q=' | append: vendor | url_encode -%}
+        
+        {%- comment -%} Try to find a collection for this vendor {%- endcomment -%}
+        {%- assign vendor_collection = collections[vendor_slug] -%}
+        {%- if vendor_collection -%}
+          {%- assign vendor_url = vendor_collection.url -%}
+          {%- assign product_count = vendor_collection.products_count -%}
+        {%- else -%}
+          {%- comment -%} Count products by this vendor in source collection {%- endcomment -%}
+          {%- assign product_count = 0 -%}
+          {%- for product in source_collection.products -%}
+            {%- if product.vendor == vendor -%}
+              {%- assign product_count = product_count | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+        
+        <a href="{{ vendor_url }}" class="auto-brand-card" data-brand="{{ vendor_slug }}">
+          <div class="auto-brand-card__logo">
+            {%- assign logo_path = 'brands/' | append: vendor_slug | append: '.png' -%}
+            {%- assign logo_svg = 'brands/' | append: vendor_slug | append: '.svg' -%}
+            
+            {%- if images[logo_svg] -%}
+              <img src="{{ logo_svg | asset_url }}" alt="{{ vendor }} logo" loading="lazy" width="48" height="48">
+            {%- elsif images[logo_path] -%}
+              <img src="{{ logo_path | asset_url }}" alt="{{ vendor }} logo" loading="lazy" width="48" height="48">
+            {%- else -%}
+              <span class="auto-brand-card__initials">{{ vendor | slice: 0, 2 | upcase }}</span>
+            {%- endif -%}
+          </div>
+          <h3 class="auto-brand-card__name">{{ vendor }}</h3>
+          {%- if section.settings.show_product_count and product_count > 0 -%}
+            <span class="auto-brand-card__product-count">{{ product_count }} {{ 'sections.brands.products' | t | default: 'products' }}</span>
+          {%- endif -%}
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Auto brand grid",
+  "tag": "section",
+  "class": "section-auto-brand-grid",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Source collection",
+      "info": "Select the collection to pull brand/vendor data from"
+    },
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_header",
+      "label": "Show header",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Shop by brand"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "All our brands"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "We stock only the highest quality nicotine pouches from world-leading brands."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_count",
+      "label": "Show brand count badge",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Brand cards"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_count",
+      "label": "Show product count",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Auto brand grid"
+    }
+  ]
+}
+{% endschema %}

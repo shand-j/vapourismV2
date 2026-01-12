@@ -1,0 +1,91 @@
+{%- style -%}
+  .main-page {
+    padding: var(--spacing-sections-mobile) 0;
+  }
+
+  @media (min-width: 990px) {
+    .main-page {
+      padding: var(--spacing-sections-desktop) 0;
+    }
+  }
+
+  .main-page__container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .main-page__header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .main-page__title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .main-page__content {
+    max-width: 48rem;
+    margin: 0 auto;
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: rgba(var(--color-foreground-rgb), 0.8);
+  }
+
+  .main-page__content h2,
+  .main-page__content h3,
+  .main-page__content h4 {
+    color: var(--color-foreground);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .main-page__content p {
+    margin-bottom: 1.5rem;
+  }
+
+  .main-page__content a {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+
+  .main-page__content a:hover {
+    color: var(--color-secondary);
+  }
+
+  .main-page__content ul,
+  .main-page__content ol {
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .main-page__content li {
+    margin-bottom: 0.5rem;
+  }
+{%- endstyle -%}
+
+<section class="main-page">
+  <div class="main-page__container">
+    <header class="main-page__header">
+      <h1 class="main-page__title">{{ page.title }}</h1>
+    </header>
+
+    <div class="main-page__content">
+      {{ page.content }}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Page",
+  "tag": "section",
+  "class": "section-page"
+}
+{% endschema %}

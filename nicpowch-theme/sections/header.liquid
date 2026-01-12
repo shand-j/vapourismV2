@@ -1,6 +1,6 @@
 {%- comment -%}
   NicPowch Header Section
-  Premium nicotine pouches UK - teal/emerald branding
+  Premium nicotine pouches UK - clean navigation matching competitor
 {%- endcomment -%}
 
 {%- style -%}
@@ -8,26 +8,17 @@
     position: sticky;
     top: 0;
     z-index: 100;
-    background-color: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background-color: white;
     border-bottom: 1px solid rgba(15, 23, 42, 0.1);
   }
 
   .header__announcement {
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
     color: white;
-    padding: 0.5rem 1rem;
+    padding: 0.625rem 1rem;
     text-align: center;
     font-size: 0.875rem;
-  }
-
-  .header__announcement-text {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
+    font-weight: 500;
   }
 
   .header__container {
@@ -37,7 +28,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1.5rem;
+    gap: 2rem;
   }
 
   .header__logo {
@@ -48,6 +39,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    flex-shrink: 0;
   }
 
   .header__logo-text {
@@ -72,71 +64,171 @@
   .header__nav-list {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0;
     list-style: none;
     margin: 0;
     padding: 0;
   }
 
   .header__nav-link {
+    display: block;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-foreground);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .header__nav-link:hover {
+    color: var(--color-primary);
+  }
+
+  .header__nav-link--active {
+    color: var(--color-primary);
+  }
+
+  /* Dropdown Navigation */
+  .header__nav-item {
+    position: relative;
+  }
+
+  .header__nav-item--dropdown > .header__nav-link {
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    padding: 0.5rem 1rem;
+  }
+
+  .header__nav-link-chevron {
+    width: 12px;
+    height: 12px;
+    transition: transform 0.2s ease;
+  }
+
+  .header__nav-item--dropdown:hover .header__nav-link-chevron {
+    transform: rotate(180deg);
+  }
+
+  .header__dropdown {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 240px;
+    padding-top: 0.5rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+  }
+
+  .header__nav-item--dropdown:hover .header__dropdown {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .header__dropdown-inner {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(var(--color-foreground-rgb), 0.08);
+    overflow: hidden;
+  }
+
+  .header__dropdown-section {
+    padding: 0.75rem 0;
+  }
+
+  .header__dropdown-section:not(:last-child) {
+    border-bottom: 1px solid rgba(var(--color-foreground-rgb), 0.08);
+  }
+
+  .header__dropdown-title {
+    padding: 0.5rem 1.25rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(var(--color-foreground-rgb), 0.5);
+  }
+
+  .header__dropdown-link {
+    display: block;
+    padding: 0.5rem 1.25rem;
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--color-foreground);
     text-decoration: none;
-    border-radius: var(--border-radius);
-    transition: background-color 0.2s, color 0.2s;
+    transition: background-color 0.15s ease, color 0.15s ease;
   }
 
-  .header__nav-link:hover {
-    background-color: rgba(var(--color-primary-rgb), 0.1);
+  .header__dropdown-link:hover {
+    background-color: rgba(var(--color-primary-rgb), 0.08);
     color: var(--color-primary);
+  }
+
+  .header__dropdown-link--view-all {
+    color: var(--color-primary);
+    font-weight: 600;
   }
 
   .header__actions {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.25rem;
   }
 
   .header__action-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2.75rem;
-    height: 2.75rem;
-    border: 1px solid rgba(var(--color-foreground-rgb), 0.15);
+    width: 2.5rem;
+    height: 2.5rem;
+    border: none;
     border-radius: var(--border-radius);
-    background-color: white;
+    background-color: transparent;
     color: var(--color-foreground);
     cursor: pointer;
-    transition: border-color 0.2s, color 0.2s;
+    transition: color 0.2s, background-color 0.2s;
     text-decoration: none;
     position: relative;
   }
 
   .header__action-btn:hover {
-    border-color: var(--color-primary);
     color: var(--color-primary);
+    background-color: rgba(var(--color-primary-rgb), 0.1);
   }
 
   .header__cart-count {
     position: absolute;
-    top: -4px;
-    right: -4px;
+    top: 2px;
+    right: 2px;
     min-width: 18px;
     height: 18px;
-    padding: 0 4px;
-    font-size: 0.625rem;
-    font-weight: 600;
+    padding: 0 5px;
+    font-size: 0.6875rem;
+    font-weight: 700;
     line-height: 18px;
     text-align: center;
     color: white;
-    background-color: var(--color-primary);
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
     border-radius: 9999px;
+    transform: scale(1);
+    transition: transform 0.2s ease;
+  }
+
+  .header__cart-count--hidden {
+    transform: scale(0);
+  }
+
+  .header__cart-count--animate {
+    animation: cartBounce 0.4s ease;
+  }
+
+  @keyframes cartBounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.3); }
   }
 
   .header__mobile-toggle {
@@ -149,104 +241,433 @@
     }
   }
 
-  .header__search {
+  /* Mobile Menu */
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
     display: none;
-    min-width: 240px;
-    max-width: 320px;
   }
 
-  @media (min-width: 990px) {
-    .header__search {
-      display: block;
-    }
+  .mobile-menu.active {
+    display: block;
   }
 
-  .header__search-link {
+  .mobile-menu__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .mobile-menu__panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 300px;
+    max-width: 85%;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .mobile-menu.active .mobile-menu__panel {
+    transform: translateX(0);
+  }
+
+  .mobile-menu__header {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.625rem 1rem;
-    font-size: 0.875rem;
-    color: rgba(var(--color-foreground-rgb), 0.6);
-    background-color: rgba(var(--color-foreground-rgb), 0.05);
-    border: 1px solid rgba(var(--color-foreground-rgb), 0.1);
-    border-radius: var(--border-radius);
-    text-decoration: none;
-    transition: border-color 0.2s, background-color 0.2s;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(var(--color-foreground-rgb), 0.1);
   }
 
-  .header__search-link:hover {
-    border-color: var(--color-primary);
-    background-color: white;
+  .mobile-menu__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--color-foreground);
+  }
+
+  .mobile-menu__nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 0;
+  }
+
+  .mobile-menu__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .mobile-menu__link {
+    display: block;
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-foreground);
+    text-decoration: none;
+    transition: background-color 0.2s;
+  }
+
+  .mobile-menu__link:hover {
+    background-color: rgba(var(--color-primary-rgb), 0.1);
+    color: var(--color-primary);
+  }
+
+  /* Mobile Accordion */
+  .mobile-menu__accordion {
+    border-bottom: 1px solid rgba(var(--color-foreground-rgb), 0.08);
+  }
+
+  .mobile-menu__accordion-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-foreground);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .mobile-menu__accordion-toggle:hover {
+    background-color: rgba(var(--color-primary-rgb), 0.1);
+    color: var(--color-primary);
+  }
+
+  .mobile-menu__accordion-icon {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.2s ease;
+  }
+
+  .mobile-menu__accordion.active .mobile-menu__accordion-icon {
+    transform: rotate(180deg);
+  }
+
+  .mobile-menu__accordion-content {
+    display: none;
+    background: rgba(var(--color-foreground-rgb), 0.02);
+  }
+
+  .mobile-menu__accordion.active .mobile-menu__accordion-content {
+    display: block;
+  }
+
+  .mobile-menu__sub-title {
+    padding: 0.75rem 1.5rem 0.25rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(var(--color-foreground-rgb), 0.5);
+  }
+
+  .mobile-menu__sub-link {
+    display: block;
+    padding: 0.625rem 1.5rem 0.625rem 2rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-foreground);
+    text-decoration: none;
+  }
+
+  .mobile-menu__sub-link:hover {
+    background-color: rgba(var(--color-primary-rgb), 0.08);
+    color: var(--color-primary);
+  }
+
+  .mobile-menu__sub-link--view-all {
+    color: var(--color-primary);
+    font-weight: 600;
+    padding-bottom: 0.875rem;
+  }
+
+  .mobile-menu__footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid rgba(var(--color-foreground-rgb), 0.1);
+  }
+
+  .mobile-menu__footer-links {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .mobile-menu__footer-link {
+    font-size: 0.875rem;
+    color: rgba(var(--color-foreground-rgb), 0.6);
+    text-decoration: none;
+  }
+
+  .mobile-menu__footer-link:hover {
+    color: var(--color-primary);
+  }
+
+  .mobile-menu__social {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .mobile-menu__social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background-color: rgba(var(--color-foreground-rgb), 0.1);
+    color: var(--color-foreground);
+    transition: all 0.2s;
+  }
+
+  .mobile-menu__social-link:hover {
+    background-color: var(--color-primary);
+    color: white;
   }
 {%- endstyle -%}
 
 <header class="header" role="banner">
   {%- if section.settings.show_announcement -%}
     <div class="header__announcement">
-      <div class="header__announcement-text">
-        <span>🚚 Free UK delivery on orders over £{{ section.settings.free_shipping_threshold }}</span>
-        <span style="opacity: 0.6;">•</span>
-        <span style="text-transform: uppercase; letter-spacing: 0.15em; font-weight: 600;">Tobacco-Free Nicotine Pouches</span>
-      </div>
+      🚚 FREE UK DELIVERY on all orders over £{{ section.settings.free_shipping_threshold }}
     </div>
   {%- endif -%}
 
   <div class="header__container">
-    <button type="button" class="header__action-btn header__mobile-toggle" aria-label="Open menu">
-      {% render 'icon-menu' %}
+    <button type="button" class="header__action-btn header__mobile-toggle" aria-label="Open menu" id="mobile-menu-toggle">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
 
     <a href="{{ routes.root_url }}" class="header__logo">
       {%- if settings.logo != blank -%}
-        <img src="{{ settings.logo | image_url: width: settings.logo_width }}" alt="{{ shop.name }}" width="{{ settings.logo_width }}" height="auto" loading="eager">
+        {{ settings.logo | image_url: width: settings.logo_width | image_tag: loading: 'eager', alt: shop.name }}
       {%- else -%}
-        <span class="header__logo-text">NicPowch</span>
+        <span class="header__logo-text">{{ shop.name | default: 'NicPowch' }}</span>
       {%- endif -%}
     </a>
 
     <nav class="header__nav" role="navigation" aria-label="Main navigation">
       <ul class="header__nav-list">
-        {%- for link in section.settings.menu.links -%}
-          <li>
-            <a href="{{ link.url }}" class="header__nav-link"{% if link.current %} aria-current="page"{% endif %}>
-              {{ link.title }}
-              {%- if link.links.size > 0 -%}
-                {% render 'icon-chevron-down' %}
-              {%- endif -%}
-            </a>
-          </li>
-        {%- endfor -%}
+        <li class="header__nav-item header__nav-item--dropdown">
+          <a href="{{ section.settings.shop_all_url | default: '/collections/nicotine-pouches' }}" class="header__nav-link{% if request.path contains '/collections' %} header__nav-link--active{% endif %}">
+            Shop Pouches
+            <svg class="header__nav-link-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </a>
+          <div class="header__dropdown">
+            <div class="header__dropdown-inner">
+              <div class="header__dropdown-section">
+                <div class="header__dropdown-title">Shop by Brand</div>
+                <a href="/collections/velo" class="header__dropdown-link">Velo</a>
+                <a href="/collections/nordic-spirit" class="header__dropdown-link">Nordic Spirit</a>
+                <a href="/collections/killa" class="header__dropdown-link">Killa</a>
+                <a href="/collections/pablo" class="header__dropdown-link">Pablo</a>
+                <a href="/collections/on" class="header__dropdown-link">On!</a>
+                <a href="/collections/loop" class="header__dropdown-link">Loop</a>
+                <a href="/collections" class="header__dropdown-link header__dropdown-link--view-all">View All Brands →</a>
+              </div>
+              <div class="header__dropdown-section">
+                <div class="header__dropdown-title">Shop by Strength</div>
+                <a href="/collections/nicotine-pouches?filter.p.m.custom.nicotine_strength=Low+(1-6mg)" class="header__dropdown-link">Low (1-6mg)</a>
+                <a href="/collections/nicotine-pouches?filter.p.m.custom.nicotine_strength=Medium+(7-12mg)" class="header__dropdown-link">Medium (7-12mg)</a>
+                <a href="/collections/nicotine-pouches?filter.p.m.custom.nicotine_strength=Strong+(13-20mg)" class="header__dropdown-link">Strong (13-20mg)</a>
+                <a href="/collections/nicotine-pouches?filter.p.m.custom.nicotine_strength=Extra+Strong+(20mg%2B)" class="header__dropdown-link">Extra Strong (20mg+)</a>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="header__nav-item">
+          <a href="{{ section.settings.offers_url | default: '/collections/sale' }}" class="header__nav-link{% if request.path contains '/collections/sale' %} header__nav-link--active{% endif %}">
+            Offers
+          </a>
+        </li>
+        <li class="header__nav-item">
+          <a href="{{ section.settings.news_url | default: '/blogs/news' }}" class="header__nav-link{% if request.path contains '/blogs' %} header__nav-link--active{% endif %}">
+            News
+          </a>
+        </li>
+        <li class="header__nav-item">
+          <a href="{{ section.settings.contact_url | default: '/pages/contact' }}" class="header__nav-link{% if request.path contains '/pages/contact' %} header__nav-link--active{% endif %}">
+            Contact
+          </a>
+        </li>
       </ul>
     </nav>
 
-    <div class="header__search">
-      <a href="{{ routes.search_url }}?type=product&q=nicotine+pouches" class="header__search-link">
-        {% render 'icon-search' %}
-        <span>Search pouches...</span>
-      </a>
-    </div>
-
     <div class="header__actions">
-      <a href="{{ routes.account_url }}" class="header__action-btn" aria-label="Account">
-        {% render 'icon-user' %}
+      <a href="{{ routes.search_url }}" class="header__action-btn" aria-label="Search">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
       </a>
 
-      <a href="{{ routes.cart_url }}" class="header__action-btn" aria-label="Cart">
-        {% render 'icon-cart' %}
-        {%- if cart.item_count > 0 -%}
-          <span class="header__cart-count">{{ cart.item_count }}</span>
-        {%- endif -%}
+      <a href="{{ routes.account_url }}" class="header__action-btn" aria-label="Log in">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </a>
+
+      <a href="{{ routes.cart_url }}" class="header__action-btn header__cart" aria-label="Cart" id="header-cart-link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="header__cart-count{% if cart.item_count == 0 %} header__cart-count--hidden{% endif %}" id="header-cart-count">{{ cart.item_count }}</span>
       </a>
     </div>
   </div>
 </header>
+
+{%- comment -%} Mobile Menu {%- endcomment -%}
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mobile-menu__overlay" id="mobile-menu-overlay"></div>
+  <div class="mobile-menu__panel">
+    <div class="mobile-menu__header">
+      <span class="header__logo-text" style="font-size: 1.25rem; font-weight: 700;">{{ shop.name | default: 'NicPowch' }}</span>
+      <button type="button" class="mobile-menu__close" id="mobile-menu-close" aria-label="Close menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <nav class="mobile-menu__nav">
+      <ul class="mobile-menu__list">
+        <li class="mobile-menu__accordion" id="mobile-shop-accordion">
+          <button type="button" class="mobile-menu__accordion-toggle" aria-expanded="false">
+            Shop Pouches
+            <svg class="mobile-menu__accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="mobile-menu__accordion-content">
+            <div class="mobile-menu__sub-title">Shop by Brand</div>
+            <a href="/collections/velo" class="mobile-menu__sub-link">Velo</a>
+            <a href="/collections/nordic-spirit" class="mobile-menu__sub-link">Nordic Spirit</a>
+            <a href="/collections/killa" class="mobile-menu__sub-link">Killa</a>
+            <a href="/collections/pablo" class="mobile-menu__sub-link">Pablo</a>
+            <a href="/collections/on" class="mobile-menu__sub-link">On!</a>
+            <a href="/collections/loop" class="mobile-menu__sub-link">Loop</a>
+            <a href="/collections" class="mobile-menu__sub-link mobile-menu__sub-link--view-all">View All Brands →</a>
+            <div class="mobile-menu__sub-title">Shop by Strength</div>
+            <a href="/collections/nicotine-pouches?filter.p.m.custom.nicotine_strength=Low+(1-6mg)" class="mobile-menu__sub-link">Low (1-6mg)</a>
+            <a href="/collections/nicotine-pouches?filter.p.m.custom.nicotine_strength=Medium+(7-12mg)" class="mobile-menu__sub-link">Medium (7-12mg)</a>
+            <a href="/collections/nicotine-pouches?filter.p.m.custom.nicotine_strength=Strong+(13-20mg)" class="mobile-menu__sub-link">Strong (13-20mg)</a>
+            <a href="/collections/nicotine-pouches?filter.p.m.custom.nicotine_strength=Extra+Strong+(20mg%2B)" class="mobile-menu__sub-link">Extra Strong (20mg+)</a>
+            <a href="{{ section.settings.shop_all_url | default: '/collections/nicotine-pouches' }}" class="mobile-menu__sub-link mobile-menu__sub-link--view-all">Shop All Pouches →</a>
+          </div>
+        </li>
+        <li><a href="{{ section.settings.offers_url | default: '/collections/sale' }}" class="mobile-menu__link">Offers</a></li>
+        <li><a href="{{ section.settings.news_url | default: '/blogs/news' }}" class="mobile-menu__link">News</a></li>
+        <li><a href="{{ section.settings.contact_url | default: '/pages/contact' }}" class="mobile-menu__link">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="mobile-menu__footer">
+      <div class="mobile-menu__footer-links">
+        <a href="{{ routes.account_login_url }}" class="mobile-menu__footer-link">Log in</a>
+        <a href="{{ routes.account_register_url }}" class="mobile-menu__footer-link">Register</a>
+      </div>
+      {%- if section.settings.social_facebook != blank or section.settings.social_instagram != blank -%}
+        <div class="mobile-menu__social">
+          {%- if section.settings.social_facebook != blank -%}
+            <a href="{{ section.settings.social_facebook }}" target="_blank" rel="noopener" class="mobile-menu__social-link" aria-label="Facebook">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+          {%- endif -%}
+          {%- if section.settings.social_instagram != blank -%}
+            <a href="{{ section.settings.social_instagram }}" target="_blank" rel="noopener" class="mobile-menu__social-link" aria-label="Instagram">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileMenuClose = document.getElementById('mobile-menu-close');
+    const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+
+    function openMenu() {
+      mobileMenu.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenu() {
+      mobileMenu.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    if (mobileMenuToggle) mobileMenuToggle.addEventListener('click', openMenu);
+    if (mobileMenuClose) mobileMenuClose.addEventListener('click', closeMenu);
+    if (mobileMenuOverlay) mobileMenuOverlay.addEventListener('click', closeMenu);
+
+    // Mobile accordion functionality
+    const accordionToggles = document.querySelectorAll('.mobile-menu__accordion-toggle');
+    accordionToggles.forEach(function(toggle) {
+      toggle.addEventListener('click', function() {
+        const accordion = this.closest('.mobile-menu__accordion');
+        const isExpanded = accordion.classList.contains('active');
+        
+        // Close all accordions first
+        document.querySelectorAll('.mobile-menu__accordion').forEach(function(acc) {
+          acc.classList.remove('active');
+          acc.querySelector('.mobile-menu__accordion-toggle').setAttribute('aria-expanded', 'false');
+        });
+        
+        // Open clicked one if it wasn't already open
+        if (!isExpanded) {
+          accordion.classList.add('active');
+          this.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+
+    // Cart count update function - exposed globally for other scripts
+    window.updateCartCount = function(count) {
+      const cartCountEl = document.getElementById('header-cart-count');
+      if (cartCountEl) {
+        cartCountEl.textContent = count;
+        if (count > 0) {
+          cartCountEl.classList.remove('header__cart-count--hidden');
+          cartCountEl.classList.add('header__cart-count--animate');
+          setTimeout(() => cartCountEl.classList.remove('header__cart-count--animate'), 400);
+        } else {
+          cartCountEl.classList.add('header__cart-count--hidden');
+        }
+      }
+    };
+
+    // Listen for cart updates (Section Rendering API / AJAX cart)
+    document.addEventListener('cart:updated', function(e) {
+      if (e.detail && typeof e.detail.item_count !== 'undefined') {
+        window.updateCartCount(e.detail.item_count);
+      }
+    });
+  });
+</script>
 
 {% schema %}
 {
   "name": "Header",
   "class": "section-header",
   "settings": [
+    {
+      "type": "header",
+      "content": "Announcement bar"
+    },
     {
       "type": "checkbox",
       "id": "show_announcement",
@@ -260,10 +681,46 @@
       "default": 30
     },
     {
-      "type": "link_list",
-      "id": "menu",
-      "label": "Menu",
-      "default": "main-menu"
+      "type": "header",
+      "content": "Navigation URLs"
+    },
+    {
+      "type": "url",
+      "id": "shop_all_url",
+      "label": "Shop All URL",
+      "info": "Default: /collections/nicotine-pouches"
+    },
+    {
+      "type": "url",
+      "id": "offers_url",
+      "label": "Offers URL",
+      "info": "Default: /collections/sale"
+    },
+    {
+      "type": "url",
+      "id": "news_url",
+      "label": "News/Blog URL",
+      "info": "Default: /blogs/news"
+    },
+    {
+      "type": "url",
+      "id": "contact_url",
+      "label": "Contact URL",
+      "info": "Default: /pages/contact"
+    },
+    {
+      "type": "header",
+      "content": "Social Media"
+    },
+    {
+      "type": "url",
+      "id": "social_facebook",
+      "label": "Facebook URL"
+    },
+    {
+      "type": "url",
+      "id": "social_instagram",
+      "label": "Instagram URL"
     }
   ],
   "presets": [

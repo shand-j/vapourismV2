@@ -124,10 +124,9 @@
 
     {% sections 'footer-group' %}
 
-    <script src="{{ 'theme.js' | asset_url }}" defer></script>
+    {%- comment -%} Age Verification Modal {%- endcomment -%}
+    {% section 'age-verification' %}
 
-    {%- if settings.enable_age_verification -%}
-      {% render 'age-verification-modal' %}
-    {%- endif -%}
+    <script src="{{ 'theme.js' | asset_url }}" defer></script>
   </body>
 </html>

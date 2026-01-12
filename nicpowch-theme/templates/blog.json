@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-blog",
+      "settings": {
+        "title": "News & Updates",
+        "description": "Stay up to date with the latest nicotine pouch news, reviews, and tips",
+        "articles_per_page": 9
+      }
+    }
+  },
+  "order": ["main"]
+}

@@ -1,0 +1,21 @@
+{
+  "sections": {
+    "hero": {
+      "type": "rich-text",
+      "settings": {
+        "heading": "Shop by brand",
+        "text": "<p>Discover premium nicotine pouches from the world's leading manufacturers. Each brand offers unique flavours, strengths, and experiences.</p>"
+      }
+    },
+    "brands": {
+      "type": "auto-brand-grid",
+      "settings": {
+        "collection": "nic-pouches",
+        "show_header": false,
+        "show_count": true,
+        "show_product_count": true
+      }
+    }
+  },
+  "order": ["hero", "brands"]
+}

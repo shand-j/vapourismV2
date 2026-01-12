@@ -1,0 +1,47 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-contact",
+      "settings": {
+        "title": "Get in Touch",
+        "subtitle": "Have questions? We're here to help. Get in touch with our friendly customer service team.",
+        "email": "support@nicpowch.co.uk",
+        "phone": "0800 123 4567",
+        "address": "NicPowch Ltd, 123 High Street, London, UK",
+        "show_faq": true
+      },
+      "blocks": {
+        "faq_1": {
+          "type": "faq_item",
+          "settings": {
+            "question": "How long does delivery take?",
+            "answer": "Orders placed before 1pm are dispatched same day. Standard UK delivery takes 1-3 business days."
+          }
+        },
+        "faq_2": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is your returns policy?",
+            "answer": "We accept returns within 14 days of delivery for unopened products in original packaging."
+          }
+        },
+        "faq_3": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you ship internationally?",
+            "answer": "We currently ship within the UK only. International shipping is coming soon."
+          }
+        },
+        "faq_4": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Why do I need age verification?",
+            "answer": "Nicotine pouches are an age-restricted product. UK law requires us to verify all customers are 18+."
+          }
+        }
+      },
+      "block_order": ["faq_1", "faq_2", "faq_3", "faq_4"]
+    }
+  },
+  "order": ["main"]
+}

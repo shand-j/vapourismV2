@@ -1,0 +1,262 @@
+{%- style -%}
+  .brand-grid {
+    padding: var(--spacing-sections-mobile) 0;
+  }
+
+  @media (min-width: 990px) {
+    .brand-grid {
+      padding: var(--spacing-sections-desktop) 0;
+    }
+  }
+
+  .brand-grid__container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .brand-grid__header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .brand-grid__subtitle {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--color-primary);
+    margin: 0 0 0.75rem;
+  }
+
+  .brand-grid__title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 0.75rem;
+    color: var(--color-foreground);
+  }
+
+  @media (min-width: 750px) {
+    .brand-grid__title {
+      font-size: 2.5rem;
+    }
+  }
+
+  .brand-grid__description {
+    font-size: 1.125rem;
+    color: rgba(var(--color-foreground-rgb), 0.7);
+    max-width: 40rem;
+    margin: 0 auto;
+  }
+
+  .brand-grid__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  @media (min-width: 750px) {
+    .brand-grid__grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+  }
+
+  @media (min-width: 990px) {
+    .brand-grid__grid {
+      grid-template-columns: repeat(6, 1fr);
+    }
+  }
+
+  .brand-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
+    background-color: white;
+    border: 1px solid rgba(var(--color-foreground-rgb), 0.1);
+    border-radius: var(--border-radius-large);
+    text-decoration: none;
+    color: var(--color-foreground);
+    transition: all 0.3s;
+  }
+
+  .brand-card:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 10px 30px rgba(var(--color-primary-rgb), 0.15);
+    transform: translateY(-4px);
+  }
+
+  .brand-card__logo {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.1), rgba(var(--color-secondary-rgb), 0.1));
+    border-radius: var(--border-radius-large);
+    margin-bottom: 1rem;
+    overflow: hidden;
+  }
+
+  .brand-card__logo img {
+    max-width: 60px;
+    max-height: 60px;
+    object-fit: contain;
+  }
+
+  .brand-card__logo-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+
+  .brand-card__name {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem;
+    text-align: center;
+  }
+
+  .brand-card__count {
+    font-size: 0.75rem;
+    color: rgba(var(--color-foreground-rgb), 0.6);
+  }
+{%- endstyle -%}
+
+<section class="brand-grid">
+  <div class="brand-grid__container">
+    {%- if section.settings.show_header -%}
+      <div class="brand-grid__header">
+        {%- if section.settings.subtitle != blank -%}
+          <p class="brand-grid__subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <h2 class="brand-grid__title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+        {%- if section.settings.description != blank -%}
+          <p class="brand-grid__description">{{ section.settings.description }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="brand-grid__grid">
+      {%- for block in section.blocks -%}
+        <a href="{{ block.settings.url }}" class="brand-card" {{ block.shopify_attributes }}>
+          <div class="brand-card__logo">
+            {%- if block.settings.logo != blank -%}
+              {{
+                block.settings.logo
+                | image_url: width: 120
+                | image_tag:
+                  loading: 'lazy',
+                  alt: block.settings.name
+              }}
+            {%- else -%}
+              <span class="brand-card__logo-text">{{ block.settings.name | slice: 0, 2 | upcase }}</span>
+            {%- endif -%}
+          </div>
+          <h3 class="brand-card__name">{{ block.settings.name }}</h3>
+          {%- if block.settings.product_count != blank -%}
+            <span class="brand-card__count">{{ block.settings.product_count }} {{ 'sections.brands.products' | t }}</span>
+          {%- endif -%}
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Brand grid",
+  "tag": "section",
+  "class": "section-brand-grid",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_header",
+      "label": "Show header",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Shop by brand"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Our trusted brands"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "We stock only the highest quality nicotine pouches from world-leading brands."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "Brand",
+      "settings": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Brand name",
+          "default": "Brand"
+        },
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Brand logo"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Brand collection URL"
+        },
+        {
+          "type": "text",
+          "id": "product_count",
+          "label": "Product count",
+          "info": "Optional - e.g., '24'"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand grid",
+      "blocks": [
+        {
+          "type": "brand",
+          "settings": { "name": "Velo" }
+        },
+        {
+          "type": "brand",
+          "settings": { "name": "Zyn" }
+        },
+        {
+          "type": "brand",
+          "settings": { "name": "Nordic Spirit" }
+        },
+        {
+          "type": "brand",
+          "settings": { "name": "On!" }
+        },
+        {
+          "type": "brand",
+          "settings": { "name": "Killa" }
+        },
+        {
+          "type": "brand",
+          "settings": { "name": "Pablo" }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

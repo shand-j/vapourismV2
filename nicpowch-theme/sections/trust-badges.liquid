@@ -1,0 +1,296 @@
+{%- comment -%}
+  Trust Badges / USP Section
+  Display trust signals and unique selling points
+{%- endcomment -%}
+
+{%- style -%}
+  .trust-badges {
+    padding: calc(var(--spacing-sections-desktop) * 0.6) 0;
+    background: var(--color-background);
+    border-top: 1px solid rgba(var(--color-foreground-rgb), 0.06);
+    border-bottom: 1px solid rgba(var(--color-foreground-rgb), 0.06);
+  }
+
+  @media (max-width: 749px) {
+    .trust-badges {
+      padding: calc(var(--spacing-sections-mobile) * 0.8) 0;
+    }
+  }
+
+  .trust-badges__container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .trust-badges__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+
+  @media (max-width: 990px) {
+    .trust-badges__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .trust-badges__grid {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+  }
+
+  .trust-badges__item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  @media (max-width: 500px) {
+    .trust-badges__item {
+      justify-content: center;
+    }
+  }
+
+  .trust-badges__icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.1), rgba(var(--color-secondary-rgb), 0.1));
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+  }
+
+  .trust-badges__icon svg {
+    width: 24px;
+    height: 24px;
+    color: var(--color-primary);
+  }
+
+  .trust-badges__item:hover .trust-badges__icon {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  }
+
+  .trust-badges__item:hover .trust-badges__icon svg {
+    color: white;
+  }
+
+  .trust-badges__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  @media (max-width: 500px) {
+    .trust-badges__content {
+      text-align: center;
+    }
+  }
+
+  .trust-badges__title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--color-foreground);
+  }
+
+  .trust-badges__text {
+    font-size: 0.8125rem;
+    color: rgba(var(--color-foreground-rgb), 0.6);
+    line-height: 1.4;
+  }
+
+  /* Variant: Compact bar */
+  .trust-badges--bar {
+    padding: 1rem 0;
+  }
+
+  .trust-badges--bar .trust-badges__grid {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+
+  .trust-badges--bar .trust-badges__item {
+    gap: 0.625rem;
+  }
+
+  .trust-badges--bar .trust-badges__icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .trust-badges--bar .trust-badges__icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .trust-badges--bar .trust-badges__title {
+    font-size: 0.8125rem;
+  }
+
+  .trust-badges--bar .trust-badges__text {
+    display: none;
+  }
+
+  /* Variant: Highlight background */
+  .trust-badges--highlight {
+    background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.03), rgba(var(--color-secondary-rgb), 0.03));
+    border: none;
+  }
+{%- endstyle -%}
+
+<section class="trust-badges{% if section.settings.style == 'bar' %} trust-badges--bar{% endif %}{% if section.settings.style == 'highlight' %} trust-badges--highlight{% endif %}">
+  <div class="trust-badges__container">
+    <div class="trust-badges__grid">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'badge' -%}
+            <div class="trust-badges__item" {{ block.shopify_attributes }}>
+              <div class="trust-badges__icon">
+                {%- case block.settings.icon -%}
+                  {%- when 'shipping' -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                  {%- when 'secure' -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  {%- when 'authentic' -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  {%- when 'support' -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  {%- when 'returns' -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v6h6"/><path d="M3 8l9-6 9 6v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                  {%- when 'quality' -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  {%- when 'payment' -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                  {%- when 'age' -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  {%- else -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                {%- endcase -%}
+              </div>
+              <div class="trust-badges__content">
+                <span class="trust-badges__title">{{ block.settings.title }}</span>
+                {%- if block.settings.text != blank -%}
+                  <span class="trust-badges__text">{{ block.settings.text }}</span>
+                {%- endif -%}
+              </div>
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Trust Badges",
+  "tag": "section",
+  "class": "section-trust-badges",
+  "settings": [
+    {
+      "type": "select",
+      "id": "style",
+      "label": "Style",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "bar",
+          "label": "Compact Bar"
+        },
+        {
+          "value": "highlight",
+          "label": "Highlighted Background"
+        }
+      ],
+      "default": "default"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "badge",
+      "name": "Badge",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "shipping", "label": "Shipping/Delivery" },
+            { "value": "secure", "label": "Security/Shield" },
+            { "value": "authentic", "label": "Authentic/Checkmark" },
+            { "value": "support", "label": "Customer Support" },
+            { "value": "returns", "label": "Returns" },
+            { "value": "quality", "label": "Quality/Star" },
+            { "value": "payment", "label": "Payment" },
+            { "value": "age", "label": "Age Verification" }
+          ],
+          "default": "shipping"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Free UK Delivery"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Description",
+          "default": "On orders over £30"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trust Badges",
+      "blocks": [
+        {
+          "type": "badge",
+          "settings": {
+            "icon": "shipping",
+            "title": "Free UK Delivery",
+            "text": "On orders over £30"
+          }
+        },
+        {
+          "type": "badge",
+          "settings": {
+            "icon": "secure",
+            "title": "Secure Checkout",
+            "text": "SSL encrypted payment"
+          }
+        },
+        {
+          "type": "badge",
+          "settings": {
+            "icon": "authentic",
+            "title": "100% Authentic",
+            "text": "Genuine brand products"
+          }
+        },
+        {
+          "type": "badge",
+          "settings": {
+            "icon": "support",
+            "title": "UK Support",
+            "text": "Contact us anytime"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

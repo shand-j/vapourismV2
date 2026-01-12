@@ -1,0 +1,376 @@
+{%- comment -%}
+  Brand Spotlight Section
+  Large visual brand showcase with imagery - competitor-matching impact
+{%- endcomment -%}
+
+{%- style -%}
+  .brand-spotlight {
+    padding: 3rem 0;
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  }
+
+  @media (min-width: 990px) {
+    .brand-spotlight {
+      padding: 4.5rem 0;
+    }
+  }
+
+  .brand-spotlight__container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .brand-spotlight__header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .brand-spotlight__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.8125rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: white;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    border-radius: 9999px;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 4px 15px rgba(var(--color-primary-rgb), 0.3);
+  }
+
+  .brand-spotlight__title {
+    font-size: 2.25rem;
+    font-weight: 900;
+    margin: 0;
+    color: var(--color-foreground);
+    letter-spacing: -0.02em;
+  }
+
+  @media (min-width: 750px) {
+    .brand-spotlight__title {
+      font-size: 3rem;
+    }
+  }
+
+  @media (min-width: 990px) {
+    .brand-spotlight__title {
+      font-size: 3.5rem;
+    }
+  }
+
+  .brand-spotlight__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 750px) {
+    .brand-spotlight__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.75rem;
+    }
+  }
+
+  @media (min-width: 990px) {
+    .brand-spotlight__grid {
+      grid-template-columns: 2fr 1fr 1fr;
+    }
+  }
+
+  /* Main featured card (larger) */
+  .brand-spotlight__card {
+    position: relative;
+    border-radius: calc(var(--border-radius) * 2.5);
+    overflow: hidden;
+    text-decoration: none;
+    display: block;
+    min-height: 320px;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .brand-spotlight__card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+  }
+
+  @media (min-width: 750px) {
+    .brand-spotlight__card--main {
+      grid-row: span 2;
+      min-height: 650px;
+    }
+  }
+
+  .brand-spotlight__card-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .brand-spotlight__card:hover .brand-spotlight__card-image {
+    transform: scale(1.08);
+  }
+
+  .brand-spotlight__card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.35) 45%, rgba(0, 0, 0, 0.15) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1.75rem;
+    color: white;
+  }
+
+  @media (min-width: 750px) {
+    .brand-spotlight__card-overlay {
+      padding: 2.5rem;
+    }
+  }
+
+  .brand-spotlight__card-tag {
+    display: inline-flex;
+    align-self: flex-start;
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    background: #ef4444;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+  }
+
+  .brand-spotlight__card-tag--new {
+    background: var(--color-primary);
+    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.4);
+  }
+
+  .brand-spotlight__card-tag--hot {
+    background: #ef4444;
+  }
+
+  .brand-spotlight__card-title {
+    font-size: 1.75rem;
+    font-weight: 900;
+    margin: 0 0 0.625rem;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  @media (min-width: 750px) {
+    .brand-spotlight__card--main .brand-spotlight__card-title {
+      font-size: 2.5rem;
+    }
+  }
+
+  .brand-spotlight__card-subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin: 0 0 1.25rem;
+    line-height: 1.55;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  @media (min-width: 750px) {
+    .brand-spotlight__card--main .brand-spotlight__card-subtitle {
+      font-size: 1.125rem;
+      -webkit-line-clamp: 4;
+    }
+  }
+
+  .brand-spotlight__card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-size: 0.9375rem;
+    font-weight: 800;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.75rem 1.5rem;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 9999px;
+    backdrop-filter: blur(4px);
+    transition: background 0.3s ease;
+  }
+
+  .brand-spotlight__card:hover .brand-spotlight__card-cta {
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  .brand-spotlight__card-cta svg {
+    transition: transform 0.3s ease;
+  }
+
+  .brand-spotlight__card:hover .brand-spotlight__card-cta svg {
+    transform: translateX(6px);
+  }
+{%- endstyle -%}
+
+<section class="brand-spotlight">
+  <div class="brand-spotlight__container">
+    {%- if section.settings.show_header -%}
+      <div class="brand-spotlight__header">
+        {%- if section.settings.badge_text != blank -%}
+          <span class="brand-spotlight__badge">{{ section.settings.badge_text }}</span>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <h2 class="brand-spotlight__title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="brand-spotlight__grid">
+      {%- for block in section.blocks -%}
+        <a href="{{ block.settings.url | default: '#' }}" class="brand-spotlight__card{% if forloop.first %} brand-spotlight__card--main{% endif %}" {{ block.shopify_attributes }}>
+          {%- if block.settings.image != blank -%}
+            <img
+              class="brand-spotlight__card-image"
+              src="{{ block.settings.image | image_url: width: 800 }}"
+              srcset="{{ block.settings.image | image_url: width: 400 }} 400w, {{ block.settings.image | image_url: width: 800 }} 800w, {{ block.settings.image | image_url: width: 1200 }} 1200w"
+              sizes="(max-width: 749px) 100vw, (max-width: 989px) 50vw, 33vw"
+              alt="{{ block.settings.title | escape }}"
+              loading="lazy"
+            >
+          {%- endif -%}
+          <div class="brand-spotlight__card-overlay">
+            {%- if block.settings.tag != blank -%}
+              <span class="brand-spotlight__card-tag brand-spotlight__card-tag--{{ block.settings.tag_style }}">{{ block.settings.tag }}</span>
+            {%- endif -%}
+            {%- if block.settings.title != blank -%}
+              <h3 class="brand-spotlight__card-title">{{ block.settings.title }}</h3>
+            {%- endif -%}
+            {%- if block.settings.subtitle != blank -%}
+              <p class="brand-spotlight__card-subtitle">{{ block.settings.subtitle }}</p>
+            {%- endif -%}
+            <span class="brand-spotlight__card-cta">
+              Shop now
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </span>
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Brand Spotlight",
+  "tag": "section",
+  "class": "section-brand-spotlight",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_header",
+      "label": "Show header",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text",
+      "default": "Featured Brands"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Shop Top Nicotine Pouch Brands"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "Brand Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Brand image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Brand name",
+          "default": "Brand Name"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Description",
+          "default": "Discover our range of premium pouches"
+        },
+        {
+          "type": "text",
+          "id": "tag",
+          "label": "Tag text",
+          "info": "e.g. HOT, NEW, SALE"
+        },
+        {
+          "type": "select",
+          "id": "tag_style",
+          "label": "Tag style",
+          "options": [
+            { "value": "hot", "label": "Hot (Red)" },
+            { "value": "new", "label": "New (Teal)" }
+          ],
+          "default": "hot"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand Spotlight",
+      "blocks": [
+        {
+          "type": "brand",
+          "settings": {
+            "title": "VELO",
+            "subtitle": "Experience the pleasure of nicotine without the drawbacks of smoke! VELO pouches provide a variety of discreet and flavourful options.",
+            "tag": "HOT",
+            "tag_style": "hot"
+          }
+        },
+        {
+          "type": "brand",
+          "settings": {
+            "title": "PABLO",
+            "subtitle": "Ultra-strong nicotine hit",
+            "tag": "EXTREME",
+            "tag_style": "hot"
+          }
+        },
+        {
+          "type": "brand",
+          "settings": {
+            "title": "KILLA",
+            "subtitle": "Extra strong satisfaction",
+            "tag": "NEW",
+            "tag_style": "new"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

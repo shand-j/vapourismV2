@@ -1,0 +1,152 @@
+{%- style -%}
+  .collections-list {
+    padding: var(--spacing-sections-mobile) 0;
+  }
+
+  @media (min-width: 990px) {
+    .collections-list {
+      padding: var(--spacing-sections-desktop) 0;
+    }
+  }
+
+  .collections-list__container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .collections-list__header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .collections-list__title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .collections-list__grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 500px) {
+    .collections-list__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 990px) {
+    .collections-list__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .collection-card {
+    display: block;
+    position: relative;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    border-radius: var(--border-radius-large);
+    text-decoration: none;
+    color: white;
+  }
+
+  .collection-card__image {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  }
+
+  .collection-card__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+  }
+
+  .collection-card:hover .collection-card__image img {
+    transform: scale(1.05);
+  }
+
+  .collection-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(15, 23, 42, 0.8), transparent 60%);
+  }
+
+  .collection-card__content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem;
+  }
+
+  .collection-card__title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem;
+  }
+
+  .collection-card__count {
+    font-size: 0.875rem;
+    opacity: 0.8;
+  }
+{%- endstyle -%}
+
+<section class="collections-list">
+  <div class="collections-list__container">
+    <header class="collections-list__header">
+      <h1 class="collections-list__title">{{ section.settings.title | default: 'Collections' }}</h1>
+    </header>
+
+    <div class="collections-list__grid">
+      {%- for collection in collections -%}
+        {%- if collection.products.size > 0 -%}
+          <a href="{{ collection.url }}" class="collection-card">
+            <div class="collection-card__image">
+              {%- if collection.image -%}
+                {{
+                  collection.image
+                  | image_url: width: 600
+                  | image_tag:
+                    loading: 'lazy',
+                    sizes: '(max-width: 500px) 100vw, (max-width: 990px) 50vw, 33vw',
+                    widths: '300, 600, 900'
+                }}
+              {%- endif -%}
+            </div>
+            <div class="collection-card__overlay"></div>
+            <div class="collection-card__content">
+              <h2 class="collection-card__title">{{ collection.title }}</h2>
+              <span class="collection-card__count">{{ collection.products_count }} {{ collection.products_count | pluralize: 'product', 'products' }}</span>
+            </div>
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collections list",
+  "tag": "section",
+  "class": "section-collections-list",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Collections"
+    }
+  ]
+}
+{% endschema %}

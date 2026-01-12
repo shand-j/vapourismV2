@@ -1,0 +1,146 @@
+{%- comment -%}
+  Info Grid Section
+  Three columns for "About Us", "Why Us", "Why Pouches" content
+  Matches nicpouch.co.uk homepage info section
+{%- endcomment -%}
+
+{%- style -%}
+  .info-grid {
+    padding: var(--spacing-sections-mobile) 0;
+    background: {{ section.settings.background_color | default: '#f9fafb' }};
+  }
+
+  @media (min-width: 990px) {
+    .info-grid {
+      padding: var(--spacing-sections-desktop) 0;
+    }
+  }
+
+  .info-grid__container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .info-grid__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  @media (min-width: 750px) {
+    .info-grid__grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+    }
+  }
+
+  .info-card {
+    text-align: center;
+    padding: 2rem;
+    background: white;
+    border-radius: var(--border-radius-large);
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+  }
+
+  @media (min-width: 750px) {
+    .info-card {
+      text-align: left;
+      padding: 0;
+      background: transparent;
+      box-shadow: none;
+      border-radius: 0;
+    }
+  }
+
+  .info-card__title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 1rem;
+    color: var(--color-foreground);
+  }
+
+  .info-card__text {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: rgba(var(--color-foreground-rgb), 0.75);
+    margin: 0;
+  }
+{%- endstyle -%}
+
+<section class="info-grid">
+  <div class="info-grid__container">
+    <div class="info-grid__grid">
+      {%- for block in section.blocks -%}
+        <div class="info-card" {{ block.shopify_attributes }}>
+          <h3 class="info-card__title">{{ block.settings.title }}</h3>
+          <p class="info-card__text">{{ block.settings.text }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Info Grid",
+  "tag": "section",
+  "class": "section-info-grid",
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#f9fafb"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "info_column",
+      "name": "Info Column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "About Us"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "Welcome to NicPowch, your trusted source for premium nicotine pouches. We specialize in providing high-quality, tobacco-free nicotine pouches that offer a smooth and satisfying experience."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Info Grid",
+      "blocks": [
+        {
+          "type": "info_column",
+          "settings": {
+            "title": "About Us",
+            "text": "Welcome to NicPowch, your trusted source for premium nicotine pouches. We specialize in providing high-quality, tobacco-free nicotine pouches that offer a smooth and satisfying experience. With a variety of flavors and strengths, our pouches are crafted for those looking to enjoy nicotine without the smoke, mess, or lingering odor."
+          }
+        },
+        {
+          "type": "info_column",
+          "settings": {
+            "title": "Why Us?",
+            "text": "We know that finding effective, convenient nicotine replacement therapy (NRT) options can be challenging. At NicPowch, we ensure that our nicotine pouches are carefully curated with top-quality ingredients to provide a premium experience. Our pouches are smoke-free, spit-free, and discreet, making them an ideal NRT tool for work, travel, or any part of your day."
+          }
+        },
+        {
+          "type": "info_column",
+          "settings": {
+            "title": "Why Pouches?",
+            "text": "Nicotine pouches are a convenient, smoke-free option for nicotine replacement therapy, allowing users to control their intake without the drawbacks of traditional products. Free from tobacco, they provide a clean and effective way to manage cravings on the go. Available in multiple flavors and strengths, nicotine pouches offer a flexible, easy-to-use solution."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

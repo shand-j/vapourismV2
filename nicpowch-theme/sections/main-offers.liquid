@@ -1,0 +1,377 @@
+{%- comment -%}
+  NicPowch Offers Page
+  Displays products from collections starting with "OFFER:"
+  Each offer collection shown as a separate grid section
+{%- endcomment -%}
+
+{%- style -%}
+  .main-offers {
+    padding: var(--spacing-sections-mobile) 0;
+  }
+
+  @media (min-width: 990px) {
+    .main-offers {
+      padding: var(--spacing-sections-desktop) 0;
+    }
+  }
+
+  .main-offers__container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .main-offers__header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .main-offers__title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 0.75rem;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .main-offers__subtitle {
+    font-size: 1.125rem;
+    color: rgba(var(--color-foreground-rgb), 0.7);
+    max-width: 36rem;
+    margin: 0 auto;
+  }
+
+  .offer-section {
+    margin-bottom: 4rem;
+  }
+
+  .offer-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .offer-section__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--color-primary);
+  }
+
+  .offer-section__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--color-foreground);
+  }
+
+  .offer-section__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: white;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border-radius: 9999px;
+  }
+
+  .offer-section__link {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    transition: gap 0.2s;
+  }
+
+  .offer-section__link:hover {
+    gap: 0.625rem;
+  }
+
+  .offer-section__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  @media (min-width: 500px) {
+    .offer-section__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+  }
+
+  @media (min-width: 750px) {
+    .offer-section__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 990px) {
+    .offer-section__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .offer-section__empty {
+    text-align: center;
+    padding: 2rem;
+    background-color: rgba(var(--color-foreground-rgb), 0.03);
+    border-radius: var(--border-radius-large);
+    color: rgba(var(--color-foreground-rgb), 0.6);
+  }
+
+  .main-offers__empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    background-color: rgba(var(--color-foreground-rgb), 0.03);
+    border-radius: var(--border-radius-large);
+  }
+
+  .main-offers__empty-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1.5rem;
+    color: rgba(var(--color-foreground-rgb), 0.3);
+  }
+
+  .main-offers__empty-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+    color: var(--color-foreground);
+  }
+
+  .main-offers__empty-text {
+    color: rgba(var(--color-foreground-rgb), 0.6);
+    margin: 0;
+  }
+
+  /* Sale badge styling for product cards */
+  .offer-section .product-card__badge--sale {
+    display: inline-flex;
+  }
+{%- endstyle -%}
+
+<section class="main-offers">
+  <div class="main-offers__container">
+    <header class="main-offers__header">
+      <h1 class="main-offers__title">{{ section.settings.title | default: 'Special Offers' }}</h1>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="main-offers__subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    </header>
+
+    {%- assign has_offers = false -%}
+    
+    {%- comment -%} First: Display manually selected collections from blocks {%- endcomment -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'offer_collection' -%}
+        {%- assign offer_collection = block.settings.collection -%}
+        {%- if offer_collection != blank and offer_collection.products.size > 0 -%}
+          {%- assign has_offers = true -%}
+          {%- assign offer_name = block.settings.offer_name | default: offer_collection.title -%}
+          
+          <div class="offer-section" {{ block.shopify_attributes }}>
+            <div class="offer-section__header">
+              <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <h2 class="offer-section__title">{{ offer_name }}</h2>
+                <span class="offer-section__badge">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg>
+                  {{ offer_collection.products.size }} {{ offer_collection.products.size | pluralize: 'deal', 'deals' }}
+                </span>
+              </div>
+              <a href="{{ offer_collection.url }}" class="offer-section__link">
+                View all
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+            
+            <div class="offer-section__grid">
+              {%- for product in offer_collection.products limit: section.settings.products_per_offer -%}
+                {% render 'product-card', product: product, show_sale_badge: true %}
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- comment -%} Second: Auto-detect collections starting with "OFFER:" if enabled {%- endcomment -%}
+    {%- if section.settings.auto_detect_offers -%}
+      {%- for collection in collections -%}
+        {%- assign collection_title_upper = collection.title | upcase -%}
+        {%- assign starts_with_offer = collection_title_upper | slice: 0, 6 -%}
+        
+        {%- if starts_with_offer == 'OFFER:' or starts_with_offer == 'OFFER ' -%}
+          {%- comment -%} Check if this collection was already added via blocks {%- endcomment -%}
+          {%- assign already_added = false -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'offer_collection' and block.settings.collection == collection -%}
+              {%- assign already_added = true -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+          
+          {%- unless already_added -%}
+            {%- assign has_offers = true -%}
+            
+            {%- comment -%} Extract offer name (everything after "OFFER:" or "OFFER ") {%- endcomment -%}
+            {%- if collection.title contains ':' -%}
+              {%- assign offer_name = collection.title | split: ':' | last | strip -%}
+            {%- else -%}
+              {%- assign title_without_prefix = collection.title | slice: 6, 100 -%}
+              {%- assign offer_name = title_without_prefix | strip -%}
+            {%- endif -%}
+            
+            {%- if collection.products.size > 0 -%}
+              <div class="offer-section">
+                <div class="offer-section__header">
+                  <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                    <h2 class="offer-section__title">{{ offer_name }}</h2>
+                    <span class="offer-section__badge">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg>
+                      {{ collection.products.size }} {{ collection.products.size | pluralize: 'deal', 'deals' }}
+                    </span>
+                  </div>
+                  <a href="{{ collection.url }}" class="offer-section__link">
+                    View all
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </a>
+                </div>
+                
+                <div class="offer-section__grid">
+                  {%- for product in collection.products limit: section.settings.products_per_offer -%}
+                    {% render 'product-card', product: product, show_sale_badge: true %}
+                  {%- endfor -%}
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endunless -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
+
+    {%- unless has_offers -%}
+      <div class="main-offers__empty">
+        <svg class="main-offers__empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42z"/>
+          <circle cx="5.5" cy="5.5" r="1.5"/>
+        </svg>
+        <h2 class="main-offers__empty-title">No offers available</h2>
+        <p class="main-offers__empty-text">Check back soon for special deals on nicotine pouches!</p>
+      </div>
+    {%- endunless -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Offers Page",
+  "tag": "section",
+  "class": "section-offers",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Page title",
+      "default": "Special Offers"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Save on your favourite nicotine pouches with our latest deals"
+    },
+    {
+      "type": "range",
+      "id": "products_per_offer",
+      "min": 4,
+      "max": 12,
+      "step": 2,
+      "default": 8,
+      "label": "Products shown per offer"
+    },
+    {
+      "type": "header",
+      "content": "Offer 1"
+    },
+    {
+      "type": "collection",
+      "id": "collection_1",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "offer_name_1",
+      "label": "Offer name",
+      "info": "Leave blank to use collection title"
+    },
+    {
+      "type": "header",
+      "content": "Offer 2"
+    },
+    {
+      "type": "collection",
+      "id": "collection_2",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "offer_name_2",
+      "label": "Offer name"
+    },
+    {
+      "type": "header",
+      "content": "Offer 3"
+    },
+    {
+      "type": "collection",
+      "id": "collection_3",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "offer_name_3",
+      "label": "Offer name"
+    },
+    {
+      "type": "header",
+      "content": "Offer 4"
+    },
+    {
+      "type": "collection",
+      "id": "collection_4",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "offer_name_4",
+      "label": "Offer name"
+    },
+    {
+      "type": "header",
+      "content": "Offer 5"
+    },
+    {
+      "type": "collection",
+      "id": "collection_5",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "offer_name_5",
+      "label": "Offer name"
+    }
+  ]
+}
+{% endschema %}

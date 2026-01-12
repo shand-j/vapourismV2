@@ -1,58 +1,364 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
-    "hero": {
-      "type": "hero",
+    "hero-fullscreen": {
+      "type": "hero-fullscreen",
       "settings": {
         "badge_text": "Tobacco-free nicotine • 18+ verified",
-        "heading_before": "Premium",
-        "heading_accent": "nicotine pouches",
-        "description": "Discover tobacco-free nicotine satisfaction. Discreet, smoke-free pouches from Velo, Zyn, Nordic Spirit, and more—delivered next-day to your door.",
-        "button_primary_text": "Shop all pouches",
+        "title_line_1": "Premium",
+        "title_line_2": "Nicotine",
+        "title_line_3": "Pouches",
+        "description": "Discover tobacco-free satisfaction. Discreet, smoke-free pouches from VELO, KILLA, Nordic Spirit, and more—delivered next-day across the UK.",
+        "button_primary_text": "Shop All Pouches",
         "button_primary_url": "/collections/nicotine-pouches",
-        "overlay_title": "NicPowch",
-        "overlay_subtitle": "Premium Nicotine Pouches UK"
-      },
+        "button_secondary_text": "Shop by Brand",
+        "button_secondary_url": "/collections",
+        "show_brands": true,
+        "show_scroll_indicator": true
+      }
+    },
+    "featured-velo": {
+      "type": "featured-collection",
+      "settings": {
+        "title": "VELO Nicotine Pouches",
+        "collection": "velo",
+        "products_to_show": 4,
+        "show_view_all": true
+      }
+    },
+    "featured-killa": {
+      "type": "featured-collection",
+      "settings": {
+        "title": "KILLA Nicotine Pouches",
+        "collection": "killa",
+        "products_to_show": 4,
+        "show_view_all": true
+      }
+    },
+    "shop-cta": {
+      "type": "shop-cta",
       "blocks": {
-        "button-1": {
-          "type": "button",
+        "cta-1": {
+          "type": "cta_card",
           "settings": {
-            "text": "Shop Velo",
-            "url": "/collections/velo"
+            "title": "Shop by Brand",
+            "url": "/collections"
           }
         },
-        "button-2": {
-          "type": "button",
+        "cta-2": {
+          "type": "cta_card",
           "settings": {
-            "text": "Shop Zyn",
-            "url": "/collections/zyn"
+            "title": "Shop All Pouches",
+            "url": "/collections/nicotine-pouches"
           }
         }
       },
-      "block_order": ["button-1", "button-2"]
+      "block_order": [
+        "cta-1",
+        "cta-2"
+      ],
+      "settings": {}
     },
-    "featured-products": {
-      "type": "featured-products",
+    "info-grid": {
+      "type": "info-grid",
+      "blocks": {
+        "col-1": {
+          "type": "info_column",
+          "settings": {
+            "title": "About Us",
+            "text": "Welcome to NicPowch, your specialist UK retailer for premium nicotine pouches. We stock only the best brands including Velo, Killa, Nordic Spirit, Pablo, and On! All products are genuine, in-date, and stored correctly."
+          }
+        },
+        "col-2": {
+          "type": "info_column",
+          "settings": {
+            "title": "Why Buy From Us?",
+            "text": "✓ Free UK delivery on orders over £30\n✓ Same-day dispatch on orders before 1pm\n✓ Next-day delivery available\n✓ 100% genuine products\n✓ Price match guarantee"
+          }
+        },
+        "col-3": {
+          "type": "info_column",
+          "settings": {
+            "title": "Why Nicotine Pouches?",
+            "text": "Nicotine pouches offer a tobacco-free, smoke-free alternative. Discreet, convenient, and available in various strengths and flavours. Perfect for work, travel, or anywhere smoking isn't allowed."
+          }
+        }
+      },
+      "block_order": [
+        "col-1",
+        "col-2",
+        "col-3"
+      ],
+      "settings": {}
+    },
+    "staff-pick": {
+      "type": "staff-pick",
+      "blocks": {
+        "spec-1": {
+          "type": "spec_row",
+          "settings": {}
+        },
+        "spec-2": {
+          "type": "spec_row",
+          "settings": {}
+        },
+        "spec-3": {
+          "type": "spec_row",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "spec-1",
+        "spec-2",
+        "spec-3"
+      ],
       "settings": {
-        "subtitle": "Featured products",
-        "title": "Popular nicotine pouches",
-        "description": "Top-selling pouches from trusted brands, in stock and ready for next-day delivery.",
-        "collection": "nicotine-pouches",
-        "products_to_show": 8,
-        "show_view_all": true,
-        "view_all_text": "Browse all pouches"
+        "title": "Staff Pick of the Week",
+        "product": ""
       }
     },
-    "strength-categories": {
-      "type": "rich-text",
+    "sale-products": {
+      "type": "featured-collection",
       "settings": {
-        "heading": "Shop by Strength",
-        "text": "<p>From light 3mg to UK maximum 20mg, we have every strength covered.</p>"
+        "title": "On Sale Now",
+        "collection": "sale",
+        "products_to_show": 4,
+        "show_view_all": true
+      }
+    },
+    "blog-posts": {
+      "type": "blog-posts",
+      "settings": {
+        "title": "From the Blog",
+        "blog": "news",
+        "posts_to_show": 3
+      }
+    },
+    "trust-badges": {
+      "type": "trust-badges",
+      "blocks": {
+        "badge-1": {
+          "type": "badge",
+          "settings": {
+            "icon": "shipping",
+            "title": "Free UK Delivery",
+            "text": "On orders over £30"
+          }
+        },
+        "badge-2": {
+          "type": "badge",
+          "settings": {
+            "icon": "secure",
+            "title": "Secure Checkout",
+            "text": "SSL encrypted"
+          }
+        },
+        "badge-3": {
+          "type": "badge",
+          "settings": {
+            "icon": "authentic",
+            "title": "100% Authentic",
+            "text": "Genuine products"
+          }
+        },
+        "badge-4": {
+          "type": "badge",
+          "settings": {
+            "icon": "support",
+            "title": "UK Support",
+            "text": "Contact us anytime"
+          }
+        }
+      },
+      "block_order": [
+        "badge-1",
+        "badge-2",
+        "badge-3",
+        "badge-4"
+      ],
+      "settings": {
+        "style": "bar"
+      }
+    },
+    "featured-brands": {
+      "type": "featured-brands",
+      "blocks": {
+        "brand-velo": {
+          "type": "brand",
+          "settings": {
+            "name": "Velo",
+            "tagline": "By BAT • Strong flavours",
+            "url": "/collections/velo"
+          }
+        },
+        "brand-iceberg": {
+          "type": "brand",
+          "settings": {
+            "name": "Iceberg",
+            "tagline": "Arctic cool • Bold flavours",
+            "url": "/collections/iceberg"
+          }
+        },
+        "brand-nordic": {
+          "type": "brand",
+          "settings": {
+            "name": "Nordic Spirit",
+            "tagline": "By JTI • Scandinavian quality",
+            "url": "/collections/nordic-spirit"
+          }
+        },
+        "brand-on": {
+          "type": "brand",
+          "settings": {
+            "name": "On!",
+            "tagline": "By Altria • Compact pouches",
+            "url": "/collections/on"
+          }
+        },
+        "brand-loop": {
+          "type": "brand",
+          "settings": {
+            "name": "Loop",
+            "tagline": "Premium Swedish brand",
+            "url": "/collections/loop"
+          }
+        },
+        "brand-killa": {
+          "type": "brand",
+          "settings": {
+            "name": "Killa",
+            "tagline": "Extra strong pouches",
+            "url": "/collections/killa"
+          }
+        },
+        "brand-pablo": {
+          "type": "brand",
+          "settings": {
+            "name": "Pablo",
+            "tagline": "High nicotine strength",
+            "url": "/collections/pablo"
+          }
+        },
+        "brand-siberia": {
+          "type": "brand",
+          "settings": {
+            "name": "Siberia",
+            "tagline": "Extreme strength",
+            "url": "/collections/siberia"
+          }
+        }
+      },
+      "block_order": [
+        "brand-velo",
+        "brand-iceberg",
+        "brand-nordic",
+        "brand-on",
+        "brand-loop",
+        "brand-killa",
+        "brand-pablo",
+        "brand-siberia"
+      ],
+      "settings": {
+        "show_header": true,
+        "badge_text": "Top Brands",
+        "title": "Shop by Brand",
+        "subtitle": "Explore premium nicotine pouches from the world's leading brands",
+        "compact_mode": false,
+        "show_view_all": true,
+        "view_all_url": "/pages/brands",
+        "view_all_text": "View All Brands"
+      }
+    },
+    "promo-strip": {
+      "type": "promo-strip",
+      "blocks": {
+        "promo-1": {
+          "type": "promo",
+          "settings": {
+            "icon": "points",
+            "text": "Save with NicPoints - Up to 8% off for life!"
+          }
+        },
+        "promo-2": {
+          "type": "promo",
+          "settings": {
+            "icon": "mix",
+            "text": "Mix & Match - Buy in bulk & save more!"
+          }
+        },
+        "promo-3": {
+          "type": "promo",
+          "settings": {
+            "icon": "deal",
+            "text": "Grab a deal - Top brands discounted!"
+          }
+        }
+      },
+      "block_order": ["promo-1", "promo-2", "promo-3"],
+      "settings": {}
+    },
+    "brand-spotlight": {
+      "type": "brand-spotlight",
+      "blocks": {
+        "spotlight-velo": {
+          "type": "brand",
+          "settings": {
+            "title": "VELO",
+            "subtitle": "Experience the pleasure of nicotine without the drawbacks of smoke! VELO pouches provide a variety of discreet and flavourful options.",
+            "tag": "HOT",
+            "tag_style": "hot",
+            "url": "/collections/velo"
+          }
+        },
+        "spotlight-pablo": {
+          "type": "brand",
+          "settings": {
+            "title": "PABLO",
+            "subtitle": "Ultra-strong pouches for experienced users - intense flavours and maximum satisfaction.",
+            "tag": "EXTREME",
+            "tag_style": "hot",
+            "url": "/collections/pablo"
+          }
+        },
+        "spotlight-killa": {
+          "type": "brand",
+          "settings": {
+            "title": "KILLA",
+            "subtitle": "Danish innovation with bold flavours - from icy mints to tropical fruits.",
+            "tag": "POPULAR",
+            "tag_style": "new",
+            "url": "/collections/killa"
+          }
+        }
+      },
+      "block_order": ["spotlight-velo", "spotlight-pablo", "spotlight-killa"],
+      "settings": {
+        "show_header": true,
+        "badge_text": "Featured Brands",
+        "title": "Shop Top Nicotine Pouch Brands"
       }
     }
   },
   "order": [
-    "hero",
-    "featured-products",
-    "strength-categories"
+    "hero-fullscreen",
+    "promo-strip",
+    "brand-spotlight",
+    "featured-velo",
+    "featured-killa",
+    "trust-badges",
+    "featured-brands",
+    "shop-cta",
+    "sale-products",
+    "staff-pick",
+    "info-grid",
+    "blog-posts"
   ]
 }

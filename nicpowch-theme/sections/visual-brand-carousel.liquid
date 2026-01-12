@@ -1,0 +1,419 @@
+{%- comment -%}
+  Visual Brand Carousel
+  Full-width scrolling brand showcase with large imagery - like nicpouches.com
+{%- endcomment -%}
+
+{%- style -%}
+  .visual-carousel {
+    padding: 3rem 0;
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  }
+
+  @media (min-width: 750px) {
+    .visual-carousel {
+      padding: 4rem 0;
+    }
+  }
+
+  .visual-carousel__container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .visual-carousel__header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .visual-carousel__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.8125rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: white;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    border-radius: 9999px;
+    margin-bottom: 1.25rem;
+  }
+
+  .visual-carousel__title {
+    font-size: 2.25rem;
+    font-weight: 900;
+    margin: 0 0 0.75rem;
+    color: var(--color-foreground);
+    line-height: 1.1;
+  }
+
+  @media (min-width: 750px) {
+    .visual-carousel__title {
+      font-size: 3rem;
+    }
+  }
+
+  .visual-carousel__subtitle {
+    font-size: 1.125rem;
+    color: rgba(var(--color-foreground-rgb), 0.6);
+    margin: 0;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .visual-carousel__scroll {
+    display: flex;
+    gap: 1.25rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 2rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin: 0 -1.5rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .visual-carousel__scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .visual-carousel__card {
+    flex: 0 0 280px;
+    scroll-snap-align: start;
+    border-radius: calc(var(--border-radius) * 2);
+    overflow: hidden;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  @media (min-width: 750px) {
+    .visual-carousel__card {
+      flex: 0 0 340px;
+    }
+  }
+
+  .visual-carousel__card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .visual-carousel__card-image {
+    position: relative;
+    aspect-ratio: 16/10;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  }
+
+  .visual-carousel__card-image img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .visual-carousel__card:hover .visual-carousel__card-image img {
+    transform: scale(1.08);
+  }
+
+  .visual-carousel__card-tag {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    padding: 0.375rem 0.875rem;
+    font-size: 0.6875rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: white;
+    background: #ef4444;
+    border-radius: 4px;
+    z-index: 2;
+  }
+
+  .visual-carousel__card-tag--new {
+    background: var(--color-primary);
+  }
+
+  .visual-carousel__card-tag--sale {
+    background: #f97316;
+  }
+
+  .visual-carousel__card-content {
+    padding: 1.25rem 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .visual-carousel__card-title {
+    font-size: 1.375rem;
+    font-weight: 800;
+    margin: 0 0 0.5rem;
+    color: var(--color-foreground);
+  }
+
+  .visual-carousel__card-desc {
+    font-size: 0.9375rem;
+    color: rgba(var(--color-foreground-rgb), 0.65);
+    margin: 0 0 1rem;
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .visual-carousel__card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .visual-carousel__card-cta svg {
+    transition: transform 0.3s ease;
+  }
+
+  .visual-carousel__card:hover .visual-carousel__card-cta svg {
+    transform: translateX(6px);
+  }
+
+  /* Promo Banner Card (larger) */
+  .visual-carousel__card--promo {
+    flex: 0 0 400px;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    color: white;
+  }
+
+  @media (min-width: 750px) {
+    .visual-carousel__card--promo {
+      flex: 0 0 480px;
+    }
+  }
+
+  .visual-carousel__card--promo .visual-carousel__card-image {
+    aspect-ratio: 16/9;
+  }
+
+  .visual-carousel__card--promo .visual-carousel__card-content {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    color: white;
+  }
+
+  .visual-carousel__card--promo .visual-carousel__card-title {
+    color: white;
+    font-size: 1.625rem;
+  }
+
+  .visual-carousel__card--promo .visual-carousel__card-desc {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .visual-carousel__card--promo .visual-carousel__card-cta {
+    color: white;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.625rem 1.25rem;
+    border-radius: 9999px;
+    justify-content: center;
+  }
+
+  .visual-carousel__card--promo:hover .visual-carousel__card-cta {
+    background: rgba(255, 255, 255, 0.3);
+  }
+{%- endstyle -%}
+
+<section class="visual-carousel">
+  <div class="visual-carousel__container">
+    {%- if section.settings.show_header -%}
+      <div class="visual-carousel__header">
+        {%- if section.settings.badge_text != blank -%}
+          <span class="visual-carousel__badge">{{ section.settings.badge_text }}</span>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <h2 class="visual-carousel__title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subtitle != blank -%}
+          <p class="visual-carousel__subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="visual-carousel__scroll">
+      {%- for block in section.blocks -%}
+        <a href="{{ block.settings.url | default: '#' }}" class="visual-carousel__card{% if block.settings.is_promo %} visual-carousel__card--promo{% endif %}" {{ block.shopify_attributes }}>
+          <div class="visual-carousel__card-image">
+            {%- if block.settings.image != blank -%}
+              <img
+                src="{{ block.settings.image | image_url: width: 600 }}"
+                srcset="{{ block.settings.image | image_url: width: 400 }} 400w, {{ block.settings.image | image_url: width: 600 }} 600w, {{ block.settings.image | image_url: width: 800 }} 800w"
+                sizes="(max-width: 749px) 280px, 340px"
+                alt="{{ block.settings.title | escape }}"
+                loading="lazy"
+              >
+            {%- endif -%}
+            {%- if block.settings.tag != blank -%}
+              <span class="visual-carousel__card-tag visual-carousel__card-tag--{{ block.settings.tag_style }}">{{ block.settings.tag }}</span>
+            {%- endif -%}
+          </div>
+          <div class="visual-carousel__card-content">
+            {%- if block.settings.title != blank -%}
+              <h3 class="visual-carousel__card-title">{{ block.settings.title }}</h3>
+            {%- endif -%}
+            {%- if block.settings.description != blank -%}
+              <p class="visual-carousel__card-desc">{{ block.settings.description }}</p>
+            {%- endif -%}
+            <span class="visual-carousel__card-cta">
+              {{ block.settings.cta_text | default: 'Shop Now' }}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </span>
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Visual Brand Carousel",
+  "tag": "section",
+  "class": "section-visual-carousel",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_header",
+      "label": "Show header",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text",
+      "default": "Featured"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Explore Our Top Brands"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Discover premium nicotine pouches from the UK's best-selling brands"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "brand_card",
+      "name": "Brand Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Brand Name"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Discover our range of premium nicotine pouches."
+        },
+        {
+          "type": "text",
+          "id": "tag",
+          "label": "Tag text (e.g. HOT, NEW, SALE)"
+        },
+        {
+          "type": "select",
+          "id": "tag_style",
+          "label": "Tag style",
+          "options": [
+            { "value": "hot", "label": "Hot (Red)" },
+            { "value": "new", "label": "New (Teal)" },
+            { "value": "sale", "label": "Sale (Orange)" }
+          ],
+          "default": "hot"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link"
+        },
+        {
+          "type": "text",
+          "id": "cta_text",
+          "label": "Button text",
+          "default": "Shop Now"
+        },
+        {
+          "type": "checkbox",
+          "id": "is_promo",
+          "label": "Large promo style",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Visual Brand Carousel",
+      "blocks": [
+        {
+          "type": "brand_card",
+          "settings": {
+            "title": "VELO",
+            "description": "Experience the pleasure of nicotine without smoke. Variety of discreet and flavourful options.",
+            "tag": "HOT",
+            "tag_style": "hot",
+            "is_promo": true
+          }
+        },
+        {
+          "type": "brand_card",
+          "settings": {
+            "title": "KILLA",
+            "description": "Danish innovation with bold flavours - from icy mints to tropical fruits.",
+            "tag": "NEW",
+            "tag_style": "new"
+          }
+        },
+        {
+          "type": "brand_card",
+          "settings": {
+            "title": "Pablo",
+            "description": "Ultra-strong pouches for experienced users seeking intense satisfaction.",
+            "tag": "EXTREME",
+            "tag_style": "hot"
+          }
+        },
+        {
+          "type": "brand_card",
+          "settings": {
+            "title": "Nordic Spirit",
+            "description": "Scandinavian quality, smooth delivery, refined flavours."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -183,7 +183,7 @@
         "type": "url",
         "id": "age_verification_deny_url",
         "label": "Redirect URL for underage visitors",
-        "default": "https://www.google.com"
+        "info": "Where to redirect visitors who are under 18"
       }
     ]
   },

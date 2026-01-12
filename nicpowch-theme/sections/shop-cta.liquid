@@ -1,0 +1,207 @@
+{%- comment -%}
+  Shop CTA Section
+  Two large CTA buttons: "Shop by Brand" and "Shop All"
+  Matches nicpouch.co.uk homepage CTAs
+{%- endcomment -%}
+
+{%- style -%}
+  .shop-cta {
+    padding: var(--spacing-sections-mobile) 0;
+    background: {{ section.settings.background_color | default: '#ffffff' }};
+  }
+
+  @media (min-width: 990px) {
+    .shop-cta {
+      padding: var(--spacing-sections-desktop) 0;
+    }
+  }
+
+  .shop-cta__container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .shop-cta__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 750px) {
+    .shop-cta__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .shop-cta__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3rem 2rem;
+    border-radius: var(--border-radius-large);
+    overflow: hidden;
+    text-decoration: none;
+    color: white;
+    min-height: 200px;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .shop-cta__card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
+  }
+
+  .shop-cta__card--primary {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  }
+
+  .shop-cta__card--secondary {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
+  }
+
+  .shop-cta__card--dark {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  }
+
+  .shop-cta__card-bg {
+    position: absolute;
+    inset: 0;
+    opacity: 0.1;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  .shop-cta__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .shop-cta__subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .shop-cta__arrow {
+    position: absolute;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.5;
+    transition: opacity 0.3s, transform 0.3s;
+  }
+
+  .shop-cta__card:hover .shop-cta__arrow {
+    opacity: 1;
+    transform: translateY(-50%) translateX(4px);
+  }
+{%- endstyle -%}
+
+<section class="shop-cta">
+  <div class="shop-cta__container">
+    <div class="shop-cta__grid">
+      {%- for block in section.blocks -%}
+        <a href="{{ block.settings.url }}" class="shop-cta__card shop-cta__card--{{ block.settings.style }}" {{ block.shopify_attributes }}>
+          <div class="shop-cta__card-bg"></div>
+          <h3 class="shop-cta__title">{{ block.settings.title }}</h3>
+          <p class="shop-cta__subtitle">{{ block.settings.subtitle }}</p>
+          <svg class="shop-cta__arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Shop CTAs",
+  "tag": "section",
+  "class": "section-shop-cta",
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "cta_card",
+      "name": "CTA Card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "SHOP BY BRAND"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle",
+          "default": "Click Here"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link"
+        },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Style",
+          "options": [
+            {
+              "value": "primary",
+              "label": "Teal gradient"
+            },
+            {
+              "value": "secondary",
+              "label": "Blue gradient"
+            },
+            {
+              "value": "dark",
+              "label": "Dark gradient"
+            }
+          ],
+          "default": "primary"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shop CTAs",
+      "blocks": [
+        {
+          "type": "cta_card",
+          "settings": {
+            "title": "SHOP BY BRAND",
+            "subtitle": "Click Here",
+            "url": "/collections",
+            "style": "primary"
+          }
+        },
+        {
+          "type": "cta_card",
+          "settings": {
+            "title": "SHOP ALL",
+            "subtitle": "Click Here",
+            "url": "/collections/all",
+            "style": "dark"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

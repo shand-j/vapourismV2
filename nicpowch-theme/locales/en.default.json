@@ -35,10 +35,19 @@
       "menu": "Menu",
       "cart": "Cart",
       "account": "Account",
-      "search": "Search"
+      "search": "Search",
+      "brands": "Brands",
+      "popular_brands": "Popular brands",
+      "more_brands": "More brands",
+      "shop_by_strength": "Shop by strength",
+      "view_all_brands": "View all brands"
     },
     "footer": {
       "copyright": "© {{ year }} {{ shop_name }}. All rights reserved."
+    },
+    "brands": {
+      "products": "products",
+      "view_collection": "View collection"
     }
   },
   "customer": {

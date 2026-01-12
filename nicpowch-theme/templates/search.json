@@ -1,0 +1,15 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-search",
+      "settings": {
+        "show_brands": true,
+        "featured_brands": "Velo, Killa, Nordic Spirit, On!, Loop, Pablo, Siberia, Iceberg",
+        "products_per_page": 24
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

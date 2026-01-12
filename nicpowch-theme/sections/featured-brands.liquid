@@ -1,0 +1,420 @@
+{%- comment -%}
+  Featured Brands Section
+  Showcase popular nicotine pouch brands with logos and links
+{%- endcomment -%}
+
+{%- style -%}
+  .featured-brands {
+    padding: var(--spacing-sections-desktop) 0;
+    background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.03) 0%, rgba(var(--color-secondary-rgb), 0.03) 100%);
+  }
+
+  @media (max-width: 749px) {
+    .featured-brands {
+      padding: var(--spacing-sections-mobile) 0;
+    }
+  }
+
+  .featured-brands__container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .featured-brands__header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .featured-brands__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+
+  .featured-brands__title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    color: var(--color-foreground);
+  }
+
+  .featured-brands__subtitle {
+    font-size: 1rem;
+    color: rgba(var(--color-foreground-rgb), 0.6);
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .featured-brands__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 990px) {
+    .featured-brands__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 749px) {
+    .featured-brands__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+  }
+
+  .featured-brands__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1.5rem;
+    background: white;
+    border: 1px solid rgba(var(--color-foreground-rgb), 0.08);
+    border-radius: var(--border-radius-large);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.04);
+    overflow: hidden;
+  }
+
+  .featured-brands__card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+
+  .featured-brands__card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(var(--color-primary-rgb), 0.12);
+    border-color: rgba(var(--color-primary-rgb), 0.2);
+  }
+
+  .featured-brands__card:hover::before {
+    transform: scaleX(1);
+  }
+
+  .featured-brands__card-icon {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.1), rgba(var(--color-secondary-rgb), 0.1));
+    border-radius: 50%;
+    margin-bottom: 1rem;
+  }
+
+  .featured-brands__card-icon svg {
+    width: 28px;
+    height: 28px;
+    color: var(--color-primary);
+  }
+
+  .featured-brands__card-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-foreground);
+    margin-bottom: 0.375rem;
+    transition: color 0.2s;
+  }
+
+  .featured-brands__card:hover .featured-brands__card-name {
+    color: var(--color-primary);
+  }
+
+  .featured-brands__card-tagline {
+    font-size: 0.8125rem;
+    color: rgba(var(--color-foreground-rgb), 0.5);
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .featured-brands__card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+  }
+
+  .featured-brands__card:hover .featured-brands__card-cta {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .featured-brands__card-cta svg {
+    transition: transform 0.2s;
+  }
+
+  .featured-brands__card:hover .featured-brands__card-cta svg {
+    transform: translateX(3px);
+  }
+
+  /* View All Link */
+  .featured-brands__view-all {
+    text-align: center;
+    margin-top: 2.5rem;
+  }
+
+  .featured-brands__view-all-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.75rem;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .featured-brands__view-all-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(var(--color-primary-rgb), 0.3);
+  }
+
+  /* Compact variant for collection pages */
+  .featured-brands--compact {
+    padding: calc(var(--spacing-sections-desktop) * 0.6) 0;
+  }
+
+  .featured-brands--compact .featured-brands__grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  @media (max-width: 990px) {
+    .featured-brands--compact .featured-brands__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  @media (max-width: 749px) {
+    .featured-brands--compact .featured-brands__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .featured-brands--compact .featured-brands__card {
+    padding: 1.25rem;
+  }
+
+  .featured-brands--compact .featured-brands__card-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 0.75rem;
+  }
+
+  .featured-brands--compact .featured-brands__card-name {
+    font-size: 1rem;
+  }
+
+  .featured-brands--compact .featured-brands__card-tagline {
+    display: none;
+  }
+{%- endstyle -%}
+
+<section class="featured-brands{% if section.settings.compact_mode %} featured-brands--compact{% endif %}">
+  <div class="featured-brands__container">
+    {%- if section.settings.show_header -%}
+      <header class="featured-brands__header">
+        {%- if section.settings.badge_text != blank -%}
+          <span class="featured-brands__badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            {{ section.settings.badge_text }}
+          </span>
+        {%- endif -%}
+        <h2 class="featured-brands__title">{{ section.settings.title | default: 'Shop by Brand' }}</h2>
+        {%- if section.settings.subtitle != blank -%}
+          <p class="featured-brands__subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
+
+    <div class="featured-brands__grid">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'brand' -%}
+            <a href="{{ block.settings.url | default: routes.all_products_collection_url }}" class="featured-brands__card" {{ block.shopify_attributes }}>
+              <div class="featured-brands__card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <path d="M21 15l-5-5L5 21"/>
+                </svg>
+              </div>
+              <span class="featured-brands__card-name">{{ block.settings.name | default: 'Brand' }}</span>
+              {%- if block.settings.tagline != blank -%}
+                <span class="featured-brands__card-tagline">{{ block.settings.tagline }}</span>
+              {%- endif -%}
+              <span class="featured-brands__card-cta">
+                Shop Now
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+              </span>
+            </a>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.show_view_all and section.settings.view_all_url != blank -%}
+      <div class="featured-brands__view-all">
+        <a href="{{ section.settings.view_all_url }}" class="featured-brands__view-all-link">
+          {{ section.settings.view_all_text | default: 'View All Brands' }}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured Brands",
+  "tag": "section",
+  "class": "section-featured-brands",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_header",
+      "label": "Show header",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text",
+      "default": "Top Brands"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Shop by Brand"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Explore premium nicotine pouches from the world's leading brands"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "compact_mode",
+      "label": "Compact mode",
+      "info": "Use smaller cards for collection pages",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "View All Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show view all link",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "view_all_url",
+      "label": "View all URL"
+    },
+    {
+      "type": "text",
+      "id": "view_all_text",
+      "label": "View all text",
+      "default": "View All Brands"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "Brand",
+      "settings": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Brand name",
+          "default": "Brand Name"
+        },
+        {
+          "type": "text",
+          "id": "tagline",
+          "label": "Tagline",
+          "default": "Premium nicotine pouches"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link URL"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Brands",
+      "blocks": [
+        {
+          "type": "brand",
+          "settings": {
+            "name": "Velo",
+            "tagline": "By BAT • Strong flavours"
+          }
+        },
+        {
+          "type": "brand",
+          "settings": {
+            "name": "Killa",
+            "tagline": "By N.G.P • Extra strong kick"
+          }
+        },
+        {
+          "type": "brand",
+          "settings": {
+            "name": "Nordic Spirit",
+            "tagline": "By JTI • Scandinavian quality"
+          }
+        },
+        {
+          "type": "brand",
+          "settings": {
+            "name": "On!",
+            "tagline": "By Altria • Compact pouches"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,15 @@
+{%- comment -%}
+  Brand Logo Snippet
+  Display a brand logo with link and hover effects
+  Usage: {% render 'brand-logo', brand: 'Velo', url: '/collections/velo' %}
+{%- endcomment -%}
+
+{%- liquid
+  assign brand_name = brand | default: 'Brand'
+  assign brand_url = url | default: '#'
+  assign brand_size = size | default: 'medium'
+-%}
+
+<a href="{{ brand_url }}" class="brand-logo brand-logo--{{ brand_size }}" title="Shop {{ brand_name }} nicotine pouches">
+  <span class="brand-logo__name">{{ brand_name }}</span>
+</a>

@@ -1,0 +1,470 @@
+{%- comment -%}
+  Staff Pick / Featured Product Section
+  Highlights a single product with full details, specs table, and add to cart
+  Matches nicpouch.co.uk "STAFF PICKS" section
+{%- endcomment -%}
+
+{%- style -%}
+  .staff-pick {
+    padding: var(--spacing-sections-mobile) 0;
+    background: {{ section.settings.background_color | default: '#f9fafb' }};
+  }
+
+  @media (min-width: 990px) {
+    .staff-pick {
+      padding: var(--spacing-sections-desktop) 0;
+    }
+  }
+
+  .staff-pick__container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .staff-pick__header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .staff-pick__title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .staff-pick__subtitle {
+    font-size: 1rem;
+    color: rgba(var(--color-foreground-rgb), 0.7);
+    margin: 0;
+  }
+
+  .staff-pick__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    background: white;
+    border-radius: var(--border-radius-large);
+    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.08);
+    overflow: hidden;
+  }
+
+  @media (min-width: 990px) {
+    .staff-pick__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .staff-pick__image {
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.05), rgba(var(--color-secondary-rgb), 0.05));
+  }
+
+  .staff-pick__image a {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .staff-pick__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .staff-pick__image:hover img {
+    transform: scale(1.03);
+  }
+
+  .staff-pick__content {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 990px) {
+    .staff-pick__content {
+      padding: 2.5rem;
+    }
+  }
+
+  .staff-pick__product-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .staff-pick__product-title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .staff-pick__product-title a:hover {
+    color: var(--color-primary);
+  }
+
+  .staff-pick__price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+
+  .staff-pick__price-current {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+
+  .staff-pick__price-compare {
+    font-size: 1rem;
+    color: rgba(var(--color-foreground-rgb), 0.5);
+    text-decoration: line-through;
+  }
+
+  .staff-pick__description {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: rgba(var(--color-foreground-rgb), 0.8);
+  }
+
+  .staff-pick__description p {
+    margin: 0 0 1rem;
+  }
+
+  .staff-pick__description p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Specs Table */
+  .staff-pick__specs {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+
+  .staff-pick__specs tr {
+    border-bottom: 1px solid rgba(var(--color-foreground-rgb), 0.1);
+  }
+
+  .staff-pick__specs tr:last-child {
+    border-bottom: none;
+  }
+
+  .staff-pick__specs td {
+    padding: 0.625rem 0;
+  }
+
+  .staff-pick__specs td:first-child {
+    font-weight: 600;
+    color: rgba(var(--color-foreground-rgb), 0.6);
+    width: 40%;
+  }
+
+  .staff-pick__specs td:last-child {
+    color: var(--color-foreground);
+  }
+
+  /* Quantity & Add to Cart */
+  .staff-pick__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .staff-pick__quantity {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .staff-pick__quantity-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .staff-pick__quantity-selector {
+    display: flex;
+    align-items: center;
+    border: 1px solid rgba(var(--color-foreground-rgb), 0.15);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+  }
+
+  .staff-pick__quantity-btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 1.25rem;
+    color: var(--color-foreground);
+  }
+
+  .staff-pick__quantity-btn:hover {
+    background-color: rgba(var(--color-foreground-rgb), 0.05);
+  }
+
+  .staff-pick__quantity-input {
+    width: 3rem;
+    text-align: center;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    background: transparent;
+    -moz-appearance: textfield;
+  }
+
+  .staff-pick__quantity-input::-webkit-outer-spin-button,
+  .staff-pick__quantity-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .staff-pick__add-btn {
+    width: 100%;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: opacity 0.3s, transform 0.2s;
+  }
+
+  .staff-pick__add-btn:hover {
+    opacity: 0.9;
+    transform: scale(1.02);
+  }
+
+  .staff-pick__add-btn:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .staff-pick__shipping-note {
+    font-size: 0.75rem;
+    color: rgba(var(--color-foreground-rgb), 0.6);
+    text-align: center;
+  }
+
+  .staff-pick__shipping-note a {
+    color: inherit;
+    text-decoration: underline;
+  }
+{%- endstyle -%}
+
+{%- liquid
+  assign product = all_products[section.settings.product]
+-%}
+
+{%- if product != blank -%}
+  <section class="staff-pick">
+    <div class="staff-pick__container">
+      <header class="staff-pick__header">
+        <h2 class="staff-pick__title">{{ section.settings.title | default: 'Staff Pick' }}</h2>
+        <p class="staff-pick__subtitle">{{ section.settings.subtitle | default: 'Give this great flavour a try.' }}</p>
+      </header>
+
+      <div class="staff-pick__grid">
+        <div class="staff-pick__image">
+          <a href="{{ product.url }}">
+            {%- if product.featured_image -%}
+              <img
+                src="{{ product.featured_image | image_url: width: 800 }}"
+                srcset="{{ product.featured_image | image_url: width: 400 }} 400w, {{ product.featured_image | image_url: width: 800 }} 800w"
+                sizes="(max-width: 990px) 100vw, 50vw"
+                alt="{{ product.featured_image.alt | default: product.title | escape }}"
+                loading="lazy"
+                width="{{ product.featured_image.width }}"
+                height="{{ product.featured_image.height }}"
+              >
+            {%- endif -%}
+          </a>
+        </div>
+
+        <div class="staff-pick__content">
+          <h3 class="staff-pick__product-title">
+            <a href="{{ product.url }}">{{ product.title }}</a>
+          </h3>
+
+          <div class="staff-pick__price">
+            {%- if product.compare_at_price > product.price -%}
+              <span class="staff-pick__price-compare">{{ product.compare_at_price | money }}</span>
+            {%- endif -%}
+            <span class="staff-pick__price-current">{{ product.price | money }}</span>
+          </div>
+
+          {%- if product.description != blank -%}
+            <div class="staff-pick__description">
+              {{ product.description }}
+            </div>
+          {%- endif -%}
+
+          {%- comment -%} Product Specs Table {%- endcomment -%}
+          {%- if section.settings.show_specs -%}
+            <table class="staff-pick__specs">
+              <tbody>
+                {%- for block in section.blocks -%}
+                  {%- if block.type == 'spec_row' -%}
+                    <tr {{ block.shopify_attributes }}>
+                      <td>{{ block.settings.label }}</td>
+                      <td>{{ block.settings.value }}</td>
+                    </tr>
+                  {%- endif -%}
+                {%- endfor -%}
+              </tbody>
+            </table>
+          {%- endif -%}
+
+          {%- if product.available -%}
+            <form method="post" action="/cart/add" class="staff-pick__form">
+              <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+              
+              <div class="staff-pick__quantity">
+                <label class="staff-pick__quantity-label" for="staff-pick-qty">Quantity</label>
+                <div class="staff-pick__quantity-selector">
+                  <button type="button" class="staff-pick__quantity-btn" onclick="this.parentNode.querySelector('input').stepDown(); this.parentNode.querySelector('input').dispatchEvent(new Event('change'))">−</button>
+                  <input type="number" name="quantity" id="staff-pick-qty" class="staff-pick__quantity-input" value="1" min="1" max="99">
+                  <button type="button" class="staff-pick__quantity-btn" onclick="this.parentNode.querySelector('input').stepUp(); this.parentNode.querySelector('input').dispatchEvent(new Event('change'))">+</button>
+                </div>
+              </div>
+
+              <button type="submit" class="staff-pick__add-btn">
+                Add to cart
+              </button>
+
+              <p class="staff-pick__shipping-note">
+                Tax included. <a href="/policies/shipping-policy">Shipping</a> calculated at checkout.
+              </p>
+            </form>
+          {%- else -%}
+            <button type="button" class="staff-pick__add-btn" disabled>
+              Sold out
+            </button>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Staff Pick",
+  "tag": "section",
+  "class": "section-staff-pick",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section title",
+      "default": "STAFF PICKS"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Section subtitle",
+      "default": "Give this great flavour a try."
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_specs",
+      "label": "Show specs table",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#f9fafb"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "spec_row",
+      "name": "Spec Row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Nicotine rating"
+        },
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "default": "Medium"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Staff Pick",
+      "settings": {
+        "title": "STAFF PICKS",
+        "subtitle": "Give this great flavour a try.",
+        "show_specs": true
+      },
+      "blocks": [
+        {
+          "type": "spec_row",
+          "settings": {
+            "label": "Nicotine rating",
+            "value": "Medium"
+          }
+        },
+        {
+          "type": "spec_row",
+          "settings": {
+            "label": "Nicotine strength",
+            "value": "11.4 mg/g (1.14%)"
+          }
+        },
+        {
+          "type": "spec_row",
+          "settings": {
+            "label": "Nicotine per pouch",
+            "value": "8 mg / portion"
+          }
+        },
+        {
+          "type": "spec_row",
+          "settings": {
+            "label": "Pouch type",
+            "value": "Slim"
+          }
+        },
+        {
+          "type": "spec_row",
+          "settings": {
+            "label": "Pouches per can",
+            "value": "20"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,504 @@
+{%- comment -%}
+  NicPowch Contact Page Section
+{%- endcomment -%}
+
+{%- style -%}
+  .main-contact {
+    padding: var(--spacing-sections-mobile) 0;
+  }
+
+  @media (min-width: 990px) {
+    .main-contact {
+      padding: var(--spacing-sections-desktop) 0;
+    }
+  }
+
+  .main-contact__container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .main-contact__header {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto 3rem;
+  }
+
+  .main-contact__title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 1rem;
+  }
+
+  .main-contact__subtitle {
+    font-size: 1.125rem;
+    color: rgba(var(--color-foreground-rgb), 0.7);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .main-contact__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  @media (min-width: 990px) {
+    .main-contact__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* Contact Info Cards */
+  .main-contact__info {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .main-contact__card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: rgba(var(--color-foreground-rgb), 0.02);
+    border: 1px solid rgba(var(--color-foreground-rgb), 0.1);
+    border-radius: var(--border-radius-large);
+    transition: all 0.2s;
+  }
+
+  .main-contact__card:hover {
+    border-color: rgba(var(--color-primary-rgb), 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .main-contact__card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    border-radius: var(--border-radius);
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .main-contact__card-content {
+    flex: 1;
+  }
+
+  .main-contact__card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem;
+  }
+
+  .main-contact__card-text {
+    font-size: 0.875rem;
+    color: rgba(var(--color-foreground-rgb), 0.7);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .main-contact__card-link {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .main-contact__card-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Contact Form */
+  .main-contact__form-wrapper {
+    background: white;
+    border: 1px solid rgba(var(--color-foreground-rgb), 0.1);
+    border-radius: var(--border-radius-large);
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  }
+
+  .main-contact__form-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 1.5rem;
+  }
+
+  .main-contact__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .main-contact__form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .main-contact__form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 750px) {
+    .main-contact__form-row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .main-contact__label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-foreground);
+  }
+
+  .main-contact__label span {
+    color: #ef4444;
+  }
+
+  .main-contact__input,
+  .main-contact__select,
+  .main-contact__textarea {
+    padding: 0.875rem 1rem;
+    font-size: 0.875rem;
+    border: 1px solid rgba(var(--color-foreground-rgb), 0.15);
+    border-radius: var(--border-radius);
+    background: white;
+    color: var(--color-foreground);
+    transition: border-color 0.2s;
+  }
+
+  .main-contact__input:focus,
+  .main-contact__select:focus,
+  .main-contact__textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+  }
+
+  .main-contact__textarea {
+    min-height: 150px;
+    resize: vertical;
+  }
+
+  .main-contact__submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .main-contact__submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.3);
+  }
+
+  /* FAQ Section */
+  .main-contact__faq {
+    margin-top: 4rem;
+    padding-top: 4rem;
+    border-top: 1px solid rgba(var(--color-foreground-rgb), 0.1);
+  }
+
+  .main-contact__faq-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 2rem;
+  }
+
+  .main-contact__faq-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  @media (min-width: 750px) {
+    .main-contact__faq-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .main-contact__faq-item {
+    background: rgba(var(--color-foreground-rgb), 0.02);
+    border: 1px solid rgba(var(--color-foreground-rgb), 0.1);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+  }
+
+  .main-contact__faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    cursor: pointer;
+    list-style: none;
+    transition: background-color 0.2s;
+  }
+
+  .main-contact__faq-question:hover {
+    background: rgba(var(--color-foreground-rgb), 0.03);
+  }
+
+  .main-contact__faq-question::-webkit-details-marker {
+    display: none;
+  }
+
+  .main-contact__faq-answer {
+    padding: 0 1.25rem 1rem;
+    font-size: 0.875rem;
+    color: rgba(var(--color-foreground-rgb), 0.7);
+    line-height: 1.6;
+  }
+{%- endstyle -%}
+
+<section class="main-contact">
+  <div class="main-contact__container">
+    <header class="main-contact__header">
+      <h1 class="main-contact__title">{{ section.settings.title | default: 'Get in Touch' }}</h1>
+      <p class="main-contact__subtitle">{{ section.settings.subtitle | default: "Have questions? We're here to help. Get in touch with our friendly customer service team." }}</p>
+    </header>
+
+    <div class="main-contact__grid">
+      {%- comment -%} Contact Info {%- endcomment -%}
+      <div class="main-contact__info">
+        <div class="main-contact__card">
+          <div class="main-contact__card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div class="main-contact__card-content">
+            <h3 class="main-contact__card-title">Email Us</h3>
+            <p class="main-contact__card-text">
+              <a href="mailto:{{ section.settings.email | default: 'support@nicpowch.co.uk' }}" class="main-contact__card-link">{{ section.settings.email | default: 'support@nicpowch.co.uk' }}</a>
+            </p>
+            <p class="main-contact__card-text">We aim to reply within 24 hours</p>
+          </div>
+        </div>
+
+        <div class="main-contact__card">
+          <div class="main-contact__card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <div class="main-contact__card-content">
+            <h3 class="main-contact__card-title">Call Us</h3>
+            <p class="main-contact__card-text">
+              <a href="tel:{{ section.settings.phone | default: '+441onal234567' }}" class="main-contact__card-link">{{ section.settings.phone | default: '0800 123 4567' }}</a>
+            </p>
+            <p class="main-contact__card-text">Mon-Fri, 9am-5pm GMT</p>
+          </div>
+        </div>
+
+        <div class="main-contact__card">
+          <div class="main-contact__card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="main-contact__card-content">
+            <h3 class="main-contact__card-title">Response Time</h3>
+            <p class="main-contact__card-text">Email: Within 24 hours</p>
+            <p class="main-contact__card-text">Phone: Immediate during business hours</p>
+          </div>
+        </div>
+
+        <div class="main-contact__card">
+          <div class="main-contact__card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div class="main-contact__card-content">
+            <h3 class="main-contact__card-title">Address</h3>
+            <p class="main-contact__card-text">{{ section.settings.address | default: 'NicPowch Ltd, 123 High Street, London, UK' }}</p>
+          </div>
+        </div>
+      </div>
+
+      {%- comment -%} Contact Form {%- endcomment -%}
+      <div class="main-contact__form-wrapper">
+        <h2 class="main-contact__form-title">Send us a message</h2>
+        {%- form 'contact', class: 'main-contact__form' -%}
+          {%- if form.posted_successfully? -%}
+            <p style="color: var(--color-secondary); font-weight: 500; text-align: center; padding: 1rem;">Thanks for your message! We'll get back to you soon.</p>
+          {%- else -%}
+            <div class="main-contact__form-row">
+              <div class="main-contact__form-group">
+                <label for="ContactForm-name" class="main-contact__label">Name <span>*</span></label>
+                <input type="text" id="ContactForm-name" name="contact[name]" class="main-contact__input" placeholder="Your name" required>
+              </div>
+              <div class="main-contact__form-group">
+                <label for="ContactForm-email" class="main-contact__label">Email <span>*</span></label>
+                <input type="email" id="ContactForm-email" name="contact[email]" class="main-contact__input" placeholder="your@email.com" required autocomplete="email">
+              </div>
+            </div>
+
+            <div class="main-contact__form-group">
+              <label for="ContactForm-subject" class="main-contact__label">Subject</label>
+              <select id="ContactForm-subject" name="contact[subject]" class="main-contact__select">
+                <option value="">Select a topic</option>
+                <option value="Order enquiry">Order enquiry</option>
+                <option value="Product question">Product question</option>
+                <option value="Shipping & delivery">Shipping & delivery</option>
+                <option value="Returns & refunds">Returns & refunds</option>
+                <option value="Account issue">Account issue</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="main-contact__form-group">
+              <label for="ContactForm-order" class="main-contact__label">Order Number (if applicable)</label>
+              <input type="text" id="ContactForm-order" name="contact[order_number]" class="main-contact__input" placeholder="#12345">
+            </div>
+
+            <div class="main-contact__form-group">
+              <label for="ContactForm-message" class="main-contact__label">Message <span>*</span></label>
+              <textarea id="ContactForm-message" name="contact[body]" class="main-contact__textarea" placeholder="How can we help?" required></textarea>
+            </div>
+
+            <button type="submit" class="main-contact__submit">
+              Send Message
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    </div>
+
+    {%- comment -%} FAQ Section {%- endcomment -%}
+    {%- if section.settings.show_faq -%}
+      <div class="main-contact__faq">
+        <h2 class="main-contact__faq-title">Frequently Asked Questions</h2>
+        <div class="main-contact__faq-grid">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'faq_item' -%}
+              <details class="main-contact__faq-item">
+                <summary class="main-contact__faq-question">
+                  {{ block.settings.question }}
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                </summary>
+                <div class="main-contact__faq-answer">{{ block.settings.answer }}</div>
+              </details>
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- if section.blocks.size == 0 -%}
+            <details class="main-contact__faq-item">
+              <summary class="main-contact__faq-question">
+                How long does delivery take?
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              </summary>
+              <div class="main-contact__faq-answer">Orders placed before 1pm are dispatched same day. Standard UK delivery takes 1-3 business days.</div>
+            </details>
+            <details class="main-contact__faq-item">
+              <summary class="main-contact__faq-question">
+                What is your returns policy?
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              </summary>
+              <div class="main-contact__faq-answer">We accept returns within 14 days of delivery for unopened products in original packaging.</div>
+            </details>
+            <details class="main-contact__faq-item">
+              <summary class="main-contact__faq-question">
+                Do you ship internationally?
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              </summary>
+              <div class="main-contact__faq-answer">We currently ship within the UK only. International shipping is coming soon.</div>
+            </details>
+            <details class="main-contact__faq-item">
+              <summary class="main-contact__faq-question">
+                Why do I need age verification?
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              </summary>
+              <div class="main-contact__faq-answer">Nicotine pouches are an age-restricted product. UK law requires us to verify all customers are 18+.</div>
+            </details>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Contact Page",
+  "tag": "section",
+  "class": "section-contact",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Page title",
+      "default": "Get in Touch"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Have questions? We're here to help. Get in touch with our friendly customer service team."
+    },
+    {
+      "type": "header",
+      "content": "Contact Info"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email address",
+      "default": "support@nicpowch.co.uk"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone number",
+      "default": "0800 123 4567"
+    },
+    {
+      "type": "text",
+      "id": "address",
+      "label": "Business address",
+      "default": "NicPowch Ltd, 123 High Street, London, UK"
+    },
+    {
+      "type": "header",
+      "content": "FAQ Section"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_faq",
+      "label": "Show FAQ section",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "Frequently asked question?"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Answer",
+          "default": "Answer to the question goes here."
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

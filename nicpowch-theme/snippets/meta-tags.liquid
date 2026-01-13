@@ -62,6 +62,19 @@
   <meta property="product:condition" content="new">
   <meta property="product:brand" content="{{ product.vendor }}">
   <meta property="product:retailer_item_id" content="{{ product.id }}">
+  
+  {%- comment -%} Google Shopping / Product Feed meta tags {%- endcomment -%}
+  <meta property="product:price:amount" content="{{ product.price | divided_by: 100.0 }}">
+  <meta property="product:price:currency" content="{{ cart.currency.iso_code }}">
+  <meta property="product:category" content="Health & Beauty > Tobacco Products > Nicotine Pouches">
+  <meta name="product:mfr_part_no" content="{{ product.selected_or_first_available_variant.sku | default: product.id }}">
+  <meta name="product:upc" content="{{ product.selected_or_first_available_variant.barcode }}">
+  <meta name="product:isbn" content="">
+  <meta name="product:age_group" content="adult">
+  <meta name="product:gender" content="unisex">
+  <meta name="product:condition" content="new">
+  <meta name="product:availability" content="{% if product.available %}in stock{% else %}out of stock{% endif %}">
+  <meta name="product:shipping_weight" content="{{ product.selected_or_first_available_variant.weight | divided_by: 1000.0 }} kg">
 {%- endif -%}
 
 {%- comment -%} Article-specific meta tags {%- endcomment -%}
@@ -136,6 +149,7 @@
   "url": {{ canonical_url | json }},
   "sku": {{ product.selected_or_first_available_variant.sku | default: product.id | json }},
   "mpn": {{ product.selected_or_first_available_variant.barcode | default: product.id | json }},
+  "gtin": {{ product.selected_or_first_available_variant.barcode | json }},
   {%- if product.featured_image -%}
   "image": [
     {{ product.featured_image | image_url: width: 1200 | prepend: 'https:' | json }}
@@ -148,10 +162,34 @@
     "@type": "Brand",
     "name": {{ product.vendor | json }}
   },
-  "category": "Nicotine Pouches",
+  "category": "Health & Beauty > Tobacco Products > Nicotine Pouches",
+  "audience": {
+    "@type": "PeopleAudience",
+    "suggestedMinAge": 18,
+    "requiredMinAge": 18
+  },
+  "additionalProperty": [
+    {
+      "@type": "PropertyValue",
+      "name": "Product Type",
+      "value": "Nicotine Pouches"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Age Restricted",
+      "value": "18+"
+    }
+    {%- if product.selected_or_first_available_variant.weight -%}
+    ,{
+      "@type": "PropertyValue",
+      "name": "Weight",
+      "value": "{{ product.selected_or_first_available_variant.weight | divided_by: 1000.0 }} kg"
+    }
+    {%- endif -%}
+  ],
   "offers": {
     "@type": "Offer",
-    "price": {{ product.price | money_without_currency | strip_html | json }},
+    "price": {{ product.price | divided_by: 100.0 | json }},
     "priceCurrency": {{ cart.currency.iso_code | json }},
     "availability": "{% if product.available %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
     "url": {{ canonical_url | json }},
@@ -167,19 +205,24 @@
         "@type": "DefinedRegion",
         "addressCountry": "GB"
       },
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": "0",
+        "currency": "GBP"
+      },
       "deliveryTime": {
         "@type": "ShippingDeliveryTime",
         "handlingTime": {
           "@type": "QuantitativeValue",
           "minValue": 0,
           "maxValue": 1,
-          "unitCode": "d"
+          "unitCode": "DAY"
         },
         "transitTime": {
           "@type": "QuantitativeValue",
           "minValue": 1,
           "maxValue": 3,
-          "unitCode": "d"
+          "unitCode": "DAY"
         }
       }
     }

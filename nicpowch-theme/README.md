@@ -2,6 +2,16 @@
 
 A custom Shopify theme for NicPowch - UK's specialist nicotine pouch retailer.
 
+## 🆕 Recent Updates (v1.1.0)
+
+**Google Shopping & SEO Optimization**
+- ✅ Enhanced product meta tags for Google Merchant Center integration
+- ✅ Improved structured data (JSON-LD) with age restrictions and GTIN support
+- ✅ Added comprehensive Google Shopping documentation
+- ✅ Fixed offers page schema to use modern blocks system
+
+See [IMPLEMENTATION_NOTES.md](./IMPLEMENTATION_NOTES.md) for detailed changes.
+
 ## Overview
 
 NicPowch is a dedicated e-commerce storefront for nicotine pouches, built as a native Shopify theme using Liquid templates. This is a separate brand from Vapourism, focused exclusively on tobacco-free nicotine pouches.
@@ -11,7 +21,7 @@ NicPowch is a dedicated e-commerce storefront for nicotine pouches, built as a n
 - **Colors**: Teal (#0d9488) to Emerald (#10b981) gradient
 - **Target Market**: UK adults 18+
 - **Product Focus**: Nicotine pouches and snus only
-- **Featured Brands**: Velo, Zyn, Nordic Spirit, On!, Killa, Pablo
+- **Featured Brands**: Velo, Nordic Spirit, On!, Killa, Pablo, Loop
 
 ## Theme Structure
 
@@ -90,16 +100,27 @@ shopify theme list
 
 ## Features
 
+### SEO Optimized ✨
+- Meta tags snippet with Open Graph and Twitter Cards
+- JSON-LD structured data for products (Google Shopping compatible)
+- Semantic HTML5 structure
+- Canonical URLs
+- **NEW**: Enhanced product metadata for Google Merchant Center
+- **NEW**: Age-restricted product markup (18+)
+- **NEW**: GTIN/barcode support for better product identification
+
+**[→ See Google Shopping & SEO Guide](./docs/GOOGLE_SHOPPING_SEO.md)**
+
 ### Age Verification
 - Required modal for all visitors (UK regulation compliance)
 - Configurable text and redirect URL
 - Local storage for verified users (30-day expiry)
 
-### SEO Optimized
-- Meta tags snippet with Open Graph and Twitter Cards
-- JSON-LD structured data for products
-- Semantic HTML5 structure
-- Canonical URLs
+### Flexible Offers Page 🆕
+- Block-based offer management in theme customizer
+- Auto-detection of collections starting with "OFFER:"
+- Unlimited offer collections with drag-and-drop ordering
+- Individual offer customization
 
 ### Accessibility
 - Skip to content link
@@ -112,6 +133,12 @@ shopify theme list
 - Critical CSS inlined
 - Lazy loading images
 - System font stack option
+
+## Documentation
+
+- **[Implementation Notes](./IMPLEMENTATION_NOTES.md)** - Detailed changes and version history
+- **[Google Shopping & SEO Guide](./docs/GOOGLE_SHOPPING_SEO.md)** - Complete SEO optimization guide
+- **[Testing Checklist](./TESTING_CHECKLIST.md)** - Comprehensive testing procedures
 
 ## Customization
 

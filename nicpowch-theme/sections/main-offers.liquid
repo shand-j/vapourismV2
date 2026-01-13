@@ -302,75 +302,35 @@
       "label": "Products shown per offer"
     },
     {
-      "type": "header",
-      "content": "Offer 1"
-    },
+      "type": "checkbox",
+      "id": "auto_detect_offers",
+      "label": "Auto-detect collections starting with 'OFFER:'",
+      "default": true,
+      "info": "Automatically show collections that start with 'OFFER:' in their title"
+    }
+  ],
+  "blocks": [
     {
-      "type": "collection",
-      "id": "collection_1",
-      "label": "Collection"
-    },
+      "type": "offer_collection",
+      "name": "Offer Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "text",
+          "id": "offer_name",
+          "label": "Offer name",
+          "info": "Leave blank to use collection title"
+        }
+      ]
+    }
+  ],
+  "presets": [
     {
-      "type": "text",
-      "id": "offer_name_1",
-      "label": "Offer name",
-      "info": "Leave blank to use collection title"
-    },
-    {
-      "type": "header",
-      "content": "Offer 2"
-    },
-    {
-      "type": "collection",
-      "id": "collection_2",
-      "label": "Collection"
-    },
-    {
-      "type": "text",
-      "id": "offer_name_2",
-      "label": "Offer name"
-    },
-    {
-      "type": "header",
-      "content": "Offer 3"
-    },
-    {
-      "type": "collection",
-      "id": "collection_3",
-      "label": "Collection"
-    },
-    {
-      "type": "text",
-      "id": "offer_name_3",
-      "label": "Offer name"
-    },
-    {
-      "type": "header",
-      "content": "Offer 4"
-    },
-    {
-      "type": "collection",
-      "id": "collection_4",
-      "label": "Collection"
-    },
-    {
-      "type": "text",
-      "id": "offer_name_4",
-      "label": "Offer name"
-    },
-    {
-      "type": "header",
-      "content": "Offer 5"
-    },
-    {
-      "type": "collection",
-      "id": "collection_5",
-      "label": "Collection"
-    },
-    {
-      "type": "text",
-      "id": "offer_name_5",
-      "label": "Offer name"
+      "name": "Offers Page"
     }
   ]
 }

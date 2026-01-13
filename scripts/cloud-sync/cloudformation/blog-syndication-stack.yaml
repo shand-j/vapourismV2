@@ -1,0 +1,263 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'SEO Cloudstack Blog Syndication Infrastructure - Creates S3 bucket, IAM user, and access policies for automated blog content deployment'
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: 'S3 Configuration'
+        Parameters:
+          - BucketName
+          - EnableVersioning
+      - Label:
+          default: 'IAM Configuration'
+        Parameters:
+          - DeploymentUserName
+      - Label:
+          default: 'Optional Features'
+        Parameters:
+          - EnableCloudFront
+
+Parameters:
+  BucketName:
+    Type: String
+    Default: vapourism-blog-aws
+    Description: Name for the S3 bucket (must be globally unique)
+    AllowedPattern: '^[a-z0-9][a-z0-9-]*[a-z0-9]$'
+    ConstraintDescription: Bucket name must be lowercase, start and end with alphanumeric, and can contain hyphens
+
+  DeploymentUserName:
+    Type: String
+    Default: blog-deployer
+    Description: Name for the IAM user that will deploy blog content
+    AllowedPattern: '^[a-zA-Z0-9+=,.@_-]+$'
+    ConstraintDescription: Must be a valid IAM user name
+
+  EnableVersioning:
+    Type: String
+    Default: 'false'
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Description: Enable S3 versioning for blog content (adds cost but provides rollback capability)
+
+  EnableCloudFront:
+    Type: String
+    Default: 'false'
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Description: Enable CloudFront CDN distribution (recommended for production, adds ~$1-5/month)
+
+Conditions:
+  EnableVersioningCondition: !Equals [!Ref EnableVersioning, 'true']
+  EnableCloudFrontCondition: !Equals [!Ref EnableCloudFront, 'true']
+
+Resources:
+  # S3 Bucket for static blog hosting
+  BlogBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: 404.html
+      VersioningConfiguration:
+        Status: !If [EnableVersioningCondition, Enabled, Suspended]
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - GET
+              - HEAD
+            AllowedOrigins:
+              - '*'
+            MaxAge: 3600
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+      Tags:
+        - Key: Project
+          Value: Vapourism Blog Syndication
+        - Key: ManagedBy
+          Value: CloudFormation
+        - Key: Environment
+          Value: Production
+
+  # Bucket Policy for public read access
+  BlogBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref BlogBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: PublicReadGetObject
+            Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Sub '${BlogBucket.Arn}/*'
+
+  # IAM User for deployment
+  DeploymentUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: !Ref DeploymentUserName
+      Tags:
+        - Key: Project
+          Value: Vapourism Blog Syndication
+        - Key: Purpose
+          Value: Automated blog deployment
+
+  # IAM Policy for deployment user
+  DeploymentUserPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: BlogDeploymentPolicy
+      Users:
+        - !Ref DeploymentUser
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: ListBucket
+            Effect: Allow
+            Action:
+              - 's3:ListBucket'
+              - 's3:GetBucketLocation'
+              - 's3:GetBucketWebsite'
+            Resource: !GetAtt BlogBucket.Arn
+          - Sid: ManageBucketObjects
+            Effect: Allow
+            Action:
+              - 's3:PutObject'
+              - 's3:PutObjectAcl'
+              - 's3:GetObject'
+              - 's3:DeleteObject'
+            Resource: !Sub '${BlogBucket.Arn}/*'
+          - Sid: CloudFrontInvalidation
+            Effect: Allow
+            Action:
+              - 'cloudfront:CreateInvalidation'
+              - 'cloudfront:GetInvalidation'
+              - 'cloudfront:ListInvalidations'
+            Resource: '*'
+            Condition:
+              StringEquals:
+                'aws:RequestedRegion': !Ref 'AWS::Region'
+
+  # Access Key for deployment user
+  DeploymentAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref DeploymentUser
+
+  # Optional: CloudFront Distribution
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Condition: EnableCloudFrontCondition
+    Properties:
+      DistributionConfig:
+        Comment: !Sub 'CDN for ${BucketName}'
+        Enabled: true
+        DefaultRootObject: index.html
+        HttpVersion: http2
+        PriceClass: PriceClass_100  # US, Canada, Europe
+        Origins:
+          - Id: S3Origin
+            DomainName: !Sub '${BucketName}.s3-website.${AWS::Region}.amazonaws.com'
+            CustomOriginConfig:
+              HTTPPort: 80
+              OriginProtocolPolicy: http-only
+        DefaultCacheBehavior:
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+          CachedMethods:
+            - GET
+            - HEAD
+          ForwardedValues:
+            QueryString: false
+            Cookies:
+              Forward: none
+          Compress: true
+          DefaultTTL: 3600      # 1 hour
+          MinTTL: 0
+          MaxTTL: 86400         # 24 hours
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ResponseCode: 404
+            ResponsePagePath: /404.html
+            ErrorCachingMinTTL: 300
+          - ErrorCode: 404
+            ResponseCode: 404
+            ResponsePagePath: /404.html
+            ErrorCachingMinTTL: 300
+      Tags:
+        - Key: Project
+          Value: Vapourism Blog Syndication
+        - Key: ManagedBy
+          Value: CloudFormation
+
+Outputs:
+  BucketName:
+    Description: Name of the S3 bucket
+    Value: !Ref BlogBucket
+    Export:
+      Name: !Sub '${AWS::StackName}-BucketName'
+
+  WebsiteURL:
+    Description: URL for accessing the blog website
+    Value: !GetAtt BlogBucket.WebsiteURL
+
+  BucketArn:
+    Description: ARN of the S3 bucket
+    Value: !GetAtt BlogBucket.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-BucketArn'
+
+  DeploymentUserArn:
+    Description: ARN of the deployment IAM user
+    Value: !GetAtt DeploymentUser.Arn
+
+  AccessKeyId:
+    Description: Access Key ID for deployment (store securely in .env)
+    Value: !Ref DeploymentAccessKey
+    Export:
+      Name: !Sub '${AWS::StackName}-AccessKeyId'
+
+  SecretAccessKey:
+    Description: Secret Access Key for deployment (store securely in .env - this is the only time you can view it)
+    Value: !GetAtt DeploymentAccessKey.SecretAccessKey
+
+  Region:
+    Description: AWS Region where resources are deployed
+    Value: !Ref 'AWS::Region'
+
+  CloudFrontDistributionId:
+    Description: CloudFront Distribution ID (for cache invalidation)
+    Value: !If [EnableCloudFrontCondition, !Ref CloudFrontDistribution, 'Not enabled']
+    Condition: EnableCloudFrontCondition
+    Export:
+      Name: !Sub '${AWS::StackName}-DistributionId'
+
+  CloudFrontDomainName:
+    Description: CloudFront distribution domain name
+    Value: !If [EnableCloudFrontCondition, !GetAtt CloudFrontDistribution.DomainName, 'Not enabled']
+    Condition: EnableCloudFrontCondition
+
+  StackInfo:
+    Description: Quick setup command
+    Value: !Sub |
+      # Add these to your .env file:
+      AWS_ACCESS_KEY_ID=${DeploymentAccessKey}
+      AWS_SECRET_ACCESS_KEY=${DeploymentAccessKey.SecretAccessKey}
+      AWS_REGION=${AWS::Region}
+      AWS_BUCKET_NAME=${BucketName}
+      ${EnableCloudFrontCondition ? !Sub 'AWS_CLOUDFRONT_DISTRIBUTION_ID=${CloudFrontDistribution}' : '# CloudFront not enabled'}

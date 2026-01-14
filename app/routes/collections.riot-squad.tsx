@@ -14,11 +14,13 @@ import {useCollectionTracking} from '~/lib/hooks/useCollectionTracking';
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
   
-  // Search for Riot Squad e-liquid products using tag-based query
+  // Search for Riot Squad e-liquid products using vendor filtering
   const searchResults = await searchProducts(
     storefront,
-    'tag:riot_squad tag:e-liquid',
+    '',
     {
+      vendor: 'Riot Squad',
+      productType: 'E-Liquid',
       sortKey: 'RELEVANCE',
       reverse: false,
       first: 48,
@@ -241,13 +243,13 @@ export default function RiotSquadCollection() {
       <div className="border-t pt-8">
         <h3 className="font-semibold text-lg mb-4">More E-Liquid Brands</h3>
         <div className="flex flex-wrap gap-3">
-          <Link to="/search?tag=e-liquid" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
+          <Link to="/search?type=E-Liquid" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
             All E-Liquids
           </Link>
-          <Link to="/search?tag=shortfill" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
+          <Link to="/search?type=E-Liquid&q=shortfill" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
             50ml Shortfills
           </Link>
-          <Link to="/search?tag=nic_salt" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
+          <Link to="/search?type=E-Liquid&q=nic+salt" className="px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
             Nic Salts
           </Link>
         </div>

@@ -1,12 +1,11 @@
 /**
- * Unit tests for tag filtering in search
- * Tests the fix for tag search logic to use Shopify's query syntax
+ * Unit tests for simplified search filtering
+ * Tests the simplified filter options (vendor, productType, availability, price)
  */
 import {describe, it, expect, vi, beforeEach} from 'vitest';
 import {searchProducts} from '~/lib/shopify-search';
-import type * as StorefrontAPI from '@shopify/hydrogen/storefront-api-types';
 
-describe('searchProducts with tag filters', () => {
+describe('searchProducts with simplified filters', () => {
   let mockStorefront: any;
   let mockQuery: any;
 
@@ -18,7 +17,7 @@ describe('searchProducts with tag filters', () => {
     };
   });
 
-  it('should convert single tag filter to query syntax', async () => {
+  it('should convert vendor filter to query syntax', async () => {
     mockQuery.mockResolvedValue({
       search: {
         edges: [],
@@ -27,25 +26,21 @@ describe('searchProducts with tag filters', () => {
       },
     });
 
-    const tagFilters: StorefrontAPI.ProductFilter[] = [
-      {tag: 'disposable'} as StorefrontAPI.ProductFilter,
-    ];
-
     await searchProducts(mockStorefront, '', {
-      filters: tagFilters,
+      vendor: 'Elf Bar',
     });
 
     expect(mockQuery).toHaveBeenCalledWith(
       expect.any(String),
       expect.objectContaining({
         variables: expect.objectContaining({
-          query: 'tag:disposable',
+          query: 'vendor:Elf Bar',
         }),
       })
     );
   });
 
-  it('should convert multiple tag filters to OR query syntax', async () => {
+  it('should convert productType filter to query syntax', async () => {
     mockQuery.mockResolvedValue({
       search: {
         edges: [],
@@ -54,27 +49,21 @@ describe('searchProducts with tag filters', () => {
       },
     });
 
-    const tagFilters: StorefrontAPI.ProductFilter[] = [
-      {tag: 'disposable'} as StorefrontAPI.ProductFilter,
-      {tag: 'device'} as StorefrontAPI.ProductFilter,
-      {tag: '20mg'} as StorefrontAPI.ProductFilter,
-    ];
-
     await searchProducts(mockStorefront, '', {
-      filters: tagFilters,
+      productType: 'Disposable',
     });
 
     expect(mockQuery).toHaveBeenCalledWith(
       expect.any(String),
       expect.objectContaining({
         variables: expect.objectContaining({
-          query: '(tag:disposable OR tag:device OR tag:20mg)',
+          query: 'product_type:Disposable',
         }),
       })
     );
   });
 
-  it('should combine search term with tag filters', async () => {
+  it('should combine search term with filters', async () => {
     mockQuery.mockResolvedValue({
       search: {
         edges: [],
@@ -82,26 +71,22 @@ describe('searchProducts with tag filters', () => {
         totalCount: 0,
       },
     });
-
-    const tagFilters: StorefrontAPI.ProductFilter[] = [
-      {tag: 'disposable'} as StorefrontAPI.ProductFilter,
-    ];
 
     await searchProducts(mockStorefront, 'vape', {
-      filters: tagFilters,
+      vendor: 'Elf Bar',
     });
 
     expect(mockQuery).toHaveBeenCalledWith(
       expect.any(String),
       expect.objectContaining({
         variables: expect.objectContaining({
-          query: 'vape AND tag:disposable',
+          query: 'vape vendor:Elf Bar',
         }),
       })
     );
   });
 
-  it('should combine tag filters with other filter types', async () => {
+  it('should combine multiple filter types', async () => {
     mockQuery.mockResolvedValue({
       search: {
         edges: [],
@@ -109,28 +94,18 @@ describe('searchProducts with tag filters', () => {
         totalCount: 0,
       },
     });
-
-    const filters: StorefrontAPI.ProductFilter[] = [
-      {tag: 'disposable'} as StorefrontAPI.ProductFilter,
-      {productVendor: 'Elf Bar'} as StorefrontAPI.ProductFilter,
-      {available: true} as StorefrontAPI.ProductFilter,
-    ];
 
     await searchProducts(mockStorefront, '', {
-      filters,
+      vendor: 'Elf Bar',
+      available: true,
     });
 
-    expect(mockQuery).toHaveBeenCalledWith(
-      expect.any(String),
-      expect.objectContaining({
-        variables: expect.objectContaining({
-          query: 'vendor:Elf Bar available:true tag:disposable',
-        }),
-      })
-    );
+    const query = mockQuery.mock.calls[0][1].variables.query;
+    expect(query).toContain('vendor:Elf Bar');
+    expect(query).toContain('available:true');
   });
 
-  it('should handle multiple tags with multiple other filters', async () => {
+  it('should handle availability filter', async () => {
     mockQuery.mockResolvedValue({
       search: {
         edges: [],
@@ -139,80 +114,115 @@ describe('searchProducts with tag filters', () => {
       },
     });
 
-    const filters: StorefrontAPI.ProductFilter[] = [
-      {tag: 'disposable'} as StorefrontAPI.ProductFilter,
-      {tag: '20mg'} as StorefrontAPI.ProductFilter,
-      {productType: 'Vape Device'} as StorefrontAPI.ProductFilter,
-      {available: true} as StorefrontAPI.ProductFilter,
-    ];
+    await searchProducts(mockStorefront, '', {
+      available: false,
+    });
+
+    expect(mockQuery).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        variables: expect.objectContaining({
+          query: 'available:false',
+        }),
+      })
+    );
+  });
+
+  it('should handle price filters', async () => {
+    mockQuery.mockResolvedValue({
+      search: {
+        edges: [],
+        pageInfo: {hasNextPage: false},
+        totalCount: 0,
+      },
+    });
+
+    await searchProducts(mockStorefront, '', {
+      priceRange: {min: 5, max: 20},
+    });
+
+    const query = mockQuery.mock.calls[0][1].variables.query;
+    expect(query).toContain('price:>5');
+    expect(query).toContain('price:<20');
+  });
+
+  it('should handle price min only', async () => {
+    mockQuery.mockResolvedValue({
+      search: {
+        edges: [],
+        pageInfo: {hasNextPage: false},
+        totalCount: 0,
+      },
+    });
+
+    await searchProducts(mockStorefront, '', {
+      priceRange: {min: 10},
+    });
+
+    const query = mockQuery.mock.calls[0][1].variables.query;
+    expect(query).toContain('price:>10');
+    expect(query).not.toContain('price:<');
+  });
+
+  it('should handle price max only', async () => {
+    mockQuery.mockResolvedValue({
+      search: {
+        edges: [],
+        pageInfo: {hasNextPage: false},
+        totalCount: 0,
+      },
+    });
+
+    await searchProducts(mockStorefront, '', {
+      priceRange: {max: 50},
+    });
+
+    const query = mockQuery.mock.calls[0][1].variables.query;
+    expect(query).not.toContain('price:>');
+    expect(query).toContain('price:<50');
+  });
+
+  it('should use wildcard query when no search term or filters', async () => {
+    mockQuery.mockResolvedValue({
+      search: {
+        edges: [],
+        pageInfo: {hasNextPage: false},
+        totalCount: 0,
+      },
+    });
+
+    await searchProducts(mockStorefront, '', {});
+
+    expect(mockQuery).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        variables: expect.objectContaining({
+          query: '*',
+        }),
+      })
+    );
+  });
+
+  it('should combine search term with multiple filters', async () => {
+    mockQuery.mockResolvedValue({
+      search: {
+        edges: [],
+        pageInfo: {hasNextPage: false},
+        totalCount: 0,
+      },
+    });
 
     await searchProducts(mockStorefront, 'fruit', {
-      filters,
+      productType: 'E-Liquid',
+      available: true,
+      priceRange: {min: 5, max: 15},
     });
 
-    expect(mockQuery).toHaveBeenCalledWith(
-      expect.any(String),
-      expect.objectContaining({
-        variables: expect.objectContaining({
-          query: 'fruit AND product_type:Vape Device available:true (tag:disposable OR tag:20mg)',
-        }),
-      })
-    );
-  });
-
-  it('should handle price filters with tag filters', async () => {
-    mockQuery.mockResolvedValue({
-      search: {
-        edges: [],
-        pageInfo: {hasNextPage: false},
-        totalCount: 0,
-      },
-    });
-
-    const filters: StorefrontAPI.ProductFilter[] = [
-      {tag: 'e-liquid'} as StorefrontAPI.ProductFilter,
-      {price: {min: 5, max: 20}} as StorefrontAPI.ProductFilter,
-    ];
-
-    await searchProducts(mockStorefront, '', {
-      filters,
-    });
-
-    expect(mockQuery).toHaveBeenCalledWith(
-      expect.any(String),
-      expect.objectContaining({
-        variables: expect.objectContaining({
-          query: 'price:>5 price:<20 tag:e-liquid',
-        }),
-      })
-    );
-  });
-
-  it('should work with wildcard query when no search term', async () => {
-    mockQuery.mockResolvedValue({
-      search: {
-        edges: [],
-        pageInfo: {hasNextPage: false},
-        totalCount: 0,
-      },
-    });
-
-    const tagFilters: StorefrontAPI.ProductFilter[] = [
-      {tag: 'CBD'} as StorefrontAPI.ProductFilter,
-    ];
-
-    await searchProducts(mockStorefront, '', {
-      filters: tagFilters,
-    });
-
-    // Should not have wildcard when we have filters
-    expect(mockQuery).toHaveBeenCalledWith(
-      expect.any(String),
-      expect.objectContaining({
-        variables: expect.objectContaining({
-          query: 'tag:CBD',
-        }),
-      })
-    );
+    const query = mockQuery.mock.calls[0][1].variables.query;
+    expect(query).toContain('fruit');
+    expect(query).toContain('product_type:E-Liquid');
+    expect(query).toContain('available:true');
+    expect(query).toContain('price:>5');
+    expect(query).toContain('price:<15');
   });
 });

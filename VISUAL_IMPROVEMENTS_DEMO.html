@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vapourism V2 - Visual Improvements Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes gradient-xy {
+            0%, 100% { background-position: 0% 0%; }
+            25% { background-position: 100% 0%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        .animate-gradient-xy {
+            background-size: 200% 200%;
+            animation: gradient-xy 4s ease infinite;
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        .animate-pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-slate-50 to-white">
+    <div class="container mx-auto px-4 py-16">
+        <!-- Header -->
+        <header class="text-center mb-16">
+            <h1 class="text-6xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
+                Vapourism V2
+            </h1>
+            <p class="text-xl text-slate-600">Visual Improvements Showcase</p>
+            <div class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-full shadow-lg">
+                ✨ Modern • Animated • Engaging
+            </div>
+        </header>
+
+        <!-- Product Cards Section -->
+        <section class="mb-24">
+            <h2 class="text-4xl font-semibold mb-8 text-slate-900">Enhanced Product Cards</h2>
+            <p class="text-slate-600 mb-8">Modern gradient borders, hover animations, and premium styling</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Product Card 1 -->
+                <div class="group relative bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                    <!-- Gradient border effect -->
+                    <div class="absolute inset-0 bg-gradient-to-br from-purple-500 via-blue-500 to-teal-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"></div>
+                    
+                    <div class="relative bg-white m-1 rounded-3xl overflow-hidden">
+                        <!-- Image container -->
+                        <div class="relative h-64 bg-gradient-to-br from-purple-100 to-blue-100 overflow-hidden">
+                            <div class="absolute inset-0 flex items-center justify-center text-6xl opacity-30">🌬️</div>
+                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium text-purple-600 shadow-md">
+                                NEW
+                            </div>
+                            <!-- Quick view badge (appears on hover) -->
+                            <div class="absolute bottom-4 right-4 w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg">
+                                <span class="text-white text-xl">👁️</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Content -->
+                        <div class="p-6">
+                            <div class="mb-2">
+                                <span class="inline-block px-3 py-1 bg-purple-50 backdrop-blur-md text-purple-700 text-xs font-semibold rounded-full border border-purple-200">
+                                    Premium Brand
+                                </span>
+                            </div>
+                            <h3 class="text-xl font-semibold text-slate-900 mb-2 group-hover:text-purple-600 transition-colors">
+                                Crystal Bar Vape
+                            </h3>
+                            <p class="text-slate-600 text-sm mb-4">600 puffs • 20mg nicotine</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
+                                    £4.99
+                                </span>
+                                <button class="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-500 text-white rounded-full hover:shadow-lg transition-shadow duration-300">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 2 -->
+                <div class="group relative bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                    <div class="absolute inset-0 bg-gradient-to-br from-blue-500 via-teal-400 to-green-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"></div>
+                    
+                    <div class="relative bg-white m-1 rounded-3xl overflow-hidden">
+                        <div class="relative h-64 bg-gradient-to-br from-blue-100 to-teal-100 overflow-hidden">
+                            <div class="absolute inset-0 flex items-center justify-center text-6xl opacity-30">💨</div>
+                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium text-orange-600 shadow-md">
+                                SALE
+                            </div>
+                            <div class="absolute bottom-4 right-4 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg">
+                                <span class="text-white text-xl">👁️</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-6">
+                            <div class="mb-2">
+                                <span class="inline-block px-3 py-1 bg-blue-50 backdrop-blur-md text-blue-700 text-xs font-semibold rounded-full border border-blue-200">
+                                    Best Seller
+                                </span>
+                            </div>
+                            <h3 class="text-xl font-semibold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">
+                                Elf Bar 600
+                            </h3>
+                            <p class="text-slate-600 text-sm mb-4">600 puffs • Various flavours</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-teal-500 bg-clip-text text-transparent">
+                                    £3.99
+                                </span>
+                                <button class="px-6 py-2 bg-gradient-to-r from-blue-600 to-teal-500 text-white rounded-full hover:shadow-lg transition-shadow duration-300">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 3 -->
+                <div class="group relative bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                    <div class="absolute inset-0 bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"></div>
+                    
+                    <div class="relative bg-white m-1 rounded-3xl overflow-hidden">
+                        <div class="relative h-64 bg-gradient-to-br from-pink-100 to-purple-100 overflow-hidden">
+                            <div class="absolute inset-0 flex items-center justify-center text-6xl opacity-30">✨</div>
+                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium text-pink-600 shadow-md">
+                                HOT
+                            </div>
+                            <div class="absolute bottom-4 right-4 w-12 h-12 bg-pink-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg">
+                                <span class="text-white text-xl">👁️</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-6">
+                            <div class="mb-2">
+                                <span class="inline-block px-3 py-1 bg-pink-50 backdrop-blur-md text-pink-700 text-xs font-semibold rounded-full border border-pink-200">
+                                    Trending
+                                </span>
+                            </div>
+                            <h3 class="text-xl font-semibold text-slate-900 mb-2 group-hover:text-pink-600 transition-colors">
+                                Lost Mary BM600
+                            </h3>
+                            <p class="text-slate-600 text-sm mb-4">600 puffs • Premium flavours</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-500 bg-clip-text text-transparent">
+                                    £4.49
+                                </span>
+                                <button class="px-6 py-2 bg-gradient-to-r from-pink-600 to-purple-500 text-white rounded-full hover:shadow-lg transition-shadow duration-300">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature Cards Section -->
+        <section class="mb-24">
+            <h2 class="text-4xl font-semibold mb-8 text-slate-900">Why Choose Us</h2>
+            <p class="text-slate-600 mb-8">Animated gradient effects and icon badges</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Feature Card 1 -->
+                <div class="relative group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden">
+                    <!-- Animated gradient orb -->
+                    <div class="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-purple-400 to-blue-400 rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 animate-pulse-glow"></div>
+                    
+                    <div class="relative">
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg animate-float">
+                            <span class="text-3xl">🚚</span>
+                        </div>
+                        <h3 class="text-2xl font-semibold mb-3 text-slate-900">Fast Delivery</h3>
+                        <p class="text-slate-600">Free shipping on orders over £50. Express delivery available.</p>
+                    </div>
+                </div>
+
+                <!-- Feature Card 2 -->
+                <div class="relative group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden">
+                    <div class="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-blue-400 to-teal-400 rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 animate-pulse-glow"></div>
+                    
+                    <div class="relative">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-teal-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg animate-float" style="animation-delay: 0.2s">
+                            <span class="text-3xl">🛡️</span>
+                        </div>
+                        <h3 class="text-2xl font-semibold mb-3 text-slate-900">UK Compliant</h3>
+                        <p class="text-slate-600">All products meet UK safety standards and regulations.</p>
+                    </div>
+                </div>
+
+                <!-- Feature Card 3 -->
+                <div class="relative group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden">
+                    <div class="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-teal-400 to-green-400 rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 animate-pulse-glow"></div>
+                    
+                    <div class="relative">
+                        <div class="w-16 h-16 bg-gradient-to-br from-teal-500 to-green-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg animate-float" style="animation-delay: 0.4s">
+                            <span class="text-3xl">💬</span>
+                        </div>
+                        <h3 class="text-2xl font-semibold mb-3 text-slate-900">Expert Support</h3>
+                        <p class="text-slate-600">Dedicated customer service team ready to help 24/7.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Category Cards Section -->
+        <section class="mb-24">
+            <h2 class="text-4xl font-semibold mb-8 text-slate-900">Shop by Category</h2>
+            <p class="text-slate-600 mb-8">Gradient borders and pulsing indicators</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Category Card 1 -->
+                <div class="group relative bg-white rounded-3xl p-8 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
+                    <!-- Gradient border effect -->
+                    <div class="absolute inset-0 bg-gradient-to-br from-purple-500 via-blue-500 to-teal-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    <div class="relative bg-white m-1 rounded-3xl p-8">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-3xl font-bold text-slate-900">Disposable Vapes</h3>
+                            <div class="w-3 h-3 bg-purple-500 rounded-full animate-pulse"></div>
+                        </div>
+                        <p class="text-slate-600 mb-6">Ready-to-use devices with pre-filled e-liquid</p>
+                        <button class="px-8 py-3 bg-gradient-to-r from-purple-600 to-blue-500 text-white rounded-full font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105">
+                            Browse Collection →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Category Card 2 -->
+                <div class="group relative bg-white rounded-3xl p-8 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-br from-blue-500 via-teal-400 to-green-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    <div class="relative bg-white m-1 rounded-3xl p-8">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-3xl font-bold text-slate-900">E-Liquids</h3>
+                            <div class="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+                        </div>
+                        <p class="text-slate-600 mb-6">Premium e-juices in various flavours and strengths</p>
+                        <button class="px-8 py-3 bg-gradient-to-r from-blue-600 to-teal-500 text-white rounded-full font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105">
+                            Browse Collection →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Loading States Demo -->
+        <section class="mb-24">
+            <h2 class="text-4xl font-semibold mb-8 text-slate-900">Enhanced Loading States</h2>
+            <p class="text-slate-600 mb-8">Modern dual-animation spinner</p>
+            
+            <div class="bg-white rounded-2xl p-12 shadow-lg text-center">
+                <div class="relative inline-block">
+                    <!-- Outer spinner -->
+                    <div class="w-16 h-16 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
+                    <!-- Inner spinner -->
+                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-10 h-10 border-4 border-transparent border-t-blue-500 rounded-full animate-spin" style="animation-direction: reverse; animation-duration: 0.75s;"></div>
+                </div>
+                <p class="mt-6 text-slate-600 font-medium">Loading products...</p>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section class="bg-gradient-to-br from-purple-600 via-blue-500 to-teal-400 rounded-3xl p-12 text-white text-center">
+            <h2 class="text-4xl font-bold mb-4">✨ Visual Transformation Complete</h2>
+            <p class="text-xl mb-8 text-purple-100">Modern gradients, smooth animations, and premium styling throughout</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <div>
+                    <div class="text-5xl font-bold mb-2">3</div>
+                    <p class="text-purple-100">Components Enhanced</p>
+                </div>
+                <div>
+                    <div class="text-5xl font-bold mb-2">10+</div>
+                    <p class="text-purple-100">Animation Effects</p>
+                </div>
+                <div>
+                    <div class="text-5xl font-bold mb-2">100%</div>
+                    <p class="text-purple-100">Mobile Responsive</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
